@@ -18,6 +18,7 @@ from typing import Optional
 import httpx
 
 from argilla_sdk._api import HTTPClientConfig, create_http_client  # noqa
+from argilla_sdk.datasets import *  # noqa
 from argilla_sdk.workspaces import *  # noqa
 
 DEFAULT_HTTP_CLIENT: Optional[httpx.Client] = None

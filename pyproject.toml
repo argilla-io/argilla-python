@@ -36,7 +36,7 @@ dev = [
 test = "pytest tests"
 lint = "ruff check"
 format = "black ."
-all = {composite = ["format", "lint", "test", "build"]}
+all = {composite = ["format", "lint", "test"]}
 
 
 [tool.ruff]

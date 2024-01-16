@@ -33,11 +33,10 @@ class Role(str, Enum):
 @dataclass
 class User:
     username: str
-    password: str
-    name: str
     first_name: str
     role: Role = Role.annotator
     last_name: Optional[str] = None
+    password: Optional[str] = None
 
     id: Optional[UUID] = None
     api_key: Optional[str] = None
@@ -50,7 +49,6 @@ class User:
         return {
             "id": self.id,
             "username": self.username,
-            "name": self.name,
             "first_name": self.first_name,
             "last_name": self.last_name,
             "role": self.role,
@@ -96,7 +94,6 @@ class User:
             json={
                 "username": self.username,
                 "password": self.password,
-                "name": self.name,
                 "first_name": self.first_name,
                 "last_name": self.last_name,
                 "role": self.role,

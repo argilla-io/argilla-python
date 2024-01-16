@@ -21,7 +21,7 @@ import httpx
 from argilla_sdk import Dataset, Workspace
 
 
-class TestSuiteDatasets:
+class TestDatasets:
     def test_serialize(self, mock_httpx_client: httpx.Client):
         ds = Dataset(
             name="test-workspace",

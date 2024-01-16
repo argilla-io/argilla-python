@@ -28,16 +28,12 @@ __all__ = ["Dataset"]
 @dataclass
 class Dataset:
     name: str
-
     status: Literal["draft", "ready"] = "draft"
-
     guidelines: Optional[str] = None
     allow_extra_metadata: bool = True
 
-    workspace_id: Optional[UUID] = None
-
     id: Optional[UUID] = None
-
+    workspace_id: Optional[UUID] = None
     inserted_at: Optional[datetime.datetime] = None
     updated_at: Optional[datetime.datetime] = None
     last_activity_at: Optional[datetime.datetime] = None

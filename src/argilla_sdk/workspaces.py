@@ -15,10 +15,10 @@
 from typing import TYPE_CHECKING
 
 from argilla_sdk import _api
-from argilla_sdk._helpers._iterator import GenericIterator  # noqa
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import WorkspaceDatasets
+    from argilla_sdk.users import WorkspaceUsers
 
 __all__ = ["Workspace"]
 
@@ -29,3 +29,9 @@ class Workspace(_api.Workspace):
         from argilla_sdk.datasets import WorkspaceDatasets
 
         return WorkspaceDatasets(self)
+
+    @property
+    def users(self) -> "WorkspaceUsers":
+        from argilla_sdk.users import WorkspaceUsers
+
+        return WorkspaceUsers(self)

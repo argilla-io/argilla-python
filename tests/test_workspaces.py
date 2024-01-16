@@ -21,7 +21,7 @@ from pytest_mock import MockerFixture
 from argilla_sdk import Workspace
 
 
-class TestSuiteWorkspaces:
+class TestWorkspaces:
     def test_serialize_workspace(self, mock_httpx_client: httpx.Client):
         ws = Workspace(
             name="test-workspace",

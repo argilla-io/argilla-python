@@ -117,3 +117,29 @@ class TestSuiteWorkspaces:
         ws = Workspace(name="test-workspace", id=workspace_id)
         ws.delete()
         mock_httpx_client.delete.assert_called_once_with(f"/api/v1/workspaces/{workspace_id}")
+
+    def test_list_workspace_datasets(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
+        workspace_id = uuid.uuid4()
+
+        mock_response = mocker.Mock(httpx.Response)
+        mock_response.json = mocker.Mock(
+            return_value={
+                "items": [
+                    {"id": uuid.uuid4(), "name": "test-dataset", "workspace_id": workspace_id},
+                    {"id": uuid.uuid4(), "name": "another-test-dataset", "workspace_id": workspace_id},
+                    {"id": uuid.uuid4(), "name": "third-test-dataset", "workspace_id": uuid.uuid4()},
+                ]
+            }
+        )
+
+        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
+
+        datasets = Workspace(id=workspace_id, name="workspace-01").datasets.list()
+        mock_httpx_client.get.assert_called_once_with("/api/v1/me/datasets")
+
+        assert len(datasets) == 2
+        items_json = mock_response.json()["items"]
+        for i in range(len(datasets)):
+            assert datasets[i].name == items_json[i]["name"]
+            assert datasets[i].id == items_json[i]["id"]
+            assert datasets[i].client == mock_httpx_client

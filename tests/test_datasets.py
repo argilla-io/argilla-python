@@ -85,7 +85,9 @@ class TestDatasets:
         assert dataset.client == mock_httpx_client
 
     def test_create_dataset(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
-        dataset = Dataset(name="dataset-01", guidelines="Test guidelines", workspace_id=uuid.uuid4())
+        dataset = Dataset(
+            name="dataset-01", guidelines="Test guidelines", workspace_id=uuid.uuid4(), client=mock_httpx_client
+        )
 
         mock_response = mocker.Mock(httpx.Response)
         mock_response.json = mocker.Mock(

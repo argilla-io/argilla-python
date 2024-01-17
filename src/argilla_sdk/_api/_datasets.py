@@ -101,13 +101,13 @@ class Dataset:
         return self._update_from_api_response(response)
 
     def update(self) -> "Dataset":
-        response = self.client.patch(
-            f"/api/v1/datasets/{self.id}",
-            json={
-                "guidelines": self.guidelines,
-                "allow_extra_metadata": self.allow_extra_metadata,
-            },
-        )
+        body = {
+            "guidelines": self.guidelines,
+            "allow_extra_metadata": self.allow_extra_metadata,
+        }
+        
+        response = self.client.patch(f"/api/v1/datasets/{self.id}", json=body)
+        
         _http.raise_for_status(response)
 
         return self._update_from_api_response(response)
@@ -131,4 +131,5 @@ class Dataset:
     def _update_from_api_response(self, response: httpx.Response) -> "Dataset":
         new_instance = self._create_from_json(response.json(), client=self.client)
         self.__dict__.update(new_instance.__dict__)
+        
         return self

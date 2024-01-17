@@ -23,6 +23,8 @@ import httpx
 import argilla_sdk
 from argilla_sdk._api import _http
 
+__all__ = ["Role", "User"]
+
 
 class Role(str, Enum):
     annotator = "annotator"
@@ -59,6 +61,10 @@ class User:
 
     @classmethod
     def from_dict(cls, data: dict) -> "User":
+        role = data.get("role")
+        if role is not None:
+            data["role"] = Role(role)
+
         return cls(**data)
 
     @classmethod

@@ -20,7 +20,9 @@ from argilla_sdk._helpers._iterator import GenericIterator  # noqa
 if TYPE_CHECKING:
     from argilla_sdk.workspaces import Workspace
 
-__all__ = ["User", "WorkspaceUsers"]
+__all__ = ["User", "WorkspaceUsers", "Role"]
+
+Role = _api.Role
 
 
 class User(_api.User):

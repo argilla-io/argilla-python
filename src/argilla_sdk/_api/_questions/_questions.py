@@ -123,7 +123,7 @@ class Question:
         return self._update_from_api_response(response)
 
     @classmethod
-    def _create_from_json(cls, json: Dict[str, Any], client: httpx.Client) -> "Question":
+    def _create_from_json(cls, json: dict, client: httpx.Client) -> "Question":
         return cls.from_dict(dict(**json, client=client))
 
     def _update_from_api_response(self, response: httpx.Response) -> "Question":

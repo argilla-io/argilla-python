@@ -42,10 +42,7 @@ QuestionSettings = Union[
 
 
 class SettingsType:
-    _QUESTION_SETTINGS_TYPE_TO_CLASS = {
-        question_class.type: question_class
-        for question_class in QuestionSettings.__args__  # noqa
-    }
+    _MAP_TYPE_TO_CLASS = {question_class.type: question_class for question_class in QuestionSettings.__args__}  # noqa
 
     Text = TextSettings
     Rating = RatingSettings
@@ -56,6 +53,6 @@ class SettingsType:
     @classmethod
     def from_dict(cls, data: dict) -> QuestionSettings:
         data_copy = data.copy()
-        settings_class = cls._QUESTION_SETTINGS_TYPE_TO_CLASS[data_copy.pop("type")]
+        settings_class = cls._MAP_TYPE_TO_CLASS[data_copy.pop("type")]
 
         return settings_class(**data_copy)

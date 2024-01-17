@@ -12,20 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING
+from typing import Generic, List, TypeVar
 
-from argilla_sdk import _api
-from argilla_sdk._helpers._iterator import GenericIterator  # noqa
-
-if TYPE_CHECKING:
-    from argilla_sdk.datasets import WorkspaceDatasets
-
-__all__ = ["Workspace"]
+Item = TypeVar("Item")
 
 
-class Workspace(_api.Workspace):
-    @property
-    def datasets(self) -> "WorkspaceDatasets":
-        from argilla_sdk.datasets import WorkspaceDatasets
+class GenericIterator(Generic[Item]):
+    """Generic iterator for any collection of items."""
 
-        return WorkspaceDatasets(self)
+    def __init__(self, collection: List[Item]):
+        self._collection = [v for v in collection]
+        self._index = 0
+
+    def __iter__(self):
+        return self
+
+    def __next__(self):
+        if self._index < len(self._collection):
+            result = self._collection[self._index]
+            self._index += 1
+            return result
+        raise StopIteration

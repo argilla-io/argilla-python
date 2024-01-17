@@ -41,6 +41,10 @@ class RankingSettings:
     type: ClassVar[Literal["ranking"]] = "ranking"
     options: List[RankingOption] = field(default_factory=list)
 
+    @classmethod
+    def from_labels(cls, labels: List[str]):
+        return cls(options=[RankingOption(value=label) for label in labels])
+
     def __post_init__(self):
         for index, option in enumerate(self.options):
             if isinstance(option, dict):

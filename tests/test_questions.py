@@ -19,7 +19,7 @@ import httpx
 import pytest
 
 from argilla_sdk import Dataset
-from argilla_sdk.questions import Question, QuestionSettings, RankingOption
+from argilla_sdk.questions import Question, QuestionSettings
 
 
 class TestQuestions:
@@ -30,10 +30,8 @@ class TestQuestions:
             Question.Settings.Rating.from_boundaries(1, 5),
             Question.Settings.Label.from_labels(["label1", "label2"]),
             Question.Settings.MultiLabel.from_labels(["label1"]),
+            Question.Settings.Ranking.from_labels(["option1", "option2"]),
             Question.Settings.Text(),
-            Question.Settings.Ranking(
-                options=[RankingOption("option1"), RankingOption(value="option2", text="Text for option2")]
-            ),
         ],
     )
     def test_serialize(self, settings: QuestionSettings, mock_httpx_client: httpx.Client):

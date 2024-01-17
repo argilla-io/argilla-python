@@ -21,8 +21,12 @@ __all__ = ["LabelOption", "LabelSettings", "MultiLabelSettings"]
 @dataclass
 class LabelOption:
     value: str
-    text: str
+    text: Optional[str] = None
     description: Optional[str] = None
+
+    def __post_init__(self):
+        if self.text is None:
+            self.text = self.value
 
     def to_dict(self) -> Dict[str, Any]:
         return {
@@ -41,7 +45,7 @@ class LabelSettings:
     @classmethod
     def from_labels(cls, labels: List[str]) -> "LabelSettings":
         """Create a list of LabelOption from a list of labels"""
-        return cls(options=[LabelOption(value=label, text=label) for label in labels])
+        return cls(options=[LabelOption(value=label) for label in labels])
 
     def __post_init__(self):
         for index, option in enumerate(self.options):

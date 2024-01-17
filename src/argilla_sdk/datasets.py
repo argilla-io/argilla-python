@@ -19,11 +19,16 @@ from argilla_sdk._helpers._iterator import GenericIterator  # noqa
 
 if TYPE_CHECKING:
     from argilla_sdk import Workspace
+    from argilla_sdk.questions import DatasetQuestions
 
 __all__ = ["Dataset", "WorkspaceDatasets"]
 
 
 class Dataset(_api.Dataset):
+    @classmethod
+    def get_by_name_and_workspace(cls, name: str, workspace: "Workspace") -> Optional["Dataset"]:
+        return cls.get_by_name_and_workspace_id(name, workspace.id)
+
     @property
     def workspace(self) -> Optional["Workspace"]:
         from argilla_sdk.workspaces import Workspace
@@ -35,9 +40,11 @@ class Dataset(_api.Dataset):
     def workspace(self, workspace: "Workspace") -> None:
         self.workspace_id = workspace.id
 
-    @classmethod
-    def get_by_name_and_workspace(cls, name: str, workspace: "Workspace") -> Optional["Dataset"]:
-        return cls.get_by_name_and_workspace_id(name, workspace.id)
+    @property
+    def questions(self) -> "DatasetQuestions":
+        from argilla_sdk.questions import DatasetQuestions
+
+        return DatasetQuestions(dataset=self)
 
 
 DatasetsIterator = GenericIterator["Dataset"]

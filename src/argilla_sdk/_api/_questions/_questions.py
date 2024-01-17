@@ -83,7 +83,7 @@ class Question:
         return cls._create_from_json(response.json(), client)
 
     @classmethod
-    def get_by_name(cls, dataset_id: UUID, name: str) -> "Question":
+    def get_by_dataset_id_and_name(cls, dataset_id: UUID, name: str) -> "Question":
         # TODO: Maybe we should support an query parameter for this?
         questions = cls.list_by_dataset_id(dataset_id)
         for question in questions:

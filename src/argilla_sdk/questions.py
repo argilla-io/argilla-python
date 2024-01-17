@@ -61,7 +61,7 @@ class DatasetQuestions:
         return question.create()
 
     def get_by_name(self, name: str) -> Question:
-        return Question.get_by_name(self.dataset.id, name=name)
+        return Question.get_by_dataset_id_and_name(self.dataset.id, name=name)
 
     def __getitem__(self, key: str) -> Question:
         return self.get_by_name(key)

@@ -88,8 +88,6 @@ class Dataset:
                 return dataset
 
     def create(self) -> "Dataset":
-        self.client = argilla_sdk.get_default_http_client()
-
         body = {
             "name": self.name,
             "workspace_id": self.workspace_id,

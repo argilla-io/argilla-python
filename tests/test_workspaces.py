@@ -22,7 +22,7 @@ from argilla_sdk import Workspace
 
 
 class TestWorkspaces:
-    def test_serialize_workspace(self, mock_httpx_client: httpx.Client):
+    def test_serialize(self, mock_httpx_client: httpx.Client):
         ws = Workspace(
             name="test-workspace",
             id=uuid.uuid4(),
@@ -32,6 +32,25 @@ class TestWorkspaces:
         )
 
         assert Workspace.from_dict(ws.to_dict()) == ws
+
+    def test_serialize_with_extra_arguments(self, mock_httpx_client: httpx.Client):
+        ws = Workspace.from_dict(
+            {
+                "name": "test-workspace",
+                "id": uuid.uuid4(),
+                "inserted_at": datetime.utcnow(),
+                "updated_at": datetime.utcnow(),
+                "client": mock_httpx_client,
+                "extra": "extra",
+            }
+        )
+
+        assert ws.to_dict() == {
+            "name": "test-workspace",
+            "id": ws.id,
+            "inserted_at": ws.inserted_at,
+            "updated_at": ws.updated_at,
+        }
 
     def test_list_workspaces(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
         mock_response = mocker.Mock(httpx.Response)

@@ -35,6 +35,28 @@ class TestDatasets:
 
         assert Dataset.from_dict(ds.to_dict()) == ds
 
+    def test_serialize_with_extra_arguments(self, mock_httpx_client: httpx.Client):
+        dataset_id = uuid.uuid4()
+        ds = Dataset.from_dict(
+            {
+                "id": dataset_id,
+                "name": "test-workspace",
+                "allow_extra_metadata": False,
+                "extra_arg": "extra_arg",
+                "another_extra_arg": "another_extra_arg",
+            }
+        )
+
+        assert ds.to_dict() == {
+            "id": dataset_id,
+            "name": "test-workspace",
+            "allow_extra_metadata": False,
+            "guidelines": None,
+            "inserted_at": None,
+            "updated_at": None,
+            "workspace_id": None,
+        }
+
     def test_list_datasets(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
         mock_response = mocker.Mock(httpx.Response)
         mock_response.json = mocker.Mock(return_value={"items": [{"id": uuid.uuid4(), "name": "dataset-01"}]})

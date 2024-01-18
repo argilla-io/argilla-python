@@ -15,7 +15,7 @@
 from typing import List, Optional, TYPE_CHECKING
 
 from argilla_sdk import _api
-from argilla_sdk._helpers._iterator import GenericIterator  # noqa
+from argilla_sdk._helpers import GenericIterator  # noqa
 
 if TYPE_CHECKING:
     from argilla_sdk import Workspace

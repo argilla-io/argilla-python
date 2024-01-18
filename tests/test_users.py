@@ -35,6 +35,32 @@ class TestUsers:
 
         assert User.from_dict(user.to_dict()) == user
 
+    def test_serialize_with_extra_arguments(self, mock_httpx_client: httpx.Client):
+        user = User.from_dict(
+            {
+                "id": uuid.uuid4(),
+                "username": "test-user",
+                "password": "test-password",
+                "first_name": "Test",
+                "last_name": "User",
+                "role": "admin",
+                "client": mock_httpx_client,
+                "extra_argument": "extra-argument",
+                "another_extra_argument": "another-extra-argument",
+            }
+        )
+
+        assert user.to_dict() == {
+            "id": user.id,
+            "username": "test-user",
+            "api_key": None,
+            "first_name": "Test",
+            "last_name": "User",
+            "role": "admin",
+            "inserted_at": user.inserted_at,
+            "updated_at": user.updated_at,
+        }
+
     def test_list_users(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
         mock_response = mocker.Mock(httpx.Response)
         mock_response.json = mocker.Mock(

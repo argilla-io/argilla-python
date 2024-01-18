@@ -21,6 +21,7 @@ from uuid import UUID
 import httpx
 
 import argilla_sdk
+from argilla_sdk import _helpers
 from argilla_sdk._api import _http
 
 __all__ = ["Role", "User"]
@@ -53,7 +54,7 @@ class User:
             "username": self.username,
             "first_name": self.first_name,
             "last_name": self.last_name,
-            "role": self.role,
+            "role": self.role.value,
             "api_key": self.api_key,
             "inserted_at": self.inserted_at,
             "updated_at": self.updated_at,
@@ -61,11 +62,9 @@ class User:
 
     @classmethod
     def from_dict(cls, data: dict) -> "User":
-        role = data.get("role")
-        if role is not None:
-            data["role"] = Role(role)
+        data["role"] = Role(data["role"]) if "role" in data else None
 
-        return cls(**data)
+        return _helpers.dataclass_instance_from_dict(cls, data)
 
     @classmethod
     def list(cls) -> List["User"]:

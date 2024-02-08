@@ -20,6 +20,7 @@ import httpx
 from argilla_sdk._api import HTTPClientConfig, create_http_client  # noqa
 from argilla_sdk.datasets import *  # noqa
 from argilla_sdk.workspaces import *  # noqa
+from argilla_sdk.users import *  # noqa
 
 DEFAULT_HTTP_CLIENT: Optional[httpx.Client] = None
 DEFAULT_HTTP_CONFIG = HTTPClientConfig(api_url=os.getenv("ARGILLA_API_URL"), api_key=os.getenv("ARGILLA_API_KEY"))

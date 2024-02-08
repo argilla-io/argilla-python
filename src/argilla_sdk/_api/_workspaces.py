@@ -59,6 +59,26 @@ class Workspace:
         return [cls._create_from_json(client, json_workspace) for json_workspace in response_json["items"]]
 
     @classmethod
+    def list_by_user_id(cls, user_id: UUID) -> List["Workspace"]:
+        client = argilla_sdk.get_default_http_client()
+
+        response = client.get(f"/api/v1/users/{user_id}/workspaces")
+        _http.raise_for_status(response)
+
+        response_json = response.json()
+        return [cls._create_from_json(client, json_workspace) for json_workspace in response_json["items"]]
+
+    @classmethod
+    def list_current_user_workspaces(cls) -> List["Workspace"]:
+        client = argilla_sdk.get_default_http_client()
+
+        response = client.get("/api/v1/me/workspaces")
+        _http.raise_for_status(response)
+
+        response_json = response.json()
+        return [cls._create_from_json(client, json_workspace) for json_workspace in response_json["items"]]
+
+    @classmethod
     def get(cls, workspace_id: UUID) -> "Workspace":
         client = argilla_sdk.get_default_http_client()
 

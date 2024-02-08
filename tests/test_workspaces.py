@@ -162,3 +162,27 @@ class TestWorkspaces:
             assert datasets[i].name == items_json[i]["name"]
             assert datasets[i].id == items_json[i]["id"]
             assert datasets[i].client == mock_httpx_client
+
+    def test_list_workspace_users(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
+        workspace_id = uuid.uuid4()
+
+        mock_response = mocker.Mock(httpx.Response)
+        mock_response.json = mocker.Mock(
+            return_value=[
+                {"id": uuid.uuid4(), "username": "test-user", "first_name": "First"},
+                {"id": uuid.uuid4(), "username": "another-test-user", "first_name": "First"},
+                {"id": uuid.uuid4(), "username": "third-test-user", "first_name": "First"},
+            ]
+        )
+
+        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
+
+        users = Workspace(id=workspace_id, name="workspace-01").users.list()
+        mock_httpx_client.get.assert_called_once_with(f"/api/workspaces/{workspace_id}/users")
+
+        assert len(users) == 3
+        items_json = mock_response.json()
+        for i in range(len(users)):
+            assert users[i].username == items_json[i]["username"]
+            assert users[i].id == items_json[i]["id"]
+            assert users[i].client == mock_httpx_client

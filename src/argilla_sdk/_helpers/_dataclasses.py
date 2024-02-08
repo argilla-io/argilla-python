@@ -12,20 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING
 
-from argilla_sdk import _api
-from argilla_sdk._helpers import GenericIterator  # noqa
+from dataclasses import fields, dataclass
+from typing import Type, TypeVar
 
-if TYPE_CHECKING:
-    from argilla_sdk.datasets import WorkspaceDatasets
+__all__ = ["dataclass_instance_from_dict"]
 
-__all__ = ["Workspace"]
+T = TypeVar("T", bound=dataclass)
 
 
-class Workspace(_api.Workspace):
-    @property
-    def datasets(self) -> "WorkspaceDatasets":
-        from argilla_sdk.datasets import WorkspaceDatasets
+def dataclass_instance_from_dict(cls: Type[T], data: dict) -> T:
+    """Create a dataclass instance from a dictionary, ignoring extra keys found in the dictionary."""
 
-        return WorkspaceDatasets(self)
+    field_names = set(f.name for f in fields(cls))
+    return cls(**{k: v for k, v in data.items() if k in field_names})

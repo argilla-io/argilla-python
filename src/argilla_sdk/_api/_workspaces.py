@@ -20,6 +20,7 @@ from uuid import UUID
 import httpx
 
 import argilla_sdk
+from argilla_sdk import _helpers
 from argilla_sdk._api import _http
 
 __all__ = ["Workspace"]
@@ -45,7 +46,7 @@ class Workspace:
 
     @classmethod
     def from_dict(cls, data: dict) -> "Workspace":
-        return cls(**data)
+        return _helpers.dataclass_instance_from_dict(cls, data)
 
     @classmethod
     def list(cls) -> List["Workspace"]:

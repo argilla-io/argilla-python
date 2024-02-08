@@ -14,6 +14,8 @@
 
 from typing import Generic, List, TypeVar
 
+__all__ = ["GenericIterator"]
+
 Item = TypeVar("Item")
 
 

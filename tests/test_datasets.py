@@ -276,3 +276,53 @@ class TestDatasets:
         assert workspace.id == mock_response.json()["id"]
         assert workspace.name == mock_response.json()["name"]
         assert workspace.client == mock_httpx_client
+
+    def test_list_questions(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
+        dataset = Dataset(
+            id=uuid.uuid4(),
+            name="dataset-01",
+            guidelines="Test guidelines",
+            workspace_id=uuid.uuid4(),
+            client=mock_httpx_client,
+        )
+
+        mock_response = mocker.Mock(httpx.Response)
+        mock_response.json = mocker.Mock(
+            return_value={
+                "items": [
+                    {
+                        "id": uuid.uuid4(),
+                        "dataset_id": dataset.id,
+                        "title": "question-01",
+                        "name": "question-01",
+                        "settings": {"type": "text"},
+                        "inserted_at": datetime.utcnow(),
+                        "updated_at": datetime.utcnow(),
+                    },
+                    {
+                        "id": uuid.uuid4(),
+                        "title": "question-02",
+                        "dataset_id": dataset.id,
+                        "name": "question-02",
+                        "settings": {"type": "text"},
+                        "inserted_at": datetime.utcnow(),
+                        "updated_at": datetime.utcnow(),
+                    },
+                ]
+            }
+        )
+
+        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
+        questions = dataset.questions.list()
+
+        mock_httpx_client.get.assert_called_once_with(
+            f"/api/v1/datasets/{dataset.id}/questions",
+        )
+
+        for question, mock_question in zip(questions, mock_response.json()["items"]):
+            assert question.id == mock_question["id"]
+            assert question.name == mock_question["name"]
+            assert question.settings.type == mock_question["settings"]["type"]
+            assert question.inserted_at == mock_question["inserted_at"]
+            assert question.updated_at == mock_question["updated_at"]
+            assert question.client == mock_httpx_client

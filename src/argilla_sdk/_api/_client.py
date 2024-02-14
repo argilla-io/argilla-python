@@ -19,13 +19,17 @@ from typing import List, Optional
 import httpx
 
 from argilla_sdk._api import HTTPClientConfig, create_http_client
-
+from argilla_sdk._api._workspaces import Workspace
+from argilla_sdk._api._users import User
+from argilla_sdk._api._datasets import Dataset
 
 __all__ = ["Client"]
 
 
 DEFAULT_ARGILLA_API_URL = os.getenv("ARGILLA_API_URL")
 DEFAULT_ARGILLA_API_KEY = os.getenv("ARGILLA_API_KEY")
+DEFAULT_WORKSPACE_NAME = os.getenv("ARGILLA_WORKSPACE_NAME", "admin")
+DEFAULT_USERNAME = os.getenv("ARGILLA_USERNAME", "admin")
 DEFAULT_HTTP_CONFIG = HTTPClientConfig(api_url=DEFAULT_ARGILLA_API_URL, api_key=DEFAULT_ARGILLA_API_KEY)
 
 
@@ -36,8 +40,15 @@ class Client:
     api_url: Optional[str] = DEFAULT_HTTP_CONFIG.api_url
     api_key: Optional[str] = DEFAULT_HTTP_CONFIG.api_key
     timeout: int = 60
-    http_client: Optional[httpx.Client] = field(default=None, repr=False, compare=False)
 
     @property
     def http_client(self) -> httpx.Client:
-        self.http_client = create_http_client(self.api_url, self.api_key, self.timeout)
+        return create_http_client(self.api_url, self.api_key, self.timeout)
+
+    @property
+    def workspaces(self) -> "Workspace":
+        return Workspace(self.http_client)
+
+    @property
+    def users(self) -> "User":
+        return User

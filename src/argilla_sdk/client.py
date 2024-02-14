@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING
+from tkinter import W
+from typing import TYPE_CHECKING, Union
 
 from argilla_sdk import _api
 from argilla_sdk.datasets import *  # noqa
@@ -21,10 +22,44 @@ from argilla_sdk.users import *  # noqa
 
 if TYPE_CHECKING:
     from argilla_sdk.workspaces import Workspace
+    from argilla_sdk.users import User
+    from argilla_sdk.datasets import Dataset
 
 
 __all__ = ["Client"]
 
 
 class Client(_api.Client):
-    pass
+    @property
+    def default_workspace(self) -> Workspace:
+        return self.workspaces.list_current_user_workspaces()[0]
+
+    @property
+    def default_user(self) -> User:
+        return self.users.get_me()
+
+    def create(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
+        module, Model = self._is_entity(entity)
+        return Model(**module.create(entity))
+
+    def get(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
+        module, Model = self._is_entity(entity)
+        return Model(**module.get(entity.id))
+
+    def list(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
+        module, Model = self._is_entity(entity)
+        return module.list()
+
+    def update(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
+        module, Model = self._is_entity(entity)
+        return module.update(entity)
+
+    def _is_entity(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
+        if isinstance(entity, Workspace):
+            return self.workspaces, Workspace
+        elif isinstance(entity, User):
+            return self.users, User
+        elif isinstance(entity, Dataset):
+            return self.datasets, Dataset
+        else:
+            raise ValueError("Invalid entity type")

@@ -88,12 +88,12 @@ class Dataset:
             if dataset.name == name:
                 return dataset
 
-    def create(self) -> "Dataset":
+    def create(self, dataset) -> "Dataset":
         body = {
-            "name": self.name,
-            "workspace_id": self.workspace_id,
-            "guidelines": self.guidelines,
-            "allow_extra_metadata": self.allow_extra_metadata,
+            "name": dataset.name,
+            "workspace_id": dataset.workspace_id,
+            "guidelines": dataset.guidelines,
+            "allow_extra_metadata": dataset.allow_extra_metadata,
         }
 
         response = self.client.post("/api/v1/datasets", json=body)

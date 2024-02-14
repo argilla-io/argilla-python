@@ -28,64 +28,31 @@ __all__ = ["Workspace"]
 
 @dataclass
 class Workspace:
-    name: str
-
+    http_client: httpx.Client
     id: Optional[UUID] = None
     inserted_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
-    client: Optional[httpx.Client] = field(default=None, repr=False, compare=False)
-
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "name": self.name,
-            "inserted_at": self.inserted_at,
-            "updated_at": self.updated_at,
-        }
-
-    @classmethod
-    def from_dict(cls, data: dict) -> "Workspace":
-        return _helpers.dataclass_instance_from_dict(cls, data)
-
     @classmethod
     def list(cls) -> List["Workspace"]:
-        client = argilla_sdk.get_default_http_client()
-
-        response = client.get("/api/v1/me/workspaces")
+        response = cls.http_client.get("/api/v1/me/workspaces")
         _http.raise_for_status(response)
-
         response_json = response.json()
-        return [cls._create_from_json(client, json_workspace) for json_workspace in response_json["items"]]
+        return [cls._create_from_json(cls.http_client, json_workspace) for json_workspace in response_json["items"]]
 
     @classmethod
     def list_by_user_id(cls, user_id: UUID) -> List["Workspace"]:
-        client = argilla_sdk.get_default_http_client()
-
-        response = client.get(f"/api/v1/users/{user_id}/workspaces")
+        response = cls.http_client.get(f"/api/v1/users/{user_id}/workspaces")
         _http.raise_for_status(response)
-
         response_json = response.json()
-        return [cls._create_from_json(client, json_workspace) for json_workspace in response_json["items"]]
+        return [cls._create_from_json(cls.http_client, json_workspace) for json_workspace in response_json["items"]]
 
     @classmethod
     def list_current_user_workspaces(cls) -> List["Workspace"]:
-        client = argilla_sdk.get_default_http_client()
-
-        response = client.get("/api/v1/me/workspaces")
+        response = cls.http_client.get("/api/v1/me/workspaces")
         _http.raise_for_status(response)
-
         response_json = response.json()
-        return [cls._create_from_json(client, json_workspace) for json_workspace in response_json["items"]]
-
-    @classmethod
-    def get(cls, workspace_id: UUID) -> "Workspace":
-        client = argilla_sdk.get_default_http_client()
-
-        response = client.get(f"/api/v1/workspaces/{workspace_id}")
-        _http.raise_for_status(response)
-
-        return cls._create_from_json(client, response.json())
+        return [cls._create_from_json(cls.http_client, json_workspace) for json_workspace in response_json["items"]]
 
     @classmethod
     def get_by_name(cls, name: str) -> Optional["Workspace"]:
@@ -94,29 +61,32 @@ class Workspace:
                 return workspace
         return None
 
-    def create(self) -> "Workspace":
-        self.client = argilla_sdk.get_default_http_client()
+    def get(self, workspace_id: UUID) -> "Workspace":
+        response = self.http_client.get(f"/api/v1/workspaces/{workspace_id}")
+        _http.raise_for_status(response)
 
+        return dict(response.json())
+
+    def create(self, workspace) -> "Workspace":
         # TODO: Unify API endpoint
-        response = self.client.post("/api/workspaces", json={"name": self.name})
+        response = self.http_client.post("/api/workspaces", json={"name": workspace.name})
         _http.raise_for_status(response)
 
         return self._update_from_api_response(response)
 
     def delete(self) -> "Workspace":
-        self.client = argilla_sdk.get_default_http_client()
-
-        response = self.client.delete(f"/api/v1/workspaces/{self.id}")
+        response = self.http_client.delete(f"/api/v1/workspaces/{self.id}")
         _http.raise_for_status(response)
 
         return self._update_from_api_response(response)
 
     @classmethod
     def _create_from_json(cls, client, json):
-        return cls.from_dict(dict(**json, client=client))
+        # return cls.from_dict(dict(**json, client=client))
+        return dict(**json)
 
     def _update_from_api_response(self, response: httpx.Response) -> "Workspace":
-        new_instance = self.from_dict(dict(**response.json(), client=self.client))
-        self.__dict__.update(new_instance.__dict__)
+        # new_instance = self.from_dict(dict(**response.json(), client=self.client))
+        # self.__dict__.update(new_instance.__dict__)
 
-        return self
+        return dict(**response.json())

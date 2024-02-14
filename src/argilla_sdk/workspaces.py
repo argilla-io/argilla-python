@@ -12,31 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING
-
-from argilla_sdk import _api
-from argilla_sdk._helpers import GenericIterator  # noqa
-
-if TYPE_CHECKING:
-    from argilla_sdk.datasets import WorkspaceDatasets
-
-if TYPE_CHECKING:
-    from argilla_sdk.datasets import WorkspaceDatasets
-    from argilla_sdk.users import WorkspaceUsers
+from uuid import UUID, uuid4
+from pydantic import BaseModel
 
 __all__ = ["Workspace"]
 
 
-class Workspace(_api.Workspace):
-    @property
-    def datasets(self) -> "WorkspaceDatasets":
-        from argilla_sdk.datasets import WorkspaceDatasets
-
-        return WorkspaceDatasets(self)
-
-    @property
-    def users(self) -> "WorkspaceUsers":
-        from argilla_sdk.users import WorkspaceUsers
-
-        return WorkspaceUsers(self)
-
+class Workspace(BaseModel):
+    name: str
+    id: UUID = uuid4()

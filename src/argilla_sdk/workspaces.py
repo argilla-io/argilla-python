@@ -39,3 +39,4 @@ class Workspace(_api.Workspace):
         from argilla_sdk.users import WorkspaceUsers
 
         return WorkspaceUsers(self)
+

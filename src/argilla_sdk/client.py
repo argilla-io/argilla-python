@@ -12,8 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._api._datasets import *  # noqa 403
-from argilla_sdk._api._http import *  # noqa 403
-from argilla_sdk._api._workspaces import *  # noqa 403
-from argilla_sdk._api._users import *  # noqa 403
-from argilla_sdk._api._client import *  # noqa 403
+from typing import TYPE_CHECKING
+
+from argilla_sdk import _api
+from argilla_sdk.datasets import *  # noqa
+from argilla_sdk.workspaces import *  # noqa
+from argilla_sdk.users import *  # noqa
+
+if TYPE_CHECKING:
+    from argilla_sdk.workspaces import Workspace
+
+
+__all__ = ["Client"]
+
+
+class Client(_api.Client):
+    pass

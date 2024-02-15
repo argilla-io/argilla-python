@@ -11,13 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+from datetime import datetime
 from uuid import UUID, uuid4
+
 from pydantic import BaseModel
 
 __all__ = ["Workspace"]
 
 
-class Workspace(BaseModel):
+class WorkspaceModel(BaseModel):
     name: str
     id: UUID = uuid4()
+    inserted_at: datetime = datetime.now()
+    updated_at: datetime = datetime.now()
+
+
+class Workspace(WorkspaceModel):
+    pass

@@ -11,41 +11,33 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from datetime import datetime
+from enum import Enum
+from typing import Optional
+from uuid import UUID
 
-from typing import List, TYPE_CHECKING
-
-from argilla_sdk import _api
-from argilla_sdk._helpers._iterator import GenericIterator  # noqa
-
-if TYPE_CHECKING:
-    from argilla_sdk.workspaces import Workspace
-
-__all__ = ["User", "WorkspaceUsers", "Role"]
-
-Role = _api.Role
+from pydantic import BaseModel
 
 
-class User(_api.User):
-    @property
-    def workspaces(self) -> List["Workspace"]:
-        return Workspace.list_by_user_id(self.id)
+__all__ = ["User", "Role"]
 
 
-UsersIterator = GenericIterator[User]
+class Role(str, Enum):
+    annotator = "annotator"
+    admin = "admin"
+    owner = "owner"
 
 
-class WorkspaceUsers:
-    def __init__(self, workspace: "Workspace"):
-        self.workspace = workspace
+class UserModel(BaseModel):
+    username: str
+    first_name: str
+    role: Role = Role.annotator
+    last_name: Optional[str] = None
+    password: Optional[str] = None
+    id: Optional[UUID] = None
+    inserted_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
-    def list(self) -> List[User]:
-        return User.list_by_workspace_id(self.workspace.id)
 
-    def add(self, user: User) -> User:
-        return user.add_to_workspace(self.workspace.id)
-
-    def delete(self, user: User) -> User:
-        return user.delete_from_workspace(self.workspace.id)
-
-    def __iter__(self):
-        return UsersIterator(self.list())
+class User(UserModel):
+    pass

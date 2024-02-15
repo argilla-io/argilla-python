@@ -14,7 +14,7 @@
 
 from typing import Optional
 from datetime import datetime
-from uuid import UUID
+from uuid import UUID, uuid4
 from typing import Literal
 
 from pydantic import BaseModel
@@ -25,10 +25,10 @@ __all__ = ["Dataset"]
 class DatasetModel(BaseModel):
     name: str
     status: Literal["draft", "ready"] = "draft"
-    guidelines: Optional[str] = None
     allow_extra_metadata: bool = True
+    id: UUID = uuid4()
 
-    id: Optional[UUID] = None
+    guidelines: Optional[str] = None
     workspace_id: Optional[UUID] = None
     inserted_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

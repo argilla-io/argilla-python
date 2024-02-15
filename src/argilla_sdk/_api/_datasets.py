@@ -39,7 +39,7 @@ class DatasetsAPI(ResourceBase):
     def create(self, dataset: Dataset) -> "Dataset":
         json_body = {
             "name": dataset.name,
-            "workspace_id": dataset.workspace_id,
+            "workspace_id": str(dataset.workspace_id),
             "guidelines": dataset.guidelines,
             "allow_extra_metadata": dataset.allow_extra_metadata,
         }
@@ -103,16 +103,9 @@ class DatasetsAPI(ResourceBase):
     ####################
 
     def _model_from_json(self, json_dataset: dict) -> "Dataset":
-        return Dataset(
-            name=json_dataset["name"],
-            status=json_dataset["status"],
-            guidelines=json_dataset["guidelines"],
-            allow_extra_metadata=json_dataset["allow_extra_metadata"],
-            id=UUID(json_dataset["id"]),
-            workspace_id=UUID(json_dataset["workspace_id"]),
-            inserted_at=self._date_from_iso_format(json_dataset["inserted_at"]),
-            updated_at=self._date_from_iso_format(json_dataset["updated_at"]),
-        )
+        json_dataset["inserted_at"] = self._date_from_iso_format(json_dataset["inserted_at"])
+        json_dataset["updated_at"] = self._date_from_iso_format(json_dataset["updated_at"])
+        return Dataset(**json_dataset)
 
     def _model_from_jsons(self, json_datasets: List[dict]) -> List["Dataset"]:
         return list(map(self._model_from_json, json_datasets))

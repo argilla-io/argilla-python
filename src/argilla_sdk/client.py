@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from tkinter import W
 from typing import TYPE_CHECKING, Union
 
 from argilla_sdk import _api
@@ -26,10 +25,10 @@ if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
 
 
-__all__ = ["Client"]
+__all__ = ["Argilla"]
 
 
-class Client(_api.Client):
+class Argilla(_api.APIClient):
     @property
     def default_workspace(self) -> Workspace:
         return self.workspaces.list_current_user_workspaces()[0]
@@ -39,27 +38,52 @@ class Client(_api.Client):
         return self.users.get_me()
 
     def create(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
-        module, Model = self._is_entity(entity)
-        return Model(**module.create(entity))
+        """Create a new entity in the API. For example, a new workspace, user, or dataset.
+        Args:
+            entity: Union[Workspace, User, Dataset] - The entity to create
+        Returns:
+            Union[Workspace, User, Dataset] - The created entity
+        """
+        resource = self._which_resource(entity)
+        return resource.create(entity)
 
     def get(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
-        module, Model = self._is_entity(entity)
-        return Model(**module.get(entity.id))
+        """Get an entity from the API. For example, a workspace, user, or dataset.
+        Args:
+            entity: Union[Workspace, User, Dataset] - The entity to get
+        Returns:
+            Union[Workspace, User, Dataset] - The requested entity
+        """
+        resource = self._which_resource(entity)
+        return resource.get(entity.id)
 
     def list(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
-        module, Model = self._is_entity(entity)
-        return module.list()
+        """List entities from the API. For example, workspaces, users, or datasets.
+        Args:
+            entity: Union[Workspace, User, Dataset] - The entity to list
+        Returns:
+            Union[Workspace, User, Dataset] - The requested entities
+        """
+        resource = self._which_resource(entity)
+        return resource.list()
 
     def update(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
-        module, Model = self._is_entity(entity)
-        return module.update(entity)
+        """Update an entity in the API. For example, a workspace, user, or dataset.
+        Args:
+            entity: Union[Workspace, User, Dataset] - The entity to update
+        Returns:
+            Union[Workspace, User, Dataset] - The updated entity
+        """
+        resource = self._which_resource(entity)
+        return resource.update(entity)
 
-    def _is_entity(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
+    def _which_resource(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
+        """Determine which resource to use based on the entity type."""
         if isinstance(entity, Workspace):
-            return self.workspaces, Workspace
+            return self.workspaces
         elif isinstance(entity, User):
-            return self.users, User
+            return self.users
         elif isinstance(entity, Dataset):
-            return self.datasets, Dataset
+            return self.datasets
         else:
             raise ValueError("Invalid entity type")

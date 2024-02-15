@@ -12,126 +12,111 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from dataclasses import dataclass, field
-from datetime import datetime
-from enum import Enum
-from typing import List, Optional
+from typing import List
 from uuid import UUID
 
 import httpx
 
-import argilla_sdk
-from argilla_sdk import _helpers
 from argilla_sdk._api import _http
+from argilla_sdk._api._base import ResourceBase
+from argilla_sdk.users import User
 
-__all__ = ["Role", "User"]
-
-
-class Role(str, Enum):
-    annotator = "annotator"
-    admin = "admin"
-    owner = "owner"
+__all__ = ["UsersAPI"]
 
 
-@dataclass
-class User:
-    username: str
-    first_name: str
-    role: Role = Role.annotator
-    last_name: Optional[str] = None
-    password: Optional[str] = None
+class UsersAPI(ResourceBase):
+    """Manage users via the API"""
 
-    id: Optional[UUID] = None
-    api_key: Optional[str] = None
-    inserted_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
+    ################
+    # CRUD methods #
+    ################
 
-    client: Optional[httpx.Client] = field(default=None, repr=False, compare=False)
-
-    def to_dict(self):
-        return {
-            "id": self.id,
-            "username": self.username,
-            "first_name": self.first_name,
-            "last_name": self.last_name,
-            "role": self.role.value,
-            "api_key": self.api_key,
-            "inserted_at": self.inserted_at,
-            "updated_at": self.updated_at,
+    def create(self, user) -> None:
+        json_body = {
+            "username": user.username,
+            "password": user.password,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+            "role": user.role,
         }
-
-    @classmethod
-    def from_dict(cls, data: dict) -> "User":
-        data["role"] = Role(data["role"]) if "role" in data else None
-
-        return _helpers.dataclass_instance_from_dict(cls, data)
-
-    @classmethod
-    def list(cls) -> List["User"]:
-        client = argilla_sdk.get_default_http_client()
-
-        response = client.get("/api/users")
-        _http.raise_for_status(response)
-
-        return [cls._create_from_json(user_json, client) for user_json in response.json()]
-
-    @classmethod
-    def list_by_workspace_id(cls, workspace_id: UUID) -> List["User"]:
-        client = argilla_sdk.get_default_http_client()
-
-        response = client.get(f"/api/workspaces/{workspace_id}/users")
-        _http.raise_for_status(response)
-
-        return [cls._create_from_json(user_json, client) for user_json in response.json()]
-
-    @classmethod
-    def get_me(cls):
-        client = argilla_sdk.get_default_http_client()
-
-        response = client.get("/api/me")
-        _http.raise_for_status(response)
-
-        return cls._create_from_json(response.json(), client)
-
-    def create(self) -> "User":
-        response = self.client.post(
+        response = self.http_client.post(
             "/api/users",
-            json={
-                "username": self.username,
-                "password": self.password,
-                "first_name": self.first_name,
-                "last_name": self.last_name,
-                "role": self.role,
-            },
+            json=json_body,
         )
         _http.raise_for_status(response)
+        self.log(f"Created user {user.username}")
 
-        return self._update_from_api_response(response)
-
-    def add_to_workspace(self, workspace_id: UUID) -> "User":
-        response = self.client.post(f"/api/workspaces/{workspace_id}/users/{self.id}")
+    def get(self, id: UUID) -> User:
+        response = self.http_client.get(f"/api/users/{id}")
         _http.raise_for_status(response)
+        response_json = response.json()
+        user = self._model_from_json(response_json)
+        self.log(f"Got user {user.username}")
+        return user
 
-        return self._update_from_api_response(response)
-
-    def delete_from_workspace(self, workspace_id: UUID) -> "User":
-        response = self.client.delete(f"/api/workspaces/{workspace_id}/users/{self.id}")
+    def delete(self, id: UUID) -> None:
+        response = self.http_client.delete(f"/api/users/{id}")
         _http.raise_for_status(response)
+        self.log(f"Deleted user {id}")
 
-        return self._update_from_api_response(response)
+    ####################
+    # Utility methods #
+    ####################
 
-    def delete(self) -> "User":
-        response = self.client.delete(f"/api/users/{self.id}")
+    def list(self) -> List["User"]:
+        response = self.http_client.get("/api/users")
         _http.raise_for_status(response)
+        response_json = response.json()
+        users = self._model_from_jsons(response_json)
+        self.log(f"Listed {len(users)} users")
+        return users
 
-        return self._update_from_api_response(response)
+    def list_by_workspace_id(self, workspace_id: UUID) -> List["User"]:
+        response = self.http_client.get(f"/api/workspaces/{workspace_id}/users")
+        _http.raise_for_status(response)
+        response_json = response.json()["items"]
+        users = self._model_from_jsons(response_json)
+        self.log(f"Listed {len(users)} users")
+        return users
 
-    @classmethod
-    def _create_from_json(cls, json: dict, client: httpx.Client) -> "User":
-        return cls.from_dict(dict(**json, client=client))
+    def get_me(self):
+        response = self.http_client.get("/api/me")
+        _http.raise_for_status(response)
+        user = self._model_from_json(response.json())
+        self.log(f"Got user {user.username}")
+        return user
 
-    def _update_from_api_response(self, response: httpx.Response) -> "User":
-        new_instance = self.from_dict(dict(**response.json(), client=self.client))
-        self.__dict__.update(new_instance.__dict__)
+    def add_to_workspace(self, workspace_id: UUID, user_id: UUID) -> None:
+        response = self.http_client.post(f"/api/workspaces/{workspace_id}/users/{user_id}")
+        _http.raise_for_status(response)
+        self.log(f"Added user {user_id} to workspace {workspace_id}")
 
-        return self
+    def delete_from_workspace(self, workspace_id: UUID, user_id: UUID) -> None:
+        response = self.http_client.delete(f"/api/workspaces/{workspace_id}/users/{user_id}")
+        _http.raise_for_status(response)
+        self.log(f"Deleted user {user_id} from workspace {workspace_id}")
+
+    def get_me(self):
+        response = self.http_client.get("/api/me")
+        _http.raise_for_status(response)
+        user = self._model_from_json(response.json())
+        self.log(f"Got user {user.username}")
+        return user
+
+    ####################
+    # Private methods #
+    ####################
+
+    def _model_from_json(self, json_user) -> User:
+        return User(
+            id=json_user["id"],
+            username=json_user["username"],
+            first_name=json_user["first_name"],
+            last_name=json_user["last_name"],
+            role=json_user["role"],
+            inserted_at=self._date_from_iso_format(json_user["inserted_at"]),
+            updated_at=self._date_from_iso_format(json_user["updated_at"]),
+        )
+
+    def _model_from_jsons(self, json_users) -> List[User]:
+        return list(map(self._model_from_json, json_users))

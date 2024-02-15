@@ -20,117 +20,99 @@ from uuid import UUID
 import httpx
 
 import argilla_sdk
-from argilla_sdk import _helpers
 from argilla_sdk._api import _http
+from argilla_sdk._api._base import ResourceBase
+from argilla_sdk.datasets import Dataset
 
-__all__ = ["Dataset"]
+__all__ = ["DatasetsAPI"]
 
 
-@dataclass
-class Dataset:
-    name: str
-    status: Literal["draft", "ready"] = "draft"
-    guidelines: Optional[str] = None
-    allow_extra_metadata: bool = True
+class DatasetsAPI(ResourceBase):
+    """Manage datasets via the API"""
 
-    id: Optional[UUID] = None
-    workspace_id: Optional[UUID] = None
-    inserted_at: Optional[datetime.datetime] = None
-    updated_at: Optional[datetime.datetime] = None
-    last_activity_at: Optional[datetime.datetime] = None
+    http_client: Optional[httpx.Client] = field(default=None, repr=False, compare=False)
 
-    client: Optional[httpx.Client] = field(default=None, repr=False, compare=False)
+    ################
+    # CRUD methods #
+    ################
 
-    def to_dict(self) -> dict:
-        return {
-            "id": self.id,
-            "name": self.name,
-            "guidelines": self.guidelines,
-            "allow_extra_metadata": self.allow_extra_metadata,
-            "workspace_id": self.workspace_id,
-            "inserted_at": self.inserted_at,
-            "updated_at": self.updated_at,
-        }
-
-    @classmethod
-    def from_dict(cls, data: dict) -> "Dataset":
-        return _helpers.dataclass_instance_from_dict(cls, data)
-
-    @classmethod
-    def list(cls, workspace_id: Optional[UUID] = None) -> List["Dataset"]:
-        client = argilla_sdk.get_default_http_client()
-
-        response = client.get("/api/v1/me/datasets")
-        _http.raise_for_status(response)
-
-        json_response = response.json()
-        datasets = [cls._create_from_json(json_dataset, client) for json_dataset in json_response["items"]]
-
-        if workspace_id:
-            datasets = [dataset for dataset in datasets if dataset.workspace_id == workspace_id]
-
-        return datasets
-
-    @classmethod
-    def get(cls, dataset_id: UUID) -> "Dataset":
-        client = argilla_sdk.get_default_http_client()
-
-        response = client.get(f"/api/v1/datasets/{dataset_id}")
-        _http.raise_for_status(response)
-
-        return cls._create_from_json(response.json(), client)
-
-    @classmethod
-    def get_by_name_and_workspace_id(cls, name: str, workspace_id: UUID) -> Optional["Dataset"]:
-        datasets = cls.list(workspace_id=workspace_id)
-
-        for dataset in datasets:
-            if dataset.name == name:
-                return dataset
-
-    def create(self, dataset) -> "Dataset":
-        body = {
+    def create(self, dataset: Dataset) -> "Dataset":
+        json_body = {
             "name": dataset.name,
             "workspace_id": dataset.workspace_id,
             "guidelines": dataset.guidelines,
             "allow_extra_metadata": dataset.allow_extra_metadata,
         }
-
-        response = self.client.post("/api/v1/datasets", json=body)
+        response = self.http_client.post(
+            "/api/v1/datasets",
+            json=json_body,
+        )
         _http.raise_for_status(response)
+        self.log(f"Created dataset {dataset.name}")
 
-        return self._update_from_api_response(response)
-
-    def update(self) -> "Dataset":
-        body = {
-            "guidelines": self.guidelines,
-            "allow_extra_metadata": self.allow_extra_metadata,
+    def update(self, dataset: Dataset) -> None:
+        json_body = {
+            "guidelines": dataset.guidelines,
+            "allow_extra_metadata": dataset.allow_extra_metadata,
         }
-
-        response = self.client.patch(f"/api/v1/datasets/{self.id}", json=body)
-
+        response = self.http_client.patch(f"/api/v1/datasets/{dataset.id}", json=json_body)
         _http.raise_for_status(response)
+        self.log(f"Updated dataset {dataset.name}")
 
-        return self._update_from_api_response(response)
-
-    def delete(self) -> "Dataset":
-        response = self.client.delete(f"/api/v1/datasets/{self.id}")
+    def get(self, dataset_id: UUID) -> "Dataset":
+        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}")
         _http.raise_for_status(response)
+        json_dataset = response.json()
+        dataset = self._model_from_json(json_dataset)
+        self.log(f"Got dataset {dataset.name}")
+        return dataset
 
-        return self._update_from_api_response(response)
-
-    def publish(self) -> "Dataset":
-        response = self.client.put(f"/api/v1/datasets/{self.id}/publish")
+    def delete(self, dataset_id: UUID) -> "Dataset":
+        response = self.http_client.delete(f"/api/v1/datasets/{dataset_id}")
         _http.raise_for_status(response)
+        self.log(f"Deleted dataset {dataset_id}")
 
-        return self._update_from_api_response(response)
+    ####################
+    # Utility methods #
+    ####################
 
-    @classmethod
-    def _create_from_json(cls, json: dict, client: httpx.Client) -> "Dataset":
-        return cls.from_dict(dict(**json, client=client))
+    def publish(self, dataset_id) -> None:
+        response = self.http_client.put(f"/api/v1/datasets/{dataset_id}/publish")
+        _http.raise_for_status(response)
+        self.log(f"Published dataset {dataset_id}")
 
-    def _update_from_api_response(self, response: httpx.Response) -> "Dataset":
-        new_instance = self._create_from_json(response.json(), client=self.client)
-        self.__dict__.update(new_instance.__dict__)
+    def list(self, workspace_id: Optional[UUID] = None) -> List["Dataset"]:
+        response = self.http_client.get("/api/v1/me/datasets")
+        _http.raise_for_status(response)
+        json_datasets = response.json()["items"]
+        datasets = self._model_from_jsons(json_datasets)
+        if workspace_id:
+            datasets = [dataset for dataset in datasets if dataset.workspace_id == workspace_id]
+        self.log(f"Listed {len(datasets)} datasets")
+        return datasets
 
-        return self
+    def get_by_name_and_workspace_id(self, name: str, workspace_id: UUID) -> Optional["Dataset"]:
+        datasets = self.list(workspace_id=workspace_id)
+        for dataset in datasets:
+            if dataset.name == name:
+                self.log(f"Got dataset {dataset.name}")
+                return dataset
+
+    ####################
+    # Private methods #
+    ####################
+
+    def _model_from_json(self, json_dataset: dict) -> "Dataset":
+        return Dataset(
+            name=json_dataset["name"],
+            status=json_dataset["status"],
+            guidelines=json_dataset["guidelines"],
+            allow_extra_metadata=json_dataset["allow_extra_metadata"],
+            id=UUID(json_dataset["id"]),
+            workspace_id=UUID(json_dataset["workspace_id"]),
+            inserted_at=self._date_from_iso_format(json_dataset["inserted_at"]),
+            updated_at=self._date_from_iso_format(json_dataset["updated_at"]),
+        )
+
+    def _model_from_jsons(self, json_datasets: List[dict]) -> List["Dataset"]:
+        return list(map(self._model_from_json, json_datasets))

@@ -13,17 +13,16 @@
 # limitations under the License.
 
 import os
-from dataclasses import dataclass, field
-from typing import List, Optional
+from typing import Optional
 
 import httpx
 
 from argilla_sdk._api import HTTPClientConfig, create_http_client
-from argilla_sdk._api._workspaces import Workspace
-from argilla_sdk._api._users import User
-from argilla_sdk._api._datasets import Dataset
+from argilla_sdk._api._workspaces import WorkspacesAPI
+from argilla_sdk._api._users import UsersAPI
+from argilla_sdk._api._datasets import DatasetsAPI
 
-__all__ = ["Client"]
+__all__ = ["APIClient"]
 
 
 DEFAULT_ARGILLA_API_URL = os.getenv("ARGILLA_API_URL")
@@ -33,22 +32,31 @@ DEFAULT_USERNAME = os.getenv("ARGILLA_USERNAME", "admin")
 DEFAULT_HTTP_CONFIG = HTTPClientConfig(api_url=DEFAULT_ARGILLA_API_URL, api_key=DEFAULT_ARGILLA_API_KEY)
 
 
-@dataclass
-class Client:
+class APIClient:
     """Initialize the SDK with the given API URL and API key."""
 
-    api_url: Optional[str] = DEFAULT_HTTP_CONFIG.api_url
-    api_key: Optional[str] = DEFAULT_HTTP_CONFIG.api_key
-    timeout: int = 60
+    def __init__(
+        self,
+        api_url: Optional[str] = DEFAULT_HTTP_CONFIG.api_url,
+        api_key: Optional[str] = DEFAULT_HTTP_CONFIG.api_key,
+        timeout: int = 60,
+    ):
+        self.api_url = api_url
+        self.api_key = api_key
+        self.timeout = timeout
 
     @property
     def http_client(self) -> httpx.Client:
         return create_http_client(self.api_url, self.api_key, self.timeout)
 
     @property
-    def workspaces(self) -> "Workspace":
-        return Workspace(self.http_client)
+    def workspaces(self) -> "WorkspacesAPI":
+        return WorkspacesAPI(self.http_client)
 
     @property
     def users(self) -> "User":
-        return User
+        return UsersAPI(self.http_client)
+
+    @property
+    def datasets(self) -> "Dataset":
+        return DatasetsAPI(self.http_client)

@@ -54,6 +54,9 @@ class UsersAPI(ResourceBase):
         self.log(f"Got user {user.username}")
         return user
 
+    def update(self, user: User) -> None:
+        raise NotImplementedError("Updating users is not supported")
+
     def delete(self, id: UUID) -> None:
         response = self.http_client.delete(f"/api/users/{id}")
         _http.raise_for_status(response)

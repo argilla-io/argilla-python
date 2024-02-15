@@ -12,17 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING, Union
+from typing import Union, List
 
 from argilla_sdk import _api
-from argilla_sdk.datasets import *  # noqa
-from argilla_sdk.workspaces import *  # noqa
-from argilla_sdk.users import *  # noqa
-
-if TYPE_CHECKING:
-    from argilla_sdk.workspaces import Workspace
-    from argilla_sdk.users import User
-    from argilla_sdk.datasets import Dataset
+from argilla_sdk.workspaces import Workspace
+from argilla_sdk.users import User
+from argilla_sdk.datasets import Dataset
 
 
 __all__ = ["Argilla"]
@@ -45,7 +40,7 @@ class Argilla(_api.APIClient):
             Union[Workspace, User, Dataset] - The created entity
         """
         resource = self._which_resource(entity)
-        return resource.create(entity)
+        return resource.create(entity)  # type: ignore
 
     def get(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
         """Get an entity from the API. For example, a workspace, user, or dataset.
@@ -57,7 +52,7 @@ class Argilla(_api.APIClient):
         resource = self._which_resource(entity)
         return resource.get(entity.id)
 
-    def list(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
+    def list(self, entity: Union[Workspace, User, Dataset]) -> Union[List[Workspace], List[User], List[Dataset]]:
         """List entities from the API. For example, workspaces, users, or datasets.
         Args:
             entity: Union[Workspace, User, Dataset] - The entity to list
@@ -67,7 +62,7 @@ class Argilla(_api.APIClient):
         resource = self._which_resource(entity)
         return resource.list()
 
-    def update(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
+    def update(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset, None]:
         """Update an entity in the API. For example, a workspace, user, or dataset.
         Args:
             entity: Union[Workspace, User, Dataset] - The entity to update
@@ -75,9 +70,11 @@ class Argilla(_api.APIClient):
             Union[Workspace, User, Dataset] - The updated entity
         """
         resource = self._which_resource(entity)
-        return resource.update(entity)
+        return resource.update(entity)  # type: ignore
 
-    def _which_resource(self, entity: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
+    def _which_resource(
+        self, entity: Union[Workspace, User, Dataset]
+    ) -> Union[_api.WorkspacesAPI, _api.UsersAPI, _api.DatasetsAPI]:
         """Determine which resource to use based on the entity type."""
         if isinstance(entity, Workspace):
             return self.workspaces

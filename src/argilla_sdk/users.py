@@ -14,7 +14,7 @@
 from datetime import datetime
 from enum import Enum
 from typing import Optional
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from pydantic import BaseModel
 
@@ -32,9 +32,9 @@ class UserModel(BaseModel):
     username: str
     first_name: str
     role: Role = Role.annotator
+    id: UUID = uuid4()
     last_name: Optional[str] = None
     password: Optional[str] = None
-    id: Optional[UUID] = None
     inserted_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

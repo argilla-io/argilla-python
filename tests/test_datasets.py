@@ -33,7 +33,7 @@ class TestDatasets:
             updated_at=datetime.utcnow(),
         )
 
-        assert ds.name == ds.model_dump()["name"]
+        assert ds.name == ds.model.model_dump()["name"]
 
     def test_serialize_with_extra_arguments(self, httpx_mock: HTTPXMock):
         ds = rg.Dataset(
@@ -45,7 +45,7 @@ class TestDatasets:
             updated_at=datetime.utcnow(),
             extra_argument="extra",
         )
-        assert "extra_argument" not in ds.model_dump()
+        assert "extra_argument" not in ds.model.model_dump()
 
     def test_list_datasets(self, httpx_mock: HTTPXMock):
         mock_return_value = {
@@ -146,7 +146,7 @@ class TestDatasets:
         )
         with httpx.Client():
             client = rg.Argilla(api_url)
-            client.datasets.create(
+            client.create(
                 rg.Dataset(
                     name="dataset-01",
                     workspace_id=str(uuid.uuid4()),
@@ -175,15 +175,14 @@ class TestDatasets:
         )
         with httpx.Client():
             client = rg.Argilla(api_url)
-            client.datasets.create(
-                rg.Dataset(
+            dataset = rg.Dataset(
                     name="dataset-01",
                     workspace_id=str(uuid.uuid4()),
                     guidelines="Test guidelines",
                     allow_extra_metadata=False,
                     id=str(mock_dataset_id),
                 )
-            )
+            dataset = client.create(dataset)
             dataset = client.datasets.get(mock_dataset_id)
             assert str(dataset.id) == mock_return_value["id"]
             assert dataset.name == mock_return_value["name"]

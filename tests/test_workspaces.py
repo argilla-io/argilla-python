@@ -30,7 +30,7 @@ class TestWorkspaces:
             updated_at=datetime.utcnow(),
         )
 
-        assert ws.name == ws.model_dump()["name"]
+        assert ws.name == ws.serialize()["name"]
 
     def test_serialize_with_extra_arguments(self):
         ws = rg.Workspace(
@@ -40,8 +40,8 @@ class TestWorkspaces:
             updated_at=datetime.utcnow(),
             extra="extra",
         )
-        assert ws.name == ws.model_dump()["name"]
-        assert "extra" not in ws.model_dump()
+        assert ws.name == ws.serialize()["name"]
+        assert "extra" not in ws.serialize()
 
     def test_json_serialize(self):
         ws = rg.Workspace(
@@ -51,7 +51,7 @@ class TestWorkspaces:
             updated_at=datetime.utcnow(),
         )
 
-        ws_from_json = json.loads(ws.model_dump_json())
+        ws_from_json = json.loads(ws.serialize_json())
         assert ws.name == ws_from_json["name"]
         assert ws.id == uuid.UUID(ws_from_json["id"])
         assert ws.inserted_at == datetime.fromisoformat(ws_from_json["inserted_at"])
@@ -122,14 +122,15 @@ class TestWorkspaces:
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
             ws = client.workspaces.get_by_name("test-workspace")
+            assert ws is not None
             assert ws.name == "test-workspace"
             assert ws.id == uuid.UUID(mock_return_value["items"][0]["id"])
 
     def test_create_workspace(self, httpx_mock: HTTPXMock):
-        ws = rg.Workspace(name="test-workspace")
+        ws = rg.Workspace(name="test-workspace", id=uuid.uuid4())
 
-        mock_return_value={
-            "id": str(uuid.uuid4()), 
+        mock_return_value = {
+            "id": str(uuid.uuid4()),
             "name": ws.name,
             "inserted_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
@@ -138,12 +139,19 @@ class TestWorkspaces:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/workspaces")
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            client.workspaces.create(ws)
+            created_workspace = client.create(ws)
+            assert created_workspace.name == ws.name
+            assert created_workspace.id == ws.id
 
     def test_multiple_clients_create_workspace(self, httpx_mock: HTTPXMock):
         mock_uuid = str(uuid.uuid4())
         mock_name = "local-test-workspace"
-        mock_return = {"id": mock_uuid, "name": mock_name}
+        mock_return = {
+            "id": mock_uuid,
+            "name": mock_name,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
         httpx_mock.add_response(
             url="http://localhost:6900/api/workspaces",
             json=mock_return,
@@ -160,7 +168,7 @@ class TestWorkspaces:
             workspace = rg.Workspace(name="local-test-workspace")
             local_client.create(workspace)
             remote_client.create(workspace)
-            
+
     def test_delete_workspace(self, httpx_mock: HTTPXMock):
         workspace_id = uuid.uuid4()
         api_url = "http://test_url"

@@ -33,7 +33,7 @@ class TestUsers:
             updated_at=datetime.utcnow(),
         )
 
-        assert user.username == user.model_dump()["username"]
+        assert user.username == user.serialize()["username"]
 
     def test_serialize_with_extra_arguments(self):
         user = rg.User(
@@ -47,7 +47,7 @@ class TestUsers:
             another_extra_argument="another-extra-argument",
         )
 
-        assert user.model_dump() == {
+        assert user.serialize() == {
             "id": user.id,
             "username": "test-user",
             "first_name": "Test",
@@ -68,7 +68,7 @@ class TestUsers:
             updated_at=datetime.utcnow(),
         )
 
-        user_from_json = json.loads(user.model_dump_json())
+        user_from_json = json.loads(user.serialize_json())
         assert user.username == user_from_json["username"]
         assert user.id == uuid.UUID(user_from_json["id"])
         assert user.inserted_at == datetime.fromisoformat(user_from_json["inserted_at"])

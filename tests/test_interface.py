@@ -24,8 +24,10 @@ def test_create_workspace():
         patch.return_value = mock_return
         client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
         workspace = rg.Workspace(name=mock_name, id=mock_uuid)
-        client.create(workspace)
-        patch.assert_called_once_with(workspace)
+        returned_workspace = client.create(workspace)
+        patch.assert_called_once()
+        assert returned_workspace.id == mock_uuid
+        assert returned_workspace.name == mock_name
 
 
 def test_get_workspace():
@@ -65,8 +67,10 @@ def test_create_user():
     )
     with mock.patch("argilla_sdk.client._api.UsersAPI.create") as mock_client:
         client = rg.Argilla(api_url="http://localhost:6900", api_key="admin.apikey")
-        client.create(mock_user)
-        mock_client.assert_called_once_with(mock_user)
+        created_user = client.create(mock_user)
+        mock_client.assert_called_once()
+        assert created_user.username == mock_username
+        assert created_user.first_name == mock_first_name
 
 
 def test_multiple_clients():

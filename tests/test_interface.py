@@ -1,8 +1,6 @@
 import uuid
 
-import httpx
 from unittest import mock
-from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
 
@@ -71,33 +69,9 @@ def test_create_user():
         mock_client.assert_called_once_with(mock_user)
 
 
-def test_multiple_clients(httpx_mock: HTTPXMock):
-    with httpx.Client():
+def test_multiple_clients():
+    with mock.patch("argilla_sdk.client._api.APIClient.http_client") as mock_client:
         local_client = rg.Argilla(api_url="http://localhost:6900", api_key="admin.apikey")
         remote_client = rg.Argilla(api_url="http://argilla.production.net", api_key="admin.apikey")
         assert local_client.api_url == "http://localhost:6900"
         assert remote_client.api_url == "http://argilla.production.net"
-
-
-def test_multiple_clients_create_workspace(httpx_mock: HTTPXMock):
-    mock_uuid = str(uuid.uuid4())
-    mock_name = "local-test-workspace"
-    mock_return = {"id": mock_uuid, "name": mock_name}
-    httpx_mock.add_response(
-        url="http://localhost:6900/api/workspaces",
-        json=mock_return,
-    )
-    httpx_mock.add_response(
-        url="http://argilla.production.net/api/workspaces",
-        json=mock_return,
-    )
-    with httpx.Client():
-        local_client = rg.Argilla(api_url="http://localhost:6900", api_key="admin.apikey")
-        remote_client = rg.Argilla(api_url="http://argilla.production.net", api_key="admin.apikey")
-        assert local_client.api_url == "http://localhost:6900"
-        assert remote_client.api_url == "http://argilla.production.net"
-        workspace = rg.Workspace(name="local-test-workspace")
-        local_client.create(workspace)
-        remote_client.create(workspace)
-
-

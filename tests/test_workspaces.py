@@ -140,6 +140,27 @@ class TestWorkspaces:
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
             client.workspaces.create(ws)
 
+    def test_multiple_clients_create_workspace(self, httpx_mock: HTTPXMock):
+        mock_uuid = str(uuid.uuid4())
+        mock_name = "local-test-workspace"
+        mock_return = {"id": mock_uuid, "name": mock_name}
+        httpx_mock.add_response(
+            url="http://localhost:6900/api/workspaces",
+            json=mock_return,
+        )
+        httpx_mock.add_response(
+            url="http://argilla.production.net/api/workspaces",
+            json=mock_return,
+        )
+        with httpx.Client():
+            local_client = rg.Argilla(api_url="http://localhost:6900", api_key="admin.apikey")
+            remote_client = rg.Argilla(api_url="http://argilla.production.net", api_key="admin.apikey")
+            assert local_client.api_url == "http://localhost:6900"
+            assert remote_client.api_url == "http://argilla.production.net"
+            workspace = rg.Workspace(name="local-test-workspace")
+            local_client.create(workspace)
+            remote_client.create(workspace)
+            
     def test_delete_workspace(self, httpx_mock: HTTPXMock):
         workspace_id = uuid.uuid4()
         api_url = "http://test_url"

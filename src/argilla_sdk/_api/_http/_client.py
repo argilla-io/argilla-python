@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+from typing import Optional
 from dataclasses import dataclass
 
 import httpx
@@ -23,8 +24,8 @@ _DEFAULT_API_URL = "https://localhost:6900"
 class HTTPClientConfig:
     """Basic configuration for the HTTP client."""
 
-    api_url: str = None
-    api_key: str = None
+    api_url: Optional[str] = None
+    api_key: Optional[str] = None
 
     def __post_init__(self):
         self.api_url = self.api_url or _DEFAULT_API_URL

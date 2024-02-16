@@ -17,13 +17,13 @@ import logging
 
 import httpx
 
-__all__ = ["ResourceBase"]
+__all__ = ["ResourceAPI"]
 
 
-class ResourceBase:
+class ResourceAPI:
     """Base class for all API resources that contains common methods."""
 
-    logger = logging.getLogger("argilla_sdk.api.resources")
+    logger = logging.getLogger(name="argilla_sdk.api.resources")
 
     def __init__(self, http_client: httpx.Client) -> None:
         self.http_client = http_client
@@ -31,7 +31,15 @@ class ResourceBase:
     def _date_from_iso_format(self, date: str) -> datetime:
         return datetime.fromisoformat(date)
 
-    def log(self, message: str, level: int = logging.INFO) -> None:
+    def log(self, message: str, level: str = "info") -> None:
+        level_map = {
+            "debug": logging.DEBUG,
+            "info": logging.INFO,
+            "warning": logging.WARNING,
+            "error": logging.ERROR,
+            "critical": logging.CRITICAL,
+        }
+        level_int = level_map.get(level, logging.INFO)
         class_name = self.__class__.__name__
         message = f"{class_name}: {message}"
-        self.logger.log(level, message)
+        self.logger.log(level=level_int, msg=message)

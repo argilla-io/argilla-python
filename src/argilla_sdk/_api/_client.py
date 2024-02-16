@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import logging
 from typing import Optional
 
 import httpx
@@ -25,11 +26,11 @@ from argilla_sdk._api._datasets import DatasetsAPI
 __all__ = ["APIClient"]
 
 
-DEFAULT_ARGILLA_API_URL = os.getenv("ARGILLA_API_URL")
-DEFAULT_ARGILLA_API_KEY = os.getenv("ARGILLA_API_KEY")
-DEFAULT_WORKSPACE_NAME = os.getenv("ARGILLA_WORKSPACE_NAME", "admin")
-DEFAULT_USERNAME = os.getenv("ARGILLA_USERNAME", "admin")
-DEFAULT_HTTP_CONFIG = HTTPClientConfig(api_url=DEFAULT_ARGILLA_API_URL, api_key=DEFAULT_ARGILLA_API_KEY)
+_DEFAULT_API_KEY = "argilla.apikey"
+_DEFAULT_API_URL = "https://localhost:6900"
+ARGILLA_API_URL = os.getenv(key="ARGILLA_API_URL", default=_DEFAULT_API_URL)
+ARGILLA_API_KEY = os.getenv(key="ARGILLA_API_KEY", default=_DEFAULT_API_KEY)
+DEFAULT_HTTP_CONFIG = HTTPClientConfig(api_url=ARGILLA_API_URL, api_key=ARGILLA_API_KEY)
 
 
 class APIClient:
@@ -47,16 +48,25 @@ class APIClient:
 
     @property
     def http_client(self) -> httpx.Client:
-        return create_http_client(self.api_url, self.api_key, self.timeout)
+        return create_http_client(
+            api_url=self.api_url,  # type: ignore
+            api_key=self.api_key,  # type: ignore
+            timeout=self.timeout,
+        )
 
     @property
     def workspaces(self) -> "WorkspacesAPI":
-        return WorkspacesAPI(self.http_client)
+        return WorkspacesAPI(http_client=self.http_client)
 
     @property
-    def users(self) -> "User":
-        return UsersAPI(self.http_client)
+    def users(self) -> "UsersAPI":
+        return UsersAPI(http_client=self.http_client)
 
     @property
-    def datasets(self) -> "Dataset":
-        return DatasetsAPI(self.http_client)
+    def datasets(self) -> "DatasetsAPI":
+        return DatasetsAPI(http_client=self.http_client)
+
+    def log(self, message: str, level: int = logging.INFO) -> None:
+        class_name = self.__class__.__name__
+        message = f"{class_name}: {message}"
+        logging.log(level=level, msg=message)

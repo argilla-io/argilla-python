@@ -12,28 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional
-from datetime import datetime
-from uuid import UUID, uuid4
-from typing import Literal
-
-from pydantic import BaseModel
+from argilla_sdk._resource import Resource
+from argilla_sdk._models import DatasetModel
 
 __all__ = ["Dataset"]
 
 
-class DatasetModel(BaseModel):
-    name: str
-    status: Literal["draft", "ready"] = "draft"
-    allow_extra_metadata: bool = True
-    id: UUID = uuid4()
-
-    guidelines: Optional[str] = None
-    workspace_id: Optional[UUID] = None
-    inserted_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
-    last_activity_at: Optional[datetime] = None
-
-
-class Dataset(DatasetModel):
-    pass
+class Dataset(Resource):
+    def __init__(self, **kwargs) -> None:
+        self.model = DatasetModel(**kwargs)
+        self.name = self.model.name
+        self.id = self.model.id
+        self.updated_at = self.model.updated_at
+        self.workspace_id = self.model.workspace_id
+        self.status = self.model.status
+        self.guidelines = self.model.guidelines
+        self.allow_extra_metadata = self.model.allow_extra_metadata

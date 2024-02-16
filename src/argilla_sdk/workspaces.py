@@ -11,20 +11,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from datetime import datetime
-from uuid import UUID, uuid4
 
-from pydantic import BaseModel
+from typing import List
+from uuid import UUID
+
+from argilla_sdk._resource import Resource
+from argilla_sdk._models import WorkspaceModel, DatasetModel
 
 __all__ = ["Workspace"]
 
 
-class WorkspaceModel(BaseModel):
-    name: str
-    id: UUID = uuid4()
-    inserted_at: datetime = datetime.now()
-    updated_at: datetime = datetime.now()
+class Workspace(Resource):
+    def __init__(self, **kwargs) -> None:
+        self.model = WorkspaceModel(**kwargs)
+        self.name = self.model.name
+        self.id = self.model.id
+        self.inserted_at = self.model.inserted_at
+        self.updated_at = self.model.updated_at
 
-
-class Workspace(WorkspaceModel):
-    pass
+    def list_datasets(self, workspace_id: UUID) -> List["DatasetModel"]:
+        datasets = self.api.datasets.list(workspace_id)
+        self.log(f"Got {len(datasets)} datasets for workspace {workspace_id}")
+        return datasets

@@ -11,33 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from datetime import datetime
-from enum import Enum
-from typing import Optional
-from uuid import UUID, uuid4
+from argilla_sdk._models import UserModel
+from argilla_sdk._resource import Resource
 
-from pydantic import BaseModel
+__all__ = ["User"]
 
 
-__all__ = ["User", "Role"]
+class User(Resource):
+    def __init__(self, **kwargs) -> None:
+        self.model = UserModel(**kwargs)
+        self.username = self.model.username
+        self.first_name = self.model.first_name
+        self.role = self.model.role
 
-
-class Role(str, Enum):
-    annotator = "annotator"
-    admin = "admin"
-    owner = "owner"
-
-
-class UserModel(BaseModel):
-    username: str
-    first_name: str
-    role: Role = Role.annotator
-    id: UUID = uuid4()
-    last_name: Optional[str] = None
-    password: Optional[str] = None
-    inserted_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
-
-
-class User(UserModel):
-    pass
+        self.id = self.model.id
+        self.last_name = self.model.last_name
+        self.password = self.model.password
+        self.inserted_at = self.model.inserted_at
+        self.updated_at = self.model.updated_at

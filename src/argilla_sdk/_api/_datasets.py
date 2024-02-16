@@ -12,31 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import datetime
-from dataclasses import dataclass, field
-from typing import List, Literal, Optional
+from typing import List, Optional
 from uuid import UUID
 
 import httpx
 
-import argilla_sdk
 from argilla_sdk._api import _http
-from argilla_sdk._api._base import ResourceBase
-from argilla_sdk.datasets import Dataset
+from argilla_sdk._api._base import ResourceAPI
+from argilla_sdk._models import DatasetModel
 
 __all__ = ["DatasetsAPI"]
 
 
-class DatasetsAPI(ResourceBase):
+class DatasetsAPI(ResourceAPI):
     """Manage datasets via the API"""
 
-    http_client: Optional[httpx.Client] = field(default=None, repr=False, compare=False)
+    http_client: httpx.Client
 
     ################
     # CRUD methods #
     ################
 
-    def create(self, dataset: Dataset) -> "Dataset":
+    def create(self, dataset: DatasetModel) -> "DatasetModel":
         json_body = {
             "name": dataset.name,
             "workspace_id": str(dataset.workspace_id),
@@ -44,68 +41,71 @@ class DatasetsAPI(ResourceBase):
             "allow_extra_metadata": dataset.allow_extra_metadata,
         }
         response = self.http_client.post(
-            "/api/v1/datasets",
+            url="/api/v1/datasets",
             json=json_body,
         )
-        _http.raise_for_status(response)
-        self.log(f"Created dataset {dataset.name}")
+        _http.raise_for_status(response=response)
+        dataset = self._model_from_json(json_dataset=response.json())
+        self.log(message=f"Created dataset {dataset.name}")
+        return dataset
 
-    def update(self, dataset: Dataset) -> None:
+    def update(self, dataset: DatasetModel) -> "DatasetModel":
         json_body = {
             "guidelines": dataset.guidelines,
             "allow_extra_metadata": dataset.allow_extra_metadata,
         }
         response = self.http_client.patch(f"/api/v1/datasets/{dataset.id}", json=json_body)
-        _http.raise_for_status(response)
-        self.log(f"Updated dataset {dataset.name}")
+        _http.raise_for_status(response=response)
+        self.log(message=f"Updated dataset {dataset.name}")
+        return self.get(dataset_id=dataset.id)
 
-    def get(self, dataset_id: UUID) -> "Dataset":
-        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}")
-        _http.raise_for_status(response)
+    def get(self, dataset_id: UUID) -> "DatasetModel":
+        response = self.http_client.get(url=f"/api/v1/datasets/{dataset_id}")
+        _http.raise_for_status(response=response)
         json_dataset = response.json()
-        dataset = self._model_from_json(json_dataset)
-        self.log(f"Got dataset {dataset.name}")
+        dataset = self._model_from_json(json_dataset=json_dataset)
+        self.log(message=f"Got dataset {dataset.name}")
         return dataset
 
-    def delete(self, dataset_id: UUID) -> "Dataset":
+    def delete(self, dataset_id: UUID) -> None:
         response = self.http_client.delete(f"/api/v1/datasets/{dataset_id}")
-        _http.raise_for_status(response)
-        self.log(f"Deleted dataset {dataset_id}")
+        _http.raise_for_status(response=response)
+        self.log(message=f"Deleted dataset {dataset_id}")
 
     ####################
     # Utility methods #
     ####################
 
     def publish(self, dataset_id) -> None:
-        response = self.http_client.put(f"/api/v1/datasets/{dataset_id}/publish")
-        _http.raise_for_status(response)
-        self.log(f"Published dataset {dataset_id}")
+        response = self.http_client.put(url=f"/api/v1/datasets/{dataset_id}/publish")
+        _http.raise_for_status(response=response)
+        self.log(message=f"Published dataset {dataset_id}")
 
-    def list(self, workspace_id: Optional[UUID] = None) -> List["Dataset"]:
+    def list(self, workspace_id: Optional[UUID] = None) -> List["DatasetModel"]:
         response = self.http_client.get("/api/v1/me/datasets")
-        _http.raise_for_status(response)
+        _http.raise_for_status(response=response)
         json_datasets = response.json()["items"]
-        datasets = self._model_from_jsons(json_datasets)
+        datasets = self._model_from_jsons(json_datasets=json_datasets)
         if workspace_id:
             datasets = [dataset for dataset in datasets if dataset.workspace_id == workspace_id]
-        self.log(f"Listed {len(datasets)} datasets")
+        self.log(message=f"Listed {len(datasets)} datasets")
         return datasets
 
-    def get_by_name_and_workspace_id(self, name: str, workspace_id: UUID) -> Optional["Dataset"]:
+    def get_by_name_and_workspace_id(self, name: str, workspace_id: UUID) -> Optional["DatasetModel"]:
         datasets = self.list(workspace_id=workspace_id)
         for dataset in datasets:
             if dataset.name == name:
-                self.log(f"Got dataset {dataset.name}")
+                self.log(message=f"Got dataset {dataset.name}")
                 return dataset
 
     ####################
     # Private methods #
     ####################
 
-    def _model_from_json(self, json_dataset: dict) -> "Dataset":
-        json_dataset["inserted_at"] = self._date_from_iso_format(json_dataset["inserted_at"])
-        json_dataset["updated_at"] = self._date_from_iso_format(json_dataset["updated_at"])
-        return Dataset(**json_dataset)
+    def _model_from_json(self, json_dataset: dict) -> "DatasetModel":
+        json_dataset["inserted_at"] = self._date_from_iso_format(date=json_dataset["inserted_at"])
+        json_dataset["updated_at"] = self._date_from_iso_format(date=json_dataset["updated_at"])
+        return DatasetModel(**json_dataset)
 
-    def _model_from_jsons(self, json_datasets: List[dict]) -> List["Dataset"]:
+    def _model_from_jsons(self, json_datasets: List[dict]) -> List["DatasetModel"]:
         return list(map(self._model_from_json, json_datasets))

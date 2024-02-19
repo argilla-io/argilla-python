@@ -16,8 +16,7 @@ from dataclasses import dataclass
 
 import httpx
 
-_DEFAULT_API_KEY = "argilla.apikey"
-_DEFAULT_API_URL = "https://localhost:6900"
+from argilla_sdk._constants import _DEFAULT_API_URL, _DEFAULT_API_KEY
 
 
 @dataclass
@@ -26,10 +25,12 @@ class HTTPClientConfig:
 
     api_url: Optional[str] = None
     api_key: Optional[str] = None
+    timeout: int = None
 
     def __post_init__(self):
         self.api_url = self.api_url or _DEFAULT_API_URL
         self.api_key = self.api_key or _DEFAULT_API_KEY
+        self.timeout = self.timeout or 60
 
 
 def create_http_client(api_url: str, api_key: str, timeout: int, **client_args) -> httpx.Client:

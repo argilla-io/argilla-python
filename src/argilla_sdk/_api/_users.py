@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List
+from typing import List, Union
 from uuid import UUID
 
 import httpx
@@ -44,8 +44,8 @@ class UsersAPI(ResourceAPI):
         self.log(message=f"Created user {user.username}")
         return user
 
-    def get(self, id: UUID) -> "UserModel":
-        response = self.http_client.get(url=f"/api/users/{id}")
+    def get(self, user_id: Union[UUID, str]) -> "UserModel":
+        response = self.http_client.get(url=f"/api/users/{user_id}")
         _http.raise_for_status(response=response)
         response_json = response.json()
         user = self._model_from_json(json_user=response_json)
@@ -56,8 +56,8 @@ class UsersAPI(ResourceAPI):
         self.log(message=f"Not implemented: update user {user.username}", level="warning")
         return user
 
-    def delete(self, id: UUID) -> None:
-        response = self.http_client.delete(url=f"/api/users/{id}")
+    def delete(self, user_id: Union[UUID, str]) -> None:
+        response = self.http_client.delete(url=f"/api/users/{user_id}")
         _http.raise_for_status(response=response)
         self.log(message=f"Deleted user {id}")
 

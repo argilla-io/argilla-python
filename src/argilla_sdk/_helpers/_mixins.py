@@ -12,24 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from datetime import datetime
-from typing import TYPE_CHECKING
+import logging
 
-from argilla_sdk._helpers._mixins import LoggingMixin
+LOG_LEVEL_MAP = {
+    "debug": logging.DEBUG,
+    "info": logging.INFO,
+    "warning": logging.WARNING,
+    "error": logging.ERROR,
+    "critical": logging.CRITICAL,
+}
 
+class LoggingMixin:
 
-if TYPE_CHECKING:
-    from httpx import Client
-
-
-__all__ = ["ResourceAPI"]
-
-
-class ResourceAPI(LoggingMixin):
-    """Base class for all API resources that contains common methods."""
-
-    def __init__(self, http_client: "Client") -> None:
-        self.http_client = http_client
-
-    def _date_from_iso_format(self, date: str) -> datetime:
-        return datetime.fromisoformat(date)
+    def log(self, message: str, level: str = "info") -> None:
+        level_int = LOG_LEVEL_MAP.get(level, logging.INFO)
+        class_name = self.__class__.__name__
+        message = f"{class_name}: {message}"
+        logging.log(level=level_int, msg=message)

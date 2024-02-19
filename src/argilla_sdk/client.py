@@ -81,6 +81,14 @@ class Argilla(_api.APIClient):
         entity = entity.update(api=self, model=response_model)
         return entity
 
+    def delete(self, entity: Union[Workspace, User, Dataset]) -> None:
+        """Delete an entity from the API. For example, a workspace, user, or dataset.
+        Args:
+            entity: Union[Workspace, User, Dataset] - The entity to delete
+        """
+        resource_api = self._which_resource_api(entity)
+        resource_api.delete(entity.id)
+
     def _which_resource_api(
         self, entity: Union[Workspace, User, Dataset]
     ) -> Union[_api.WorkspacesAPI, _api.UsersAPI, _api.DatasetsAPI]:
@@ -92,4 +100,4 @@ class Argilla(_api.APIClient):
         elif isinstance(entity, Dataset):
             return self.datasets
         else:
-            raise ValueError("Invalid entity type")
+            raise ValueError("Invalid entity type: must be a Workspace, User, or Dataset.")

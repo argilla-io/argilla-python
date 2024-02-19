@@ -25,7 +25,6 @@ __all__ = ["WorkspacesAPI"]
 
 
 class WorkspacesAPI(ResourceAPI):
-
     http_client: httpx.Client
 
     ################

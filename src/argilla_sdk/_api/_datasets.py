@@ -12,11 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional
+from typing import List, Optional, Union
 from uuid import UUID
 
 import httpx
-
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
 from argilla_sdk._models import DatasetModel
@@ -33,13 +32,8 @@ class DatasetsAPI(ResourceAPI):
     # CRUD methods #
     ################
 
-    def create(self, dataset: DatasetModel) -> "DatasetModel":
-        json_body = {
-            "name": dataset.name,
-            "workspace_id": str(dataset.workspace_id),
-            "guidelines": dataset.guidelines,
-            "allow_extra_metadata": dataset.allow_extra_metadata,
-        }
+    def create(self, dataset: "DatasetModel") -> "DatasetModel":
+        json_body = dataset.model_dump()
         response = self.http_client.post(
             url="/api/v1/datasets",
             json=json_body,
@@ -49,25 +43,24 @@ class DatasetsAPI(ResourceAPI):
         self.log(message=f"Created dataset {dataset.name}")
         return dataset
 
-    def update(self, dataset: DatasetModel) -> "DatasetModel":
-        json_body = {
-            "guidelines": dataset.guidelines,
-            "allow_extra_metadata": dataset.allow_extra_metadata,
-        }
-        response = self.http_client.patch(f"/api/v1/datasets/{dataset.id}", json=json_body)
+    def update(self, dataset: "DatasetModel") -> "DatasetModel":
+        json_body = dataset.model_dump()
+        dataset_id = json_body["id"]  # type: ignore
+        response = self.http_client.patch(f"/api/v1/datasets/{dataset_id}", json=json_body)
         _http.raise_for_status(response=response)
-        self.log(message=f"Updated dataset {dataset.name}")
-        return self.get(dataset_id=dataset.id)
+        dataset = self.get(dataset_id=dataset_id)
+        self.log(message=f"Updated dataset {dataset.url}")
+        return dataset
 
-    def get(self, dataset_id: UUID) -> "DatasetModel":
+    def get(self, dataset_id: Union[UUID, str]) -> "DatasetModel":
         response = self.http_client.get(url=f"/api/v1/datasets/{dataset_id}")
         _http.raise_for_status(response=response)
         json_dataset = response.json()
         dataset = self._model_from_json(json_dataset=json_dataset)
-        self.log(message=f"Got dataset {dataset.name}")
+        self.log(message=f"Got dataset {dataset.url}")
         return dataset
 
-    def delete(self, dataset_id: UUID) -> None:
+    def delete(self, dataset_id: Union[UUID, str]) -> None:
         response = self.http_client.delete(f"/api/v1/datasets/{dataset_id}")
         _http.raise_for_status(response=response)
         self.log(message=f"Deleted dataset {dataset_id}")
@@ -76,7 +69,7 @@ class DatasetsAPI(ResourceAPI):
     # Utility methods #
     ####################
 
-    def publish(self, dataset_id) -> None:
+    def publish(self, dataset_id: Union[UUID, str]) -> None:
         response = self.http_client.put(url=f"/api/v1/datasets/{dataset_id}/publish")
         _http.raise_for_status(response=response)
         self.log(message=f"Published dataset {dataset_id}")

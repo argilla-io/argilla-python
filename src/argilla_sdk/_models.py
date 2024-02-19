@@ -18,23 +18,43 @@ from uuid import UUID, uuid4
 from typing import Literal
 from enum import Enum
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_serializer
 
 __all__ = ["DatasetModel", "WorkspaceModel", "UserModel", "Role"]
 
 
-class DatasetModel(BaseModel):
-    name: str
-    status: Literal["draft", "ready"] = "draft"
-    allow_extra_metadata: bool = True
+class ResourceModel(BaseModel):
     id: UUID = uuid4()
-
-    guidelines: Optional[str] = None
-    workspace_id: Optional[UUID] = None
     inserted_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+    @field_serializer("inserted_at", "updated_at", when_used="unless-none")
+    def serialize_datetime(self, value: datetime) -> str:
+        return value.isoformat()
+
+    @field_serializer("id", when_used="unless-none")
+    def serialize_id(self, value: UUID) -> str:
+        return str(value.hex)
+
+
+class DatasetModel(ResourceModel):
+    name: str
+    status: Literal["draft", "ready"] = "draft"
+    allow_extra_metadata: bool = False
+
+    workspace_id: Optional[UUID] = None
+    guidelines: Optional[str] = None
     last_activity_at: Optional[datetime] = None
     api: object = None
+    url: Optional[str] = None
+
+    @field_serializer("last_activity_at", when_used="unless-none")
+    def serialize_last_activity_at(self, value: datetime) -> str:
+        return value.isoformat()
+
+    @field_serializer("workspace_id", when_used="unless-none")
+    def serialize_workspace_id(self, value: UUID) -> str:
+        return str(value.hex)
 
 
 class Role(str, Enum):
@@ -43,20 +63,14 @@ class Role(str, Enum):
     owner = "owner"
 
 
-class UserModel(BaseModel):
+class UserModel(ResourceModel):
     username: str
     first_name: str
     role: str = Role.annotator
     
-    id: UUID = uuid4()
     last_name: Optional[str] = None
     password: Optional[str] = None
-    inserted_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
 
 
-class WorkspaceModel(BaseModel):
+class WorkspaceModel(ResourceModel):
     name: str
-    id: UUID = uuid4()
-    inserted_at: datetime = datetime.now()
-    updated_at: datetime = datetime.now()

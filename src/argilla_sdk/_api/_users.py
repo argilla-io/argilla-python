@@ -34,20 +34,14 @@ class UsersAPI(ResourceAPI):
     ################
 
     def create(self, user: UserModel) -> "UserModel":
-        json_body = {
-            "username": user.username,
-            "password": user.password,
-            "first_name": user.first_name,
-            "last_name": user.last_name,
-            "role": user.role,
-        }
+        json_body = user.model_dump()
         response = self.http_client.post(
             "/api/users",
             json=json_body,
         )
         _http.raise_for_status(response=response)
-        self.log(message=f"Created user {user.username}")
         user = self._model_from_json(json_user=response.json())
+        self.log(message=f"Created user {user.username}")
         return user
 
     def get(self, id: UUID) -> "UserModel":

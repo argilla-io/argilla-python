@@ -48,7 +48,7 @@ class TestUsers:
         )
 
         assert user.serialize() == {
-            "id": user.id,
+            "id": user.id.hex,
             "username": "test-user",
             "first_name": "Test",
             "last_name": "User",
@@ -71,8 +71,8 @@ class TestUsers:
         user_from_json = json.loads(user.serialize_json())
         assert user.username == user_from_json["username"]
         assert user.id == uuid.UUID(user_from_json["id"])
-        assert user.inserted_at == datetime.fromisoformat(user_from_json["inserted_at"])
-        assert user.updated_at == datetime.fromisoformat(user_from_json["updated_at"])
+        assert user.inserted_at.isoformat() == user_from_json["inserted_at"]
+        assert user.updated_at.isoformat() == user_from_json["updated_at"]
 
     def test_model_from_json(self):
         user_json = {
@@ -177,7 +177,7 @@ class TestUsers:
             assert user.role == mock_return_value["role"]
 
     def test_create_user(self, httpx_mock: HTTPXMock):
-        user_id = uuid.uuid4()
+        user_id = uuid.uuid4().hex
         mock_return_value = {
             "id": str(user_id),
             "username": "test-user",

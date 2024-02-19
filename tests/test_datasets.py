@@ -177,23 +177,23 @@ class TestDatasets:
             client = rg.Argilla(api_url)
             dataset = rg.Dataset(
                     name="dataset-01",
-                    workspace_id=str(uuid.uuid4()),
+                    workspace_id=uuid.uuid4(),
                     guidelines="Test guidelines",
                     allow_extra_metadata=False,
                     id=str(mock_dataset_id),
                 )
             dataset = client.create(dataset)
-            dataset = client.datasets.get(mock_dataset_id)
+            dataset = client.get(dataset)
             assert str(dataset.id) == mock_return_value["id"]
             assert dataset.name == mock_return_value["name"]
             assert dataset.status == mock_return_value["status"]
             assert dataset.allow_extra_metadata == mock_return_value["allow_extra_metadata"]
 
     def test_update_dataset(self, httpx_mock: HTTPXMock):
-        mock_dataset_id = uuid.uuid4()
-        mock_workspace_id = uuid.uuid4()
+        mock_dataset_id = uuid.uuid4().hex
+        mock_workspace_id = uuid.uuid4().hex
         mock_return_value = {
-            "id": str(mock_dataset_id),
+            "id": mock_dataset_id,
             "name": "dataset-01",
             "workspace_id": str(mock_workspace_id),
             "guidelines": "guidelines",

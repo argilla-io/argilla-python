@@ -143,7 +143,6 @@ class TestDatasets:
             url=f"{api_url}/api/v1/datasets",
             method="POST",
             status_code=200,
-            # match_json=mock_return_value,
         )
         with httpx.Client():
             client = rg.Argilla(api_url)
@@ -158,7 +157,7 @@ class TestDatasets:
             )
 
     def test_get_dataset(self, httpx_mock: HTTPXMock):
-        mock_dataset_id = uuid.uuid4()
+        mock_dataset_id = uuid.uuid4().hex
         mock_return_value = {
             "id": str(mock_dataset_id),
             "name": "dataset-01",
@@ -185,7 +184,7 @@ class TestDatasets:
             )
             dataset = client.create(dataset)
             dataset = client.get(dataset)
-            assert str(dataset.id) == mock_return_value["id"]
+            assert dataset.id.hex == mock_return_value["id"]
             assert dataset.name == mock_return_value["name"]
             assert dataset.status == mock_return_value["status"]
             assert dataset.allow_extra_metadata == mock_return_value["allow_extra_metadata"]
@@ -208,13 +207,19 @@ class TestDatasets:
             url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
             method="PATCH",
             status_code=200,
-            # match_json=mock_return_value,
         )
         httpx_mock.add_response(
             json=mock_return_value,
             url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
             method="GET",
             status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"http://test_url/api/v1/datasets",
+            method="POST",
+            status_code=200,
+            # match_json=mock_return_value,
         )
         with httpx.Client() as client:
             dataset = rg.Dataset(
@@ -224,8 +229,10 @@ class TestDatasets:
                 guidelines=mock_return_value["guidelines"],
             )
             client = rg.Argilla("http://test_url")
-            client.update(dataset)
-            gotten_dataset = client._datasets.get(mock_dataset_id)
+            client.create(dataset)
+            dataset.guidelines = "new guidelines"
+            updated_dataset = client.update(dataset)
+            gotten_dataset = client.get(updated_dataset)
             assert dataset.id == gotten_dataset.id
             assert dataset.name == gotten_dataset.name
 

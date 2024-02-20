@@ -221,8 +221,8 @@ class TestUsers:
             assert user.id == gotten_user.id
 
     def test_add_user_to_workspace(self, httpx_mock: HTTPXMock):
-        user_id = uuid.uuid4()
-        workspace_id = uuid.uuid4()
+        user_id = uuid.uuid4().hex
+        workspace_id = uuid.uuid4().hex
         mock_workspace_user_return_value = {
             "id": str(user_id),
             "username": "test-user",

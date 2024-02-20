@@ -31,7 +31,7 @@ def test_create_workspace():
 
 
 def test_get_workspace():
-    mock_uuid = uuid.uuid4()
+    mock_uuid = uuid.uuid4().hex
     mock_name = "test-workspace"
     mock_return = mock.Mock(id=mock_uuid, name=mock_name)
     with mock.patch("argilla_sdk.client._api.WorkspacesAPI.create"):
@@ -41,8 +41,8 @@ def test_get_workspace():
             workspace = rg.Workspace(name=mock_name, id=mock_uuid)
             client._workspaces.create(workspace)
             gotten_workspace = client.get(workspace)
-            patch.assert_called_once_with(workspace.id)
-            assert gotten_workspace.id == mock_uuid
+            patch.assert_called_once_with(workspace.id.hex)
+            assert gotten_workspace.id.hex == mock_uuid
 
 
 def test_create_user():

@@ -49,7 +49,7 @@ class Argilla(_api.APIClient):
             Union[Workspace, User, Dataset] - The requested resource
         """
         resource_api = self._which_resource_api(resource)
-        response_model = resource_api.get(resource.id)
+        response_model = resource_api.get(resource.id.hex)
         resource = resource._update(api=self, model=response_model)
         return resource
 

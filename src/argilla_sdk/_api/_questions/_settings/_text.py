@@ -12,9 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._api._datasets import *  # noqa 403
-from argilla_sdk._api._http import *  # noqa 403
-from argilla_sdk._api._workspaces import *  # noqa 403
-from argilla_sdk._api._users import *  # noqa 403
-from argilla_sdk._api._client import *  # noqa 403
-from argilla_sdk._api._questions import *  # noqa 403
+from dataclasses import dataclass
+from typing import ClassVar, Literal
+
+
+@dataclass
+class TextSettings:
+    type: ClassVar[Literal["text"]] = "text"
+    use_markdown: bool = True
+
+    def to_dict(self):
+        return {
+            "type": self.type,
+            "use_markdown": self.use_markdown,
+        }

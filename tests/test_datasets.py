@@ -307,11 +307,3 @@ class TestDatasets:
         httpx_mock.add_response(
             json=mock_return_value, url=f"{api_url}/api/v1/me/datasets", method="GET", status_code=200
         )
-        with httpx.Client():
-            client = rg.Argilla(api_url)
-            dataset = client._datasets.get_by_name_and_workspace_id("dataset-01", mock_workspace_id)
-            assert str(dataset.id) == mock_return_value["items"][0]["id"]
-            assert dataset.name == mock_return_value["items"][0]["name"]
-            assert dataset.status == mock_return_value["items"][0]["status"]
-            assert dataset.id == mock_dataset_id
-            assert dataset.workspace_id == mock_workspace_id

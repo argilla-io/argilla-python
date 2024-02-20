@@ -39,17 +39,15 @@ class WorkspacesAPI(ResourceAPI):
         self.log(message=f"Created workspace {workspace.name}")
         return workspace
 
-
-
-    def get(self, id: UUID) -> WorkspaceModel:
-        response = self.http_client.get(url=f"/api/v1/workspaces/{id}")
+    def get(self, workspace_id: UUID) -> WorkspaceModel:
+        response = self.http_client.get(url=f"/api/v1/workspaces/{workspace_id}")
         _http.raise_for_status(response=response)
         response_json = response.json()
         workspace = self._model_from_json(json_workspace=response_json)
         return workspace
 
-    def delete(self, id: UUID) -> None:
-        response = self.http_client.delete(url=f"/api/v1/workspaces/{id}")
+    def delete(self, workspace_id: UUID) -> None:
+        response = self.http_client.delete(url=f"/api/v1/workspaces/{workspace_id}")
         _http.raise_for_status(response=response)
 
     ####################

@@ -48,11 +48,11 @@ class DatasetsAPI(ResourceAPI):
         dataset_id = json_body["id"]  # type: ignore
         response = self.http_client.patch(f"/api/v1/datasets/{dataset_id}", json=json_body)
         _http.raise_for_status(response=response)
-        dataset = self.get(dataset_id=dataset_id)
+        dataset = self._model_from_json(json_dataset=response.json())  
         self.log(message=f"Updated dataset {dataset.url}")
         return dataset
 
-    def get(self, dataset_id: Union[UUID, str]) -> "DatasetModel":
+    def get(self, dataset_id: UUID) -> "DatasetModel":
         response = self.http_client.get(url=f"/api/v1/datasets/{dataset_id}")
         _http.raise_for_status(response=response)
         json_dataset = response.json()
@@ -60,7 +60,7 @@ class DatasetsAPI(ResourceAPI):
         self.log(message=f"Got dataset {dataset.url}")
         return dataset
 
-    def delete(self, dataset_id: Union[UUID, str]) -> None:
+    def delete(self, dataset_id: UUID) -> None:
         response = self.http_client.delete(f"/api/v1/datasets/{dataset_id}")
         _http.raise_for_status(response=response)
         self.log(message=f"Deleted dataset {dataset_id}")
@@ -69,10 +69,11 @@ class DatasetsAPI(ResourceAPI):
     # Utility methods #
     ####################
 
-    def publish(self, dataset_id: Union[UUID, str]) -> None:
+    def publish(self, dataset_id: UUID) -> "DatasetModel":
         response = self.http_client.put(url=f"/api/v1/datasets/{dataset_id}/publish")
         _http.raise_for_status(response=response)
         self.log(message=f"Published dataset {dataset_id}")
+        return self._model_from_json(response.json())
 
     def list(self, workspace_id: Optional[UUID] = None) -> List["DatasetModel"]:
         response = self.http_client.get("/api/v1/me/datasets")

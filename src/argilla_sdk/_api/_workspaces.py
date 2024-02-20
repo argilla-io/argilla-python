@@ -39,12 +39,7 @@ class WorkspacesAPI(ResourceAPI):
         self.log(message=f"Created workspace {workspace.name}")
         return workspace
 
-    def update(self, workspace: WorkspaceModel) -> "WorkspaceModel":
-        response = self.http_client.put(f"/api/v1/workspaces/{workspace.id}", json={"name": workspace.name})
-        _http.raise_for_status(response=response)
-        self.log(message=f"Updated workspace {workspace.name}")
-        workspace = self.get(workspace.id)
-        return workspace
+
 
     def get(self, id: UUID) -> WorkspaceModel:
         response = self.http_client.get(url=f"/api/v1/workspaces/{id}")

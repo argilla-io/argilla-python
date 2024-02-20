@@ -52,10 +52,6 @@ class UsersAPI(ResourceAPI):
         self.log(message=f"Got user {user.username}")
         return user
 
-    def update(self, user: UserModel) -> "UserModel":
-        self.log(message=f"Not implemented: update user {user.username}", level="warning")
-        return user
-
     def delete(self, user_id: Union[UUID, str]) -> None:
         response = self.http_client.delete(url=f"/api/users/{user_id}")
         _http.raise_for_status(response=response)

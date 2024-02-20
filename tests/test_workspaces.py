@@ -78,7 +78,7 @@ class TestWorkspaces:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/v1/me/workspaces")
         with httpx.Client():
             client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
-            workspaces = client.workspaces.list()
+            workspaces = client.list(rg.Workspace)
         assert len(workspaces) == 2
         for i in range(len(workspaces)):
             assert workspaces[i].name == mock_return_value["items"][i]["name"]
@@ -96,7 +96,7 @@ class TestWorkspaces:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/v1/workspaces/{workspace_id}")
         with httpx.Client():
             client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
-            workspace = client.workspaces.get(workspace_id)
+            workspace = client._workspaces.get(workspace_id)
             assert workspace.name == mock_return_value["name"]
             assert workspace.id == workspace_id
 
@@ -121,7 +121,7 @@ class TestWorkspaces:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/v1/me/workspaces")
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            ws = client.workspaces.get_by_name("test-workspace")
+            ws = client._workspaces.get_by_name("test-workspace")
             assert ws is not None
             assert ws.name == "test-workspace"
             assert ws.id == uuid.UUID(mock_return_value["items"][0]["id"])
@@ -175,7 +175,7 @@ class TestWorkspaces:
         httpx_mock.add_response(url=f"{api_url}/api/v1/workspaces/{workspace_id}", status_code=204)
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            client.workspaces.delete(workspace_id)
+            client._workspaces.delete(workspace_id)
 
     def test_list_workspace_datasets(self, httpx_mock: HTTPXMock):
         workspace_id = uuid.uuid4()
@@ -207,7 +207,7 @@ class TestWorkspaces:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/v1/me/datasets")
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            datasets = client.datasets.list(workspace_id)
+            datasets = client._datasets.list(workspace_id)
             assert len(datasets) == 2
             for i in range(len(datasets)):
                 assert datasets[i].name == mock_return_value["items"][i]["name"]
@@ -241,7 +241,7 @@ class TestWorkspaces:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/workspaces/{workspace_id}/users")
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            users = client.users.list_by_workspace_id(workspace_id)
+            users = client._users.list_by_workspace_id(workspace_id)
             assert len(users) == 2
             for i in range(len(users)):
                 assert users[i].username == mock_return_value["items"][i]["username"]

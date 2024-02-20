@@ -39,7 +39,7 @@ def test_get_workspace():
             patch.return_value = mock_return
             client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
             workspace = rg.Workspace(name=mock_name, id=mock_uuid)
-            client.workspaces.create(workspace)
+            client._workspaces.create(workspace)
             gotten_workspace = client.get(workspace)
             patch.assert_called_once_with(workspace.id)
             assert gotten_workspace.id == mock_uuid

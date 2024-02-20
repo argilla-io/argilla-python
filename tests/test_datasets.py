@@ -33,9 +33,9 @@ class TestDatasets:
             updated_at=datetime.utcnow(),
         )
 
-        assert ds.name == ds.model.model_dump()["name"]
+        assert ds.name == ds.serialize()["name"]
 
-    def test_serialize_with_extra_arguments(self, httpx_mock: HTTPXMock):
+    def test_serialize_with_extra_arguments(self):
         ds = rg.Dataset(
             name="test-dataset",
             id=uuid.uuid4(),
@@ -45,7 +45,7 @@ class TestDatasets:
             updated_at=datetime.utcnow(),
             extra_argument="extra",
         )
-        assert "extra_argument" not in ds.model.model_dump()
+        assert "extra_argument" not in ds.serialize()
 
     def test_list_datasets(self, httpx_mock: HTTPXMock):
         mock_return_value = {
@@ -66,7 +66,7 @@ class TestDatasets:
         )
         with httpx.Client():
             client = rg.Argilla(api_url)
-            datasets = client.datasets.list()
+            datasets = client.list(rg.Dataset)
             assert len(datasets) == 1
             assert str(datasets[0].id) == mock_return_value["items"][0]["id"]
             assert datasets[0].name == mock_return_value["items"][0]["name"]
@@ -91,7 +91,8 @@ class TestDatasets:
         )
         with httpx.Client():
             client = rg.Argilla(api_url)
-            dataset = client.datasets.get(mock_return_value["id"])
+            dataset = rg.Dataset(id=mock_return_value["id"])
+            dataset = client.get(dataset)
             assert str(dataset.id) == mock_return_value["id"]
             assert dataset.name == mock_return_value["name"]
             assert dataset.status == mock_return_value["status"]
@@ -119,7 +120,7 @@ class TestDatasets:
         )
         with httpx.Client():
             client = rg.Argilla(api_url)
-            dataset = client.datasets.get_by_name_and_workspace_id("dataset-01", mock_workspace_id)
+            dataset = client._datasets.get_by_name_and_workspace_id("dataset-01", mock_workspace_id)
             assert str(dataset.id) == mock_return_value["items"][0]["id"]
             assert dataset.name == mock_return_value["items"][0]["name"]
             assert dataset.status == mock_return_value["items"][0]["status"]
@@ -176,12 +177,12 @@ class TestDatasets:
         with httpx.Client():
             client = rg.Argilla(api_url)
             dataset = rg.Dataset(
-                    name="dataset-01",
-                    workspace_id=uuid.uuid4(),
-                    guidelines="Test guidelines",
-                    allow_extra_metadata=False,
-                    id=str(mock_dataset_id),
-                )
+                name="dataset-01",
+                workspace_id=uuid.uuid4(),
+                guidelines="Test guidelines",
+                allow_extra_metadata=False,
+                id=str(mock_dataset_id),
+            )
             dataset = client.create(dataset)
             dataset = client.get(dataset)
             assert str(dataset.id) == mock_return_value["id"]
@@ -224,7 +225,7 @@ class TestDatasets:
             )
             client = rg.Argilla("http://test_url")
             client.update(dataset)
-            gotten_dataset = client.datasets.get(mock_dataset_id)
+            gotten_dataset = client._datasets.get(mock_dataset_id)
             assert dataset.id == gotten_dataset.id
             assert dataset.name == gotten_dataset.name
 
@@ -246,8 +247,8 @@ class TestDatasets:
         )
         with httpx.Client() as client:
             client = rg.Argilla("http://test_url")
-            client.datasets.delete(mock_dataset_id)
-            pytest.raises(httpx.HTTPError, client.datasets.get, mock_dataset_id)
+            client._datasets.delete(mock_dataset_id)
+            pytest.raises(httpx.HTTPError, client._datasets.get, mock_dataset_id)
 
     def test_publish_dataset(self, httpx_mock: HTTPXMock):
         mock_dataset_id = uuid.uuid4()
@@ -273,8 +274,8 @@ class TestDatasets:
         )
         with httpx.Client() as client:
             client = rg.Argilla("http://test_url")
-            client.datasets.publish(mock_dataset_id)
-            dataset = client.datasets.get(mock_dataset_id)
+            client._datasets.publish(mock_dataset_id)
+            dataset = client._datasets.get(mock_dataset_id)
             assert dataset.status == "ready"
             assert dataset.id == mock_dataset_id
             assert dataset.name == "dataset-01"
@@ -301,7 +302,7 @@ class TestDatasets:
         )
         with httpx.Client():
             client = rg.Argilla(api_url)
-            dataset = client.datasets.get_by_name_and_workspace_id("dataset-01", mock_workspace_id)
+            dataset = client._datasets.get_by_name_and_workspace_id("dataset-01", mock_workspace_id)
             assert str(dataset.id) == mock_return_value["items"][0]["id"]
             assert dataset.name == mock_return_value["items"][0]["name"]
             assert dataset.status == mock_return_value["items"][0]["status"]

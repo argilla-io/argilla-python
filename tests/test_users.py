@@ -115,7 +115,7 @@ class TestUsers:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/users")
         with httpx.Client():
             client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
-            users = client.users.list()
+            users = client._users.list()
             assert len(users) == 2
             for i in range(len(users)):
                 assert users[i].username == mock_return_value[i]["username"]
@@ -150,7 +150,7 @@ class TestUsers:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/workspaces/{workspace_id}/users")
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            users = client.users.list_by_workspace_id(workspace_id)
+            users = client._users.list_by_workspace_id(workspace_id)
             assert len(users) == 2
             for i in range(len(users)):
                 assert users[i].username == mock_return_value["items"][i]["username"]
@@ -171,7 +171,7 @@ class TestUsers:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/me")
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            user = client.users.get_me()
+            user = client._users.get_me()
             assert user.username == mock_return_value["username"]
             assert user.id == uuid.UUID(mock_return_value["id"])
             assert user.role == mock_return_value["role"]
@@ -216,7 +216,7 @@ class TestUsers:
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
             user = rg.User(**mock_return_value)
             client.create(user)
-            gotten_user = client.users.get(user_id)
+            gotten_user = client._users.get(user_id)
             assert user.username == gotten_user.username
             assert user.id == gotten_user.id
 
@@ -240,7 +240,7 @@ class TestUsers:
         with httpx.Client():
             client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
             user = rg.User(**mock_workspace_user_return_value)
-            client.workspaces.add_user(workspace_id, user_id)
+            client._workspaces.add_user(workspace_id, user_id)
             gotten_user = client.get(user)
             assert user.username == gotten_user.username
             assert user.id == gotten_user.id
@@ -253,11 +253,11 @@ class TestUsers:
         )
         with httpx.Client():
             client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
-            client.workspaces.remove_user(workspace_id, user_id)
+            client._workspaces.remove_user(workspace_id, user_id)
 
     def test_delete_user(self, httpx_mock: HTTPXMock):
         user_id = uuid.uuid4()
         httpx_mock.add_response(url=f"http://test_url/api/users/{user_id}", method="DELETE")
         with httpx.Client():
             client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
-            client.users.delete(user_id)
+            client._users.delete(user_id)

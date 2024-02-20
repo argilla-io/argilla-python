@@ -19,7 +19,7 @@ from argilla_sdk.users import User
 from argilla_sdk.workspaces import Workspace
 
 if TYPE_CHECKING:
-    from argilla_sdk._models import UserModel, WorkspaceModel
+    from argilla_sdk._models import UserModel
 
 __all__ = ["Argilla"]
 

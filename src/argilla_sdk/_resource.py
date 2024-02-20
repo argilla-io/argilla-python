@@ -1,5 +1,4 @@
-import logging
-from typing import Union, Any
+from typing import Any
 
 from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import ResourceModel
@@ -12,7 +11,7 @@ class Resource(LoggingMixin):
     _model: ResourceModel
 
     def __repr__(self) -> str:
-        return repr(f"{self.__class__.__name__}({self.model})")
+        return repr(f"{self.__class__.__name__}({self._model})")
 
     def _update(self, api: APIClient, model: ResourceModel):
         """Updates the resource with the ClientAPI that is used to interact with

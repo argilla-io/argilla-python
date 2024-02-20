@@ -55,15 +55,15 @@ class APIClient:
         )
 
     @property
-    def workspaces(self) -> "WorkspacesAPI":
+    def _workspaces(self) -> "WorkspacesAPI":
         return WorkspacesAPI(http_client=self.http_client)
 
     @property
-    def users(self) -> "UsersAPI":
+    def _users(self) -> "UsersAPI":
         return UsersAPI(http_client=self.http_client)
 
     @property
-    def datasets(self) -> "DatasetsAPI":
+    def _datasets(self) -> "DatasetsAPI":
         return DatasetsAPI(http_client=self.http_client)
 
     def log(self, message: str, level: int = logging.INFO) -> None:

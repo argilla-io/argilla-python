@@ -20,11 +20,11 @@ __all__ = ["Dataset"]
 
 class Dataset(Resource):
     def __init__(self, **kwargs) -> None:
-        self.model = DatasetModel(**kwargs)
-        self.name = self.model.name
-        self.id = self.model.id
-        self.updated_at = self.model.updated_at
-        self.workspace_id = self.model.workspace_id
-        self.status = self.model.status
-        self.guidelines = self.model.guidelines
-        self.allow_extra_metadata = self.model.allow_extra_metadata
+        self._model = DatasetModel(**kwargs)
+        self.name = self._model.name
+        self.id = self._model.id
+        self.updated_at = self._model.updated_at
+        self.workspace_id = self._model.workspace_id
+        self.status = self._model.status
+        self.guidelines = self._model.guidelines
+        self.allow_extra_metadata = self._model.allow_extra_metadata

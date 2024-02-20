@@ -19,13 +19,13 @@ __all__ = ["User"]
 
 class User(Resource):
     def __init__(self, **kwargs) -> None:
-        self.model = UserModel(**kwargs)
-        self.username = self.model.username
-        self.first_name = self.model.first_name
-        self.role = self.model.role
+        self._model = UserModel(**kwargs)
+        self.username = self._model.username
+        self.first_name = self._model.first_name
+        self.role = self._model.role
 
-        self.id = self.model.id
-        self.last_name = self.model.last_name
-        self.password = self.model.password
-        self.inserted_at = self.model.inserted_at
-        self.updated_at = self.model.updated_at
+        self.id = self._model.id
+        self.last_name = self._model.last_name
+        self.password = self._model.password
+        self.inserted_at = self._model.inserted_at
+        self.updated_at = self._model.updated_at

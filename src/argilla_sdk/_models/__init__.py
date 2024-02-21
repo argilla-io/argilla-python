@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk.datasets._resource import *  # noqa
-from argilla_sdk.workspaces._resource import *  # noqa
-from argilla_sdk.users._resource import *  # noqa
-from argilla_sdk.client import *  # noqa
-from argilla_sdk.settings import *  # noqa
+from ._base import ResourceModel
+from ._workspace import WorkspaceModel
+from ._user import UserModel
+from ._dataset import DatasetModel

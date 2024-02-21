@@ -12,8 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk.datasets._resource import *  # noqa
-from argilla_sdk.workspaces._resource import *  # noqa
-from argilla_sdk.users._resource import *  # noqa
-from argilla_sdk.client import *  # noqa
-from argilla_sdk.settings import *  # noqa
+from typing import Optional
+from enum import Enum
+
+from argilla_sdk._models import ResourceModel
+
+__all__ = ["UserModel", "Role"]
+
+
+class Role(str, Enum):
+    annotator = "annotator"
+    admin = "admin"
+    owner = "owner"
+
+
+class UserModel(ResourceModel):
+    username: str
+    first_name: str
+    role: str = Role.annotator
+
+    last_name: Optional[str] = None
+    password: Optional[str] = None

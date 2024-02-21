@@ -4,7 +4,6 @@ from typing import Optional
 from argilla_sdk._helpers._log import log
 from argilla_sdk.settings.exceptions import InvalidFieldException
 
-
 class TextField(BaseModel):
     name: str
     use_markdown: bool = False

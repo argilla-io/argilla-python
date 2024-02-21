@@ -135,6 +135,31 @@ class TestDatasets:
             assert datasets[0].name == mock_return_value["items"][0]["name"]
             assert datasets[0].status == mock_return_value["items"][0]["status"]
 
+    def test_list_datasets(self, httpx_mock: HTTPXMock):
+        mock_return_value = {
+            "items": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "dataset-01",
+                    "status": "ready",
+                    "allow_extra_metadata": False,
+                    "inserted_at": datetime.utcnow().isoformat(),
+                    "updated_at": datetime.utcnow().isoformat(),
+                }
+            ]
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value, url=f"{api_url}/api/v1/me/datasets", method="GET", status_code=200
+        )
+        with httpx.Client():
+            client = rg.Argilla(api_url)
+            datasets = client.list(rg.Dataset)
+            assert len(datasets) == 1
+            assert str(datasets[0].id) == mock_return_value["items"][0]["id"]
+            assert datasets[0].name == mock_return_value["items"][0]["name"]
+            assert datasets[0].status == mock_return_value["items"][0]["status"]
+
     def test_update_dataset(self, httpx_mock: HTTPXMock):
         mock_dataset_id = uuid.uuid4()
         mock_workspace_id = uuid.uuid4()

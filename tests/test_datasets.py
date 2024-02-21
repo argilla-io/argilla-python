@@ -79,9 +79,9 @@ class TestDatasets:
             )
 
     def test_get_dataset(self, httpx_mock: HTTPXMock):
-        mock_dataset_id = uuid.uuid4().hex
+        mock_dataset_id = uuid.uuid4()
         mock_return_value = {
-            "id": mock_dataset_id,
+            "id": str(mock_dataset_id),
             "name": "dataset-01",
             "status": "draft",
             "allow_extra_metadata": False,
@@ -105,11 +105,11 @@ class TestDatasets:
                 id=mock_dataset_id,
             )
             dataset = client.create(dataset)
-            dataset = client.get(dataset)
-            assert dataset.id == mock_return_value["id"]
-            assert dataset.name == mock_return_value["name"]
-            assert dataset.status == mock_return_value["status"]
-            assert dataset.allow_extra_metadata == mock_return_value["allow_extra_metadata"]
+            gotten_dataset = client.get(dataset)
+            assert gotten_dataset.id == dataset.id
+            assert gotten_dataset.name == dataset.name
+            assert gotten_dataset.status == dataset.status
+            assert gotten_dataset.allow_extra_metadata == dataset.allow_extra_metadata
 
     def test_list_datasets(self, httpx_mock: HTTPXMock):
         mock_return_value = {
@@ -138,12 +138,12 @@ class TestDatasets:
             assert datasets[0].allow_extra_metadata == mock_return_value["items"][0]["allow_extra_metadata"]
 
     def test_update_dataset(self, httpx_mock: HTTPXMock):
-        mock_dataset_id = uuid.uuid4().hex
-        mock_workspace_id = uuid.uuid4().hex
+        mock_dataset_id = uuid.uuid4()
+        mock_workspace_id = uuid.uuid4()
         mock_return_value = {
-            "id": mock_dataset_id,
+            "id": str(mock_dataset_id),
             "name": "dataset-01",
-            "workspace_id": mock_workspace_id,
+            "workspace_id": str(mock_workspace_id),
             "guidelines": "guidelines",
             "allow_extra_metadata": False,
             "last_activity_at": datetime.utcnow().isoformat(),
@@ -152,7 +152,7 @@ class TestDatasets:
         }
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
+            url=f"http://test_url/api/v1/datasets/{mock_dataset_id.hex}",
             method="PATCH",
             status_code=200,
         )
@@ -171,9 +171,9 @@ class TestDatasets:
         )
         with httpx.Client() as client:
             dataset = rg.Dataset(
-                id=mock_return_value["id"],
+                id=mock_dataset_id,
                 name=mock_return_value["name"],
-                workspace_id=mock_return_value["workspace_id"],
+                workspace_id=mock_workspace_id,
                 guidelines=mock_return_value["guidelines"],
             )
             client = rg.Argilla("http://test_url")

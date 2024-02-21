@@ -77,15 +77,15 @@ class TestWorkspaces:
             assert created_workspace.id == ws.id
 
     def test_get_workspace(self, httpx_mock: HTTPXMock):
-        workspace_id = uuid.uuid4().hex
+        workspace_id = uuid.uuid4()
         mock_return_value = {
-            "id": workspace_id,
+            "id": workspace_id.hex,
             "name": "test-workspace",
             "inserted_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
         }
         api_url = "http://test_url"
-        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/v1/workspaces/{workspace_id}")
+        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/v1/workspaces/{workspace_id.hex}")
         with httpx.Client():
             client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
             workspace = rg.Workspace(name="test-workspace", id=workspace_id)

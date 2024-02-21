@@ -114,9 +114,9 @@ class TestUsers:
             client.create(user)
 
     def test_get_user(self, httpx_mock: HTTPXMock):
-        user_id = uuid.uuid4().hex
+        user_id = uuid.uuid4()
         mock_return_value = {
-            "id": user_id,
+            "id": str(user_id),
             "username": "test-user",
             "password": "test-password",
             "first_name": "Test",

@@ -49,3 +49,11 @@ class Resource(LoggingMixin):
             return self._model.model_dump()[name]
         else:
             super().__getattribute__(name)
+
+    def __delattr__(self, name):
+        if name in self._model.model_fields:
+            model_dump = self._model.model_dump()
+            del model_dump[name]
+            self._model = self._model.__class__(**model_dump)
+        else:
+            super().__delattr__(name)

@@ -24,10 +24,6 @@ __all__ = ["Workspace"]
 class Workspace(Resource):
     def __init__(self, **kwargs) -> None:
         self._model = WorkspaceModel(**kwargs)
-        self.name = self._model.name
-        self.id = self._model.id
-        self.inserted_at = self._model.inserted_at
-        self.updated_at = self._model.updated_at
 
     def list_datasets(self, workspace_id: UUID) -> List["DatasetModel"]:
         datasets = self.api._datasets.list(workspace_id)

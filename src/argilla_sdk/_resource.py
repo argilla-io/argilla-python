@@ -32,3 +32,20 @@ class Resource(LoggingMixin):
 
     def serialize_json(self) -> str:
         return self._model.model_dump_json()
+
+    ############################
+    # State management methods #
+    ############################
+
+    def __setattr__(self, name, value):
+        super().__setattr__(name, value)
+        if name in self._model.model_fields:
+            model_dump = self._model.model_dump()
+            model_dump[name] = value
+            self._model = self._model.__class__(**model_dump)
+
+    def __getattr__(self, name):
+        if name in self._model.model_fields:
+            return self._model.model_dump()[name]
+        else:
+            super().__getattribute__(name)

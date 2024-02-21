@@ -12,59 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional, TYPE_CHECKING
+from argilla_sdk._resource import Resource
+from argilla_sdk._models import DatasetModel
 
-from argilla_sdk import _api
-from argilla_sdk._helpers import GenericIterator  # noqa
-
-if TYPE_CHECKING:
-    from argilla_sdk import Workspace
-    from argilla_sdk.questions import DatasetQuestions
-
-__all__ = ["Dataset", "WorkspaceDatasets"]
+__all__ = ["Dataset"]
 
 
-class Dataset(_api.Dataset):
-    @classmethod
-    def get_by_name_and_workspace(cls, name: str, workspace: "Workspace") -> Optional["Dataset"]:
-        return cls.get_by_name_and_workspace_id(name, workspace.id)
-
-    @property
-    def workspace(self) -> Optional["Workspace"]:
-        from argilla_sdk.workspaces import Workspace
-
-        if self.workspace_id:
-            return Workspace.get(self.workspace_id)
-
-    @workspace.setter
-    def workspace(self, workspace: "Workspace") -> None:
-        self.workspace_id = workspace.id
-
-    @property
-    def questions(self) -> "DatasetQuestions":
-        from argilla_sdk.questions import DatasetQuestions
-
-        return DatasetQuestions(dataset=self)
-
-
-DatasetsIterator = GenericIterator["Dataset"]
-
-
-class WorkspaceDatasets:
-    def __init__(self, workspace: "Workspace"):
-        self.workspace = workspace
-
-    def list(self) -> List["Dataset"]:
-        from argilla_sdk import Dataset
-
-        return Dataset.list(workspace_id=self.workspace.id)
-
-    def add(self, dataset: "Dataset") -> "Dataset":
-        dataset.workspace_id = self.workspace.id
-        return dataset.create()
-
-    def get_by_name(self, name: str) -> "Dataset":
-        return Dataset.get_by_name_and_workspace(name=name, workspace=self.workspace)
-
-    def __iter__(self):
-        return DatasetsIterator(self.list())
+class Dataset(Resource):
+    def __init__(self, **kwargs) -> None:
+        self._model = DatasetModel(**kwargs)
+        self.name = self._model.name
+        self.id = self._model.id
+        self.updated_at = self._model.updated_at
+        self.workspace_id = self._model.workspace_id
+        self.status = self._model.status
+        self.guidelines = self._model.guidelines
+        self.allow_extra_metadata = self._model.allow_extra_metadata

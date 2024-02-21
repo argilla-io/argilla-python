@@ -14,315 +14,296 @@
 
 import uuid
 from datetime import datetime
-from unittest.mock import MagicMock
 
 import httpx
+import pytest
+from pytest_httpx import HTTPXMock
 
-from argilla_sdk import Dataset, Workspace
+import argilla_sdk as rg
 
 
 class TestDatasets:
-    def test_serialize(self, mock_httpx_client: httpx.Client):
-        ds = Dataset(
+    def test_serialize(self):
+        ds = rg.Dataset(
             name="test-workspace",
             id=uuid.uuid4(),
             workspace_id=uuid.uuid4(),
             guidelines="Test guidelines",
             inserted_at=datetime.utcnow(),
             updated_at=datetime.utcnow(),
-            client=mock_httpx_client,
         )
 
-        assert Dataset.from_dict(ds.to_dict()) == ds
+        assert ds.name == ds.serialize()["name"]
 
-    def test_serialize_with_extra_arguments(self, mock_httpx_client: httpx.Client):
-        dataset_id = uuid.uuid4()
-        ds = Dataset.from_dict(
-            {
-                "id": dataset_id,
-                "name": "test-workspace",
-                "allow_extra_metadata": False,
-                "extra_arg": "extra_arg",
-                "another_extra_arg": "another_extra_arg",
-            }
+    def test_serialize_with_extra_arguments(self):
+        ds = rg.Dataset(
+            name="test-dataset",
+            id=uuid.uuid4(),
+            workspace_id=uuid.uuid4(),
+            guidelines="Test guidelines",
+            inserted_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
+            extra_argument="extra",
         )
+        assert "extra_argument" not in ds.serialize()
 
-        assert ds.to_dict() == {
-            "id": dataset_id,
-            "name": "test-workspace",
-            "allow_extra_metadata": False,
-            "guidelines": None,
-            "inserted_at": None,
-            "updated_at": None,
-            "workspace_id": None,
+    def test_list_datasets(self, httpx_mock: HTTPXMock):
+        mock_return_value = {
+            "items": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "dataset-01",
+                    "status": "ready",
+                    "allow_extra_metadata": False,
+                    "inserted_at": datetime.utcnow().isoformat(),
+                    "updated_at": datetime.utcnow().isoformat(),
+                }
+            ]
         }
-
-    def test_list_datasets(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(return_value={"items": [{"id": uuid.uuid4(), "name": "dataset-01"}]})
-
-        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
-
-        datasets = Dataset.list()
-        mock_httpx_client.get.assert_called_once_with("/api/v1/me/datasets")
-
-        for dataset, mock_dataset in zip(datasets, mock_response.json()["items"]):
-            assert dataset.id == mock_dataset["id"]
-            assert dataset.name == mock_dataset["name"]
-            assert dataset.client == mock_httpx_client
-
-    def test_get_dataset(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(return_value={"id": uuid.uuid4(), "name": "dataset-01"})
-
-        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
-
-        dataset = Dataset.get(mock_response.json()["id"])
-        mock_httpx_client.get.assert_called_once_with(f"/api/v1/datasets/{mock_response.json()['id']}")
-
-        assert dataset.id == mock_response.json()["id"]
-        assert dataset.name == mock_response.json()["name"]
-        assert dataset.client == mock_httpx_client
-
-    def test_get_by_name_and_workspace(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "items": [
-                    {"id": uuid.uuid4(), "name": "dataset-01"},
-                    {"id": uuid.uuid4(), "name": "dataset-02"},
-                ]
-            }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value, url=f"{api_url}/api/v1/me/datasets", method="GET", status_code=200
         )
+        with httpx.Client():
+            client = rg.Argilla(api_url)
+            datasets = client.list(rg.Dataset)
+            assert len(datasets) == 1
+            assert str(datasets[0].id) == mock_return_value["items"][0]["id"]
+            assert datasets[0].name == mock_return_value["items"][0]["name"]
+            assert datasets[0].status == mock_return_value["items"][0]["status"]
+            assert datasets[0].allow_extra_metadata == mock_return_value["items"][0]["allow_extra_metadata"]
 
-        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
-
-        dataset = Dataset.get_by_name_and_workspace("dataset-01", Workspace(name="workspace-01"))
-        mock_httpx_client.get.assert_called_once_with("/api/v1/me/datasets")
-
-        items_json = mock_response.json()["items"]
-        assert dataset.id == items_json[0]["id"]
-        assert dataset.name == items_json[0]["name"]
-
-        assert dataset.client == mock_httpx_client
-
-    def test_create_dataset(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
-        dataset = Dataset(
-            name="dataset-01", guidelines="Test guidelines", workspace_id=uuid.uuid4(), client=mock_httpx_client
+    def test_get_dataset(self, httpx_mock: HTTPXMock):
+        mock_return_value = {
+            "id": str(uuid.uuid4()),
+            "name": "dataset-01",
+            "status": "ready",
+            "allow_extra_metadata": False,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_return_value['id']}",
+            method="GET",
+            status_code=200,
         )
+        with httpx.Client():
+            client = rg.Argilla(api_url)
+            dataset = rg.Dataset(id=mock_return_value["id"])
+            dataset = client.get(dataset)
+            assert str(dataset.id) == mock_return_value["id"]
+            assert dataset.name == mock_return_value["name"]
+            assert dataset.status == mock_return_value["status"]
+            assert dataset.allow_extra_metadata == mock_return_value["allow_extra_metadata"]
 
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "id": uuid.uuid4(),
-                "name": dataset.name,
-                "workspace_id": dataset.workspace_id,
-                "guidelines": dataset.guidelines,
-                "allow_extra_metadata": dataset.allow_extra_metadata,
-                "last_activity_at": datetime.utcnow(),
-            }
+    def test_get_by_name_and_workspace(self, httpx_mock: HTTPXMock):
+        mock_workspace_id = uuid.uuid4()
+        mock_dataset_id = uuid.uuid4()
+        mock_return_value = {
+            "items": [
+                {
+                    "id": str(mock_dataset_id),
+                    "name": "dataset-01",
+                    "status": "ready",
+                    "allow_extra_metadata": False,
+                    "inserted_at": datetime.utcnow().isoformat(),
+                    "updated_at": datetime.utcnow().isoformat(),
+                    "workspace_id": str(mock_workspace_id),
+                }
+            ]
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value, url=f"{api_url}/api/v1/me/datasets", method="GET", status_code=200
         )
+        with httpx.Client():
+            client = rg.Argilla(api_url)
+            dataset = client._datasets.get_by_name_and_workspace_id("dataset-01", mock_workspace_id)
+            assert str(dataset.id) == mock_return_value["items"][0]["id"]
+            assert dataset.name == mock_return_value["items"][0]["name"]
+            assert dataset.status == mock_return_value["items"][0]["status"]
+            assert dataset.id == mock_dataset_id
+            assert dataset.workspace_id == mock_workspace_id
 
-        mock_httpx_client.post = mocker.MagicMock(return_value=mock_response)
-
-        dataset.create()
-
-        mock_httpx_client.post.assert_called_once_with(
-            "/api/v1/datasets",
-            json={
-                "name": dataset.name,
-                "guidelines": dataset.guidelines,
-                "workspace_id": dataset.workspace_id,
-                "allow_extra_metadata": dataset.allow_extra_metadata,
-            },
+    def test_create_dataset(self, httpx_mock: HTTPXMock):
+        mock_dataset_id = uuid.uuid4()
+        mock_return_value = {
+            "id": str(mock_dataset_id),
+            "name": "dataset-01",
+            "status": "draft",
+            "allow_extra_metadata": False,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
+            status_code=200,
         )
+        with httpx.Client():
+            client = rg.Argilla(api_url)
+            client.create(
+                rg.Dataset(
+                    name="dataset-01",
+                    workspace_id=str(uuid.uuid4()),
+                    guidelines="Test guidelines",
+                    allow_extra_metadata=False,
+                    id=str(mock_dataset_id),
+                )
+            )
 
-        assert dataset.id == mock_response.json()["id"]
-        assert dataset.name == mock_response.json()["name"]
-        assert dataset.last_activity_at == mock_response.json()["last_activity_at"]
-        assert dataset.client == mock_httpx_client
-
-    def test_update_dataset(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
-        dataset = Dataset(
-            id=uuid.uuid4(),
-            name="dataset-01",
-            guidelines="Test guidelines",
-            workspace_id=uuid.uuid4(),
-            client=mock_httpx_client,
+    def test_get_dataset(self, httpx_mock: HTTPXMock):
+        mock_dataset_id = uuid.uuid4().hex
+        mock_return_value = {
+            "id": str(mock_dataset_id),
+            "name": "dataset-01",
+            "status": "draft",
+            "allow_extra_metadata": False,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value, url=f"{api_url}/api/v1/datasets", method="POST", status_code=200
         )
-
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "id": dataset.id,
-                "name": dataset.name,
-                "workspace_id": dataset.workspace_id,
-                "guidelines": dataset.guidelines,
-                "allow_extra_metadata": dataset.allow_extra_metadata,
-                "last_activity_at": datetime.utcnow(),
-            }
+        httpx_mock.add_response(
+            json=mock_return_value, url=f"{api_url}/api/v1/datasets/{mock_dataset_id}", method="GET", status_code=200
         )
+        with httpx.Client():
+            client = rg.Argilla(api_url)
+            dataset = rg.Dataset(
+                name="dataset-01",
+                workspace_id=uuid.uuid4(),
+                guidelines="Test guidelines",
+                allow_extra_metadata=False,
+                id=str(mock_dataset_id),
+            )
+            dataset = client.create(dataset)
+            dataset = client.get(dataset)
+            assert dataset.id.hex == mock_return_value["id"]
+            assert dataset.name == mock_return_value["name"]
+            assert dataset.status == mock_return_value["status"]
+            assert dataset.allow_extra_metadata == mock_return_value["allow_extra_metadata"]
 
-        mock_httpx_client.patch = mocker.MagicMock(return_value=mock_response)
-        dataset.update()
-
-        mock_httpx_client.patch.assert_called_once_with(
-            f"/api/v1/datasets/{dataset.id}",
-            json={
-                "guidelines": dataset.guidelines,
-                "allow_extra_metadata": dataset.allow_extra_metadata,
-            },
+    def test_update_dataset(self, httpx_mock: HTTPXMock):
+        mock_dataset_id = uuid.uuid4().hex
+        mock_workspace_id = uuid.uuid4().hex
+        mock_return_value = {
+            "id": mock_dataset_id,
+            "name": "dataset-01",
+            "workspace_id": str(mock_workspace_id),
+            "guidelines": "guidelines",
+            "allow_extra_metadata": False,
+            "last_activity_at": datetime.utcnow().isoformat(),
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
+            method="PATCH",
+            status_code=200,
         )
-
-        assert dataset.id == mock_response.json()["id"]
-        assert dataset.name == mock_response.json()["name"]
-        assert dataset.last_activity_at == mock_response.json()["last_activity_at"]
-        assert dataset.client == mock_httpx_client
-
-    def test_delete_dataset(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
-        dataset = Dataset(
-            id=uuid.uuid4(),
-            name="dataset-01",
-            guidelines="Test guidelines",
-            workspace_id=uuid.uuid4(),
-            client=mock_httpx_client,
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
+            method="GET",
+            status_code=200,
         )
-
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "id": dataset.id,
-                "name": dataset.name,
-                "workspace_id": dataset.workspace_id,
-                "guidelines": dataset.guidelines,
-                "allow_extra_metadata": dataset.allow_extra_metadata,
-                "last_activity_at": datetime.utcnow(),
-            }
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"http://test_url/api/v1/datasets",
+            method="POST",
+            status_code=200,
+            # match_json=mock_return_value,
         )
+        with httpx.Client() as client:
+            dataset = rg.Dataset(
+                id=mock_return_value["id"],
+                name=mock_return_value["name"],
+                workspace_id=mock_return_value["workspace_id"],
+                guidelines=mock_return_value["guidelines"],
+            )
+            client = rg.Argilla("http://test_url")
+            client.create(dataset)
+            dataset.guidelines = "new guidelines"
+            updated_dataset = client.update(dataset)
+            gotten_dataset = client.get(updated_dataset)
+            assert dataset.id == gotten_dataset.id
+            assert dataset.name == gotten_dataset.name
 
-        mock_httpx_client.delete = mocker.MagicMock(return_value=mock_response)
-        dataset.delete()
-
-        mock_httpx_client.delete.assert_called_once_with(
-            f"/api/v1/datasets/{dataset.id}",
+    def test_delete_dataset(self, httpx_mock: HTTPXMock):
+        mock_dataset_id = uuid.uuid4()
+        mock_return_value = {
+            "id": str(mock_dataset_id),
+            "name": "dataset-01",
+            "status": "draft",
+            "allow_extra_metadata": False,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
+            method="DELETE",
+            status_code=200,
         )
+        with httpx.Client() as client:
+            client = rg.Argilla("http://test_url")
+            client._datasets.delete(mock_dataset_id)
+            pytest.raises(httpx.HTTPError, client._datasets.get, mock_dataset_id)
 
-        assert dataset.id == mock_response.json()["id"]
-        assert dataset.name == mock_response.json()["name"]
-        assert dataset.last_activity_at == mock_response.json()["last_activity_at"]
-        assert dataset.client == mock_httpx_client
-
-    def test_publish_dataset(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
-        dataset = Dataset(
-            id=uuid.uuid4(),
-            name="dataset-01",
-            guidelines="Test guidelines",
-            workspace_id=uuid.uuid4(),
-            client=mock_httpx_client,
+    def test_publish_dataset(self, httpx_mock: HTTPXMock):
+        mock_dataset_id = uuid.uuid4()
+        mock_return_value = {
+            "id": str(mock_dataset_id),
+            "name": "dataset-01",
+            "status": "ready",
+            "allow_extra_metadata": False,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}/publish",
+            method="PUT",
+            status_code=200,
         )
-
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "id": dataset.id,
-                "name": dataset.name,
-                "workspace_id": dataset.workspace_id,
-                "guidelines": dataset.guidelines,
-                "allow_extra_metadata": dataset.allow_extra_metadata,
-                "last_activity_at": datetime.utcnow(),
-                "status": "ready",
-            }
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
+            method="GET",
+            status_code=200,
         )
+        with httpx.Client() as client:
+            client = rg.Argilla("http://test_url")
+            client._datasets.publish(mock_dataset_id)
+            dataset = client._datasets.get(mock_dataset_id)
+            assert dataset.status == "ready"
+            assert dataset.id == mock_dataset_id
+            assert dataset.name == "dataset-01"
 
-        mock_httpx_client.put = mocker.MagicMock(return_value=mock_response)
-        dataset.publish()
-
-        mock_httpx_client.put.assert_called_once_with(
-            f"/api/v1/datasets/{dataset.id}/publish",
+    def test_get_by_name_and_workspace_id(self, httpx_mock: HTTPXMock):
+        mock_workspace_id = uuid.uuid4()
+        mock_dataset_id = uuid.uuid4()
+        mock_return_value = {
+            "items": [
+                {
+                    "id": str(mock_dataset_id),
+                    "name": "dataset-01",
+                    "status": "ready",
+                    "allow_extra_metadata": False,
+                    "inserted_at": datetime.utcnow().isoformat(),
+                    "updated_at": datetime.utcnow().isoformat(),
+                    "workspace_id": str(mock_workspace_id),
+                }
+            ]
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value, url=f"{api_url}/api/v1/me/datasets", method="GET", status_code=200
         )
-
-        assert dataset.id == mock_response.json()["id"]
-        assert dataset.name == mock_response.json()["name"]
-        assert dataset.last_activity_at == mock_response.json()["last_activity_at"]
-        assert dataset.status == mock_response.json()["status"]
-        assert dataset.client == mock_httpx_client
-
-    def test_get_dataset_workspace(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
-        dataset = Dataset(
-            id=uuid.uuid4(),
-            name="dataset-01",
-            guidelines="Test guidelines",
-            workspace_id=uuid.uuid4(),
-            client=mock_httpx_client,
-        )
-
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "id": dataset.workspace_id,
-                "name": "workspace-01",
-                "inserted_at": datetime.utcnow(),
-                "updated_at": datetime.utcnow(),
-            }
-        )
-
-        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
-        workspace = dataset.workspace
-
-        mock_httpx_client.get.assert_called_once_with(
-            f"/api/v1/workspaces/{dataset.workspace_id}",
-        )
-
-        assert workspace.id == mock_response.json()["id"]
-        assert workspace.name == mock_response.json()["name"]
-        assert workspace.client == mock_httpx_client
-
-    def test_list_questions(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
-        dataset = Dataset(
-            id=uuid.uuid4(),
-            name="dataset-01",
-            guidelines="Test guidelines",
-            workspace_id=uuid.uuid4(),
-            client=mock_httpx_client,
-        )
-
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "items": [
-                    {
-                        "id": uuid.uuid4(),
-                        "dataset_id": dataset.id,
-                        "title": "question-01",
-                        "name": "question-01",
-                        "settings": {"type": "text"},
-                        "inserted_at": datetime.utcnow(),
-                        "updated_at": datetime.utcnow(),
-                    },
-                    {
-                        "id": uuid.uuid4(),
-                        "title": "question-02",
-                        "dataset_id": dataset.id,
-                        "name": "question-02",
-                        "settings": {"type": "text"},
-                        "inserted_at": datetime.utcnow(),
-                        "updated_at": datetime.utcnow(),
-                    },
-                ]
-            }
-        )
-
-        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
-        questions = dataset.questions.list()
-
-        mock_httpx_client.get.assert_called_once_with(
-            f"/api/v1/datasets/{dataset.id}/questions",
-        )
-
-        for question, mock_question in zip(questions, mock_response.json()["items"]):
-            assert question.id == mock_question["id"]
-            assert question.name == mock_question["name"]
-            assert question.settings.type == mock_question["settings"]["type"]
-            assert question.inserted_at == mock_question["inserted_at"]
-            assert question.updated_at == mock_question["updated_at"]
-            assert question.client == mock_httpx_client

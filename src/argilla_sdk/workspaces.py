@@ -12,30 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import TYPE_CHECKING
+from typing import List
+from uuid import UUID
 
-from argilla_sdk import _api
-from argilla_sdk._helpers import GenericIterator  # noqa
-
-if TYPE_CHECKING:
-    from argilla_sdk.datasets import WorkspaceDatasets
-
-if TYPE_CHECKING:
-    from argilla_sdk.datasets import WorkspaceDatasets
-    from argilla_sdk.users import WorkspaceUsers
+from argilla_sdk._resource import Resource
+from argilla_sdk._models import WorkspaceModel, DatasetModel
 
 __all__ = ["Workspace"]
 
 
-class Workspace(_api.Workspace):
-    @property
-    def datasets(self) -> "WorkspaceDatasets":
-        from argilla_sdk.datasets import WorkspaceDatasets
+class Workspace(Resource):
+    def __init__(self, **kwargs) -> None:
+        self._model = WorkspaceModel(**kwargs)
+        self.name = self._model.name
+        self.id = self._model.id
+        self.inserted_at = self._model.inserted_at
+        self.updated_at = self._model.updated_at
 
-        return WorkspaceDatasets(self)
-
-    @property
-    def users(self) -> "WorkspaceUsers":
-        from argilla_sdk.users import WorkspaceUsers
-
-        return WorkspaceUsers(self)
+    def list_datasets(self, workspace_id: UUID) -> List["DatasetModel"]:
+        datasets = self.api._datasets.list(workspace_id)
+        self.log(f"Got {len(datasets)} datasets for workspace {workspace_id}")
+        return datasets

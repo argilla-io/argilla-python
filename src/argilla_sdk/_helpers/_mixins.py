@@ -12,9 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._api._datasets import *  # noqa 403
-from argilla_sdk._api._http import *  # noqa 403
-from argilla_sdk._api._workspaces import *  # noqa 403
-from argilla_sdk._api._users import *  # noqa 403
-from argilla_sdk._api._client import *  # noqa 403
-from argilla_sdk._api._questions import *  # noqa 403
+import logging
+
+LOG_LEVEL_MAP = {
+    "debug": logging.DEBUG,
+    "info": logging.INFO,
+    "warning": logging.WARNING,
+    "error": logging.ERROR,
+    "critical": logging.CRITICAL,
+}
+
+class LoggingMixin:
+
+    def log(self, message: str, level: str = "info") -> None:
+        level_int = LOG_LEVEL_MAP.get(level, logging.INFO)
+        class_name = self.__class__.__name__
+        message = f"{class_name}: {message}"
+        logging.log(level=level_int, msg=message)

@@ -12,42 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
-from typing import Optional
-
-import httpx
-
-from argilla_sdk._api import HTTPClientConfig, create_http_client  # noqa
 from argilla_sdk.datasets import *  # noqa
 from argilla_sdk.workspaces import *  # noqa
 from argilla_sdk.users import *  # noqa
-
-DEFAULT_HTTP_CLIENT: Optional[httpx.Client] = None
-DEFAULT_HTTP_CONFIG = HTTPClientConfig(api_url=os.getenv("ARGILLA_API_URL"), api_key=os.getenv("ARGILLA_API_KEY"))
-
-
-def init(
-    api_url: Optional[str] = None,
-    api_key: Optional[str] = None,
-    timeout: int = 60,
-    **client_args,
-) -> None:
-    """Initialize the SDK with the given API URL and API key."""
-
-    global DEFAULT_HTTP_CLIENT
-    global DEFAULT_HTTP_CONFIG
-
-    api_url = api_url or DEFAULT_HTTP_CONFIG.api_url
-    api_key = api_key or DEFAULT_HTTP_CONFIG.api_key
-
-    DEFAULT_HTTP_CLIENT = create_http_client(api_url, api_key, timeout, **client_args)
-
-
-def get_default_http_client() -> httpx.Client:
-    """Get the default HTTP client."""
-    global DEFAULT_HTTP_CLIENT
-
-    if DEFAULT_HTTP_CLIENT is None:
-        raise RuntimeError("SDK not initialized. Call argilla_sdk.init() first.")
-
-    return DEFAULT_HTTP_CLIENT
+from argilla_sdk.client import *  # noqa

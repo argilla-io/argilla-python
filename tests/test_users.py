@@ -12,288 +12,252 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import uuid
 from datetime import datetime
 
 import httpx
-from pytest_mock import MockerFixture
+from pytest_httpx import HTTPXMock
 
-from argilla_sdk import Role, User, Workspace
+import argilla_sdk as rg
 
 
 class TestUsers:
-    def test_serialize(self, mock_httpx_client: httpx.Client):
-        user = User(
+    def test_serialize(self):
+        user = rg.User(
             id=uuid.uuid4(),
             username="test-user",
             first_name="Test",
             last_name="User",
             inserted_at=datetime.utcnow(),
             updated_at=datetime.utcnow(),
-            client=mock_httpx_client,
         )
 
-        assert User.from_dict(user.to_dict()) == user
+        assert user.username == user.serialize()["username"]
 
-    def test_serialize_with_extra_arguments(self, mock_httpx_client: httpx.Client):
-        user = User.from_dict(
-            {
-                "id": uuid.uuid4(),
-                "username": "test-user",
-                "password": "test-password",
-                "first_name": "Test",
-                "last_name": "User",
-                "role": "admin",
-                "client": mock_httpx_client,
-                "extra_argument": "extra-argument",
-                "another_extra_argument": "another-extra-argument",
-            }
+    def test_serialize_with_extra_arguments(self):
+        user = rg.User(
+            id=uuid.uuid4(),
+            username="test-user",
+            password="test-password",
+            first_name="Test",
+            last_name="User",
+            role="admin",
+            extra_argument="extra-argument",
+            another_extra_argument="another-extra-argument",
         )
 
-        assert user.to_dict() == {
-            "id": user.id,
+        assert user.serialize() == {
+            "id": user.id.hex,
             "username": "test-user",
-            "api_key": None,
             "first_name": "Test",
             "last_name": "User",
             "role": "admin",
             "inserted_at": user.inserted_at,
             "updated_at": user.updated_at,
+            "password": "test-password",
         }
 
-    def test_list_users(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value=[
-                {
-                    "id": uuid.uuid4(),
-                    "username": "test-user",
-                    "first_name": "Test",
-                    "last_name": "User",
-                    "role": "admin",
-                },
-                {
-                    "id": uuid.uuid4(),
-                    "username": "another-test-user",
-                    "role": "annotator",
-                    "first_name": "First",
-                    "last_name": "Last",
-                },
-            ]
-        )
-
-        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
-
-        users = User.list()
-        mock_httpx_client.get.assert_called_once_with("/api/users")
-
-        assert len(users) == 2
-        items_json = mock_response.json()
-        for i in range(len(users)):
-            assert users[i].username == items_json[i]["username"]
-            assert users[i].id == items_json[i]["id"]
-            assert users[i].role == items_json[i]["role"]
-            assert users[i].client == mock_httpx_client
-
-    def test_list_workspace_users(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
-        workspace = Workspace(id=uuid.uuid4(), name="test-workspace", client=mock_httpx_client)
-
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value=[
-                {
-                    "id": uuid.uuid4(),
-                    "username": "test-user",
-                    "first_name": "Test",
-                    "last_name": "User",
-                    "role": "admin",
-                },
-                {
-                    "id": uuid.uuid4(),
-                    "username": "another-test-user",
-                    "role": "annotator",
-                    "first_name": "First",
-                    "last_name": "Last",
-                },
-            ]
-        )
-
-        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
-
-        users = workspace.users.list()
-        mock_httpx_client.get.assert_called_once_with(f"/api/workspaces/{workspace.id}/users")
-
-        assert len(users) == 2
-        items_json = mock_response.json()
-        for i in range(len(users)):
-            assert users[i].username == items_json[i]["username"]
-            assert users[i].id == items_json[i]["id"]
-            assert users[i].role == items_json[i]["role"]
-            assert users[i].client == mock_httpx_client
-
-    def test_get_me(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "id": uuid.uuid4(),
-                "username": "test-user",
-                "first_name": "Test",
-                "last_name": "User",
-                "role": "admin",
-            }
-        )
-
-        mock_httpx_client.get = mocker.MagicMock(return_value=mock_response)
-
-        user = User.get_me()
-        mock_httpx_client.get.assert_called_once_with("/api/me")
-
-        assert user.username == mock_response.json()["username"]
-        assert user.id == mock_response.json()["id"]
-        assert user.role == mock_response.json()["role"]
-        assert user.client == mock_httpx_client
-
-    def test_create_user(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "id": uuid.uuid4(),
-                "username": "test-user",
-                "password": "test-password",
-                "first_name": "Test",
-                "last_name": "User",
-                "role": "admin",
-            }
-        )
-
-        mock_httpx_client.post = mocker.MagicMock(return_value=mock_response)
-
-        user = User(
+    def test_json_serialize(self):
+        user = rg.User(
+            id=uuid.uuid4(),
             username="test-user",
-            password="test-password",
             first_name="Test",
             last_name="User",
-            role=Role.admin,
-            client=mock_httpx_client,
+            inserted_at=datetime.utcnow(),
+            updated_at=datetime.utcnow(),
         )
 
-        user.create()
-        mock_httpx_client.post.assert_called_once_with(
-            "/api/users",
-            json={
+        user_from_json = json.loads(user.serialize_json())
+        assert user.username == user_from_json["username"]
+        assert user.id == uuid.UUID(user_from_json["id"])
+        assert user.inserted_at.isoformat() == user_from_json["inserted_at"]
+        assert user.updated_at.isoformat() == user_from_json["updated_at"]
+
+    def test_model_from_json(self):
+        user_json = {
+            "id": str(uuid.uuid4()),
+            "username": "test-user",
+            "first_name": "Test",
+            "last_name": "User",
+            "role": "admin",
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        user = rg.User(**user_json)
+        assert user.username == user_json["username"]
+        assert user.id == uuid.UUID(user_json["id"])
+        assert user.inserted_at == datetime.fromisoformat(user_json["inserted_at"])
+        assert user.updated_at == datetime.fromisoformat(user_json["updated_at"])
+
+    def test_list_users(self, httpx_mock: HTTPXMock):
+        mock_return_value = [
+            {
+                "id": str(uuid.uuid4()),
                 "username": "test-user",
-                "password": "test-password",
                 "first_name": "Test",
                 "last_name": "User",
-                "role": Role.admin,
+                "role": "admin",
+                "inserted_at": datetime.utcnow().isoformat(),
+                "updated_at": datetime.utcnow().isoformat(),
             },
-        )
+            {
+                "id": str(uuid.uuid4()),
+                "username": "another-test-user",
+                "role": "annotator",
+                "first_name": "First",
+                "last_name": "Last",
+                "inserted_at": datetime.utcnow().isoformat(),
+                "updated_at": datetime.utcnow().isoformat(),
+            },
+        ]
+        api_url = "http://test_url"
+        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/users")
+        with httpx.Client():
+            client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
+            users = client._users.list()
+            assert len(users) == 2
+            for i in range(len(users)):
+                assert users[i].username == mock_return_value[i]["username"]
+                assert users[i].role == mock_return_value[i]["role"]
+                assert users[i].id == uuid.UUID(mock_return_value[i]["id"])
 
-        assert user.username == mock_response.json()["username"]
-        assert user.id == mock_response.json()["id"]
-        assert user.role == mock_response.json()["role"]
-        assert user.client == mock_httpx_client
+    def test_list_workspace_users(self, httpx_mock: HTTPXMock):
+        workspace_id = uuid.uuid4()
+        mock_return_value = {
+            "items": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "username": "test-user",
+                    "first_name": "Test",
+                    "last_name": "User",
+                    "role": "admin",
+                    "inserted_at": datetime.utcnow().isoformat(),
+                    "updated_at": datetime.utcnow().isoformat(),
+                },
+                {
+                    "id": str(uuid.uuid4()),
+                    "username": "another-test-user",
+                    "first_name": "Another",
+                    "last_name": "User",
+                    "role": "admin",
+                    "inserted_at": datetime.utcnow().isoformat(),
+                    "updated_at": datetime.utcnow().isoformat(),
+                },
+            ]
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/workspaces/{workspace_id}/users")
+        with httpx.Client():
+            client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
+            users = client._users.list_by_workspace_id(workspace_id)
+            assert len(users) == 2
+            for i in range(len(users)):
+                assert users[i].username == mock_return_value["items"][i]["username"]
+                assert users[i].id == uuid.UUID(mock_return_value["items"][i]["id"])
 
-    def test_add_user_to_workspace(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
-        workspace = Workspace(id=uuid.uuid4(), name="test-workspace", client=mock_httpx_client)
+    def test_get_me(self, httpx_mock: HTTPXMock):
+        mock_return_value = {
+            "id": str(uuid.uuid4()),
+            "username": "test-user",
+            "first_name": "Test",
+            "last_name": "User",
+            "role": "admin",
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+
+        api_url = "http://test_url"
+        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/me")
+        with httpx.Client():
+            client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
+            user = client._users.get_me()
+            assert user.username == mock_return_value["username"]
+            assert user.id == uuid.UUID(mock_return_value["id"])
+            assert user.role == mock_return_value["role"]
+
+    def test_create_user(self, httpx_mock: HTTPXMock):
+        user_id = uuid.uuid4().hex
+        mock_return_value = {
+            "id": str(user_id),
+            "username": "test-user",
+            "password": "test-password",
+            "first_name": "Test",
+            "last_name": "User",
+            "role": "admin",
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+
+        api_url = "http://test_url"
+        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/users", method="POST")
+        with httpx.Client():
+            client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
+            user = rg.User(**mock_return_value)
+            client.create(user)
+
+    def test_get_user(self, httpx_mock: HTTPXMock):
         user_id = uuid.uuid4()
+        mock_return_value = {
+            "id": str(user_id),
+            "username": "test-user",
+            "password": "test-password",
+            "first_name": "Test",
+            "last_name": "User",
+            "role": "admin",
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
 
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "id": user_id,
-                "username": "test-user",
-                "password": "test-password",
-                "first_name": "Test",
-                "last_name": "User",
-                "role": "admin",
-            }
+        api_url = "http://test_url"
+        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/users", method="POST")
+        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/users/{user_id}")
+        with httpx.Client():
+            client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
+            user = rg.User(**mock_return_value)
+            client.create(user)
+            gotten_user = client._users.get(user_id)
+            assert user.username == gotten_user.username
+            assert user.id == gotten_user.id
+
+    def test_add_user_to_workspace(self, httpx_mock: HTTPXMock):
+        user_id = uuid.uuid4().hex
+        workspace_id = uuid.uuid4().hex
+        mock_workspace_user_return_value = {
+            "id": str(user_id),
+            "username": "test-user",
+            "password": "test-password",
+            "first_name": "Test",
+            "last_name": "User",
+            "role": "admin",
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        httpx_mock.add_response(
+            json=mock_workspace_user_return_value, url=f"http://test_url/api/users/{user_id}", method="GET"
         )
+        httpx_mock.add_response(url=f"http://test_url/api/v1/workspaces/{workspace_id}/users/{user_id}", method="POST")
+        with httpx.Client():
+            client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
+            user = rg.User(**mock_workspace_user_return_value)
+            client._workspaces.add_user(workspace_id, user_id)
+            gotten_user = client.get(user)
+            assert user.username == gotten_user.username
+            assert user.id == gotten_user.id
 
-        mock_httpx_client.post = mocker.MagicMock(return_value=mock_response)
-
-        user = User(
-            id=user_id,
-            username="test-user",
-            first_name="Test",
-            last_name="User",
-            role=Role.admin,
-            client=mock_httpx_client,
-        )
-
-        workspace.users.add(user)
-        mock_httpx_client.post.assert_called_once_with(f"/api/workspaces/{workspace.id}/users/{user_id}")
-
-        assert user.username == mock_response.json()["username"]
-        assert user.id == mock_response.json()["id"]
-        assert user.role == mock_response.json()["role"]
-        assert user.client == mock_httpx_client
-
-    def test_delete_user_from_workspace(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
-        workspace = Workspace(id=uuid.uuid4(), name="test-workspace", client=mock_httpx_client)
+    def test_remove_user_from_workspace(self, httpx_mock: HTTPXMock):
         user_id = uuid.uuid4()
-
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "id": user_id,
-                "username": "test-user",
-                "password": "test-password",
-                "first_name": "Test",
-                "last_name": "User",
-                "role": "admin",
-            }
+        workspace_id = uuid.uuid4()
+        httpx_mock.add_response(
+            url=f"http://test_url/api/v1/workspaces/{workspace_id}/users/{user_id}", method="DELETE"
         )
+        with httpx.Client():
+            client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
+            client._workspaces.remove_user(workspace_id, user_id)
 
-        mock_httpx_client.delete = mocker.MagicMock(return_value=mock_response)
-
-        user = User(
-            id=user_id,
-            username="test-user",
-            first_name="Test",
-            last_name="User",
-            role=Role.admin,
-            client=mock_httpx_client,
-        )
-
-        workspace.users.delete(user)
-        mock_httpx_client.delete.assert_called_once_with(f"/api/workspaces/{workspace.id}/users/{user_id}")
-
-        assert user.username == mock_response.json()["username"]
-        assert user.id == mock_response.json()["id"]
-        assert user.role == mock_response.json()["role"]
-        assert user.client == mock_httpx_client
-
-    def test_delete_user(self, mocker: MockerFixture, mock_httpx_client: httpx.Client):
+    def test_delete_user(self, httpx_mock: HTTPXMock):
         user_id = uuid.uuid4()
-
-        mock_response = mocker.Mock(httpx.Response)
-        mock_response.json = mocker.Mock(
-            return_value={
-                "id": user_id,
-                "username": "test-user",
-                "password": "test-password",
-                "first_name": "Test",
-                "last_name": "User",
-                "role": "admin",
-            }
-        )
-
-        mock_httpx_client.delete = mocker.MagicMock(return_value=mock_response)
-
-        user = User(
-            id=user_id,
-            username="test-user",
-            first_name="Test",
-            last_name="User",
-            role=Role.admin,
-            client=mock_httpx_client,
-        )
-
-        user.delete()
-        mock_httpx_client.delete.assert_called_once_with(f"/api/users/{user_id}")
-
-        assert user.username == mock_response.json()["username"]
-        assert user.id == mock_response.json()["id"]
-        assert user.role == mock_response.json()["role"]
-        assert user.client == mock_httpx_client
+        httpx_mock.add_response(url=f"http://test_url/api/users/{user_id}", method="DELETE")
+        with httpx.Client():
+            client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
+            client._users.delete(user_id)

@@ -12,9 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._api._datasets import *  # noqa 403
-from argilla_sdk._api._http import *  # noqa 403
-from argilla_sdk._api._workspaces import *  # noqa 403
-from argilla_sdk._api._users import *  # noqa 403
-from argilla_sdk._api._client import *  # noqa 403
-from argilla_sdk._api._questions import *  # noqa 403
+from datetime import datetime
+from typing import TYPE_CHECKING
+
+from argilla_sdk._helpers._mixins import LoggingMixin
+
+
+if TYPE_CHECKING:
+    from httpx import Client
+
+
+__all__ = ["ResourceAPI"]
+
+
+class ResourceAPI(LoggingMixin):
+    """Base class for all API resources that contains common methods."""
+
+    def __init__(self, http_client: "Client") -> None:
+        self.http_client = http_client
+
+    def _date_from_iso_format(self, date: str) -> datetime:
+        return datetime.fromisoformat(date)

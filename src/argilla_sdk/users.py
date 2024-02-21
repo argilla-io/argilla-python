@@ -11,41 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from argilla_sdk._models import UserModel
+from argilla_sdk._resource import Resource
 
-from typing import List, TYPE_CHECKING
-
-from argilla_sdk import _api
-from argilla_sdk._helpers._iterator import GenericIterator  # noqa
-
-if TYPE_CHECKING:
-    from argilla_sdk.workspaces import Workspace
-
-__all__ = ["User", "WorkspaceUsers", "Role"]
-
-Role = _api.Role
+__all__ = ["User"]
 
 
-class User(_api.User):
-    @property
-    def workspaces(self) -> List["Workspace"]:
-        return Workspace.list_by_user_id(self.id)
+class User(Resource):
+    def __init__(self, **kwargs) -> None:
+        self._model = UserModel(**kwargs)
+        self.username = self._model.username
+        self.first_name = self._model.first_name
+        self.role = self._model.role
 
-
-UsersIterator = GenericIterator[User]
-
-
-class WorkspaceUsers:
-    def __init__(self, workspace: "Workspace"):
-        self.workspace = workspace
-
-    def list(self) -> List[User]:
-        return User.list_by_workspace_id(self.workspace.id)
-
-    def add(self, user: User) -> User:
-        return user.add_to_workspace(self.workspace.id)
-
-    def delete(self, user: User) -> User:
-        return user.delete_from_workspace(self.workspace.id)
-
-    def __iter__(self):
-        return UsersIterator(self.list())
+        self.id = self._model.id
+        self.last_name = self._model.last_name
+        self.password = self._model.password
+        self.inserted_at = self._model.inserted_at
+        self.updated_at = self._model.updated_at

@@ -1,19 +1,16 @@
-from dataclasses import dataclass
+from pydantic import BaseModel, validator
 
 
-@dataclass
-class Guidelines:
+class Guidelines(BaseModel):
     guidelines: str
 
-    def __post_init__(self):
-        self.guidelines = self.__process_guidelines(guidelines=self.guidelines)
+    @validator("guidelines")
+    def __process_guidelines(cls, guidelines):
+        # TODO: Add validation, error handling, and processing for guidelines.
+        return guidelines
 
     def __str__(self) -> str:
         return str(self.guidelines)
-
-    def __process_guidelines(self, guidelines):
-        # TODO: Add validation, error handling, and processing for guidelines.
-        return guidelines
 
     def serialize(self):
         return {

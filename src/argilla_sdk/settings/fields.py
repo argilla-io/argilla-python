@@ -1,22 +1,17 @@
-from dataclasses import dataclass
-
+from pydantic import BaseModel, validator
 from typing import Optional
 
 
-@dataclass
-class TextField:
+class TextField(BaseModel):
     name: str
     use_markdown: bool = False
     title: Optional[str] = None
     required: bool = True
 
-    def __post_init__(self):
-        self.title = self.title or self.name
-        self.name = self.name.lower().replace(" ", "_")
+    @validator("name")
+    def __name_lower(cls, name):
+        return name.lower().replace(" ", "_")
 
-    def serialize(self):
-        return {
-            "name": self.name,
-            "use_markdown": self.use_markdown,
-            "required": self.required,
-        }
+    @validator("title", always=True)
+    def __title_default(cls, title, values):
+        return title or values["name"]

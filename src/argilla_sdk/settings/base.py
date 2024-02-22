@@ -24,7 +24,7 @@ class Settings:
     def guidelines(
         self,
     ) -> None:
-        return self.__guidelines.guidelines
+        return self.__guidelines
 
     @guidelines.setter
     def guidelines(self, guidelines: str) -> None:
@@ -61,11 +61,11 @@ class Settings:
         return questions
 
     def __process_guidelines(self, guidelines):
-        return Guidelines(guidelines)
+        return guidelines
 
     def serialize(self):
         return {
-            "guidelines": self.__guidelines.serialize() if self.__guidelines else None,
+            "guidelines": self.__guidelines,
             "fields": [field.serialize() for field in self.__fields],
             "questions": [question.serialize() for question in self.__questions],
         }

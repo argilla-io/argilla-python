@@ -45,4 +45,3 @@ class Dataset(Resource):
         self.guidelines = guidelines or settings.guidelines
         self.fields = fields or settings.fields
         self.questions = questions or settings.questions
-        self._model.guidelines = str(self.guidelines)

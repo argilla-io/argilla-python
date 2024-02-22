@@ -43,7 +43,6 @@ class DatasetModel(ResourceModel):
     allow_extra_metadata: bool = False
 
     workspace_id: Optional[UUID] = None
-    guidelines: Optional[str] = None
     last_activity_at: Optional[datetime] = None
     api: object = None
     url: Optional[str] = None
@@ -67,7 +66,7 @@ class UserModel(ResourceModel):
     username: str
     first_name: str
     role: str = Role.annotator
-    
+
     last_name: Optional[str] = None
     password: Optional[str] = None
 

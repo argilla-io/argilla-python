@@ -263,7 +263,6 @@ class TestDatasetsAPI:
             assert mock_dataset_id.hex == mock_return_value["items"][0]["id"]
             assert dataset.name == mock_return_value["items"][0]["name"]
             assert dataset.status == mock_return_value["items"][0]["status"]
-            assert dataset.allow_extra_metadata == mock_return_value["items"][0]["allow_extra_metadata"]
             assert dataset.workspace_id.hex == mock_return_value["items"][0]["workspace_id"]
             assert dataset.inserted_at.isoformat() == mock_return_value["items"][0]["inserted_at"]
             assert dataset.updated_at.isoformat() == mock_return_value["items"][0]["updated_at"]

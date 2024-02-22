@@ -42,7 +42,6 @@ class Dataset(Resource):
         fields: Optional[list[FieldBase]] = None,
         questions: Optional[list[QuestionBase]] = None,
     ) -> None:
-        self._settings = settings
         self.guidelines = guidelines or settings.guidelines
         self.fields = fields or settings.fields
         self.questions = questions or settings.questions

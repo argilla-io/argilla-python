@@ -1,6 +1,8 @@
-from pathlib import Path
-from tempfile import TemporaryFile
-from unittest import mock
+import uuid
+from datetime import datetime
+
+import httpx
+from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
 
@@ -51,38 +53,6 @@ class TestSettings:
         assert settings.questions[0].labels == ["positive", "negative"]
 
 
-import pytest
-from argilla_sdk.settings.questions import MultiLabelQuestion
-
-class TestMultiLabelQuestion:
-    def test_serialize(self):
-        question = MultiLabelQuestion(name="question", labels=["label1", "label2"], visible_labels=10)
-        expected_result = {
-            "name": "question",
-            "labels": ["label1", "label2"],
-            "visible_labels": 10,
-        }
-        assert question.serialize() == expected_result
-
-    def test_serialize_empty_labels(self):
-        question = MultiLabelQuestion(name="question", labels=[], visible_labels=5)
-        expected_result = {
-            "name": "question",
-            "labels": [],
-            "visible_labels": 5,
-        }
-        assert question.serialize() == expected_result
-
-    def test_serialize_large_visible_labels(self):
-        question = MultiLabelQuestion(name="question", labels=["label1", "label2"], visible_labels=100)
-        expected_result = {
-            "name": "question",
-            "labels": ["label1", "label2"],
-            "visible_labels": 100,
-        }
-        assert question.serialize() == expected_result
-
-
 class TestSettingsSerialization:
     def test_serialize(self):
         settings = rg.Settings(
@@ -91,6 +61,201 @@ class TestSettingsSerialization:
             questions=[rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])],
         )
         settings_serialized = settings.serialize()
-        assert settings_serialized["guidelines"]["guidelines_str"] == "This is a guideline"
+        assert settings_serialized["guidelines"] == "This is a guideline"
         assert settings_serialized["fields"][0]["name"] == "prompt"
         assert settings_serialized["fields"][0]["use_markdown"] == True
+
+
+class TestDatasetSettings:
+    def test_dataset_init_with_fields_and_questions(self):
+        settings = rg.Settings(guidelines="guidelines")
+        fields = [rg.TextField(name="prompt", use_markdown=True)]
+        questions = [rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])]
+        mock_dataset_name = "dataset_name"
+        dataset = rg.Dataset(name=mock_dataset_name, settings=settings, fields=fields, questions=questions)
+
+        assert dataset.guidelines == "guidelines"
+        assert dataset.fields == fields
+        assert dataset.questions == questions
+
+    def test_create_dataset_with_settings(self, httpx_mock: HTTPXMock):
+        mock_dataset_name = "dataset_name"
+        mock_dataset_id = uuid.uuid4()
+        mock_guidelines = "guidelines"
+        mock_return_value = {
+            "id": str(mock_dataset_id),
+            "name": mock_dataset_name,
+            "status": "draft",
+            "allow_extra_metadata": False,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
+            status_code=200,
+        )
+        with httpx.Client():
+            fields = [rg.TextField(name="prompt", use_markdown=True)]
+            questions = [rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])]
+            settings = rg.Settings(guidelines="guidelines", fields=fields, questions=questions)
+            dataset = rg.Dataset(
+                name=mock_dataset_name,
+                settings=settings,
+            )
+            client = rg.Argilla(api_url)
+            dataset = client.create(dataset)
+            assert dataset.guidelines == mock_guidelines
+            assert dataset.fields == fields
+            assert dataset.questions == questions
+
+    def test_update_dataset_with_settings(self, httpx_mock: HTTPXMock):
+        mock_dataset_name = "dataset_name"
+        mock_dataset_id = uuid.uuid4()
+        mock_guidelines = "guidelines"
+        mock_return_value = {
+            "id": mock_dataset_id.hex,
+            "name": mock_dataset_name,
+            "status": "draft",
+            "allow_extra_metadata": False,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id.hex}",
+            method="PATCH",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
+            method="GET",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
+            status_code=200,
+        )
+        with httpx.Client():
+            fields = [rg.TextField(name="prompt", use_markdown=True)]
+            questions = [rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])]
+            settings = rg.Settings(guidelines=mock_guidelines, fields=fields, questions=questions)
+            dataset = rg.Dataset(
+                name=mock_dataset_name,
+                settings=settings,
+                dataset_id=mock_dataset_id,
+            )
+            client = rg.Argilla(api_url)
+            dataset = client.create(dataset)
+            gotten_dataset = client.get(dataset)
+            gotten_dataset.guidelines = "new guidelines"
+            dataset = client.update(dataset)
+            assert dataset.guidelines == "new guidelines"
+            assert dataset.fields == fields
+            assert dataset.questions == questions
+
+    def test_update_dataset_with_new_fields(self, httpx_mock: HTTPXMock):
+        mock_dataset_name = "dataset_name"
+        mock_dataset_id = uuid.uuid4()
+        mock_guidelines = "guidelines"
+        mock_return_value = {
+            "id": mock_dataset_id.hex,
+            "name": mock_dataset_name,
+            "status": "draft",
+            "allow_extra_metadata": False,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id.hex}",
+            method="PATCH",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
+            method="GET",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
+            status_code=200,
+        )
+        with httpx.Client():
+            fields = [rg.TextField(name="prompt", use_markdown=True)]
+            updated_fields = [rg.TextField(name="new_prompt", use_markdown=True)]
+            questions = [rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])]
+            settings = rg.Settings(guidelines=mock_guidelines, fields=fields, questions=questions)
+            dataset = rg.Dataset(
+                name=mock_dataset_name,
+                settings=settings,
+                dataset_id=mock_dataset_id,
+            )
+            client = rg.Argilla(api_url)
+            dataset = client.create(dataset)
+            gotten_dataset = client.get(dataset)
+            gotten_dataset.fields = updated_fields
+            dataset = client.update(dataset)
+            assert dataset.guidelines == mock_guidelines
+            assert dataset.fields == updated_fields
+            assert dataset.questions == questions
+
+    def test_update_dataset_with_new_questions(self, httpx_mock: HTTPXMock):
+        mock_dataset_name = "dataset_name"
+        mock_dataset_id = uuid.uuid4()
+        mock_guidelines = "guidelines"
+        mock_return_value = {
+            "id": mock_dataset_id.hex,
+            "name": mock_dataset_name,
+            "status": "draft",
+            "allow_extra_metadata": False,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id.hex}",
+            method="PATCH",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
+            method="GET",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
+            status_code=200,
+        )
+        with httpx.Client():
+            fields = [rg.TextField(name="prompt", use_markdown=True)]
+            questions = [rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])]
+            updated_questions = [rg.LabelQuestion(name="new_sentiment", labels=["positive", "negative"])]
+            settings = rg.Settings(guidelines=mock_guidelines, fields=fields, questions=questions)
+            dataset = rg.Dataset(
+                name=mock_dataset_name,
+                settings=settings,
+                dataset_id=mock_dataset_id,
+            )
+            client = rg.Argilla(api_url)
+            dataset = client.create(dataset)
+            gotten_dataset = client.get(dataset)
+            gotten_dataset.questions = updated_questions
+            dataset = client.update(dataset)
+            assert dataset.guidelines == mock_guidelines
+            assert dataset.fields == fields
+            assert dataset.questions == updated_questions

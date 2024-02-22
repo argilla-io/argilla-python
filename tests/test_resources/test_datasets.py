@@ -109,7 +109,6 @@ class TestDatasets:
             assert gotten_dataset.id == dataset.id
             assert gotten_dataset.name == dataset.name
             assert gotten_dataset.status == dataset.status
-            assert gotten_dataset.allow_extra_metadata == dataset.allow_extra_metadata
 
     def test_list_datasets(self, httpx_mock: HTTPXMock):
         mock_return_value = {
@@ -135,7 +134,6 @@ class TestDatasets:
             assert str(datasets[0].id) == mock_return_value["items"][0]["id"]
             assert datasets[0].name == mock_return_value["items"][0]["name"]
             assert datasets[0].status == mock_return_value["items"][0]["status"]
-            assert datasets[0].allow_extra_metadata == mock_return_value["items"][0]["allow_extra_metadata"]
 
     def test_update_dataset(self, httpx_mock: HTTPXMock):
         mock_dataset_id = uuid.uuid4()

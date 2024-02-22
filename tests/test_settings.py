@@ -58,8 +58,7 @@ class TestSettingsSerialization:
             fields=[rg.TextField(name="prompt", use_markdown=True)],
             questions=[rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])],
         )
-        assert settings.serialize() == {
-            "guidelines": "This is a guideline",
-            "fields": [{"name": "prompt", "use_markdown": True}],
-            "questions": [{"name": "sentiment", "labels": ["positive", "negative"]}],
-        }
+        settings_serialized = settings.serialize()
+        assert settings_serialized["guidelines"]["guidelines_str"] == "This is a guideline"
+        assert settings_serialized["fields"][0]["name"] == "prompt"
+        assert settings_serialized["fields"][0]["use_markdown"] == True

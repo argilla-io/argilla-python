@@ -1,20 +1,20 @@
 from abc import ABC, abstractmethod
+from dataclasses import dataclass
 from typing import List
 
 
-class QuestionBase:
-    def __init__(self, name: str):
-        self.name = name
+@dataclass
+class QuestionBase(ABC):
+    name: str
 
     @abstractmethod
     def serialize(self):
         pass
 
 
+@dataclass
 class LabelQuestion(QuestionBase):
-    def __init__(self, name: str, labels: List[str]):
-        super().__init__(name)
-        self.labels = labels
+    labels: List[str]
 
     def serialize(self):
         return {
@@ -23,10 +23,9 @@ class LabelQuestion(QuestionBase):
         }
 
 
+@dataclass
 class RatingQuestion(QuestionBase):
-    def __init__(self, name: str, values: List[int]):
-        super().__init__(name)
-        self.values = values
+    values: List[str]
 
     def serialize(self):
         return {
@@ -35,10 +34,9 @@ class RatingQuestion(QuestionBase):
         }
 
 
+@dataclass
 class TextQuestion(QuestionBase):
-    def __init__(self, name: str, use_markdown: bool = False):
-        super().__init__(name)
-        self.use_markdown = use_markdown
+    use_markdown: bool
 
     def serialize(self):
         return {
@@ -47,11 +45,10 @@ class TextQuestion(QuestionBase):
         }
 
 
+@dataclass
 class MultiLabelQuestion(QuestionBase):
-    def __init__(self, name: str, labels: List[str], visible_labels: int = 20):
-        super().__init__(name)
-        self.labels = labels
-        self.visible_labels = visible_labels
+    labels: List[str]
+    visible_labels: int
 
     def serialize(self):
         return {
@@ -61,10 +58,9 @@ class MultiLabelQuestion(QuestionBase):
         }
 
 
+@dataclass
 class RankingQuestion(QuestionBase):
-    def __init__(self, name: str, values: List[str]):
-        super().__init__(name)
-        self.values = values
+    values: List[str]
 
     def serialize(self):
         return {

@@ -1,16 +1,18 @@
+from dataclasses import dataclass
+
 from typing import Optional
 
 
-class FieldBase:
-    pass
+@dataclass
+class TextField:
+    name: str
+    use_markdown: bool = False
+    title: Optional[str] = None
+    required: bool = True
 
-
-class TextField(FieldBase):
-    def __init__(self, name: str, use_markdown: bool = False, title: Optional[str] = None, required: bool = True):
-        self.name = name
-        self.use_markdown = use_markdown
-        self.title = title or name
-        self.required = required
+    def __post_init__(self):
+        self.title = self.title or self.name
+        self.name = self.name.lower().replace(" ", "_")
 
     def serialize(self):
         return {

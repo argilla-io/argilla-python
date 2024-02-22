@@ -16,8 +16,8 @@ from typing import Union, Optional
 from argilla_sdk._resource import Resource
 from argilla_sdk._models import DatasetModel
 from argilla_sdk.settings import Settings
-from argilla_sdk.settings.fields import FieldBase
-from argilla_sdk.settings.questions import QuestionBase
+from argilla_sdk.settings.fields import TextField
+from argilla_sdk.settings.questions import LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion
 
 
 __all__ = ["Dataset"]
@@ -28,8 +28,8 @@ class Dataset(Resource):
         self,
         settings: Settings = Settings(),
         guidelines: Union[str, None] = None,
-        fields: Optional[list[FieldBase]] = None,
-        questions: Optional[list[QuestionBase]] = None,
+        fields: Optional[list[TextField]] = None,
+        questions: Optional[list[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = None,
         **kwargs,
     ) -> None:
         self._model = DatasetModel(**kwargs)
@@ -39,8 +39,8 @@ class Dataset(Resource):
         self,
         settings: Settings,
         guidelines: Union[str, None] = None,
-        fields: Optional[list[FieldBase]] = None,
-        questions: Optional[list[QuestionBase]] = None,
+        fields: Optional[list[TextField]] = None,
+        questions: Optional[list[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = None,
     ) -> None:
         self.guidelines = guidelines or settings.guidelines
         self.fields = fields or settings.fields

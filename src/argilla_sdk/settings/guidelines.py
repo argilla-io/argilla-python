@@ -10,3 +10,6 @@ class Guidelines:
         return {
             "guidelines_str": self.guidelines,
         }
+
+    def __str__(self) -> str:
+        return str(self.guidelines)

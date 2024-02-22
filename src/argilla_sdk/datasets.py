@@ -11,15 +11,39 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Union
+from typing import Union, Optional
 
-from uuid import UUID
 from argilla_sdk._resource import Resource
 from argilla_sdk._models import DatasetModel
+from argilla_sdk.settings import Settings
+from argilla_sdk.settings.fields import FieldBase
+from argilla_sdk.settings.questions import QuestionBase
+
 
 __all__ = ["Dataset"]
 
 
 class Dataset(Resource):
-    def __init__(self, **kwargs) -> None:
+    def __init__(
+        self,
+        settings: Settings = Settings(),
+        guidelines: Union[str, None] = None,
+        fields: Optional[list[FieldBase]] = None,
+        questions: Optional[list[QuestionBase]] = None,
+        **kwargs,
+    ) -> None:
         self._model = DatasetModel(**kwargs)
+        self.__define_settings(settings=settings, guidelines=guidelines, fields=fields, questions=questions)
+
+    def __define_settings(
+        self,
+        settings: Settings,
+        guidelines: Union[str, None] = None,
+        fields: Optional[list[FieldBase]] = None,
+        questions: Optional[list[QuestionBase]] = None,
+    ) -> None:
+        self._settings = settings
+        self.guidelines = guidelines or settings.guidelines
+        self.fields = fields or settings.fields
+        self.questions = questions or settings.questions
+        self._model.guidelines = str(self.guidelines)

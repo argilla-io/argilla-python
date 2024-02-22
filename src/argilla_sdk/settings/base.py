@@ -2,7 +2,6 @@ from typing import List, Optional
 
 from argilla_sdk.settings.fields import FieldBase
 from argilla_sdk.settings.questions import QuestionBase
-from argilla_sdk.settings.guidelines import Guidelines
 
 
 class Settings:
@@ -11,10 +10,12 @@ class Settings:
         fields: Optional[List[FieldBase]] = None,
         questions: Optional[List[QuestionBase]] = None,
         guidelines: Optional[str] = None,
+        allow_extra_metadata: bool = False,
     ):
         self.__guidelines = self.__process_guidelines(guidelines)
         self.__fields = self.__process_fields(fields) or []
         self.__questions = self.__process_questions(questions) or []
+        self.__allow_extra_metadata = allow_extra_metadata
 
     ############################
     # Property methods         #
@@ -49,6 +50,12 @@ class Settings:
     @questions.setter
     def questions(self, questions: List[FieldBase]) -> None:
         self.__questions = self.__process_questions(questions)
+
+    @property
+    def allow_extra_metadata(
+        self,
+    ) -> bool:
+        return self.__allow_extra_metadata
 
     ############################
     # Utility Methods          #

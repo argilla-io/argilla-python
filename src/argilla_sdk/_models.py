@@ -40,7 +40,6 @@ class ResourceModel(BaseModel):
 class DatasetModel(ResourceModel):
     name: str
     status: Literal["draft", "ready"] = "draft"
-    allow_extra_metadata: bool = False
 
     workspace_id: Optional[UUID] = None
     last_activity_at: Optional[datetime] = None

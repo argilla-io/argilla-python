@@ -14,9 +14,9 @@
 from typing import TYPE_CHECKING, List, Union, Type
 
 from argilla_sdk import _api
-from argilla_sdk.datasets import Dataset
-from argilla_sdk.users import User
-from argilla_sdk.workspaces import Workspace
+from argilla_sdk import Dataset
+from argilla_sdk import User
+from argilla_sdk import Workspace
 
 if TYPE_CHECKING:
     from argilla_sdk._models import UserModel

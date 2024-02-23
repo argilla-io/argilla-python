@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional, Union
+from typing import List, Optional
 from uuid import UUID
 
 import httpx
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
-from argilla_sdk._models import DatasetModel
+from argilla_sdk._models._dataset import DatasetModel
 
 __all__ = ["DatasetsAPI"]
 
@@ -48,7 +48,7 @@ class DatasetsAPI(ResourceAPI):
         dataset_id = json_body["id"]  # type: ignore
         response = self.http_client.patch(f"/api/v1/datasets/{dataset_id}", json=json_body)
         _http.raise_for_status(response=response)
-        dataset = self._model_from_json(json_dataset=response.json())  
+        dataset = self._model_from_json(json_dataset=response.json())
         self.log(message=f"Updated dataset {dataset.url}")
         return dataset
 

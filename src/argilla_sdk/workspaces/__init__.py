@@ -11,21 +11,3 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from typing import List
-from uuid import UUID
-
-from argilla_sdk._resource import Resource
-from argilla_sdk._models import WorkspaceModel, DatasetModel
-
-__all__ = ["Workspace"]
-
-
-class Workspace(Resource):
-    def __init__(self, **kwargs) -> None:
-        self._model = WorkspaceModel(**kwargs)
-
-    def list_datasets(self, workspace_id: UUID) -> List["DatasetModel"]:
-        datasets = self.api._datasets.list(workspace_id)
-        self.log(f"Got {len(datasets)} datasets for workspace {workspace_id}")
-        return datasets

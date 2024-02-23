@@ -18,3 +18,4 @@ from ._user import UserModel
 from ._dataset import DatasetModel
 from ._record import RecordModel
 from ._suggestion import SuggestionModel
+from ._response import ResponseModel

@@ -18,6 +18,7 @@ from argilla_sdk.settings import Settings
 from argilla_sdk.settings.fields import TextField
 from argilla_sdk.settings.questions import LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion
 from argilla_sdk._models import DatasetModel, RecordModel
+from argilla_sdk.datasets._record import Record
 
 __all__ = ["Dataset"]
 
@@ -33,17 +34,26 @@ class Dataset(Resource):
     ) -> None:
         self._model = DatasetModel(**kwargs)
         self.__define_settings(settings=settings, guidelines=guidelines, fields=fields, questions=questions)
-        self.__remote_records_cache = []
-        self.__records = []
+        self.__remote_records_cache = {}
+        self.__records = {}
 
     @property
     def records(self) -> int:
-        return self.__records
+        return list(self.__records.values())
 
     @records.setter
     def records(self, values: List[Union[Dict, RecordModel]]) -> None:
-        record_models = [RecordModel(**record) if isinstance(record, dict) else record for record in values]
-        self.__records = record_models
+        record_models = []
+        for record in values:
+            if isinstance(record, dict):
+                record_models.append(RecordModel(**record))
+            elif isinstance(record, Record):
+                record_models.append(record._model)
+            elif isinstance(record, RecordModel):
+                record_models.append(record)
+            else:
+                raise ValueError(f"Invalid record type: {type(record)}")
+        self.__records = {hash(record): record for record in record_models}
 
     def __define_settings(
         self,
@@ -60,16 +70,18 @@ class Dataset(Resource):
     # Update methods  #
     ###################
 
-    def _update(self, **kwargs) -> None:
-        super()._update(**kwargs)
+    def _sync(self, **kwargs) -> None:
+        super()._sync(**kwargs)
         self.__update_remote_records()
+        return self
 
     def __update_remote_records(self) -> None:
-        local_records_cache = self.__hash_cache_records(normalised_records=self.__records)
-        if set(local_records_cache) != set(self.__remote_records_cache):
-            records = [record._model.model_dump() for record in self.records]
-            self.api._datasets.create_records(dataset_id=self.id, records=records)
-            self.__remote_records_cache = local_records_cache
+        local_records_cache = self.__hash_cache_records(normalised_records=self.__records.values())
+        changed_records = {k: v for k, v in local_records_cache.items() if k not in self.__remote_records_cache}
+        if changed_records:
+            records = [record.model_dump() for record in changed_records.values()]
+            self.api._datasets.create_records(dataset_id=self._model.id, records=records)
+            self.__remote_records_cache.update(changed_records)
 
-    def __hash_cache_records(self, normalised_records) -> List[int]:
-        return [hash(record) for record in normalised_records]
+    def __hash_cache_records(self, normalised_records) -> Dict[int, RecordModel]:
+        return {hash(record): record for record in normalised_records}

@@ -19,3 +19,6 @@ class ResourceModel(BaseModel):
     @field_serializer("id", when_used="unless-none")
     def serialize_id(self, value: UUID) -> str:
         return str(value.hex)
+
+    def __hash__(self) -> int:
+        return hash(self.model_dump_json())

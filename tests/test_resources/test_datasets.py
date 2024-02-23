@@ -274,149 +274,97 @@ class TestDatasetsAPI:
     def test_add_records_with_create(self, httpx_mock: HTTPXMock):
         mock_dataset_id = uuid.uuid4()
         mock_return_value = {
-            "id": str(mock_dataset_id),
+            "id": mock_dataset_id.hex,
             "name": "dataset-01",
             "status": "draft",
-            "allow_extra_metadata": False,
             "inserted_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
         }
+        api_url = "http://test_url"
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}/records",
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}/records",
             method="POST",
             status_code=200,
         )
-        with httpx.Client() as client:
-            list_of_records = [
-                {
-                    "text": "Hello World, how are you?",
-                    "label": "positive",
-                },
-                {
-                    "text": "Hello World, leave me be!",
-                    "label": "negative",
-                },
-            ]
-            settings = rg.Settings(
-                fields=[
-                    rg.TextField(name="text"),
-                ],
-                questions=[
-                    rg.LabelQuestion(name="label", labels=["positive", "negative"]),
-                ],
-            )
-            client = rg.Argilla("http://test_url")
-            dataset = rg.Dataset(
-                id=mock_dataset_id,
-                name=mock_return_value["name"],
-                workspace_id=uuid.uuid4(),
-                guidelines="Test guidelines",
-                settings=settings,
-            )
-            dataset.add_records(list_of_records)
-            client.create(dataset)
-            assert True
-
-    def test_update_records_with_get(self, httpx_mock: HTTPXMock):
-        mock_dataset_id = uuid.uuid4()
-        mock_return_value = {
-            "id": str(mock_dataset_id),
-            "name": "dataset-01",
-            "status": "draft",
-            "allow_extra_metadata": False,
-            "inserted_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
-        }
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}/records",
-            method="PUT",
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
             status_code=200,
         )
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
-            method="GET",
-            status_code=200,
-        )
-        with httpx.Client() as client:
-            list_of_records = [
-                {
-                    "id": "1",
-                    "text": "Hello World, how are you?",
-                    "label": "positive",
-                },
-                {
-                    "id": "2",
-                    "text": "Hello World, leave me be!",
-                    "label": "negative",
-                },
-            ]
-            settings = rg.Settings(
-                fields=[
-                    rg.TextField(name="text"),
-                ],
-                questions=[
-                    rg.LabelQuestion(name="label", labels=["positive", "negative"]),
-                ],
-            )
-            client = rg.Argilla("http://test_url")
-            dataset = rg.Dataset(
-                id=mock_dataset_id,
-                name=mock_return_value["name"],
-                workspace_id=uuid.uuid4(),
-                guidelines="Test guidelines",
-                settings=settings,
-            )
-            dataset.add_records(list_of_records)
-            client.create(dataset)
-            gotten_dataset = client.get(dataset)
-            assert gotten_dataset.id == dataset.id
-            assert gotten_dataset.name == dataset.name
-            assert gotten_dataset.status == dataset.status
-            assert gotten_dataset.records == list_of_records
-
-    def test_add_records_with_update(self, httpx_mock: HTTPXMock):
-        mock_dataset_id = uuid.uuid4()
-        mock_return_value = {
-            "id": str(mock_dataset_id),
-            "name": "dataset-01",
-            "status": "draft",
-            "allow_extra_metadata": False,
-            "inserted_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
-        }
-        httpx_mock.add_response(
-            json=mock_return_value,
-            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}/records",
-            method="PUT",
-            status_code=200,
-        )
-        httpx_mock.add_response(
-            json=mock_return_value,
-            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
-            method="GET",
-            status_code=200,
-        )
-        httpx_mock.add_response(
-            json=mock_return_value,
-            url=f"http://test_url/api/v1/datasets/{mock_dataset_id.hex}",
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id.hex}",
             method="PATCH",
             status_code=200,
         )
         with httpx.Client() as client:
             list_of_records = [
-                {
-                    "id": "1",
-                    "text": "Hello World, how are you?",
-                    "label": "positive",
-                },
-                {
-                    "id": "2",
-                    "text": "Hello World, leave me be!",
-                    "label": "negative",
-                },
+                rg.Record(
+                    fields={
+                        "text": "Hello World, how are you?",
+                    }
+                )
+            ]
+            settings = rg.Settings(
+                fields=[
+                    rg.TextField(name="text"),
+                ],
+                questions=[
+                    rg.LabelQuestion(name="label", labels=["positive", "negative"]),
+                ],
+            )
+            client = rg.Argilla("http://test_url")
+            dataset = rg.Dataset(
+                id=mock_dataset_id,
+                name=mock_return_value["name"],
+                workspace_id=uuid.uuid4(),
+                guidelines="Test guidelines",
+                settings=settings,
+            )
+            dataset.records = list_of_records
+            client.create(dataset)
+            assert dataset.id == mock_dataset_id
+            assert dataset.name == mock_return_value["name"]
+            assert dataset.status == "draft"
+            
+
+    def test_update_records_with_get(self, httpx_mock: HTTPXMock):
+        mock_dataset_id = uuid.uuid4()
+        mock_return_value = {
+            "id": mock_dataset_id.hex,
+            "name": "dataset-01",
+            "status": "draft",
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}/records",
+            method="POST",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id.hex}",
+            method="PATCH",
+            status_code=200,
+        )
+        with httpx.Client() as client:
+            list_of_records = [
+                rg.Record(
+                    fields={
+                        "text": "Hello World, how are you?",
+                    }
+                )
             ]
             settings = rg.Settings(
                 fields=[
@@ -435,10 +383,66 @@ class TestDatasetsAPI:
                 settings=settings,
             )
             client.create(dataset)
+            dataset.records = list_of_records
+            dataset = client.update(dataset)
             gotten_dataset = client.get(dataset)
-            gotten_dataset.add_records(list_of_records)
-            gotten_dataset.update(gotten_dataset)
-            assert gotten_dataset.id == dataset.id
-            assert gotten_dataset.name == dataset.name
-            assert gotten_dataset.status == dataset.status
-            assert gotten_dataset.records == list_of_records
+            assert dataset.id == gotten_dataset.id
+            assert dataset.name == gotten_dataset.name
+            assert dataset.status == gotten_dataset.status
+
+    def test_add_records_with_update(self, httpx_mock: HTTPXMock):
+        mock_dataset_id = uuid.uuid4()
+        mock_return_value = {
+            "id": mock_dataset_id.hex,
+            "name": "dataset-01",
+            "status": "draft",
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}/records",
+            method="POST",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id.hex}",
+            method="PATCH",
+            status_code=200,
+        )
+        with httpx.Client() as client:
+            list_of_records = [
+                rg.Record(
+                    fields={
+                        "text": "Hello World, how are you?",
+                    }
+                )
+            ]
+            settings = rg.Settings(
+                fields=[
+                    rg.TextField(name="text"),
+                ],
+                questions=[
+                    rg.LabelQuestion(name="label", labels=["positive", "negative"]),
+                ],
+            )
+            client = rg.Argilla("http://test_url")
+            dataset = rg.Dataset(
+                id=mock_dataset_id,
+                name=mock_return_value["name"],
+                workspace_id=uuid.uuid4(),
+                guidelines="Test guidelines",
+                settings=settings,
+            )
+            client.create(dataset)
+            dataset.records = list_of_records
+            dataset = client.update(dataset)
+            assert True

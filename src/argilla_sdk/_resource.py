@@ -2,13 +2,14 @@ from typing import Any
 
 from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._api import APIClient
-from argilla_sdk._models._base import ResourceModel
+from argilla_sdk._models import ResourceModel
 
 
 class Resource(LoggingMixin):
     """Base class for all resources (Dataset, Workspace, User, etc.)"""
 
     _model: ResourceModel
+    api: APIClient
 
     def __repr__(self) -> str:
         return repr(f"{self.__class__.__name__}({self._model})")

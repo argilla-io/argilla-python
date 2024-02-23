@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional, Tuple, Union
 from uuid import UUID, uuid4
-from pydantic import Field, field_serializer, BaseModel
+from pydantic import Field, field_serializer
 
 from argilla_sdk._models._resource import ResourceModel
 from argilla_sdk._models._response import ResponseModel

@@ -30,7 +30,6 @@ class DatasetModel(ResourceModel):
 
     workspace_id: Optional[UUID] = None
     last_activity_at: Optional[datetime] = None
-    api: object = None
     url: Optional[str] = None
 
     @field_serializer("last_activity_at", when_used="unless-none")

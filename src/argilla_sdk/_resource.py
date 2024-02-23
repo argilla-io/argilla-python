@@ -13,7 +13,7 @@ class Resource(LoggingMixin):
     def __repr__(self) -> str:
         return repr(f"{self.__class__.__name__}({self._model})")
 
-    def _update(self, api: APIClient, model: ResourceModel):
+    def _sync(self, api: APIClient, model: ResourceModel):
         """Updates the resource with the ClientAPI that is used to interact with
         Argilla and adds an updated model to the resource.
         Args:

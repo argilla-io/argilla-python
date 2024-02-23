@@ -38,7 +38,7 @@ class Argilla(_api.APIClient):
         """
         resource_api = self._which_resource_api(resource)
         response_model = resource_api.create(resource._model)  # type: ignore
-        resource = resource._update(api=self, model=response_model)
+        resource = resource._sync(api=self, model=response_model)
         return resource
 
     def get(self, resource: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
@@ -50,7 +50,7 @@ class Argilla(_api.APIClient):
         """
         resource_api = self._which_resource_api(resource)
         response_model = resource_api.get(resource.id)
-        resource = resource._update(api=self, model=response_model)
+        resource = resource._sync(api=self, model=response_model)
         return resource
 
     def list(self, resource_type: Type[Union[Workspace, User, Dataset]]) -> List[Union[Workspace, User, Dataset]]:
@@ -73,7 +73,7 @@ class Argilla(_api.APIClient):
         """
         resource_api = self._which_resource_api(resource)
         response_model = resource_api.update(resource._model)  # type: ignore
-        resource = resource._update(api=self, model=response_model)
+        resource = resource._sync(api=self, model=response_model)
         return resource
 
     def delete(self, resource: Union[Workspace, User, Dataset]) -> None:

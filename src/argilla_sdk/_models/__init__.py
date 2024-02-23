@@ -12,7 +12,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from ._base import ResourceModel
+from ._resource import ResourceModel
 from ._workspace import WorkspaceModel
 from ._user import UserModel
 from ._dataset import DatasetModel
+from ._record import RecordModel
+from ._suggestion import SuggestionModel

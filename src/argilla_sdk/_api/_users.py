@@ -19,7 +19,7 @@ import httpx
 
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
-from argilla_sdk._models import UserModel
+from argilla_sdk._models._user import UserModel
 
 __all__ = ["UsersAPI"]
 

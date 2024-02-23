@@ -1,8 +1,8 @@
 from typing import Any
 
 from argilla_sdk._helpers._mixins import LoggingMixin
-from argilla_sdk._models import ResourceModel
 from argilla_sdk._api import APIClient
+from argilla_sdk._models._base import ResourceModel
 
 
 class Resource(LoggingMixin):

@@ -14,10 +14,10 @@
 from typing import Union, Optional
 
 from argilla_sdk._resource import Resource
-from argilla_sdk._models import DatasetModel
 from argilla_sdk.settings import Settings
 from argilla_sdk.settings.fields import TextField
 from argilla_sdk.settings.questions import LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion
+from argilla_sdk._models import DatasetModel
 
 
 __all__ = ["Dataset"]

@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from .base import *  # noqa
-from .fields import *  # noqa
-from .questions import *  # noqa
-from .guidelines import *  # noqa
+from argilla_sdk.settings.base import *  # noqa
+from argilla_sdk.settings.fields import *  # noqa
+from argilla_sdk.settings.questions import *  # noqa
+from argilla_sdk.settings.guidelines import *  # noqa

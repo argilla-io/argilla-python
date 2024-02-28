@@ -18,7 +18,7 @@ class Settings(BaseModel):
         guidelines (str): A string containing the guidelines for the Dataset.
         fields (List[TextField]): A list of TextField objects that represent the fields in the Dataset.
         questions (List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion, RatingQuestion]]): A list of Question objects that represent the questions in the Dataset.
-        allow_extra_metadata (bool): A boolean value that determines whether the Dataset allows for extra metadata.
+        allow_extra_metadata (bool): A boolean that determines whether or not extra metadata is allowed in the Dataset. Defaults to False.
     """
 
     fields: Optional[List[TextField]] = []
@@ -52,4 +52,5 @@ class Settings(BaseModel):
             "guidelines": self.guidelines,
             "fields": [field.model_dump() for field in self.fields],
             "questions": [question.model_dump() for question in self.questions],
+            "allow_extra_metadata": self.allow_extra_metadata,
         }

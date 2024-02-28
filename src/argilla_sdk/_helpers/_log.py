@@ -12,13 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._helpers._log import log
+
+import logging
+
+LOG_LEVEL_MAP = {
+    "debug": logging.DEBUG,
+    "info": logging.INFO,
+    "warning": logging.WARNING,
+    "error": logging.ERROR,
+    "critical": logging.CRITICAL,
+}
 
 
-class LoggingMixin:
-    """A utility mixin for logging."""
-
-    def log(self, message: str, level: str = "info") -> None:
-        class_name = self.__class__.__name__
-        message = f"{class_name}: {message}"
-        log(level=level, message=message)
+def log(message: str, level: str = "info") -> None:
+    """Log a message at the specified level.
+    Args:
+        message (str): The message to log.
+        level (str): The log level to use. Defaults to "info".
+    """
+    level_int = LOG_LEVEL_MAP.get(level, logging.INFO)
+    logging.log(level=level_int, msg=message)

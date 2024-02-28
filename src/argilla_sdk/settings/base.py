@@ -3,7 +3,13 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, validator
 
 from argilla_sdk.settings.fields import TextField
-from argilla_sdk.settings.questions import LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion
+from argilla_sdk.settings.questions import (
+    LabelQuestion,
+    MultiLabelQuestion,
+    RankingQuestion,
+    TextQuestion,
+    RatingQuestion,
+)
 
 
 class Settings(BaseModel):
@@ -11,12 +17,14 @@ class Settings(BaseModel):
     Args:
         guidelines (str): A string containing the guidelines for the Dataset.
         fields (List[TextField]): A list of TextField objects that represent the fields in the Dataset.
-        questions (List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]): A list of Question objects that represent the questions in the Dataset.
-        allow_extra_metadata (bool): A boolean value that determines whether the Dataset allows for extra metadata.
+        questions (List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion, RatingQuestion]]): A list of Question objects that represent the questions in the Dataset.
+        allow_extra_metadata (bool): A boolean that determines whether or not extra metadata is allowed in the Dataset. Defaults to False.
     """
 
     fields: Optional[List[TextField]] = []
-    questions: Optional[List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = []
+    questions: Optional[
+        List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion, RatingQuestion]]
+    ] = []
     guidelines: Optional[str] = None
     allow_extra_metadata: bool = False
 
@@ -44,4 +52,5 @@ class Settings(BaseModel):
             "guidelines": self.guidelines,
             "fields": [field.model_dump() for field in self.fields],
             "questions": [question.model_dump() for question in self.questions],
+            "allow_extra_metadata": self.allow_extra_metadata,
         }

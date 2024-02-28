@@ -11,14 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Union, Optional, List, Dict
+from typing import Dict, List, Union
 
-from argilla_sdk._resource import Resource
-from argilla_sdk.settings import Settings
-from argilla_sdk.settings.fields import TextField
-from argilla_sdk.settings.questions import LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion
 from argilla_sdk._models import DatasetModel, RecordModel
+from argilla_sdk._resource import Resource
 from argilla_sdk.datasets._record import Record
+from argilla_sdk.settings import Settings
 
 __all__ = ["Dataset"]
 
@@ -27,13 +25,10 @@ class Dataset(Resource):
     def __init__(
         self,
         settings: Settings = Settings(),
-        guidelines: Union[str, None] = None,
-        fields: Optional[list[TextField]] = None,
-        questions: Optional[list[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = None,
         **kwargs,
     ) -> None:
         self._model = DatasetModel(**kwargs)
-        self.__define_settings(settings=settings, guidelines=guidelines, fields=fields, questions=questions)
+        self.__define_settings(settings=settings)
         self.__remote_records_cache = {}
         self.__records = {}
 
@@ -58,19 +53,18 @@ class Dataset(Resource):
     def __define_settings(
         self,
         settings: Settings,
-        guidelines: Union[str, None] = None,
-        fields: Optional[list[TextField]] = None,
-        questions: Optional[list[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = None,
     ) -> None:
-        self.guidelines = guidelines or settings.guidelines
-        self.fields = fields or settings.fields
-        self.questions = questions or settings.questions
+        self._settings = settings
+        self.guidelines = settings.guidelines
+        self.fields = settings.fields
+        self.questions = settings.questions
+        self.allow_extra_metadata = settings.allow_extra_metadata
 
     ###################
     # Update methods  #
     ###################
 
-    def _sync(self, **kwargs) -> None:
+    def _sync(self, **kwargs) -> "Datsaset":
         super()._sync(**kwargs)
         self.__update_remote_records()
         return self

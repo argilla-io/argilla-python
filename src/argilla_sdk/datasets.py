@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Union, Optional
+from typing import Union, Optional, List
 
 from argilla_sdk._resource import Resource
 from argilla_sdk._models import DatasetModel
@@ -28,7 +28,7 @@ class Dataset(Resource):
         self,
         settings: Settings = Settings(),
         guidelines: Union[str, None] = None,
-        fields: Optional[list[TextField]] = None,
+        fields: Optional[List[TextField]] = None,
         questions: Optional[list[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = None,
         **kwargs,
     ) -> None:
@@ -39,8 +39,8 @@ class Dataset(Resource):
         self,
         settings: Settings,
         guidelines: Union[str, None] = None,
-        fields: Optional[list[TextField]] = None,
-        questions: Optional[list[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = None,
+        fields: Optional[List[TextField]] = None,
+        questions: Optional[List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = None,
     ) -> None:
         self.guidelines = guidelines or settings.guidelines
         self.fields = fields or settings.fields

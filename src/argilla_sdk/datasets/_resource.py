@@ -64,7 +64,7 @@ class Dataset(Resource):
     # Update methods  #
     ###################
 
-    def _sync(self, **kwargs) -> "Datsaset":
+    def _sync(self, **kwargs) -> "Dataset":
         super()._sync(**kwargs)
         self.__update_remote_records()
         return self

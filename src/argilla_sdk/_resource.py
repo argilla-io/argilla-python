@@ -24,7 +24,7 @@ class Resource(LoggingMixin):
         """
         self.log(f"Assigning API {str(api.http_client.base_url)}")
         self.api = api
-        self._model = model
+        self.__sync_state(model)
         return self
 
     def serialize(self) -> dict[str, Any]:
@@ -32,3 +32,35 @@ class Resource(LoggingMixin):
 
     def serialize_json(self) -> str:
         return self._model.model_dump_json()
+
+    ############################
+    # State management methods #
+    ############################
+
+    def __sync_state(self, model: ResourceModel) -> None:
+        """Synchronizes the resource state with the model state"""
+        self._model = model
+        # set all attributes from the model to the resource
+        for field in self._model.model_fields:
+            setattr(self, field, getattr(self._model, field))
+
+    def __setattr__(self, name, value):
+        super().__setattr__(name, value)
+        if name in self._model.model_fields:
+            model_dump = self._model.model_dump()
+            model_dump[name] = value
+            self._model = self._model.__class__(**model_dump)
+
+    def __getattr__(self, name):
+        if name in self._model.model_fields:
+            return self._model.model_dump()[name]
+        else:
+            super().__getattribute__(name)
+
+    def __delattr__(self, name):
+        if name in self._model.model_fields:
+            model_dump = self._model.model_dump()
+            del model_dump[name]
+            self._model = self._model.__class__(**model_dump)
+        else:
+            super().__delattr__(name)

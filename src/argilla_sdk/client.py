@@ -27,7 +27,7 @@ __all__ = ["Argilla"]
 class Argilla(_api.APIClient):
     @property
     def default_user(self) -> "UserModel":
-        return self.users.get_me()
+        return self._users.get_me()
 
     def create(self, resource: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
         """Create a new resource in the API. For example, a new workspace, user, or dataset.
@@ -49,7 +49,7 @@ class Argilla(_api.APIClient):
             Union[Workspace, User, Dataset] - The requested resource
         """
         resource_api = self._which_resource_api(resource)
-        response_model = resource_api.get(resource.id.hex)
+        response_model = resource_api.get(resource.id)
         resource = resource._update(api=self, model=response_model)
         return resource
 

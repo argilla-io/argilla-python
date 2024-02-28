@@ -21,8 +21,7 @@ import pytest
 from argilla_sdk import Dataset
 from argilla_sdk.questions import Question, QuestionSettings
 
-
-class TestQuestions:
+class TestQuestionSerialization:
     @pytest.mark.parametrize(
         "settings",
         [
@@ -45,6 +44,7 @@ class TestQuestions:
         )
         assert Question.from_dict(question.to_dict()) == question
 
+class TestQuestions:
     def test_list_questions(self, mocker: MagicMock, mock_httpx_client: httpx.Client):
         mock_response = mocker.Mock(httpx.Response)
         dataset = Dataset(id=uuid.uuid4(), name="test_dataset", client=mock_httpx_client)

@@ -3,7 +3,13 @@ from typing import List, Optional, Union
 from pydantic import BaseModel, validator
 
 from argilla_sdk.settings.fields import TextField
-from argilla_sdk.settings.questions import LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion, RatingQuestion
+from argilla_sdk.settings.questions import (
+    LabelQuestion,
+    MultiLabelQuestion,
+    RankingQuestion,
+    TextQuestion,
+    RatingQuestion,
+)
 
 
 class Settings(BaseModel):
@@ -16,7 +22,9 @@ class Settings(BaseModel):
     """
 
     fields: Optional[List[TextField]] = []
-    questions: Optional[List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion, RatingQuestion]]] = []
+    questions: Optional[
+        List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion, RatingQuestion]]
+    ] = []
     guidelines: Optional[str] = None
     allow_extra_metadata: bool = False
 

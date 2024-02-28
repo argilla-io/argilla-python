@@ -11,13 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Union, Optional, List
 
 from argilla_sdk._resource import Resource
 from argilla_sdk._models import DatasetModel
 from argilla_sdk.settings import Settings
-from argilla_sdk.settings.fields import TextField
-from argilla_sdk.settings.questions import LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion
 
 
 __all__ = ["Dataset"]
@@ -27,21 +24,17 @@ class Dataset(Resource):
     def __init__(
         self,
         settings: Settings = Settings(),
-        guidelines: Union[str, None] = None,
-        fields: Optional[List[TextField]] = None,
-        questions: Optional[list[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = None,
         **kwargs,
     ) -> None:
         self._model = DatasetModel(**kwargs)
-        self.__define_settings(settings=settings, guidelines=guidelines, fields=fields, questions=questions)
+        self.__define_settings(settings=settings)
 
     def __define_settings(
         self,
         settings: Settings,
-        guidelines: Union[str, None] = None,
-        fields: Optional[List[TextField]] = None,
-        questions: Optional[List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = None,
     ) -> None:
-        self.guidelines = guidelines or settings.guidelines
-        self.fields = fields or settings.fields
-        self.questions = questions or settings.questions
+        self._settings = settings
+        self.guidelines = settings.guidelines
+        self.fields = settings.fields
+        self.questions = settings.questions
+        self.allow_extra_metadata = settings.allow_extra_metadata

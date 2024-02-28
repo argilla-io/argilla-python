@@ -40,8 +40,10 @@ class ResourceModel(BaseModel):
 class DatasetModel(ResourceModel):
     name: str
     status: Literal["draft", "ready"] = "draft"
+    allow_extra_metadata: bool = False
 
     workspace_id: Optional[UUID] = None
+    guidelines: Optional[str] = None
     last_activity_at: Optional[datetime] = None
     api: object = None
     url: Optional[str] = None
@@ -65,7 +67,7 @@ class UserModel(ResourceModel):
     username: str
     first_name: str
     role: str = Role.annotator
-
+    
     last_name: Optional[str] = None
     password: Optional[str] = None
 

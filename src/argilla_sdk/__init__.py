@@ -16,3 +16,4 @@ from argilla_sdk.datasets import *  # noqa
 from argilla_sdk.workspaces import *  # noqa
 from argilla_sdk.users import *  # noqa
 from argilla_sdk.client import *  # noqa
+from argilla_sdk.settings import *  # noqa

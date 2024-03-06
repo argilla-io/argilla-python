@@ -22,12 +22,11 @@ from argilla_sdk._api import HTTPClientConfig, create_http_client
 from argilla_sdk._api._workspaces import WorkspacesAPI
 from argilla_sdk._api._users import UsersAPI
 from argilla_sdk._api._datasets import DatasetsAPI
+from argilla_sdk._constants import _DEFAULT_API_URL, _DEFAULT_API_KEY
 
 __all__ = ["APIClient"]
 
 
-_DEFAULT_API_KEY = "argilla.apikey"
-_DEFAULT_API_URL = "https://localhost:6900"
 ARGILLA_API_URL = os.getenv(key="ARGILLA_API_URL", default=_DEFAULT_API_URL)
 ARGILLA_API_KEY = os.getenv(key="ARGILLA_API_KEY", default=_DEFAULT_API_KEY)
 DEFAULT_HTTP_CONFIG = HTTPClientConfig(api_url=ARGILLA_API_URL, api_key=ARGILLA_API_KEY)

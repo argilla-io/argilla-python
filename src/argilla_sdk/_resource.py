@@ -1,9 +1,9 @@
 from typing import Any, TYPE_CHECKING
 
-from argilla_sdk.client import Argilla
 from argilla_sdk._helpers._mixins import LoggingMixin
 
 if TYPE_CHECKING:
+    from argilla_sdk.client import Argilla
     from argilla_sdk._models import ResourceModel
     from argilla_sdk._api._base import ResourceAPI
 
@@ -15,8 +15,9 @@ class Resource(LoggingMixin):
     _client: "Argilla"
     _api: "ResourceAPI"
 
-    def __init__(self, client: Argilla = Argilla(), **kwargs) -> None:
+    def __init__(self, api: "ResourceAPI", client: "Argilla") -> None:
         self._client = client
+        self._api = api
 
     def __repr__(self) -> str:
         return repr(f"{self.__class__.__name__}({self._model})")
@@ -48,10 +49,12 @@ class Resource(LoggingMixin):
     def get(self) -> "Resource":
         response_model = self._api.get(self._model.id)
         self._sync(response_model)
+        return self
 
     def update(self) -> "Resource":
         response_model = self._api.update(self._model)
         self._sync(response_model)
+        return self
 
     def delete(self) -> None:
         self._api.delete(self._model.id)

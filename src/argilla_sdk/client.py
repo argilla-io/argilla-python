@@ -36,8 +36,8 @@ class Argilla(_api.APIClient):
 
     @property
     def datasets(self) -> List["Dataset"]:
-        return [rg.Dataset(client=self, model=model) for model in self._datasets.list()]
+        return [rg.Dataset(client=self, _model=model) for model in self._datasets.list()]
 
     @property
     def users(self) -> List["User"]:
-        return [rg.User(client=self, model=model) for model in self._users.list()]
+        return [rg.User(client=self, _model=model) for model in self._users.list()]

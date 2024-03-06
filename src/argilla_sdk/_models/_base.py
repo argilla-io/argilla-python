@@ -8,7 +8,7 @@ from pydantic import BaseModel, field_serializer
 class ResourceModel(BaseModel):
     """Base model for all resources (DatasetModel, WorkspaceModel, UserModel, etc.)"""
 
-    id: UUID = uuid4()
+    id: Optional[UUID] = uuid4()
     inserted_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

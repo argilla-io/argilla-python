@@ -14,5 +14,5 @@
 
 from ._base import ResourceModel
 from ._workspace import WorkspaceModel
-from ._user import UserModel
+from ._user import UserModel, Role
 from ._dataset import DatasetModel

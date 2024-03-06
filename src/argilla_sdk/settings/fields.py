@@ -4,11 +4,17 @@ from typing import Optional
 from argilla_sdk._helpers._log import log
 from argilla_sdk.settings.exceptions import InvalidFieldException
 
+class FieldSettings(BaseModel):
+    type: str
+    use_markdown: Optional[bool] = False
+
+
 class TextField(BaseModel):
     name: str
-    use_markdown: bool = False
     title: Optional[str] = None
     required: bool = True
+    settings: FieldSettings = FieldSettings(type="text")
+    use_markdown: Optional[bool] = None
 
     @validator("name")
     def __name_lower(cls, name):

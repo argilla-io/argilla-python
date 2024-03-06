@@ -3,7 +3,7 @@ from typing import Dict, Optional, Union
 from uuid import UUID
 import warnings
 
-from pydantic import BaseModel, validator
+from pydantic import BaseModel, validator, field_serializer
 
 
 class ResponseStatus(str, Enum):
@@ -15,9 +15,9 @@ class ResponseStatus(str, Enum):
 class ResponseModel(BaseModel):
     """Schema for the `FeedbackRecord` response."""
 
-    user_id: Optional[UUID] = None
-    values: Union[Dict[str, str], None]
+    values: Union[Dict[str, Dict[str, str]], None]
     status: ResponseStatus = ResponseStatus.submitted
+    user_id: Optional[UUID] = None
 
     class Config:
         validate_assignment = True
@@ -31,3 +31,7 @@ class ResponseModel(BaseModel):
                 " it will be automatically set to the active `user_id`.",
             )
         return v
+
+    @field_serializer("user_id", when_used="always")
+    def serialize_user_id(value: UUID) -> str:
+        return str(value)

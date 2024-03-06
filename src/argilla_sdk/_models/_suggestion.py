@@ -1,13 +1,25 @@
 from typing import Any, Optional, Literal
-
-from pydantic import BaseModel
+import uu
+from uuid import UUID, uuid4
+from pydantic import BaseModel, field_serializer
 
 
 class SuggestionModel(BaseModel):
     """Schema for the suggestions for the questions related to the record."""
 
-    question_name: str
+    value: Any
+
+    question_name: Optional[str] = None
     type: Optional[Literal["model", "human"]] = None
     score: Optional[float] = None
-    value: Any
     agent: Optional[str] = None
+    id: Optional[UUID] = uuid4()
+    question_id: Optional[UUID] = None
+
+    @field_serializer("id", when_used="unless-none")
+    def serialize_id(value: UUID) -> str:
+        return str(value)
+
+    @field_serializer("question_id", when_used="unless-none")
+    def serialize_question_id(value: UUID) -> str:
+        return str(value)

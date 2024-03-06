@@ -15,6 +15,8 @@
 from typing import Optional
 from enum import Enum
 
+from pydantic import field_validator
+
 from argilla_sdk._models import ResourceModel
 
 __all__ = ["UserModel", "Role"]
@@ -33,3 +35,8 @@ class UserModel(ResourceModel):
 
     last_name: Optional[str] = None
     password: Optional[str] = None
+
+    @field_validator("first_name")
+    def validate_first_name(cls, value: str) -> str:
+        """Set first name to user name if not provided."""
+        return value or cls.username

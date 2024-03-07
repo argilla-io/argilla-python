@@ -12,12 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._models._workspace import WorkspaceModel
-from argilla_sdk._models._user import UserModel, Role
-from argilla_sdk._models._dataset import DatasetModel
 from argilla_sdk._models._resource import ResourceModel
 from argilla_sdk._models._workspace import WorkspaceModel
 from argilla_sdk._models._user import UserModel, Role
 from argilla_sdk._models._dataset import DatasetModel
 from argilla_sdk._models._record import RecordModel
 from argilla_sdk._models._suggestion import SuggestionModel
+from argilla_sdk._models._response import ResponseModel

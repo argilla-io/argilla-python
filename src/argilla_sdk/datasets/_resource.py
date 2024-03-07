@@ -11,15 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Optional, Literal, Union
-from uuid import UUID
+from typing import Optional, Literal
+from uuid import UUID, uuid4
 
 from argilla_sdk.client import Argilla
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.settings import Settings
-from argilla_sdk.settings.fields import TextField
-from argilla_sdk.settings.questions import LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion
 from argilla_sdk._models import DatasetModel
 
 
@@ -34,22 +32,27 @@ class Dataset(Resource):
         workspace_id: Optional[UUID] = None,
         settings: Settings = Settings(),
         client: Optional["Argilla"] = Argilla(),
+        id: Optional[UUID] = uuid4(),
+        _model: Optional[DatasetModel] = None,
     ) -> None:
         super().__init__(client=client, api=client._datasets)
-        self._model = DatasetModel(
-            name=name,
-            status=status,
-            workspace_id=workspace_id,
-        )
+        if _model is None:
+            self._model = DatasetModel(
+                name=name,
+                status=status,
+                workspace_id=workspace_id,
+                id=id,
+            )
+        else:
+            self._model = _model
+        self._sync(model=self._model)
         self.__define_settings(settings=settings)
 
     def __define_settings(
         self,
         settings: Settings,
-        guidelines: Union[str, None] = None,
-        fields: Optional[list[TextField]] = None,
-        questions: Optional[list[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion]]] = None,
     ) -> None:
-        self.guidelines = guidelines or settings.guidelines
-        self.fields = fields or settings.fields
-        self.questions = questions or settings.questions
+        self.guidelines = settings.guidelines
+        self.fields = settings.fields
+        self.questions = settings.questions
+        self.allow_extra_metadata = settings.allow_extra_metadata

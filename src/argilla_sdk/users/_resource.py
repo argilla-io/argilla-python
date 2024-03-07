@@ -14,7 +14,7 @@
 
 from typing import Optional
 
-from argilla_sdk import Argilla
+from argilla_sdk.client import Argilla
 from argilla_sdk._resource import Resource
 from argilla_sdk._models import UserModel, Role
 

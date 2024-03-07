@@ -92,6 +92,14 @@ class DatasetsAPI(ResourceAPI):
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
 
+    def create_records(self, dataset_id: UUID, records: List[dict]) -> None:
+        response = self.http_client.post(
+            url=f"/api/v1/datasets/{dataset_id}/records",
+            json=records,
+        )
+        _http.raise_for_status(response=response)
+        self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
+
     ####################
     # Private methods #
     ####################

@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Optional, Literal
+from typing import Optional, Literal, TYPE_CHECKING, Dict
 from uuid import UUID, uuid4
 
 from argilla_sdk.client import Argilla
@@ -25,6 +25,8 @@ __all__ = ["Dataset"]
 
 
 class Dataset(Resource):
+    """Class for interacting with Argilla Datasets"""
+
     def __init__(
         self,
         name: Optional[str] = None,
@@ -35,6 +37,16 @@ class Dataset(Resource):
         id: Optional[UUID] = uuid4(),
         _model: Optional[DatasetModel] = None,
     ) -> None:
+        """Initalizes a Dataset with a client and model
+        Args:
+            name (str): Name of the dataset. Replaced by random UUId if not assigned.
+            status ["draft", "ready"]: Status of the dataset
+            workspace_id (UUID): Workspace_id of the dataset
+            settings (Settings): Settings class to be used to configure the dataset.
+            client (Argilla): Instance of Argilla to connect with the server.
+            id: (UUID): To predefine dataset_id or to reference existing datasets.
+                Random UUID is used if not assigned.
+        """
         super().__init__(client=client, api=client._datasets)
         if name is None:
             name = str(id)
@@ -55,6 +67,7 @@ class Dataset(Resource):
         self,
         settings: Settings,
     ) -> None:
+        self._settings = settings
         self.guidelines = settings.guidelines
         self.fields = settings.fields
         self.questions = settings.questions

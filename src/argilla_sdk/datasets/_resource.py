@@ -11,8 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Union, Optional
+from typing import Optional, Literal, Union
+from uuid import UUID
 
+from argilla_sdk.client import Argilla
+from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.settings import Settings
 
@@ -23,10 +26,18 @@ __all__ = ["Dataset"]
 class Dataset(Resource):
     def __init__(
         self,
+        name: str,
+        status: Literal["draft", "ready"] = "draft",
+        workspace_id: Optional[UUID] = None,
         settings: Settings = Settings(),
-        **kwargs,
+        client: Optional["Argilla"] = Argilla(),
     ) -> None:
-        self._model = DatasetModel(**kwargs)
+        super().__init__(client=client, api=client._datasets)
+        self._model = DatasetModel(
+            name=name,
+            status=status,
+            workspace_id=workspace_id,
+        )
         self.__define_settings(settings=settings)
 
     def __define_settings(

@@ -4,6 +4,13 @@ from pydantic import BaseModel, validator
 
 from argilla_sdk.settings.fields import TextField
 from argilla_sdk.settings.questions import LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion
+from argilla_sdk.settings.questions import (
+    LabelQuestion,
+    MultiLabelQuestion,
+    RankingQuestion,
+    TextQuestion,
+    RatingQuestion,
+)
 
 
 class Settings(BaseModel):
@@ -44,4 +51,5 @@ class Settings(BaseModel):
             "guidelines": self.guidelines,
             "fields": [field.model_dump() for field in self.fields],
             "questions": [question.model_dump() for question in self.questions],
+            "allow_extra_metadata": self.allow_extra_metadata,
         }

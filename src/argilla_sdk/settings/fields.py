@@ -1,4 +1,5 @@
 from pydantic import BaseModel, validator
+
 from typing import Optional
 
 
@@ -16,7 +17,8 @@ class TextField(BaseModel):
 
     @validator("name")
     def __name_lower(cls, name):
-        return name.lower().replace(" ", "_")
+        formatted_name = name.lower().replace(" ", "_")
+        return formatted_name
 
     @validator("title", always=True)
     def __title_default(cls, title, values):

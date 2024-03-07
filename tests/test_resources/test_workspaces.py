@@ -18,6 +18,7 @@ import uuid
 from datetime import datetime
 
 import httpx
+import pytest
 from pytest_httpx import HTTPXMock
 import argilla_sdk as rg
 
@@ -27,36 +28,18 @@ class TestWorkspacesSerialization:
         ws = rg.Workspace(
             name="test-workspace",
             id=uuid.uuid4(),
-            inserted_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
         )
 
         assert ws.name == ws.serialize()["name"]
 
-    def test_serialize_with_extra_arguments(self):
-        ws = rg.Workspace(
-            name="test-workspace",
-            id=uuid.uuid4(),
-            inserted_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
-            extra="extra",
-        )
-        assert ws.name == ws.serialize()["name"]
-        assert "extra" not in ws.serialize()
-
-    def test_json_serialize(self):
-        ws = rg.Workspace(
-            name="test-workspace",
-            id=uuid.uuid4(),
-            inserted_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
-        )
-
-        ws_from_json = json.loads(ws.serialize_json())
-        assert ws.name == ws_from_json["name"]
-        assert str(ws.id) == ws_from_json["id"]
-        assert ws.inserted_at == ws_from_json["inserted_at"]
-        assert ws.updated_at == ws_from_json["updated_at"]
+    def test_json_serialize_raise_typeerror(self):
+        with pytest.raises(TypeError):
+            ws = rg.Workspace(
+                name="test-workspace",
+                id=uuid.uuid4(),
+                inserted_at=datetime.utcnow(),
+                updated_at=datetime.utcnow(),
+            )
 
 
 class TestWorkspaces:

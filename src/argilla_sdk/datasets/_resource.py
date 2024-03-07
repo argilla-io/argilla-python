@@ -27,7 +27,7 @@ __all__ = ["Dataset"]
 class Dataset(Resource):
     def __init__(
         self,
-        name: str,
+        name: Optional[str] = None,
         status: Literal["draft", "ready"] = "draft",
         workspace_id: Optional[UUID] = None,
         settings: Settings = Settings(),
@@ -36,6 +36,9 @@ class Dataset(Resource):
         _model: Optional[DatasetModel] = None,
     ) -> None:
         super().__init__(client=client, api=client._datasets)
+        if name is None:
+            name = str(id)
+            self.log(f"Settings dataset bane to unique UUID: {id}")
         if _model is None:
             self._model = DatasetModel(
                 name=name,

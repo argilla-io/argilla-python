@@ -22,7 +22,6 @@ import pytest
 from pytest_httpx import HTTPXMock
 import argilla_sdk as rg
 
-
 class TestWorkspacesSerialization:
     def test_serialize(self):
         ws = rg.Workspace(
@@ -103,7 +102,6 @@ class TestWorkspaces:
         for i in range(len(workspaces)):
             assert workspaces[i].name == mock_return_value["items"][i]["name"]
             assert workspaces[i].id == uuid.UUID(mock_return_value["items"][i]["id"])
-
 
 class TestWorkspacesAPI:
     def test_get_workspace_by_name(self, httpx_mock: HTTPXMock):

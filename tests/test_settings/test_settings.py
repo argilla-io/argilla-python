@@ -130,14 +130,14 @@ class TestDatasetSettings:
         api_url = "http://test_url"
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
-            method="PATCH",
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
             status_code=200,
         )
         mock_return_value["guidelines"] = "new guidelines"
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"{api_url}/api/v1/datasets/{mock_dataset_id.hex}",
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
             method="PATCH",
             status_code=200,
         )
@@ -174,13 +174,13 @@ class TestDatasetSettings:
         api_url = "http://test_url"
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
-            method="PATCH",
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
             status_code=200,
         )
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"{api_url}/api/v1/datasets/{mock_dataset_id.hex}",
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
             method="PATCH",
             status_code=200,
         )
@@ -218,13 +218,13 @@ class TestDatasetSettings:
         api_url = "http://test_url"
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
-            method="PATCH",
+            url=f"{api_url}/api/v1/datasets",
+            method="POST",
             status_code=200,
         )
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"{api_url}/api/v1/datasets/{mock_dataset_id.hex}",
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
             method="PATCH",
             status_code=200,
         )

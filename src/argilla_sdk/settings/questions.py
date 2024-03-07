@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional, Dict
+from typing import List, Optional
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, validator, field_serializer
@@ -61,7 +61,6 @@ class LabelQuestion(QuestionBase):
     settings: LabelQuestionSettings = LabelQuestionSettings(type="label_selection")
 
 
-@dataclass
 class RatingQuestion(QuestionBase):
     values: List[int]
     settings: QuestionSettings = QuestionSettings(type="rating")
@@ -78,14 +77,12 @@ class TextQuestion(QuestionBase):
         return settings
 
 
-@dataclass
 class MultiLabelQuestion(QuestionBase):
     labels: List[str]
     visible_labels: int
     settings: QuestionSettings = QuestionSettings(type="multi_label_selection")
 
 
-@dataclass
 class RankingQuestion(QuestionBase):
     values: List[int]
     settings: QuestionSettings = QuestionSettings(type="ranking")

@@ -19,7 +19,6 @@ def test_create_dataset(client):
     dataset = rg.Dataset(
         name=mock_dataset_name,
         workspace_id=workspace_id,
-        guidelines="Test guidelines",
         settings=rg.Settings(
             fields=[
                 rg.TextField(name="text"),
@@ -28,6 +27,7 @@ def test_create_dataset(client):
                 rg.TextQuestion(name="response"),
             ],
         ),
+        client=client,
     )
     dataset.publish()
     gotten_dataset = dataset.get()
@@ -65,7 +65,6 @@ def test_add_records(client):
     dataset = rg.Dataset(
         name=mock_dataset_name,
         workspace_id="3b8416c6-ad6f-4641-8567-de6f5a7343ba",
-        guidelines="Test guidelines",
         settings=settings,
         client=client,
     )
@@ -119,7 +118,6 @@ def test_add_records_with_suggestions(client) -> None:
     dataset = rg.Dataset(
         name=mock_dataset_name,
         workspace_id="3b8416c6-ad6f-4641-8567-de6f5a7343ba",
-        guidelines="Test guidelines",
         settings=settings,
     )
     dataset.publish()
@@ -178,7 +176,6 @@ def test_add_records_with_responses(client) -> None:
     dataset = rg.Dataset(
         name=mock_dataset_name,
         workspace_id="3b8416c6-ad6f-4641-8567-de6f5a7343ba",
-        guidelines="Test guidelines",
         settings=settings,
     )
     user = rg.User(

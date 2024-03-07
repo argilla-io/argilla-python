@@ -18,4 +18,4 @@ class ResourceModel(BaseModel):
 
     @field_serializer("id", when_used="unless-none")
     def serialize_id(self, value: UUID) -> str:
-        return str(value.hex)
+        return str(value)

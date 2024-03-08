@@ -17,8 +17,7 @@ from uuid import UUID
 import httpx
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
-from argilla_sdk._models._dataset import DatasetModel
-from argilla_sdk._models._record import RecordModel
+from argilla_sdk._models import DatasetModel, RecordModel
 
 __all__ = ["DatasetsAPI"]
 
@@ -91,7 +90,6 @@ class DatasetsAPI(ResourceAPI):
             if dataset.name == name:
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
-
 
     def create_fields(self, dataset_id: UUID, fields: List[dict]) -> None:
         url = f"/api/v1/datasets/{dataset_id}/fields"

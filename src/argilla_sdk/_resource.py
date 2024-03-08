@@ -26,7 +26,6 @@ class Resource(LoggingMixin):
         """Updates the resource with the ClientAPI that is used to interact with
         Argilla and adds an updated model to the resource.
         Args:
-            api (APIClient): The client API used to interact with Argilla
             model (Union[WorkspaceModel, UserModel, DatasetModel]): The updated model
         Returns:
             Self: The updated resource

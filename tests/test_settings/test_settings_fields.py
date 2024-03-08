@@ -1,8 +1,6 @@
 import pytest
 import argilla_sdk as rg
 
-from argilla_sdk.settings.exceptions import InvalidFieldException
-
 
 class TestTextField:
     def test_init_text_field(self):

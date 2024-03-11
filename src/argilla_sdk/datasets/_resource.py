@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Optional, Literal
+from typing import Optional, Literal, Dict
 from uuid import UUID, uuid4
 
 from argilla_sdk.client import Argilla
@@ -21,9 +21,6 @@ from argilla_sdk.datasets._dataset_records import DatasetRecords
 from argilla_sdk.datasets._exceptions import DatasetNotPublished
 from argilla_sdk.settings import Settings
 
-
-if TYPE_CHECKING:
-    from argilla_sdk._api._datasets import DatasetsAPI
 
 __all__ = ["Dataset"]
 

@@ -31,9 +31,9 @@ class Workspace(Resource):
 
     def __init__(
         self,
-        client: Optional["Argilla"] = Argilla(),
         name: Optional[str] = None,
         id: Optional[UUID] = None,
+        client: Optional["Argilla"] = Argilla(),
         _model: Optional[WorkspaceModel] = None,
     ) -> None:
         """Initializes a Workspace object with a client and a name or id

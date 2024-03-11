@@ -48,8 +48,6 @@ class User(Resource):
             api=client._users,
         )
         if _model is None:
-            if username is None:
-                raise ValueError("A username is required for a user")
             _model = UserModel(
                 username=username,
                 first_name=first_name or username,

@@ -7,7 +7,7 @@ from pydantic import BaseModel, validator, field_serializer
 
 class QuestionSettings(BaseModel):
     type: str
-
+    
 
 class TextQuestionSettings(QuestionSettings):
     use_markdown: bool = False

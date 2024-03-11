@@ -83,8 +83,7 @@ class Dataset(Resource):
         self,
         settings: Settings,
     ) -> None:
-        """ Populate the dataset object with settings"""
-        self._settings = settings
+        """Populate the dataset object with settings"""
         self.guidelines = settings.guidelines
         self.fields = settings.fields
         self.questions = settings.questions

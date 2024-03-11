@@ -1,6 +1,6 @@
 from typing import Any, TYPE_CHECKING
 
-from argilla_sdk._helpers._mixins import LoggingMixin
+from argilla_sdk._helpers._mixins import LoggingMixin, UUIDMixin
 
 if TYPE_CHECKING:
     from argilla_sdk.client import Argilla
@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from argilla_sdk._api._base import ResourceAPI
 
 
-class Resource(LoggingMixin):
+class Resource(LoggingMixin, UUIDMixin):
     """Base class for all resources (Dataset, Workspace, User, etc.)"""
 
     _model: "ResourceModel"

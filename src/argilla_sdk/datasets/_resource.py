@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Optional, Literal, Dict
+from typing import Optional, Literal, Union, Dict
 from uuid import UUID, uuid4
 
 from argilla_sdk.client import Argilla
@@ -32,10 +32,10 @@ class Dataset(Resource):
         self,
         name: Optional[str] = None,
         status: Literal["draft", "ready"] = "draft",
-        workspace_id: Optional[UUID] = None,
+        workspace_id: Optional[Union[UUID, str]] = None,
         settings: Settings = Settings(),
         client: Optional["Argilla"] = Argilla(),
-        id: Optional[UUID] = uuid4(),
+        id: Optional[Union[UUID, str]] = uuid4(),
         _model: Optional[DatasetModel] = None,
     ) -> None:
         """Initalizes a Dataset with a client and model
@@ -56,8 +56,8 @@ class Dataset(Resource):
             self._model = DatasetModel(
                 name=name,
                 status=status,
-                workspace_id=workspace_id,
-                id=id,
+                workspace_id=self._convert_optional_uuid(uuid=workspace_id),
+                id=self._convert_optional_uuid(uuid=id),
             )
         else:
             self._model = _model

@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional
 from enum import Enum
+from typing import Optional
 
 from pydantic import field_validator
 
@@ -37,6 +37,6 @@ class UserModel(ResourceModel):
     password: Optional[str] = None
 
     @field_validator("first_name")
-    def validate_first_name(cls, value: str) -> str:
+    def validate_first_name(cls, value: str, values) -> str:
         """Set first name to user name if not provided."""
-        return value or cls.username
+        return value or values.data["username"]

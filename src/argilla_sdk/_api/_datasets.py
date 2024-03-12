@@ -23,7 +23,7 @@ from argilla_sdk._models._record import RecordModel
 __all__ = ["DatasetsAPI"]
 
 
-class DatasetsAPI(ResourceAPI):
+class DatasetsAPI(ResourceAPI[DatasetModel]):
     """Manage datasets via the API"""
 
     http_client: httpx.Client

@@ -24,7 +24,7 @@ from argilla_sdk._models._workspace import WorkspaceModel
 __all__ = ["WorkspacesAPI"]
 
 
-class WorkspacesAPI(ResourceAPI):
+class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
     http_client: httpx.Client
 
     ################

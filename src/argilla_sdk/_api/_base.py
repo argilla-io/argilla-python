@@ -13,10 +13,10 @@
 # limitations under the License.
 
 from datetime import datetime
-from typing import TYPE_CHECKING
+from typing import Generic, TYPE_CHECKING, TypeVar
+from uuid import UUID
 
 from argilla_sdk._helpers._mixins import LoggingMixin
-
 
 if TYPE_CHECKING:
     from httpx import Client
@@ -24,8 +24,10 @@ if TYPE_CHECKING:
 
 __all__ = ["ResourceAPI"]
 
+T = TypeVar("T")
 
-class ResourceAPI(LoggingMixin):
+
+class ResourceAPI(LoggingMixin, Generic[T]):
     """Base class for all API resources that contains common methods."""
 
     def __init__(self, http_client: "Client") -> None:
@@ -33,3 +35,15 @@ class ResourceAPI(LoggingMixin):
 
     def _date_from_iso_format(self, date: str) -> datetime:
         return datetime.fromisoformat(date)
+
+    def get(self, id: UUID) -> T:
+        raise NotImplementedError
+
+    def create(self, resource: T) -> T:
+        raise NotImplementedError
+
+    def delete(self, id: UUID) -> None:
+        raise NotImplementedError
+
+    def update(self, resource: T) -> T:
+        return resource

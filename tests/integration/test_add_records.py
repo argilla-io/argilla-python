@@ -119,6 +119,7 @@ def test_add_records_with_suggestions(client) -> None:
         name=mock_dataset_name,
         workspace_id="3b8416c6-ad6f-4641-8567-de6f5a7343ba",
         settings=settings,
+        client=client,
     )
     dataset.publish()
     dataset.records.add(
@@ -177,11 +178,13 @@ def test_add_records_with_responses(client) -> None:
         name=mock_dataset_name,
         workspace_id="3b8416c6-ad6f-4641-8567-de6f5a7343ba",
         settings=settings,
+        client=client,
     )
     user = rg.User(
         username=f"test_{random.randint(0, 1000)}",
         first_name="test",
         password="testtesttest",
+        client=client,
     )
     user.create()
     dataset.publish()

@@ -65,6 +65,10 @@ class DatasetsAPI(ResourceAPI):
         _http.raise_for_status(response=response)
         self.log(message=f"Deleted dataset {dataset_id}")
 
+    def exists(self, dataset_id: UUID) -> bool:
+        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}")
+        return response.status_code == 200
+
     ####################
     # Utility methods #
     ####################
@@ -91,7 +95,6 @@ class DatasetsAPI(ResourceAPI):
             if dataset.name == name:
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
-
 
     def create_fields(self, dataset_id: UUID, fields: List[dict]) -> None:
         url = f"/api/v1/datasets/{dataset_id}/fields"

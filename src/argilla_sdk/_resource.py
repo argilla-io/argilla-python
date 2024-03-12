@@ -58,10 +58,6 @@ class Resource(LoggingMixin):
 
     def delete(self) -> None:
         self._api.delete(self._model.id)
-        # TODO(@burtenshaw): should we set the model to None after deleting?
-        #  or should we `self._sync(None)`?
-        # If we set the model to None, we cannot recreate the resource with the same data
-        # self._model = None
 
     ############################
     # Serialization

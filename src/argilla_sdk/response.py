@@ -12,13 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._models import ResponseModel
+from argilla_sdk._models import ResponseModel, ResponseStatus
+from argilla_sdk._resource import Resource
 
 __all__ = ["Response"]
 
 
-class Response:
-    def __init__(self, question_name, value, status, user_id) -> None:
+class Response(Resource):
+    """Class for interacting with Argilla Responses of records"""
+
+    _model: ResponseModel
+
+    def __init__(
+        self,
+        question_name: str,
+        value: str,
+        user_id: str,
+        status: ResponseStatus = "draft",
+    ) -> None:
+        """Initializes a Response with a user_id and value"""
         self._model = ResponseModel(
             values=self.__create_response_values(question_name, value),
             status=status,

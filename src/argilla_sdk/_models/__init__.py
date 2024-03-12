@@ -18,4 +18,4 @@ from argilla_sdk._models._user import UserModel, Role
 from argilla_sdk._models._dataset import DatasetModel
 from argilla_sdk._models._record import RecordModel
 from argilla_sdk._models._suggestion import SuggestionModel
-from argilla_sdk._models._response import ResponseModel
+from argilla_sdk._models._response import ResponseModel, ResponseStatus

@@ -50,6 +50,11 @@ class WorkspacesAPI(ResourceAPI):
         response = self.http_client.delete(url=f"/api/v1/workspaces/{workspace_id}")
         _http.raise_for_status(response=response)
 
+    def exists(self, workspace_id: UUID) -> bool:
+        response = self.http_client.get(url=f"/api/v1/workspaces/{workspace_id}")
+        return response.status_code == 200
+
+
     ####################
     # Utility methods #
     ####################

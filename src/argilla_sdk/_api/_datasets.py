@@ -92,13 +92,15 @@ class DatasetsAPI(ResourceAPI):
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
 
-
-    def create_fields(self, dataset_id: UUID, fields: List[dict]) -> None:
+    def create_fields(self, dataset_id: UUID, fields: List[dict]) -> List[dict]:
         url = f"/api/v1/datasets/{dataset_id}/fields"
+        remote_fields = []
         for field in fields:
             response = self.http_client.post(url=url, json=field)
             _http.raise_for_status(response=response)
             self.log(message=f"Created field {field['name']} in dataset {dataset_id}")
+            remote_fields.append(response.json())
+        return remote_fields
 
     def list_fields(self, dataset_id: UUID) -> List[dict]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/fields")

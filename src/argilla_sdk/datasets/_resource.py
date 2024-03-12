@@ -65,6 +65,7 @@ class Dataset(Resource):
         self._sync(model=self._model)
         self.__define_settings(settings=settings)
         self.__published = False
+        self.question_name_map = {}
 
     @property
     def records(self) -> "DatasetRecords":
@@ -91,10 +92,10 @@ class Dataset(Resource):
         self.__update_remote_fields()
         self.__update_remote_questions()
         self.__publish()
+        self.__get_remote_question_id_map()
         self.records = DatasetRecords(
             client=self._client,
-            dataset_id=self._model.id,
-            question_name_map=self.__get_remote_question_id_map(),
+            dataset=self,
         )
 
     def get(self, **kwargs) -> "Dataset":
@@ -138,4 +139,4 @@ class Dataset(Resource):
     def __get_remote_question_id_map(self) -> Dict[str, str]:
         remote_questions = self._api.list_questions(dataset_id=self._model.id)
         question_name_map = {question["name"]: question["id"] for question in remote_questions}
-        return question_name_map
+        self.question_name_map = question_name_map

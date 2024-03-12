@@ -28,6 +28,8 @@ __all__ = ["Dataset"]
 class Dataset(Resource):
     """Class for interacting with Argilla Datasets"""
 
+    _model: DatasetModel
+
     def __init__(
         self,
         name: Optional[str] = None,
@@ -75,6 +77,10 @@ class Dataset(Resource):
     @records.setter
     def records(self, value: "DatasetRecords") -> None:
         self.__records = value
+
+    @property
+    def is_published(self) -> bool:
+        return self._model.status == "published"
 
     def __define_settings(
         self,

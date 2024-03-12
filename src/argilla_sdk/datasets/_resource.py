@@ -11,26 +11,32 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Optional, Literal, TYPE_CHECKING, Dict
+from typing import Dict, Literal, Optional, TYPE_CHECKING
 from uuid import UUID, uuid4
 
-from argilla_sdk.client import Argilla
+from argilla_sdk._api import DatasetsAPI
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
+from argilla_sdk.client import Argilla
 from argilla_sdk.datasets._dataset_records import DatasetRecords
 from argilla_sdk.datasets._exceptions import DatasetNotPublished
 from argilla_sdk.settings import Settings
-from argilla_sdk._models import DatasetModel
-
 
 if TYPE_CHECKING:
-    from argilla_sdk._api._datasets import DatasetsAPI
+    pass
 
 __all__ = ["Dataset"]
 
 
 class Dataset(Resource):
     """Class for interacting with Argilla Datasets"""
+
+    name: str
+    id: UUID
+    status: Literal["draft", "ready"]
+
+    _api: "DatasetsAPI"
+    _model: "DatasetModel"
 
     def __init__(
         self,
@@ -53,6 +59,7 @@ class Dataset(Resource):
                 Random UUID is used if not assigned.
         """
         super().__init__(client=client, api=client._datasets)
+
         if name is None:
             name = str(id)
             self.log(f"Settings dataset bane to unique UUID: {id}")
@@ -79,21 +86,23 @@ class Dataset(Resource):
     def records(self, value: "DatasetRecords") -> None:
         self.__records = value
 
-    def __define_settings(
-        self,
-        settings: Settings,
-    ) -> None:
-        """ Populate the dataset object with settings"""
-        self._settings = settings
-        self.guidelines = settings.guidelines
-        self.fields = settings.fields
-        self.questions = settings.questions
-        self.allow_extra_metadata = settings.allow_extra_metadata
+    def exists(self) -> bool:
+        return self._api.exists(dataset_id=self.id)
 
-    def publish(self) -> None:
-        self.__create()
+    def configure(self, settings: Settings, publish:bool=False) -> "Dataset":
+        if not self.exists():
+            self.__create()
+
+        self.__define_settings(settings=settings)
         self.__update_remote_fields()
         self.__update_remote_questions()
+
+        if publish:
+            self.publish()
+
+        return self
+
+    def publish(self) -> None:
         self.__publish()
         self.records = DatasetRecords(
             client=self._client,
@@ -111,8 +120,19 @@ class Dataset(Resource):
     #  Utility methods  #
     #####################
 
+    def __define_settings(
+        self,
+        settings: Settings,
+    ) -> None:
+        """Populate the dataset object with settings"""
+        self._settings = settings
+        self.guidelines = settings.guidelines
+        self.fields = settings.fields
+        self.questions = settings.questions
+        self.allow_extra_metadata = settings.allow_extra_metadata
+
     def __create(self) -> None:
-        response_model = self._api.create(dataset=self._model)
+        response_model = self._api.create(self._model)
         self._sync(response_model)
 
     def __publish(self) -> None:
@@ -143,3 +163,6 @@ class Dataset(Resource):
         remote_questions = self._api.list_questions(dataset_id=self._model.id)
         question_name_map = {question["name"]: question["id"] for question in remote_questions}
         return question_name_map
+
+    def published(self) -> bool:
+        return self.status == "ready"

@@ -20,12 +20,13 @@ from argilla_sdk._models._record import RecordModel
 from argilla_sdk._models._suggestion import SuggestionModel
 from argilla_sdk._models._response import ResponseModel
 from argilla_sdk._models._settings._base import SettingsModel
-from argilla_sdk._models._settings._fields import TextField
+from argilla_sdk._models._settings._fields import TextFieldModel
 from argilla_sdk._models._settings._questions import (
-    LabelQuestion,
-    MultiLabelQuestion,
-    RankingQuestion,
-    TextQuestion,
-    RatingQuestion,
+    LabelQuestionModel,
+    MultiLabelQuestionModel,
+    RankingQuestionModel,
+    TextQuestionModel,
+    RatingQuestionModel,
 )
 from argilla_sdk._models._settings._guidelines import Guidelines
+from argilla_sdk._models._response import ResponseModel, ResponseStatus

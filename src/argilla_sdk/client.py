@@ -17,7 +17,6 @@ from typing import TYPE_CHECKING, overload
 
 import argilla_sdk as rg  # noqa: F401
 from argilla_sdk import _api
-from argilla_sdk._api import DatasetsAPI, UsersAPI, WorkspacesAPI
 
 if TYPE_CHECKING:
     from argilla_sdk import Workspace
@@ -49,7 +48,7 @@ class Users(Sequence):
 
     def __init__(self, client: "Argilla") -> None:
         self._client = client
-        self._api = UsersAPI(http_client=client.http_client)
+        self._api = _api.UsersAPI(http_client=client.http_client)
 
     def __call__(self, username: str, **kwargs) -> "User":
         from argilla_sdk.users._resource import User
@@ -86,7 +85,7 @@ class Workspaces(Sequence):
 
     def __init__(self, client: "Argilla") -> None:
         self._client = client
-        self._api = WorkspacesAPI(http_client=client.http_client)
+        self._api = _api.WorkspacesAPI(http_client=client.http_client)
 
     def __call__(self, name: str, **kwargs) -> "Workspace":
         from argilla_sdk.workspaces._resource import Workspace
@@ -124,7 +123,7 @@ class Datasets(Sequence):
 
     def __init__(self, client: "Argilla") -> None:
         self._client = client
-        self._api = DatasetsAPI(http_client=client.http_client)
+        self._api = _api.DatasetsAPI(http_client=client.http_client)
 
     def __call__(self, name: str, workspace: "Workspace", **kwargs) -> "Dataset":
         from argilla_sdk.datasets._resource import Dataset

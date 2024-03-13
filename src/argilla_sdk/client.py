@@ -22,7 +22,6 @@ if TYPE_CHECKING:
     from argilla_sdk import Workspace
     from argilla_sdk import Dataset
     from argilla_sdk import User
-    from argilla_sdk._resource import Resource
 
 __all__ = ["Argilla"]
 
@@ -38,9 +37,6 @@ class Argilla(_api.APIClient):
     @property
     def me(self) -> "User":
         return rg.User(client=self, _model=self._users.get_me())
-
-    def create(self, resource: "Resource") -> "Resource":
-        return resource.create()
 
 
 class Users(Sequence):

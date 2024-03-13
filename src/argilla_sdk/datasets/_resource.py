@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Dict, Literal, Optional, TYPE_CHECKING
+from typing import Dict, Literal, Optional
 from uuid import UUID, uuid4
 
 from argilla_sdk._api import DatasetsAPI
@@ -21,9 +21,6 @@ from argilla_sdk.client import Argilla
 from argilla_sdk.datasets._dataset_records import DatasetRecords
 from argilla_sdk.datasets._exceptions import DatasetNotPublished
 from argilla_sdk.settings import Settings
-
-if TYPE_CHECKING:
-    pass
 
 __all__ = ["Dataset"]
 
@@ -72,6 +69,7 @@ class Dataset(Resource):
             )
         else:
             self._model = _model
+
         self._sync(model=self._model)
         self.__define_settings(settings=settings)
         self.__published = False

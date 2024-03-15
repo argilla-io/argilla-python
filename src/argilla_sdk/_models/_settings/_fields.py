@@ -12,9 +12,10 @@ class FieldSettings(BaseModel):
 
 class FieldBaseModel(BaseModel):
     name: str
+    settings: FieldSettings
+
     title: Optional[str] = None
     required: bool = True
-    settings: FieldSettings = FieldSettings(type="text")
     description: Optional[str] = None
 
     @validator("name")
@@ -30,4 +31,4 @@ class FieldBaseModel(BaseModel):
 
 
 class TextFieldModel(FieldBaseModel):
-    use_markdown: Optional[bool] = None
+    settings: FieldSettings = FieldSettings(type="text", use_markdown=False)

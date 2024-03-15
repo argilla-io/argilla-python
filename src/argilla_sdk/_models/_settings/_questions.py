@@ -7,7 +7,7 @@ from pydantic import BaseModel, validator, field_serializer
 
 class QuestionSettings(BaseModel):
     type: str
-    
+
 
 class TextQuestionSettings(QuestionSettings):
     use_markdown: bool = False
@@ -19,7 +19,7 @@ class LabelQuestionSettings(QuestionSettings):
 
     @validator("options", pre=True, always=True)
     def __labels_are_unique(cls, labels, values):
-        """ Ensure that labels are unique """
+        """Ensure that labels are unique"""
         unique_labels = list(set(labels))
         if len(unique_labels) != len(labels):
             raise ValueError("All labels must be unique")
@@ -64,17 +64,17 @@ class QuestionBaseModel(BaseModel):
         return str(value)
 
 
-class LabelQuestion(QuestionBaseModel):
+class LabelQuestionModel(QuestionBaseModel):
     labels: List[str]
     settings: LabelQuestionSettings = LabelQuestionSettings(type="label_selection")
 
 
-class RatingQuestion(QuestionBaseModel):
+class RatingQuestionModel(QuestionBaseModel):
     values: List[int]
     settings: QuestionSettings = QuestionSettings(type="rating")
 
 
-class TextQuestion(QuestionBaseModel):
+class TextQuestionModel(QuestionBaseModel):
     use_markdown: bool = False
     settings: TextQuestionSettings = TextQuestionSettings(type="text")
 
@@ -85,12 +85,18 @@ class TextQuestion(QuestionBaseModel):
         return settings
 
 
-class MultiLabelQuestion(QuestionBaseModel):
+class MultiLabelQuestionModel(QuestionBaseModel):
     labels: List[str]
-    visible_labels: int
+    visible_labels: Optional[int] = None
     settings: QuestionSettings = QuestionSettings(type="multi_label_selection")
 
+    @validator("visible_labels", always=True)
+    def __default_to_all(cls, visible_labels, values):
+        if visible_labels is None:
+            return len(values["labels"])
+        return visible_labels
 
-class RankingQuestion(QuestionBaseModel):
+
+class RankingQuestionModel(QuestionBaseModel):
     values: List[int]
     settings: QuestionSettings = QuestionSettings(type="ranking")

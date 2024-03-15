@@ -19,25 +19,25 @@ from argilla_sdk._models._resource import ResourceModel
 
 if TYPE_CHECKING:
     from argilla_sdk._models import (
-        TextField,
-        LabelQuestion,
-        MultiLabelQuestion,
-        RankingQuestion,
-        TextQuestion,
-        RatingQuestion,
+        TextFieldModel,
+        LabelQuestionModel,
+        MultiLabelQuestionModel,
+        RankingQuestionModel,
+        TextQuestionModel,
+        RatingQuestionModel,
     )
 
 
 class SettingsModel(ResourceModel):
-    fields: Optional[List["TextField"]] = []
+    fields: Optional[List["TextFieldModel"]] = []
     questions: Optional[
         List[
             Union[
-                "LabelQuestion",
-                "MultiLabelQuestion",
-                "RankingQuestion",
-                "TextQuestion",
-                "RatingQuestion",
+                "LabelQuestionModel",
+                "MultiLabelQuestionModel",
+                "RankingQuestionModel",
+                "TextQuestionModel",
+                "RatingQuestionModel",
             ]
         ]
     ] = []

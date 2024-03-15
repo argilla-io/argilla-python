@@ -99,11 +99,13 @@ class DatasetsAPI(ResourceAPI):
             _http.raise_for_status(response=response)
             self.log(message=f"Created field {field['name']} in dataset {dataset_id}")
             remote_fields.append(response.json())
+        # TODO: return fields as models
         return remote_fields
 
     def list_fields(self, dataset_id: UUID) -> List[dict]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/fields")
         _http.raise_for_status(response=response)
+        # TODO: return fields as models
         return response.json()["items"]
 
     def create_questions(self, dataset_id: UUID, questions: List[dict]) -> List[Dict]:
@@ -114,11 +116,13 @@ class DatasetsAPI(ResourceAPI):
             _http.raise_for_status(response=response)
             self.log(message=f"Created question {question['name']} in dataset {dataset_id}")
             remote_questions.append(response.json())
+        # TODO: return questions as models
         return questions
 
     def list_questions(self, dataset_id: UUID) -> List[dict]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/questions")
         _http.raise_for_status(response=response)
+        # TODO: return questions as models
         return response.json()["items"]
 
     def create_records(self, dataset_id: UUID, records: List[dict]) -> None:
@@ -128,6 +132,8 @@ class DatasetsAPI(ResourceAPI):
         )
         _http.raise_for_status(response=response)
         self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
+        # TODO: Once server returns the records, return them here
+        # TODO: migrate to `RecordsAPI.create_many()`
 
     def list_records(
         self, dataset_id: UUID, with_suggestions: bool = True, with_responses: bool = True

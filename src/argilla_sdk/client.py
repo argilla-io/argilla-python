@@ -70,7 +70,7 @@ class Users(Sequence):
         from argilla_sdk.users._resource import User
 
         model = self._api.list()[index]
-        return User(client=argilla, _model=model)
+        return User(client=self._client, _model=model)
 
     def __len__(self) -> int:
         return len(self._api.list())
@@ -151,34 +151,3 @@ class Datasets(Sequence):
 
     def __len__(self) -> int:
         return len(self._api.list())
-
-
-if __name__ == "__main__":
-    import argilla_sdk as rg
-
-    argilla = rg.Argilla()
-    print(argilla.me)
-
-    ws = argilla.workspaces("argilla")
-
-    new_ws = argilla.workspaces("new_ws")
-    if not new_ws.exists():
-        new_ws.create()
-
-    ds = argilla.datasets("new_ds", workspace=ws)
-    if not ds.exists():
-        ds.create()  # Only the dataset entity will be created, not its settings
-
-    elif ds.published():
-        ds.delete()
-        ds.create()
-
-    ds.configure(
-        settings=rg.Settings(
-            fields=[rg.TextField(name="text-field")],
-            questions=[rg.TextQuestion(name="text-question")],
-        )
-    )
-    # here, the dataset is created and configured with the settings, but not published yet (so, in draft mode)
-    ds.publish()
-    # Now the dataset is published and is ready for annotate

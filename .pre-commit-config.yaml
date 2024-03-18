@@ -20,7 +20,7 @@ repos:
       - id: ruff-format
   
   - repo: https://github.com/kynan/nbstripout
-    rev: v0.7.1
+    rev: 0.7.1
     hooks:
       - id: nbstripout
         files: \.ipynb$

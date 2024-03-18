@@ -48,15 +48,15 @@ class Settings(Resource):
 
     def __init__(
         self,
-        fields: Optional[List[TextFieldModel]] = [],
+        fields: Optional[List[TextField]] = [],
         questions: Optional[
             List[
                 Union[
-                    LabelQuestionModel,
-                    MultiLabelQuestionModel,
-                    RankingQuestionModel,
-                    TextQuestionModel,
-                    RatingQuestionModel,
+                    LabelQuestion,
+                    MultiLabelQuestion,
+                    RankingQuestion,
+                    TextQuestion,
+                    RatingQuestion,
                 ]
             ]
         ] = [],
@@ -142,11 +142,13 @@ class Settings(Resource):
 
     ### Utility Methods ###
 
-    def __process_fields(self, fields: List["TextField"]) -> List["TextField"]:
+    def __process_fields(self, fields: List["TextField"]) -> List["TextFieldModel"]:
+        # TODO: Implement error handling for invalid fields
         processed_fields = [field._model for field in fields]
         return processed_fields
 
-    def __process_questions(self, questions) -> List["TextQuestion"]:
+    def __process_questions(self, questions: List["TextQuestion"]) -> List["TextQuestionModel"]:
+        # TODO: Implement error handling for invalid questions
         processed_questions = [question._model for question in questions]
         return processed_questions
 

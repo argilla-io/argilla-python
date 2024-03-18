@@ -17,7 +17,7 @@ class FieldBase(Resource):
         return self._model.name
 
     @property
-    def title(self) -> str:
+    def title(self) -> Optional[str]:
         return self._model.title
 
     @property
@@ -25,11 +25,11 @@ class FieldBase(Resource):
         return self._model.required
 
     @property
-    def description(self) -> str:
+    def description(self) -> Optional[str]:
         return self._model.description
 
     @property
-    def use_markdown(self) -> bool:
+    def use_markdown(self) -> Optional[bool]:
         return self._model.settings.use_markdown
 
 
@@ -48,7 +48,7 @@ class TextField(FieldBase):
         self._model = TextFieldModel(
             name=name,
             title=title,
-            required=required,
+            required=required or True,
             description=description,
             settings=FieldSettings(type="text", use_markdown=use_markdown),
         )

@@ -17,7 +17,7 @@ from uuid import UUID
 import httpx
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
-from argilla_sdk._models import DatasetModel, RecordModel
+from argilla_sdk._models import DatasetModel, RecordModel, FieldBaseModel, QuestionBaseModel
 
 __all__ = ["DatasetsAPI"]
 
@@ -91,39 +91,39 @@ class DatasetsAPI(ResourceAPI):
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
 
-    def create_fields(self, dataset_id: UUID, fields: List[dict]) -> List[dict]:
+    def create_fields(self, dataset_id: UUID, fields: List[dict]) -> List[FieldBaseModel]:
         url = f"/api/v1/datasets/{dataset_id}/fields"
         remote_fields = []
         for field in fields:
             response = self.http_client.post(url=url, json=field)
             _http.raise_for_status(response=response)
             self.log(message=f"Created field {field['name']} in dataset {dataset_id}")
-            remote_fields.append(response.json())
-        # TODO: return fields as models
+            model = FieldBaseModel(**response.json())
+            remote_fields.append(model)
         return remote_fields
 
-    def list_fields(self, dataset_id: UUID) -> List[dict]:
+    def list_fields(self, dataset_id: UUID) -> List[FieldBaseModel]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/fields")
         _http.raise_for_status(response=response)
-        # TODO: return fields as models
-        return response.json()["items"]
+        response_models = [FieldBaseModel(**field) for field in response.json()["items"]]
+        return response_models
 
-    def create_questions(self, dataset_id: UUID, questions: List[dict]) -> List[Dict]:
+    def create_questions(self, dataset_id: UUID, questions: List[dict]) -> List[QuestionBaseModel]:
         url = f"/api/v1/datasets/{dataset_id}/questions"
         remote_questions = []
         for question in questions:
             response = self.http_client.post(url=url, json=question)
             _http.raise_for_status(response=response)
             self.log(message=f"Created question {question['name']} in dataset {dataset_id}")
-            remote_questions.append(response.json())
-        # TODO: return questions as models
+            model = QuestionBaseModel(**response.json())
+            remote_questions.append(model)
         return questions
 
-    def list_questions(self, dataset_id: UUID) -> List[dict]:
+    def list_questions(self, dataset_id: UUID) -> List[QuestionBaseModel]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/questions")
         _http.raise_for_status(response=response)
-        # TODO: return questions as models
-        return response.json()["items"]
+        response_models = [QuestionBaseModel(**question) for question in response.json()["items"]]
+        return response_models
 
     def create_records(self, dataset_id: UUID, records: List[dict]) -> None:
         response = self.http_client.post(

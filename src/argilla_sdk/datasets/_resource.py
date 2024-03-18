@@ -124,11 +124,11 @@ class Dataset(Resource):
             self.__published = True
 
     def __update_remote_fields(self) -> None:
-        fields = [field.model_dump() for field in self.fields]
+        fields = [field.serialize() for field in self.fields]
         self._api.create_fields(dataset_id=self._model.id, fields=fields)
 
     def __update_remote_questions(self) -> None:
-        questions = [question.model_dump() for question in self.questions]
+        questions = [question.serialize() for question in self.questions]
         self._api.create_questions(dataset_id=self._model.id, questions=questions)
 
     def __update_local_properties(self) -> None:

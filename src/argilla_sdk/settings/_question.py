@@ -10,6 +10,7 @@ from argilla_sdk._models import (
     TextQuestionSettings,
     QuestionSettings,
     RatingQuestionModel,
+    QuestionBaseModel,
 )
 
 __all__ = [
@@ -22,7 +23,23 @@ __all__ = [
 
 
 class QuestionBase(Resource):
-    pass
+    _model: QuestionBaseModel
+
+    @property
+    def name(self) -> str:
+        return self._model.name
+
+    @property
+    def title(self) -> Optional[str]:
+        return self._model.title
+
+    @property
+    def description(self) -> Optional[str]:
+        return self._model.description
+
+    @property
+    def required(self) -> bool:
+        return self._model.required
 
 
 class LabelQuestion(QuestionBase):
@@ -53,6 +70,14 @@ class LabelQuestion(QuestionBase):
             settings=LabelQuestionSettings(options=labels, type="label_selection"),
         )
 
+    @property
+    def labels(self) -> List[str]:
+        return self._model.labels
+
+    @labels.setter
+    def labels(self, labels: List[str]) -> None:
+        self._model.labels = labels
+
 
 class TextQuestion(QuestionBase):
     _model: TextQuestionModel
@@ -62,7 +87,7 @@ class TextQuestion(QuestionBase):
         name: str,
         title: Optional[str] = None,
         description: Optional[str] = None,
-        required: bool = False,
+        required: bool = True,
         use_markdown: bool = False,
     ) -> None:
         """Create a new text question for `Settings` of a `Dataset`
@@ -81,8 +106,12 @@ class TextQuestion(QuestionBase):
             settings=TextQuestionSettings(use_markdown=use_markdown, type="text"),
         )
 
+    @property
+    def use_markdown(self) -> bool:
+        return self._model.settings.use_markdown
 
-class MultiLabelQuestion(QuestionBase):
+
+class MultiLabelQuestion(LabelQuestion):
     _model: MultiLabelQuestionModel
 
     def __init__(
@@ -111,6 +140,14 @@ class MultiLabelQuestion(QuestionBase):
             visible_labels=visible_labels,
             settings=LabelQuestionSettings(options=labels, type="multi_label_selection"),
         )
+
+    @property
+    def visible_labels(self) -> Optional[int]:
+        return self._model.visible_labels
+
+    @visible_labels.setter
+    def visible_labels(self, visible_labels: Optional[int]) -> None:
+        self._model.visible_labels = visible_labels
 
 
 class RatingQuestion(QuestionBase):
@@ -141,6 +178,14 @@ class RatingQuestion(QuestionBase):
             settings=QuestionSettings(type="rating"),
         )
 
+    @property
+    def values(self) -> List[int]:
+        return self._model.values
+
+    @values.setter
+    def values(self, values: List[int]) -> None:
+        self._model.values = values
+
 
 class RankingQuestion(QuestionBase):
     _model: RankingQuestionModel
@@ -169,3 +214,11 @@ class RankingQuestion(QuestionBase):
             values=values,
             settings=QuestionSettings(type="ranking"),
         )
+
+    @property
+    def values(self) -> List[int]:
+        return self._model.values
+
+    @values.setter
+    def values(self, values: List[int]) -> None:
+        self._model.values = values

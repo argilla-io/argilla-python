@@ -87,26 +87,8 @@ class Dataset(Resource):
     def exists(self) -> bool:
         return self._api.exists(dataset_id=self.id)
 
-    def configure(self, settings: Settings, publish:bool=False) -> "Dataset":
-        if not self.exists():
-            self.__create()
-
-        self.__define_settings(settings=settings)
-        self.__update_remote_fields()
-        self.__update_remote_questions()
-
-        if publish:
-            self.publish()
-
-        return self
-
-    def publish(self) -> None:
-        self.__publish()
-        self.records = DatasetRecords(
-            client=self._client,
-            dataset_id=self._model.id,
-            question_name_map=self.__get_remote_question_id_map(),
-        )
+    def publish(self, settings: Settings) -> "Dataset":
+        return self._configure(settings=settings, publish=True)
 
     def get(self, **kwargs) -> "Dataset":
         self.__update_local_properties()
@@ -117,6 +99,26 @@ class Dataset(Resource):
     #####################
     #  Utility methods  #
     #####################
+
+    # we leave this method as private for now and we use the `ds.publish` one
+    def _configure(self, settings: Settings, publish: bool = False) -> "Dataset":
+        if not self.exists():
+            self.__create()
+
+        self.__define_settings(settings=settings)
+        self.__update_remote_fields()
+        self.__update_remote_questions()
+
+        if publish:
+            self.__publish()
+            # This may be done in the __init__ method
+            self.records = DatasetRecords(
+                client=self._client,
+                dataset_id=self._model.id,
+                question_name_map=self.__get_remote_question_id_map(),
+            )
+
+        return self
 
     def __define_settings(
         self,

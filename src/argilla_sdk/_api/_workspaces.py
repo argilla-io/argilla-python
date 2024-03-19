@@ -54,7 +54,6 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
         response = self.http_client.get(url=f"/api/v1/workspaces/{workspace_id}")
         return response.status_code == 200
 
-
     ####################
     # Utility methods #
     ####################

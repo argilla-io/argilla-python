@@ -36,11 +36,11 @@ class Workspace(Resource):
     _api: "WorkspacesAPI"
 
     def __init__(
-            self,
-            name: Optional[str] = None,
-            id: Optional[UUID] = None,
-            client: Optional["Argilla"] = Argilla(),
-            _model: Optional[WorkspaceModel] = None,
+        self,
+        name: Optional[str] = None,
+        id: Optional[UUID] = None,
+        client: Optional["Argilla"] = Argilla(),
+        _model: Optional[WorkspaceModel] = None,
     ) -> None:
         """Initializes a Workspace object with a client and a name or id
         Args:

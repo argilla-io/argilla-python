@@ -92,7 +92,7 @@ class Dataset(Resource):
         return self._api.exists(dataset_id=self.id)
 
     def publish(self, settings: Union[Settings, None] = None) -> "Dataset":
-        return self._configure(settings=settings or self._settings,publish=True)
+        return self._configure(settings=settings or self._settings, publish=True)
 
     def get(self, **kwargs) -> "Dataset":
         self.__update_local_properties()

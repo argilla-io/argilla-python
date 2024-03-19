@@ -64,13 +64,11 @@ class Users(Sequence):
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: int) -> "User":
-        ...
+    def __getitem__(self, index: int) -> "User": ...
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: slice) -> Sequence["User"]:
-        ...
+    def __getitem__(self, index: slice) -> Sequence["User"]: ...
 
     def __getitem__(self, index):
         from argilla_sdk.users._resource import User
@@ -102,13 +100,11 @@ class Workspaces(Sequence):
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: int) -> "Workspace":
-        ...
+    def __getitem__(self, index: int) -> "Workspace": ...
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: slice) -> Sequence["Workspace"]:
-        ...
+    def __getitem__(self, index: slice) -> Sequence["Workspace"]: ...
 
     def __getitem__(self, index: int) -> "Workspace":
         from argilla_sdk.workspaces._resource import Workspace
@@ -141,13 +137,11 @@ class Datasets(Sequence):
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: int) -> "Dataset":
-        ...
+    def __getitem__(self, index: int) -> "Dataset": ...
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: slice) -> Sequence["Dataset"]:
-        ...
+    def __getitem__(self, index: slice) -> Sequence["Dataset"]: ...
 
     def __getitem__(self, index) -> "Dataset":
         from argilla_sdk.datasets._resource import Dataset

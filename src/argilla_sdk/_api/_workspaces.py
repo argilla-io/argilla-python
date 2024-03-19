@@ -24,7 +24,7 @@ from argilla_sdk._models._workspace import WorkspaceModel
 __all__ = ["WorkspacesAPI"]
 
 
-class WorkspacesAPI(ResourceAPI):
+class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
     http_client: httpx.Client
 
     ################
@@ -49,6 +49,11 @@ class WorkspacesAPI(ResourceAPI):
     def delete(self, workspace_id: UUID) -> None:
         response = self.http_client.delete(url=f"/api/v1/workspaces/{workspace_id}")
         _http.raise_for_status(response=response)
+
+    def exists(self, workspace_id: UUID) -> bool:
+        response = self.http_client.get(url=f"/api/v1/workspaces/{workspace_id}")
+        return response.status_code == 200
+
 
     ####################
     # Utility methods #

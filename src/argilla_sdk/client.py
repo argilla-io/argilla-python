@@ -26,13 +26,20 @@ if TYPE_CHECKING:
 __all__ = ["Argilla"]
 
 
-class Argilla(_api.APIClient):
-    def __init__(self):
-        super().__init__()
+class Argilla(
+    _api.APIClient,
+):
+    @property
+    def workspaces(self) -> "Workspaces":
+        return Workspaces(client=self)
 
-        self.workspaces = Workspaces(client=self)
-        self.users = Users(client=self)
-        self.datasets = Datasets(client=self)
+    @property
+    def datasets(self) -> "Datasets":
+        return Datasets(client=self)
+
+    @property
+    def users(self) -> "Users":
+        return Users(client=self)
 
     @property
     def me(self) -> "User":

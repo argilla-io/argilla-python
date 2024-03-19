@@ -20,7 +20,6 @@ from argilla_sdk._resource import Resource
 from argilla_sdk.datasets._dataset_records import DatasetRecords
 from argilla_sdk.datasets._exceptions import DatasetNotPublished
 from argilla_sdk.settings import Settings
-from argilla_sdk._models import DatasetModel
 
 
 __all__ = ["Dataset"]

@@ -13,4 +13,4 @@
 # limitations under the License.
 
 _DEFAULT_API_KEY = "argilla.apikey"
-_DEFAULT_API_URL = "https://localhost:6900"
+_DEFAULT_API_URL = "http://localhost:6900"

@@ -17,9 +17,9 @@ from uuid import UUID
 
 import httpx
 
-from argilla_sdk._models import WorkspaceModel
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
+from argilla_sdk._models._workspace import WorkspaceModel
 
 __all__ = ["WorkspacesAPI"]
 

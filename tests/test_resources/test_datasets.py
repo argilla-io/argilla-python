@@ -28,24 +28,13 @@ class TestDatasetSerialization:
             name="test-workspace",
             id=uuid.uuid4(),
             workspace_id=uuid.uuid4(),
-            guidelines="Test guidelines",
-            inserted_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
         )
 
         assert ds.name == ds.serialize()["name"]
 
-    def test_serialize_with_extra_arguments(self):
-        ds = rg.Dataset(
-            name="test-dataset",
-            id=uuid.uuid4(),
-            workspace_id=uuid.uuid4(),
-            guidelines="Test guidelines",
-            inserted_at=datetime.utcnow(),
-            updated_at=datetime.utcnow(),
-            extra_argument="extra",
-        )
-        assert "extra_argument" not in ds.serialize()
+    def test_json_serialize_raise_typeerror(self):
+        with pytest.raises(TypeError):
+            user = rg.User(username="user", id=uuid.uuid4(), extra_arguments="testing")
 
 
 class TestDatasets:
@@ -68,15 +57,13 @@ class TestDatasets:
         )
         with httpx.Client():
             client = rg.Argilla(api_url)
-            client.create(
-                rg.Dataset(
-                    name="dataset-01",
-                    workspace_id=str(uuid.uuid4()),
-                    guidelines="Test guidelines",
-                    allow_extra_metadata=False,
-                    id=str(mock_dataset_id),
-                )
+            dataset = rg.Dataset(
+                name="dataset-01",
+                workspace_id=str(uuid.uuid4()),
+                id=str(mock_dataset_id),
+                client=client,
             )
+            dataset.create()
 
     def test_get_dataset(self, httpx_mock: HTTPXMock):
         mock_dataset_id = uuid.uuid4()
@@ -97,18 +84,37 @@ class TestDatasets:
         )
         with httpx.Client():
             client = rg.Argilla(api_url)
-            dataset = rg.Dataset(
-                name="dataset-01",
-                workspace_id=uuid.uuid4(),
-                guidelines="Test guidelines",
-                allow_extra_metadata=False,
-                id=mock_dataset_id,
-            )
-            dataset = client.create(dataset)
-            gotten_dataset = client.get(dataset)
+            dataset = rg.Dataset(name="dataset-01", workspace_id=uuid.uuid4(), id=mock_dataset_id, client=client)
+            dataset.create()
+            gotten_dataset = dataset.get()
             assert gotten_dataset.id == dataset.id
             assert gotten_dataset.name == dataset.name
             assert gotten_dataset.status == dataset.status
+
+    def test_list_datasets(self, httpx_mock: HTTPXMock):
+        mock_return_value = {
+            "items": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "name": "dataset-01",
+                    "status": "ready",
+                    "allow_extra_metadata": False,
+                    "inserted_at": datetime.utcnow().isoformat(),
+                    "updated_at": datetime.utcnow().isoformat(),
+                }
+            ]
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value, url=f"{api_url}/api/v1/me/datasets", method="GET", status_code=200
+        )
+        with httpx.Client():
+            client = rg.Argilla(api_url)
+            datasets = client.datasets
+            assert len(datasets) == 1
+            assert str(datasets[0].id) == mock_return_value["items"][0]["id"]
+            assert datasets[0].name == mock_return_value["items"][0]["name"]
+            assert datasets[0].status == mock_return_value["items"][0]["status"]
 
     def test_list_datasets(self, httpx_mock: HTTPXMock):
         mock_return_value = {
@@ -148,16 +154,20 @@ class TestDatasets:
             "inserted_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
         }
+        mock_patch_return_value = {
+            "id": str(mock_dataset_id),
+            "name": "new_name",
+            "workspace_id": str(mock_workspace_id),
+            "guidelines": "guidelines",
+            "allow_extra_metadata": False,
+            "last_activity_at": datetime.utcnow().isoformat(),
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
         httpx_mock.add_response(
-            json=mock_return_value,
-            url=f"http://test_url/api/v1/datasets/{mock_dataset_id.hex}",
-            method="PATCH",
-            status_code=200,
-        )
-        httpx_mock.add_response(
-            json=mock_return_value,
+            json=mock_patch_return_value,
             url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
-            method="GET",
+            method="PATCH",
             status_code=200,
         )
         httpx_mock.add_response(
@@ -168,19 +178,14 @@ class TestDatasets:
             # match_json=mock_return_value,
         )
         with httpx.Client() as client:
-            dataset = rg.Dataset(
-                id=mock_dataset_id,
-                name=mock_return_value["name"],
-                workspace_id=mock_workspace_id,
-                guidelines=mock_return_value["guidelines"],
-            )
             client = rg.Argilla("http://test_url")
-            client.create(dataset)
-            dataset.guidelines = "new guidelines"
-            updated_dataset = client.update(dataset)
-            gotten_dataset = client.get(updated_dataset)
-            assert dataset.id == gotten_dataset.id
-            assert dataset.name == gotten_dataset.name
+            dataset = rg.Dataset(
+                id=mock_dataset_id, name=mock_return_value["name"], workspace_id=mock_workspace_id, client=client
+            )
+            dataset.create()
+            dataset = rg.Dataset(id=mock_dataset_id, name="new name", client=client)
+            dataset = dataset.update()
+            assert dataset.name == "new_name"
 
 
 class TestDatasetsAPI:

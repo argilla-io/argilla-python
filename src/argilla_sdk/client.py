@@ -11,88 +11,33 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import TYPE_CHECKING, List, Union, Type
+
+from typing import TYPE_CHECKING, List
 
 from argilla_sdk import _api
-from argilla_sdk.datasets import Dataset
-from argilla_sdk.users import User
-from argilla_sdk.workspaces import Workspace
+import argilla_sdk as rg
 
 if TYPE_CHECKING:
-    from argilla_sdk._models import UserModel
+    from argilla_sdk import Workspace
+    from argilla_sdk import Dataset
+    from argilla_sdk import User
 
 __all__ = ["Argilla"]
 
 
 class Argilla(_api.APIClient):
     @property
-    def default_user(self) -> "UserModel":
-        return self._users.get_me()
+    def me(self) -> "UserModel":
+        return rg.User(client=self, _model=self._users.get_me())
 
-    def create(self, resource: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
-        """Create a new resource in the API. For example, a new workspace, user, or dataset.
-        Args:
-            resource: Union[Workspace, User, Dataset] - The resource to create
-        Returns:
-            Union[Workspace, User, Dataset] - The created resource
-        """
-        resource_api = self._which_resource_api(resource)
-        response_model = resource_api.create(resource._model)  # type: ignore
-        resource = resource._update(api=self, model=response_model)
-        return resource
+    @property
+    def workspaces(self) -> List["Workspace"]:
+        return [rg.Workspace(client=self, _model=model) for model in self._workspaces.list()]
 
-    def get(self, resource: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset]:
-        """Get an resource from the API. For example, a workspace, user, or dataset.
-        Args:
-            resource: Union[Workspace, User, Dataset] - The resource to get
-        Returns:
-            Union[Workspace, User, Dataset] - The requested resource
-        """
-        resource_api = self._which_resource_api(resource)
-        response_model = resource_api.get(resource.id)
-        resource = resource._update(api=self, model=response_model)
-        return resource
+    @property
+    def datasets(self) -> List["Dataset"]:
+        return [rg.Dataset(client=self, _model=model) for model in self._datasets.list()]
 
-    def list(self, resource_type: Type[Union[Workspace, User, Dataset]]) -> List[Union[Workspace, User, Dataset]]:
-        """List entities from the API. For example, workspaces, users, or datasets.
-        Args:
-            resource: Union[Workspace, User, Dataset] - The resource to list
-        Returns:
-            Union[Workspace, User, Dataset] - The requested entities
-        """
-        resource_api = self._which_resource_api(resource_type)
-        response_models = resource_api.list()
-        return response_models
-
-    def update(self, resource: Union[Workspace, User, Dataset]) -> Union[Workspace, User, Dataset, None]:
-        """Update an resource in the API. For example, a workspace, user, or dataset.
-        Args:
-            resource: Union[Workspace, User, Dataset] - The resource to update
-        Returns:
-            Union[Workspace, User, Dataset] - The updated resource
-        """
-        resource_api = self._which_resource_api(resource)
-        response_model = resource_api.update(resource._model)  # type: ignore
-        resource = resource._update(api=self, model=response_model)
-        return resource
-
-    def delete(self, resource: Union[Workspace, User, Dataset]) -> None:
-        """Delete an resource from the API. For example, a workspace, user, or dataset.
-        Args:
-            resource: Union[Workspace, User, Dataset] - The resource to delete
-        """
-        resource_api = self._which_resource_api(resource)
-        resource_api.delete(resource.id)
-
-    def _which_resource_api(
-        self, resource: Union[Workspace, User, Dataset]
-    ) -> Union[Union[_api.WorkspacesAPI, _api.UsersAPI, _api.DatasetsAPI], Type[Union[Workspace, User, Dataset]]]:
-        """Determine which resource to use based on the resource type."""
-        if isinstance(resource, Workspace) or resource == Workspace:
-            return self._workspaces
-        elif isinstance(resource, User) or resource == User:
-            return self._users
-        elif isinstance(resource, Dataset) or resource == Dataset:
-            return self._datasets
-        else:
-            raise ValueError("Invalid resource type: must be a Workspace, User, or Dataset.")
+    @property
+    def users(self) -> List["User"]:
+        return [rg.User(client=self, _model=model) for model in self._users.list()]

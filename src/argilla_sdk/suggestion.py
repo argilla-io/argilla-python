@@ -12,5 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk.datasets._resource import Dataset  # noqa
-from argilla_sdk.datasets._record import Record  # noqa
+from argilla_sdk._models import SuggestionModel
+
+__all__ = ["Suggestion"]
+
+
+class Suggestion:
+    def __init__(self, **kwargs) -> None:
+        self._model = SuggestionModel(**kwargs)

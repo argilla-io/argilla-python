@@ -99,15 +99,9 @@ class UsersAPI(ResourceAPI):
     ####################
 
     def _model_from_json(self, json_user) -> "UserModel":
-        return UserModel(
-            id=json_user["id"],
-            username=json_user["username"],
-            first_name=json_user["first_name"],
-            last_name=json_user["last_name"],
-            role=json_user["role"],
-            inserted_at=self._date_from_iso_format(date=json_user["inserted_at"]),
-            updated_at=self._date_from_iso_format(date=json_user["updated_at"]),
-        )
+        json_user["inserted_at"] = self._date_from_iso_format(date=json_user["inserted_at"])
+        json_user["updated_at"] = self._date_from_iso_format(date=json_user["updated_at"])
+        return UserModel(**json_user)
 
     def _model_from_jsons(self, json_users) -> List["UserModel"]:
         return list(map(self._model_from_json, json_users))

@@ -20,9 +20,9 @@ import pytest
 import argilla_sdk
 
 
-@pytest.fixture(scope="function", autouse=True)
-def mock_httpx_client(mocker) -> Generator[httpx.Client, None, None]:
-    mock_client = mocker.Mock(httpx.Client)
-    argilla_sdk.DEFAULT_HTTP_CLIENT = mock_client
+# @pytest.fixture(scope="function", autouse=True)
+# def mock_httpx_client(mocker) -> Generator[httpx.Client, None, None]:
+#     mock_client = mocker.Mock(httpx.Client)
+#     argilla_sdk.DEFAULT_HTTP_CLIENT = mock_client
 
-    return mock_client
+#     return mock_client

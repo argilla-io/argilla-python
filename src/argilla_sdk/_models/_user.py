@@ -14,6 +14,7 @@
 
 from typing import Optional
 from enum import Enum
+
 from pydantic import field_validator
 
 from argilla_sdk._models import ResourceModel

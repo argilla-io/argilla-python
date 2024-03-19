@@ -77,6 +77,7 @@ class Dataset(Resource):
     @property
     def records(self) -> "DatasetRecords":
         if not self.__published:
+            # TODO: Migrate to exceptions module https://github.com/argilla-io/argilla-python/issues/34
             raise DatasetNotPublished("Cannot access records before publishing the dataset. Call `publish` first.")
         return self.__records
 
@@ -85,12 +86,42 @@ class Dataset(Resource):
         self.__records = value
 
     def exists(self) -> bool:
+        """Check if the dataset exists on the server."""
         return self._api.exists(dataset_id=self.id)
 
-    def publish(self, settings: Optional[Settings] = None) -> "Dataset":
-        return self._configure(settings=settings or self._settings, publish=True)
+    def published(self) -> bool:
+        """Check if the dataset is published on the server."""
+        return self.status == "ready"
+
+    def configure(self, settings: Settings, publish: bool = False) -> "Dataset":
+        """Configure the dataset with the given settings.
+        Args:
+            settings (Settings): Settings class to be used to configure the dataset.
+            publish (bool): Publish the dataset after configuring it.
+        """
+        if not self.exists():
+            self.__create()
+
+        self.__define_settings(settings=settings)
+        self.__update_remote_fields()
+        self.__update_remote_questions()
+
+        if publish:
+            self.publish()
+
+        return self
+
+    def publish(self) -> None:
+        """Publish the dataset on the server so that records can be added."""
+        self.__publish()
+        self.records = DatasetRecords(
+            client=self._client,
+            dataset_id=self._model.id,
+            question_name_map=self.__get_remote_question_id_map(),
+        )
 
     def get(self, **kwargs) -> "Dataset":
+        """Get the dataset from the server including fields and questions."""
         self.__update_local_properties()
         self.__update_local_fields()
         self.__update_local_questions()
@@ -163,6 +194,3 @@ class Dataset(Resource):
         remote_questions = self._api.list_questions(dataset_id=self._model.id)
         question_name_map = {question["name"]: question["id"] for question in remote_questions}
         return question_name_map
-
-    def published(self) -> bool:
-        return self.status == "ready"

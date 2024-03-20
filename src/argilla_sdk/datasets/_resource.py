@@ -71,14 +71,13 @@ class Dataset(Resource):
         self._sync(model=self._model)
         self.__define_settings(settings=settings)
         self.question_name_map = {}
-        self.__published = False
 
     def exists(self) -> bool:
         return self._api.exists(self.id)
 
     @property
     def records(self) -> "DatasetRecords":
-        if not self.__published:
+        if not self.is_published:
             raise DatasetNotPublished("Cannot access records before publishing the dataset. Call `publish` first.")
         return self.__records
 
@@ -88,7 +87,7 @@ class Dataset(Resource):
 
     @property
     def is_published(self) -> bool:
-        return self._model.status == "published"
+        return self._model.status == "ready"
 
     def __define_settings(
         self,
@@ -100,7 +99,7 @@ class Dataset(Resource):
         self.questions = settings.questions
         self.allow_extra_metadata = settings.allow_extra_metadata
 
-    def publish(self) -> None:
+    def publish(self) -> "Dataset":
         self._configure(settings=self._settings, publish=True)
 
     def get(self, **kwargs) -> "Dataset":
@@ -146,10 +145,9 @@ class Dataset(Resource):
         self._sync(response_model)
 
     def __publish(self) -> None:
-        if not self.__published:
+        if not self.is_published:
             response_model = self._api.publish(dataset_id=self._model.id)
             self._sync(response_model)
-            self.__published = True
 
     def __update_remote_fields(self) -> None:
         fields = [field.serialize() for field in self.fields]

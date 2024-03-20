@@ -24,7 +24,7 @@ from argilla_sdk._models._user import UserModel
 __all__ = ["UsersAPI"]
 
 
-class UsersAPI(ResourceAPI):
+class UsersAPI(ResourceAPI[UserModel]):
     """Manage users via the API"""
 
     http_client: httpx.Client

@@ -5,12 +5,11 @@ from datetime import datetime
 import pytest
 
 import argilla_sdk as rg
-from argilla_sdk import workspaces
 
 
 @pytest.fixture
 def client() -> rg.Argilla:
-    client = rg.Argilla(api_url="http://localhost:6900", api_key="admin.apikey")
+    client = rg.Argilla(api_url="http://localhost:6900", api_key="owner.apikey")
     return client
 
 

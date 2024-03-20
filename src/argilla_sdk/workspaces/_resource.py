@@ -15,9 +15,10 @@
 from typing import List, TYPE_CHECKING, Optional
 from uuid import UUID
 
-from argilla_sdk.client import Argilla
-from argilla_sdk._resource import Resource
+from argilla_sdk._api._workspaces import WorkspacesAPI
 from argilla_sdk._models import WorkspaceModel
+from argilla_sdk._resource import Resource
+from argilla_sdk.client import Argilla
 
 if TYPE_CHECKING:
     from argilla_sdk._models import DatasetModel
@@ -28,6 +29,11 @@ __all__ = ["Workspace"]
 
 class Workspace(Resource):
     """Class for interacting with Argilla workspaces"""
+
+    name: Optional[str]
+    id: Optional[UUID]
+
+    _api: "WorkspacesAPI"
 
     def __init__(
         self,
@@ -52,3 +58,6 @@ class Workspace(Resource):
         datasets = self._client._datasets.list(workspace_id)
         self.log(f"Got {len(datasets)} datasets for workspace {workspace_id}")
         return datasets
+
+    def exists(self) -> bool:
+        return self._api.exists(self.id)

@@ -5,9 +5,6 @@ from typing import Optional
 from argilla_sdk._helpers._log import log
 
 
-
-
-
 class FieldSettings(BaseModel):
     type: str
     use_markdown: Optional[bool] = False

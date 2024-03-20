@@ -57,7 +57,6 @@ class Resource(LoggingMixin, UUIDMixin):
 
     def delete(self) -> None:
         self._api.delete(self._model.id)
-        self._model = None
 
     ############################
     # Serialization

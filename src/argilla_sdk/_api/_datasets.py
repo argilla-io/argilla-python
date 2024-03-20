@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import List, Optional, Dict
+
+from typing import List, Optional
 from uuid import UUID
 
 import httpx
@@ -22,7 +23,7 @@ from argilla_sdk._models import DatasetModel, RecordModel, FieldBaseModel, Quest
 __all__ = ["DatasetsAPI"]
 
 
-class DatasetsAPI(ResourceAPI):
+class DatasetsAPI(ResourceAPI[DatasetModel]):
     """Manage datasets via the API"""
 
     http_client: httpx.Client
@@ -63,6 +64,10 @@ class DatasetsAPI(ResourceAPI):
         response = self.http_client.delete(f"/api/v1/datasets/{dataset_id}")
         _http.raise_for_status(response=response)
         self.log(message=f"Deleted dataset {dataset_id}")
+
+    def exists(self, dataset_id: UUID) -> bool:
+        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}")
+        return response.status_code == 200
 
     ####################
     # Utility methods #

@@ -48,15 +48,15 @@ class Settings(Resource):
 
     def __init__(
         self,
-        fields: Optional[List[TextField]] = [],
+        fields: Optional[List["TextField"]] = [],
         questions: Optional[
             List[
                 Union[
-                    LabelQuestion,
-                    MultiLabelQuestion,
-                    RankingQuestion,
-                    TextQuestion,
-                    RatingQuestion,
+                    "LabelQuestion",
+                    "MultiLabelQuestion",
+                    "RankingQuestion",
+                    "TextQuestion",
+                    "RatingQuestion",
                 ]
             ]
         ] = [],

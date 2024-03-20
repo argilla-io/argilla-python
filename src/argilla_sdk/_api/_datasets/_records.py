@@ -12,8 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Dict, Union
-from urllib import response
+from typing import List, Dict
 from uuid import UUID
 
 import httpx
@@ -55,7 +54,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     # Utility methods #
     ####################
 
-    def create_many(self, dataset_id: UUID, records: List[dict]) -> None:
+    def create_many(self, dataset_id: UUID, records: List[Dict]) -> None:
         response = self.http_client.post(
             url=f"/api/v1/datasets/{dataset_id}/records",
             json={"items": records},
@@ -79,10 +78,10 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     # Private methods #
     ####################
 
-    def _model_from_json(self, response_json: Dict) -> Union["TextFieldModel", "FieldBaseModel"]:
+    def _model_from_json(self, response_json: Dict) -> RecordModel:
         response_json["inserted_at"] = self._date_from_iso_format(date=response_json["inserted_at"])
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
         return RecordModel(**response_json)
 
-    def _model_from_jsons(self, response_jsons: List[dict]) -> List[Union["TextFieldModel", "FieldBaseModel"]]:
+    def _model_from_jsons(self, response_jsons: List[dict]) -> List[RecordModel]:
         return list(map(self._model_from_json, response_jsons))

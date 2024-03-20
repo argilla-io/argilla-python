@@ -168,13 +168,13 @@ class Dataset(Resource):
         self._sync(self._model)
 
     def __update_local_fields(self) -> None:
-        self.fields = self._api.list_fields(dataset_id=self._model.id)
+        self.fields = self._api.fields.list(dataset_id=self._model.id)
 
     def __update_local_questions(self) -> None:
-        self.questions = self._api.list_questions(dataset_id=self._model.id)
+        self.questions = self._api.questions.list(dataset_id=self._model.id)
 
     def __get_remote_question_id_map(self) -> Dict[str, str]:
-        remote_questions = self._api.list_questions(dataset_id=self._model.id)
+        remote_questions = self._api.questions.list(dataset_id=self._model.id)
         question_name_map = {question.name: str(question.id) for question in remote_questions}
         self.question_name_map = question_name_map
         return question_name_map

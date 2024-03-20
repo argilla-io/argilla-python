@@ -20,7 +20,8 @@ from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
 from argilla_sdk._api._datasets._fields import FieldsAPI
 from argilla_sdk._api._datasets._questions import QuestionsAPI
-from argilla_sdk._models import DatasetModel, RecordModel, FieldBaseModel, QuestionBaseModel
+from argilla_sdk._api._datasets._records import RecordsAPI
+from argilla_sdk._models import DatasetModel
 
 __all__ = ["DatasetsAPI"]
 
@@ -37,6 +38,10 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     @property
     def questions(self) -> "QuestionsAPI":
         return QuestionsAPI(http_client=self.http_client)
+
+    @property
+    def records(self) -> "RecordsAPI":
+        return RecordsAPI(http_client=self.http_client)
 
     ################
     # CRUD methods #
@@ -105,29 +110,6 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
             if dataset.name == name:
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
-
-    def create_records(self, dataset_id: UUID, records: List[dict]) -> None:
-        response = self.http_client.post(
-            url=f"/api/v1/datasets/{dataset_id}/records",
-            json={"items": records},
-        )
-        _http.raise_for_status(response=response)
-        self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
-        # TODO: Once server returns the records, return them here
-        # TODO: migrate to `RecordsAPI.create_many()`
-
-    def list_records(
-        self, dataset_id: UUID, with_suggestions: bool = True, with_responses: bool = True
-    ) -> List[RecordModel]:
-        include = [
-            "suggestions" if with_suggestions else "",
-            "responses" if with_responses else "",
-        ]
-        params = {"include": ",".join(include)}
-        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/records", params=params)
-        _http.raise_for_status(response=response)
-        json_records = response.json()["items"]
-        return [RecordModel(**record) for record in json_records]
 
     ####################
     # Private methods #

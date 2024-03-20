@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from typing import List, Dict, Union
+from urllib import response
 from uuid import UUID
 
 import httpx
@@ -32,39 +33,47 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     # CRUD methods #
     ################
 
-    def create(self, dataset_id: UUID, field: dict) -> Union[TextFieldModel, FieldBaseModel]:
-        url = f"/api/v1/datasets/{dataset_id}/fields"
-        response = self.http_client.post(url=url, json=field)
+    def read(self, record_id: UUID) -> RecordModel:
+        response = self.http_client.get(f"/api/v1/records/{record_id}")
         _http.raise_for_status(response=response)
-        self.log(message=f"Created field {field['name']} in dataset {dataset_id}")
-        field_model = self._model_from_json(response_json=response.json())
-        return field_model
+        return self._model_from_json(response_json=response.json())
 
-    def update(self, field: Union[TextFieldModel, FieldBaseModel]) -> Union[TextFieldModel, FieldBaseModel]:
-        # TODO: Implement update method for fields with server side ID
-        raise NotImplementedError
+    def update(self, record: RecordModel) -> RecordModel:
+        response = self.http_client.patch(
+            url=f"/api/v1/records/{record.id}",
+            json=record.model_dump(),
+        )
+        _http.raise_for_status(response=response)
+        return self._model_from_json(response_json=response.json())
 
-    def delete(self, dataset_id: UUID) -> None:
-        # TODO: Implement delete method for fields with server side ID
-        raise NotImplementedError
+    def delete(self, record_id: UUID) -> None:
+        response = self.http_client.delete(f"/api/v1/records/{record_id}")
+        _http.raise_for_status(response=response)
+        self.log(message=f"Deleted record {record_id}")
 
     ####################
     # Utility methods #
     ####################
 
-    def create_many(self, dataset_id: UUID, fields: List[dict]) -> List[Union[TextFieldModel, FieldBaseModel]]:
-        field_models = []
-        for field in fields:
-            field_model = self.create(dataset_id=dataset_id, field=field)
-            field_models.append(field_model)
-        return field_models
-
-    def list(self, dataset_id: UUID) -> List[Union[TextFieldModel, FieldBaseModel]]:
-        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/fields")
+    def create_many(self, dataset_id: UUID, records: List[dict]) -> None:
+        response = self.http_client.post(
+            url=f"/api/v1/datasets/{dataset_id}/records",
+            json={"items": records},
+        )
         _http.raise_for_status(response=response)
-        response_jsons = response.json()["items"]
-        field_models = self._model_from_jsons(response_jsons=response_jsons)
-        return field_models
+        self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
+        # TODO: Once server returns the records, return them here
+
+    def list(self, dataset_id: UUID, with_suggestions: bool = True, with_responses: bool = True) -> List[RecordModel]:
+        include = [
+            "suggestions" if with_suggestions else "",
+            "responses" if with_responses else "",
+        ]
+        params = {"include": ",".join(include)}
+        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/records", params=params)
+        _http.raise_for_status(response=response)
+        json_records = response.json()["items"]
+        return self._model_from_jsons(response_jsons=json_records)
 
     ####################
     # Private methods #
@@ -73,18 +82,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     def _model_from_json(self, response_json: Dict) -> Union["TextFieldModel", "FieldBaseModel"]:
         response_json["inserted_at"] = self._date_from_iso_format(date=response_json["inserted_at"])
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
-        return self._get_model_from_response(response_json=response_json)
+        return RecordModel(**response_json)
 
     def _model_from_jsons(self, response_jsons: List[dict]) -> List[Union["TextFieldModel", "FieldBaseModel"]]:
         return list(map(self._model_from_json, response_jsons))
-
-    def _get_model_from_response(self, response_json: Dict) -> Union["TextFieldModel", "FieldBaseModel"]:
-        try:
-            field_type = response_json.get("settings", {}).get("type")
-        except Exception as e:
-            raise ValueError("Invalid response type: missing 'settings.type' in response") from e
-        if field_type == "text":
-            return TextFieldModel(**response_json)
-        else:
-            # TODO: Add more field types
-            raise ValueError(f"Invalid field type: {field_type}")

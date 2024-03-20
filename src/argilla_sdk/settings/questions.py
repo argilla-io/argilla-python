@@ -7,7 +7,7 @@ from pydantic import BaseModel, validator, field_serializer
 
 class QuestionSettings(BaseModel):
     type: str
-    
+
 
 class TextQuestionSettings(QuestionSettings):
     use_markdown: bool = False
@@ -19,7 +19,7 @@ class LabelQuestionSettings(QuestionSettings):
 
     @validator("options", pre=True, always=True)
     def __labels_are_unique(cls, labels, values):
-        """ Ensure that labels are unique """
+        """Ensure that labels are unique"""
         unique_labels = list(set(labels))
         if len(unique_labels) != len(labels):
             raise ValueError("All labels must be unique")

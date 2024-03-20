@@ -161,7 +161,7 @@ class Dataset(Resource):
 
     def __update_remote_questions(self) -> None:
         questions = [question.serialize() for question in self.questions]
-        self._api.create_questions(dataset_id=self._model.id, questions=questions)
+        self._api.questions.create_many(dataset_id=self._model.id, questions=questions)
 
     def __update_local_properties(self) -> None:
         self._model = self._api.get(dataset_id=self._model.id)

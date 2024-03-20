@@ -19,6 +19,7 @@ import httpx
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
 from argilla_sdk._api._datasets._fields import FieldsAPI
+from argilla_sdk._api._datasets._questions import QuestionsAPI
 from argilla_sdk._models import DatasetModel, RecordModel, FieldBaseModel, QuestionBaseModel
 
 __all__ = ["DatasetsAPI"]
@@ -32,6 +33,10 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     @property
     def fields(self) -> "FieldsAPI":
         return FieldsAPI(http_client=self.http_client)
+
+    @property
+    def questions(self) -> "QuestionsAPI":
+        return QuestionsAPI(http_client=self.http_client)
 
     ################
     # CRUD methods #

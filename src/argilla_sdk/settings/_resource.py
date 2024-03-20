@@ -70,16 +70,22 @@ class Settings(Resource):
             questions (List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion, RatingQuestion]]): A list of Question objects that represent the questions in the Dataset.
             allow_extra_metadata (bool): A boolean that determines whether or not extra metadata is allowed in the Dataset. Defaults to False.
         """
+        if fields is None:
+            fields = []
         self._model = SettingsModel(
-            fields=self.__process_fields(fields),
-            questions=self.__process_questions(questions),
-            guidelines=self.__process_guidelines(guidelines),
+            fields=self.__process_fields(fields=fields),
+            questions=self.__process_questions(questions=questions),
+            guidelines=self.__process_guidelines(guidelines=guidelines),
             allow_extra_metadata=allow_extra_metadata,
         )
-        self.fields = fields or []
         self.questions = questions
         self.guidelines = guidelines
+        self.fields = fields
         self.allow_extra_metadata = allow_extra_metadata
+
+    #####################
+    # Properties        #
+    #####################
 
     @property
     def fields(self):
@@ -132,6 +138,10 @@ class Settings(Resource):
         self._model._allow_extra_metadata = value
         self.__allow_extra_metadata = value
 
+    #####################
+    #  Public methods   #
+    #####################
+
     def serialize(self):
         return {
             "guidelines": self.guidelines,
@@ -140,7 +150,9 @@ class Settings(Resource):
             "allow_extra_metadata": self.allow_extra_metadata,
         }
 
-    ### Utility Methods ###
+    #####################
+    #  Utility methods  #
+    #####################
 
     def __process_fields(self, fields: List["TextField"]) -> List["TextFieldModel"]:
         # TODO: Implement error handling for invalid fields
@@ -152,9 +164,9 @@ class Settings(Resource):
         processed_questions = [question._model for question in questions]
         return processed_questions
 
-    def __process_guidelines(self, value):
+    def __process_guidelines(self, guidelines):
         # TODO: process guidelines to be of type str or load str from file
-        return value
+        return guidelines
 
     def __serialize_fields(self, fields):
         return [field.serialize() for field in fields]

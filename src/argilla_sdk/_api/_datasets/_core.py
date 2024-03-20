@@ -106,23 +106,6 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
 
-    def create_questions(self, dataset_id: UUID, questions: List[dict]) -> List[QuestionBaseModel]:
-        url = f"/api/v1/datasets/{dataset_id}/questions"
-        remote_questions = []
-        for question in questions:
-            response = self.http_client.post(url=url, json=question)
-            _http.raise_for_status(response=response)
-            self.log(message=f"Created question {question['name']} in dataset {dataset_id}")
-            model = QuestionBaseModel(**response.json())
-            remote_questions.append(model)
-        return questions
-
-    def list_questions(self, dataset_id: UUID) -> List[QuestionBaseModel]:
-        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/questions")
-        _http.raise_for_status(response=response)
-        response_models = [QuestionBaseModel(**question) for question in response.json()["items"]]
-        return response_models
-
     def create_records(self, dataset_id: UUID, records: List[dict]) -> None:
         response = self.http_client.post(
             url=f"/api/v1/datasets/{dataset_id}/records",

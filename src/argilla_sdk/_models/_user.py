@@ -30,13 +30,20 @@ class Role(str, Enum):
 
 class UserModel(ResourceModel):
     username: str
-    first_name: str
     role: str = Role.annotator
 
+    first_name: Optional[str] = None
     last_name: Optional[str] = None
     password: Optional[str] = None
 
     @field_validator("first_name")
-    def validate_first_name(cls, value: str, values) -> str:
-        """Set first name to user name if not provided."""
-        return value or values.data["username"]
+    def __validate_first_name(cls, v, values):
+        """Set first_name to username if not provided"""
+        return v or values["username"]
+
+    @field_validator("username", mode="before")
+    def __validate_username(cls, username):
+        """Ensure that the username is not empty"""
+        if not username:
+            raise ValueError("Username cannot be empty")
+        return username

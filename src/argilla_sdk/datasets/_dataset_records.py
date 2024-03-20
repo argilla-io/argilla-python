@@ -11,15 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from typing import TYPE_CHECKING
+
 from argilla_sdk.datasets._record import Record
 from argilla_sdk._models import RecordModel
 
+if TYPE_CHECKING:
+    from argilla_sdk import Dataset
+    from argilla_sdk.client import Argilla
+
 
 class DatasetRecords:
-    def __init__(self, client, dataset_id, question_name_map):
+    def __init__(self, client: "Argilla", dataset: "Dataset"):
         self.client = client
-        self.dataset_id = dataset_id
-        self.question_name_map = question_name_map
+        self.dataset_id = dataset.id
+        self.question_name_map = dataset.question_name_map
 
     def add(self, records):
         """Add records to a dataset"""
@@ -29,7 +35,7 @@ class DatasetRecords:
         self.__records = records
         return records
 
-    def get(self):
+    def list(self):
         """Get records from a dataset"""
         self.__records = self.__list_records_from_server()
         return self.__records

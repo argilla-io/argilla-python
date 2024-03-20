@@ -7,7 +7,7 @@ from pydantic import BaseModel, validator, field_serializer
 
 class QuestionSettings(BaseModel):
     type: str
-
+    
 
 class TextQuestionSettings(QuestionSettings):
     use_markdown: bool = False
@@ -17,8 +17,16 @@ class LabelQuestionSettings(QuestionSettings):
     type: str = "label_selection"
     options: List[str] = []
 
+    @validator("options", pre=True, always=True)
+    def __labels_are_unique(cls, labels, values):
+        """Ensure that labels are unique"""
+        unique_labels = list(set(labels))
+        if len(unique_labels) != len(labels):
+            raise ValueError("All labels must be unique")
+        return unique_labels
 
-class QuestionBase(BaseModel):
+
+class QuestionBaseModel(BaseModel):
     name: str
     settings: QuestionSettings
 
@@ -56,17 +64,17 @@ class QuestionBase(BaseModel):
         return str(value)
 
 
-class LabelQuestion(QuestionBase):
+class LabelQuestionModel(QuestionBaseModel):
     labels: List[str]
     settings: LabelQuestionSettings = LabelQuestionSettings(type="label_selection")
 
 
-class RatingQuestion(QuestionBase):
+class RatingQuestionModel(QuestionBaseModel):
     values: List[int]
     settings: QuestionSettings = QuestionSettings(type="rating")
 
 
-class TextQuestion(QuestionBase):
+class TextQuestionModel(QuestionBaseModel):
     use_markdown: bool = False
     settings: TextQuestionSettings = TextQuestionSettings(type="text")
 
@@ -77,12 +85,18 @@ class TextQuestion(QuestionBase):
         return settings
 
 
-class MultiLabelQuestion(QuestionBase):
+class MultiLabelQuestionModel(QuestionBaseModel):
     labels: List[str]
-    visible_labels: int
+    visible_labels: Optional[int] = None
     settings: QuestionSettings = QuestionSettings(type="multi_label_selection")
 
+    @validator("visible_labels", always=True)
+    def __default_to_all(cls, visible_labels, values):
+        if visible_labels is None:
+            return len(values["labels"])
+        return visible_labels
 
-class RankingQuestion(QuestionBase):
+
+class RankingQuestionModel(QuestionBaseModel):
     values: List[int]
     settings: QuestionSettings = QuestionSettings(type="ranking")

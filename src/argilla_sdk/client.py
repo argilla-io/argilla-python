@@ -11,11 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from abc import abstractmethod
 from collections.abc import Sequence
+from abc import abstractmethod
 from typing import TYPE_CHECKING, overload
 
-import argilla_sdk as rg  # noqa: F401
 from argilla_sdk import _api
 
 if TYPE_CHECKING:
@@ -26,9 +25,8 @@ if TYPE_CHECKING:
 __all__ = ["Argilla"]
 
 
-class Argilla(
-    _api.APIClient,
-):
+class Argilla(_api.APIClient):
+
     @property
     def workspaces(self) -> "Workspaces":
         return Workspaces(client=self)
@@ -65,13 +63,11 @@ class Users(Sequence):
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: int) -> "User":
-        ...
+    def __getitem__(self, index: int) -> "User": ...
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: slice) -> Sequence["User"]:
-        ...
+    def __getitem__(self, index: slice) -> Sequence["User"]: ...
 
     def __getitem__(self, index):
         from argilla_sdk.users._resource import User
@@ -103,13 +99,11 @@ class Workspaces(Sequence):
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: int) -> "Workspace":
-        ...
+    def __getitem__(self, index: int) -> "Workspace": ...
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: slice) -> Sequence["Workspace"]:
-        ...
+    def __getitem__(self, index: slice) -> Sequence["Workspace"]: ...
 
     def __getitem__(self, index: int) -> "Workspace":
         from argilla_sdk.workspaces._resource import Workspace
@@ -142,13 +136,11 @@ class Datasets(Sequence):
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: int) -> "Dataset":
-        ...
+    def __getitem__(self, index: int) -> "Dataset": ...
 
     @overload
     @abstractmethod
-    def __getitem__(self, index: slice) -> Sequence["Dataset"]:
-        ...
+    def __getitem__(self, index: slice) -> Sequence["Dataset"]: ...
 
     def __getitem__(self, index) -> "Dataset":
         from argilla_sdk.datasets._resource import Dataset

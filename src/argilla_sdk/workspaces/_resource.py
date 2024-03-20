@@ -15,9 +15,10 @@
 from typing import List, TYPE_CHECKING, Optional
 from uuid import UUID
 
-from argilla_sdk.client import Argilla
-from argilla_sdk._resource import Resource
+from argilla_sdk._api._workspaces import WorkspacesAPI
 from argilla_sdk._models import WorkspaceModel
+from argilla_sdk._resource import Resource
+from argilla_sdk.client import Argilla
 
 if TYPE_CHECKING:
     from argilla_sdk._models import DatasetModel
@@ -37,9 +38,9 @@ class Workspace(Resource):
 
     def __init__(
         self,
-        client: Optional["Argilla"] = Argilla(),
         name: Optional[str] = None,
         id: Optional[UUID] = None,
+        client: Optional["Argilla"] = Argilla(),
         _model: Optional[WorkspaceModel] = None,
     ) -> None:
         """Initializes a Workspace object with a client and a name or id

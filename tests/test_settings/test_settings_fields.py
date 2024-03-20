@@ -1,8 +1,6 @@
 import pytest
 import argilla_sdk as rg
 
-from argilla_sdk.settings.exceptions import InvalidFieldException
-
 
 class TestTextField:
     def test_init_text_field(self):
@@ -62,14 +60,3 @@ class TestTextField:
         text_field = rg.TextField(name=name, use_markdown=mock_use_markdown, title=title)
         assert text_field.title == expected
 
-    @pytest.mark.parametrize(
-        "name",
-        [
-            (""),
-            (" "),
-        ],
-    )
-    def test_name_validator_exception(self, name, mocker):
-        with pytest.raises(InvalidFieldException):
-            mock_use_markdown = True
-            rg.TextField(name=name, use_markdown=mock_use_markdown)

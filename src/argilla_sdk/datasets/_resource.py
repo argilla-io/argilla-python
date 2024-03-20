@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Dict, Literal, Optional
+from typing import Optional, Literal, Union, Dict
 from uuid import UUID, uuid4
 
 from argilla_sdk._api import DatasetsAPI
@@ -39,15 +39,15 @@ class Dataset(Resource):
         self,
         name: Optional[str] = None,
         status: Literal["draft", "ready"] = "draft",
-        workspace_id: Optional[UUID] = None,
+        workspace_id: Optional[Union[UUID, str]] = None,
         settings: Settings = Settings(),
         client: Optional["Argilla"] = Argilla(),
-        id: Optional[UUID] = uuid4(),
+        id: Optional[Union[UUID, str]] = uuid4(),
         _model: Optional[DatasetModel] = None,
     ) -> None:
         """Initalizes a Dataset with a client and model
         Args:
-            name (str): Name of the dataset. Replaced by random UUId if not assigned.
+            name (str): Name of the dataset. Replaced by random UUID if not assigned.
             status ["draft", "ready"]: Status of the dataset
             workspace_id (UUID): Workspace_id of the dataset
             settings (Settings): Settings class to be used to configure the dataset.
@@ -59,20 +59,24 @@ class Dataset(Resource):
 
         if name is None:
             name = str(id)
-            self.log(f"Settings dataset bane to unique UUID: {id}")
+            self.log(f"Settings dataset name to unique UUID: {id}")
         if _model is None:
             self._model = DatasetModel(
                 name=name,
                 status=status,
-                workspace_id=workspace_id,
-                id=id,
+                workspace_id=self._convert_optional_uuid(uuid=workspace_id),
+                id=self._convert_optional_uuid(uuid=id),
             )
         else:
             self._model = _model
 
         self._sync(model=self._model)
         self.__define_settings(settings=settings)
+        self.question_name_map = {}
         self.__published = False
+
+    def exists(self) -> bool:
+        return self._api.exists(self.id)
 
     @property
     def records(self) -> "DatasetRecords":
@@ -85,40 +89,22 @@ class Dataset(Resource):
     def records(self, value: "DatasetRecords") -> None:
         self.__records = value
 
-    def exists(self) -> bool:
-        """Check if the dataset exists on the server."""
-        return self._api.exists(dataset_id=self.id)
+    @property
+    def is_published(self) -> bool:
+        return self._model.status == "published"
 
-    def published(self) -> bool:
-        """Check if the dataset is published on the server."""
-        return self.status == "ready"
-
-    def configure(self, settings: Settings, publish: bool = False) -> "Dataset":
-        """Configure the dataset with the given settings.
-        Args:
-            settings (Settings): Settings class to be used to configure the dataset.
-            publish (bool): Publish the dataset after configuring it.
-        """
-        if not self.exists():
-            self.__create()
-
-        self.__define_settings(settings=settings)
-        self.__update_remote_fields()
-        self.__update_remote_questions()
-
-        if publish:
-            self.publish()
-
-        return self
+    def __define_settings(
+        self,
+        settings: Settings,
+    ) -> None:
+        """Populate the dataset object with settings"""
+        self.guidelines = settings.guidelines
+        self.fields = settings.fields
+        self.questions = settings.questions
+        self.allow_extra_metadata = settings.allow_extra_metadata
 
     def publish(self) -> None:
-        """Publish the dataset on the server so that records can be added."""
-        self.__publish()
-        self.records = DatasetRecords(
-            client=self._client,
-            dataset_id=self._model.id,
-            question_name_map=self.__get_remote_question_id_map(),
-        )
+        self._configure(settings=self._settings, publish=True)
 
     def get(self, **kwargs) -> "Dataset":
         """Get the dataset from the server including fields and questions."""
@@ -142,14 +128,11 @@ class Dataset(Resource):
 
         if publish:
             self.__publish()
+            self.__get_remote_question_id_map()
             # This may be done in the __init__ method
-            self.records = DatasetRecords(
-                client=self._client,
-                dataset_id=self._model.id,
-                question_name_map=self.__get_remote_question_id_map(),
-            )
+            self.records = DatasetRecords(client=self._client, dataset=self)
 
-        return self
+        return self.get()
 
     def __define_settings(
         self,
@@ -173,11 +156,11 @@ class Dataset(Resource):
             self.__published = True
 
     def __update_remote_fields(self) -> None:
-        fields = [field.model_dump() for field in self.fields]
+        fields = [field.serialize() for field in self.fields]
         self._api.create_fields(dataset_id=self._model.id, fields=fields)
 
     def __update_remote_questions(self) -> None:
-        questions = [question.model_dump() for question in self.questions]
+        questions = [question.serialize() for question in self.questions]
         self._api.create_questions(dataset_id=self._model.id, questions=questions)
 
     def __update_local_properties(self) -> None:
@@ -192,5 +175,6 @@ class Dataset(Resource):
 
     def __get_remote_question_id_map(self) -> Dict[str, str]:
         remote_questions = self._api.list_questions(dataset_id=self._model.id)
-        question_name_map = {question["name"]: question["id"] for question in remote_questions}
+        question_name_map = {question.name: str(question.id) for question in remote_questions}
+        self.question_name_map = question_name_map
         return question_name_map

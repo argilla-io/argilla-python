@@ -9,12 +9,12 @@ import argilla_sdk as rg
 
 @pytest.fixture
 def client() -> rg.Argilla:
-    client = rg.Argilla(api_url="http://localhost:6900", api_key="argilla.apikey")
+    client = rg.Argilla(api_url="http://localhost:6900", api_key="owner.apikey")
     return client
 
 
 def test_create_dataset(client):
-    workspace_id = client._workspaces.get_by_name(name="argilla").id
+    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_create_dataset{datetime.now().strftime('%Y%m%d%H%M%S')}"
     dataset = rg.Dataset(
         name=mock_dataset_name,
@@ -36,6 +36,7 @@ def test_create_dataset(client):
 
 
 def test_add_records(client):
+    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_add_records{datetime.now().strftime('%Y%m%d%H%M%S')}"
     mock_data = [
         {
@@ -64,7 +65,7 @@ def test_add_records(client):
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id="3b8416c6-ad6f-4641-8567-de6f5a7343ba",
+        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )
@@ -89,6 +90,7 @@ def test_add_records(client):
 
 
 def test_add_records_with_suggestions(client) -> None:
+    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_add_record_with_suggestions {datetime.now().strftime('%Y%m%d%H%M%S')}"
     mock_data = [
         {
@@ -117,8 +119,9 @@ def test_add_records_with_suggestions(client) -> None:
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id="3b8416c6-ad6f-4641-8567-de6f5a7343ba",
+        workspace_id=workspace_id,
         settings=settings,
+        client=client,
     )
     dataset.publish()
     dataset.records.add(
@@ -147,6 +150,7 @@ def test_add_records_with_suggestions(client) -> None:
 
 
 def test_add_records_with_responses(client) -> None:
+    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
     mock_data = [
         {
@@ -175,13 +179,15 @@ def test_add_records_with_responses(client) -> None:
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id="3b8416c6-ad6f-4641-8567-de6f5a7343ba",
+        workspace_id=workspace_id,
         settings=settings,
+        client=client,
     )
     user = rg.User(
         username=f"test_{random.randint(0, 1000)}",
         first_name="test",
         password="testtesttest",
+        client=client,
     )
     user.create()
     dataset.publish()

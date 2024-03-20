@@ -1,6 +1,6 @@
 from typing import Any, TYPE_CHECKING
 
-from argilla_sdk._helpers._mixins import LoggingMixin
+from argilla_sdk._helpers._mixins import LoggingMixin, UUIDMixin
 
 if TYPE_CHECKING:
     from argilla_sdk.client import Argilla
@@ -8,7 +8,7 @@ if TYPE_CHECKING:
     from argilla_sdk._api._base import ResourceAPI
 
 
-class Resource(LoggingMixin):
+class Resource(LoggingMixin, UUIDMixin):
     """Base class for all resources (Dataset, Workspace, User, etc.)"""
 
     _model: "ResourceModel"
@@ -26,7 +26,6 @@ class Resource(LoggingMixin):
         """Updates the resource with the ClientAPI that is used to interact with
         Argilla and adds an updated model to the resource.
         Args:
-            api (APIClient): The client API used to interact with Argilla
             model (Union[WorkspaceModel, UserModel, DatasetModel]): The updated model
         Returns:
             Self: The updated resource

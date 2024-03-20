@@ -48,7 +48,7 @@ class Settings(Resource):
 
     def __init__(
         self,
-        fields: Optional[List["TextField"]] = [],
+        fields: Optional[List["TextField"]] = None,
         questions: Optional[
             List[
                 Union[
@@ -76,7 +76,7 @@ class Settings(Resource):
             guidelines=self.__process_guidelines(guidelines),
             allow_extra_metadata=allow_extra_metadata,
         )
-        self.fields = fields
+        self.fields = fields or []
         self.questions = questions
         self.guidelines = guidelines
         self.allow_extra_metadata = allow_extra_metadata

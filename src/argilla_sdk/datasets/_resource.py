@@ -157,7 +157,7 @@ class Dataset(Resource):
 
     def __update_remote_fields(self) -> None:
         fields = [field.serialize() for field in self.fields]
-        self._api.create_fields(dataset_id=self._model.id, fields=fields)
+        self._api.fields.create_many(dataset_id=self._model.id, fields=fields)
 
     def __update_remote_questions(self) -> None:
         questions = [question.serialize() for question in self.questions]

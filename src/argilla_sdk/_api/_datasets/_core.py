@@ -18,6 +18,7 @@ from uuid import UUID
 import httpx
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
+from argilla_sdk._api._datasets._fields import FieldsAPI
 from argilla_sdk._models import DatasetModel, RecordModel, FieldBaseModel, QuestionBaseModel
 
 __all__ = ["DatasetsAPI"]
@@ -27,6 +28,10 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     """Manage datasets via the API"""
 
     http_client: httpx.Client
+
+    @property
+    def fields(self) -> "FieldsAPI":
+        return FieldsAPI(http_client=self.http_client)
 
     ################
     # CRUD methods #

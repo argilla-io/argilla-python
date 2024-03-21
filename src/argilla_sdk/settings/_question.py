@@ -1,6 +1,5 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from argilla_sdk.settings._common import SettingsPropertyBase
 from argilla_sdk._models import (
     LabelQuestionModel,
     LabelQuestionSettings,
@@ -11,6 +10,7 @@ from argilla_sdk._models import (
     QuestionSettings,
     RatingQuestionModel,
 )
+from argilla_sdk.settings._common import SettingsPropertyBase
 
 __all__ = [
     "LabelQuestion",
@@ -18,6 +18,7 @@ __all__ = [
     "RankingQuestion",
     "TextQuestion",
     "RatingQuestion",
+    "QuestionType",
 ]
 
 
@@ -201,3 +202,12 @@ class RankingQuestion(SettingsPropertyBase):
     @values.setter
     def values(self, values: List[int]) -> None:
         self._model.values = values
+
+
+QuestionType = Union[
+    LabelQuestion,
+    MultiLabelQuestion,
+    RankingQuestion,
+    TextQuestion,
+    RatingQuestion,
+]

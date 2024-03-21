@@ -3,7 +3,7 @@ from typing import Optional
 from argilla_sdk._models import TextFieldModel, FieldSettings
 from argilla_sdk.settings._common import SettingsPropertyBase
 
-__all__ = ["TextField"]
+__all__ = ["TextField", "FieldType"]
 
 
 class TextField(SettingsPropertyBase):
@@ -29,3 +29,6 @@ class TextField(SettingsPropertyBase):
     @property
     def use_markdown(self) -> Optional[bool]:
         return self._model.settings.use_markdown
+
+
+FieldType = TextField

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from functools import cached_property
-from typing import List, Optional, Union, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 
 from argilla_sdk._models import TextFieldModel, TextQuestionModel
 from argilla_sdk.client import Argilla
@@ -145,8 +145,8 @@ class Settings:
         ds_model.guidelines = self.guidelines
         ds_model.allow_extra_metadata = self.allow_extra_metadata
 
-        updated_dataset = self.__datasets_api.update(ds_model)
-        self._dataset._sync(updated_dataset)
+        updated_dataset_model = self.__datasets_api.update(ds_model)
+        self._dataset._sync(updated_dataset_model)
 
     def __upsert_questions(self) -> None:
         for question in self.__questions:

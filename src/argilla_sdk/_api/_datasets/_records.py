@@ -83,5 +83,5 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
         return RecordModel(**response_json)
 
-    def _model_from_jsons(self, response_jsons: List[dict]) -> List[RecordModel]:
+    def _model_from_jsons(self, response_jsons: List[Dict]) -> List[RecordModel]:
         return list(map(self._model_from_json, response_jsons))

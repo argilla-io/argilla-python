@@ -85,7 +85,7 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
     ####################
 
     def create_many(
-        self, dataset_id: UUID, questions: List[dict]
+        self, dataset_id: UUID, questions: List[Dict]
     ) -> List[
         Union[
             TextQuestionModel,

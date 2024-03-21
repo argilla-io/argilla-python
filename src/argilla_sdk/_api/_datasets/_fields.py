@@ -52,7 +52,7 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
     # Utility methods #
     ####################
 
-    def create_many(self, dataset_id: UUID, fields: List[dict]) -> List[Union[TextFieldModel, FieldBaseModel]]:
+    def create_many(self, dataset_id: UUID, fields: List[Dict]) -> List[Union[TextFieldModel, FieldBaseModel]]:
         field_models = []
         for field in fields:
             field_model = self.create(dataset_id=dataset_id, field=field)
@@ -75,7 +75,7 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
         return self._get_model_from_response(response_json=response_json)
 
-    def _model_from_jsons(self, response_jsons: List[dict]) -> List[Union["TextFieldModel", "FieldBaseModel"]]:
+    def _model_from_jsons(self, response_jsons: List[Dict]) -> List[Union["TextFieldModel", "FieldBaseModel"]]:
         return list(map(self._model_from_json, response_jsons))
 
     def _get_model_from_response(self, response_json: Dict) -> Union["TextFieldModel", "FieldBaseModel"]:

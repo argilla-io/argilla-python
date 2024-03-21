@@ -26,6 +26,7 @@ __all__ = ["WorkspacesAPI"]
 
 class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
     http_client: httpx.Client
+    url_stub = "{self.url_stub}"
 
     ################
     # CRUD methods #
@@ -40,18 +41,18 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
         return workspace
 
     def get(self, workspace_id: UUID) -> WorkspaceModel:
-        response = self.http_client.get(url=f"/api/v1/workspaces/{workspace_id}")
+        response = self.http_client.get(url=f"{self.url_stub}/{workspace_id}")
         _http.raise_for_status(response=response)
         response_json = response.json()
         workspace = self._model_from_json(json_workspace=response_json)
         return workspace
 
     def delete(self, workspace_id: UUID) -> None:
-        response = self.http_client.delete(url=f"/api/v1/workspaces/{workspace_id}")
+        response = self.http_client.delete(url=f"{self.url_stub}/{workspace_id}")
         _http.raise_for_status(response=response)
 
     def exists(self, workspace_id: UUID) -> bool:
-        response = self.http_client.get(url=f"/api/v1/workspaces/{workspace_id}")
+        response = self.http_client.get(url=f"{self.url_stub}/{workspace_id}")
         return response.status_code == 200
 
     ####################
@@ -90,12 +91,12 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
         return None
 
     def add_user(self, workspace_id: UUID, user_id: UUID) -> None:
-        response = self.http_client.post(f"/api/v1/workspaces/{workspace_id}/users/{user_id}")
+        response = self.http_client.post(f"{self.url_stub}/{workspace_id}/users/{user_id}")
         _http.raise_for_status(response=response)
         self.log(message=f"Added user {user_id} to workspace {workspace_id}")
 
     def remove_user(self, workspace_id: UUID, user_id: UUID) -> None:
-        response = self.http_client.delete(f"/api/v1/workspaces/{workspace_id}/users/{user_id}")
+        response = self.http_client.delete(f"{self.url_stub}/{workspace_id}/users/{user_id}")
         _http.raise_for_status(response=response)
         self.log(message=f"Removed user {user_id} from workspace {workspace_id}")
 

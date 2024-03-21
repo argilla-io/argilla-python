@@ -69,7 +69,6 @@ class Dataset(Resource):
         self._model = _model
         self.__define_settings(settings=settings or Settings())
         self.question_name_map = {}
-        self.__published = False
 
         self._sync(model=self._model)
 

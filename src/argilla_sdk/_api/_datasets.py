@@ -33,7 +33,7 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     ################
 
     def create(self, dataset: "DatasetModel") -> "DatasetModel":
-        json_body = dataset.model_dump()
+        json_body = dataset.model_dump(exclude_unset=True)
         response = self.http_client.post(
             url="/api/v1/datasets",
             json=json_body,
@@ -44,7 +44,7 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
         return dataset
 
     def update(self, dataset: "DatasetModel") -> "DatasetModel":
-        json_body = dataset.model_dump()
+        json_body = dataset.model_dump(exclude_unset=True)
         dataset_id = json_body["id"]  # type: ignore
         response = self.http_client.patch(f"/api/v1/datasets/{dataset_id}", json=json_body)
         _http.raise_for_status(response=response)
@@ -95,36 +95,44 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
             if dataset.name == name:
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
-
     def create_fields(self, dataset_id: UUID, fields: List[dict]) -> List[FieldBaseModel]:
+        return [
+            self.create_field(dataset_id, field)
+            for field in fields
+        ]
+
+    def create_field(self, dataset_id: UUID, field: dict) -> FieldBaseModel:
+        # TODO: Move this to a separate FieldsAPI
         url = f"/api/v1/datasets/{dataset_id}/fields"
-        remote_fields = []
-        for field in fields:
-            response = self.http_client.post(url=url, json=field)
-            _http.raise_for_status(response=response)
-            self.log(message=f"Created field {field['name']} in dataset {dataset_id}")
-            model = FieldBaseModel(**response.json())
-            remote_fields.append(model)
-        return remote_fields
+        response = self.http_client.post(url=url, json=field)
+        _http.raise_for_status(response=response)
+        self.log(message=f"Created field {field['name']} in dataset {dataset_id}")
+        return FieldBaseModel(**response.json())
 
     def list_fields(self, dataset_id: UUID) -> List[FieldBaseModel]:
+        # TODO: Move this to a separate FieldsAPI
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/fields")
         _http.raise_for_status(response=response)
         response_models = [FieldBaseModel(**field) for field in response.json()["items"]]
         return response_models
 
-    def create_questions(self, dataset_id: UUID, questions: List[dict]) -> List[QuestionBaseModel]:
+    def create_questions(self, dataset_id:UUID, questions: List[dict]) -> List[QuestionBaseModel]:
+        return [
+            self.create_question(dataset_id, question)
+            for question in questions
+        ]
+
+    def create_question(self, dataset_id: UUID, question: dict) -> QuestionBaseModel:
+        # TODO: Move this to a separate QuestionsAPI
         url = f"/api/v1/datasets/{dataset_id}/questions"
-        remote_questions = []
-        for question in questions:
-            response = self.http_client.post(url=url, json=question)
-            _http.raise_for_status(response=response)
-            self.log(message=f"Created question {question['name']} in dataset {dataset_id}")
-            model = QuestionBaseModel(**response.json())
-            remote_questions.append(model)
-        return questions
+        response = self.http_client.post(url=url, json=question)
+        _http.raise_for_status(response=response)
+        self.log(message=f"Created question {question['name']} in dataset {dataset_id}")
+
+        return QuestionBaseModel(**response.json())
 
     def list_questions(self, dataset_id: UUID) -> List[QuestionBaseModel]:
+        # TODO: Move this to a separate QuestionsAPI
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/questions")
         _http.raise_for_status(response=response)
         response_models = [QuestionBaseModel(**question) for question in response.json()["items"]]

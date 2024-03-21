@@ -33,7 +33,7 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     ################
 
     def create(self, dataset: "DatasetModel") -> "DatasetModel":
-        json_body = dataset.model_dump(exclude_unset=True)
+        json_body = dataset.model_dump()
         response = self.http_client.post(
             url="/api/v1/datasets",
             json=json_body,
@@ -44,7 +44,7 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
         return dataset
 
     def update(self, dataset: "DatasetModel") -> "DatasetModel":
-        json_body = dataset.model_dump(exclude_unset=True)
+        json_body = dataset.model_dump()
         dataset_id = json_body["id"]  # type: ignore
         response = self.http_client.patch(f"/api/v1/datasets/{dataset_id}", json=json_body)
         _http.raise_for_status(response=response)

@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from functools import cached_property
-from typing import List, Optional, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING, Dict, Union
+from uuid import UUID
 
 from argilla_sdk._models import TextFieldModel, TextQuestionModel
 from argilla_sdk.client import Argilla
@@ -87,7 +88,7 @@ class Settings:
     def guidelines(self, guidelines: str):
         self.__guidelines = self.__process_guidelines(guidelines)
         if self._dataset:
-            self._dataset._model.guidelines= guidelines
+            self._dataset._model.guidelines = guidelines
 
     @property
     def allow_extra_metadata(self) -> bool:
@@ -121,6 +122,13 @@ class Settings:
 
         return schema_dict
 
+    @cached_property
+    def schema_by_id(self) -> Dict[UUID, Union[FieldType, QuestionType]]:
+        return {
+            v.id: v
+            for v in self.schema.values()
+        }
+
     #####################
     #  Public methods   #
     #####################
@@ -130,6 +138,12 @@ class Settings:
         self.__upsert_questions()
         self.__update_dataset_related_attributes()
         return self
+
+    def question_by_id(self, question_id: UUID) -> QuestionType:
+        property = self.schema_by_id.get(question_id)
+        if isinstance(property, QuestionType):
+            return property
+        raise ValueError(f"Question with id {question_id} not found")
 
     def __update_dataset_related_attributes(self):
         # This flow may be a bit weird, but it's the only way to update the dataset related attributes

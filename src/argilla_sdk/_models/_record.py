@@ -15,7 +15,7 @@ class RecordModel(ResourceModel):
     vectors: Optional[Dict[str, List[float]]] = Field(default_factory=dict)
     responses: Optional[List[ResponseModel]] = Field(default_factory=list)
     suggestions: Optional[Union[Tuple[SuggestionModel], List[SuggestionModel]]] = Field(default_factory=tuple)
-    external_id: Optional[str] = None
+    external_id: Optional[Any] = None
 
     @field_serializer("external_id", when_used="unless-none")
     def serialize_external_id(self, value: str) -> str:

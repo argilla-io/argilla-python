@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from pydantic import BaseModel, validator
 
 from typing import Optional
@@ -11,6 +13,7 @@ class FieldSettings(BaseModel):
 
 
 class FieldBaseModel(BaseModel):
+    id: Optional[UUID] = None
     name: str
     settings: FieldSettings
 

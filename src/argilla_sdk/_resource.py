@@ -1,4 +1,5 @@
-from typing import Any, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING, Optional
+from uuid import UUID
 
 from argilla_sdk._helpers._mixins import LoggingMixin, UUIDMixin
 
@@ -21,6 +22,14 @@ class Resource(LoggingMixin, UUIDMixin):
 
     def __repr__(self) -> str:
         return repr(f"{self.__class__.__name__}({self._model})")
+
+    @property
+    def id(self) -> Optional[UUID]:
+        return self._model.id
+
+    @id.setter
+    def id(self, value: UUID) -> None:
+        self._model.id = value
 
     def _sync(self, model: "ResourceModel"):
         """Updates the resource with the ClientAPI that is used to interact with

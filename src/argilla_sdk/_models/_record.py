@@ -1,5 +1,5 @@
 from typing import Any, Dict, List, Optional, Tuple, Union
-from uuid import UUID, uuid4
+
 from pydantic import Field, field_serializer
 
 from argilla_sdk._models._resource import ResourceModel
@@ -15,9 +15,8 @@ class RecordModel(ResourceModel):
     vectors: Optional[Dict[str, List[float]]] = Field(default_factory=dict)
     responses: Optional[List[ResponseModel]] = Field(default_factory=list)
     suggestions: Optional[Union[Tuple[SuggestionModel], List[SuggestionModel]]] = Field(default_factory=tuple)
-    external_id: UUID = uuid4()
-    id: UUID = uuid4()
+    external_id: Optional[str] = None
 
     @field_serializer("external_id", when_used="unless-none")
-    def serialize_external_id(value: UUID) -> str:
+    def serialize_external_id(self, value: str) -> str:
         return str(value)

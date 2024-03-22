@@ -35,11 +35,17 @@ class Record:
 class DatasetRecordsIterator:
     """This class is used to iterate over records in a dataset"""
 
-    def __init__(self, dataset: "Dataset", batch_size: Optional[int] = None, with_suggestions:bool=False):
+    def __init__(
+        self,
+        dataset: "Dataset",
+        start_offset: int = 0,
+        batch_size: Optional[int] = None,
+        with_suggestions: bool = False,
+    ):
         self.__dataset = dataset
         self.__api = dataset._client._datasets
         self.__records_batch = []
-        self.__offset = 0
+        self.__offset = start_offset or 0
         self.__batch_size = batch_size or 100
         self.__with_suggestions = with_suggestions
 
@@ -92,8 +98,13 @@ class DatasetRecords:
     def __iter__(self):
         return DatasetRecordsIterator(self.__dataset)
 
-    def __call__(self, batch_size: Optional[int] = 100, with_suggestions: bool = False):
-        return DatasetRecordsIterator(self.__dataset, batch_size=batch_size, with_suggestions=with_suggestions)
+    def __call__(self, batch_size: Optional[int] = 100, start_offset: int = 0, with_suggestions: bool = False):
+        return DatasetRecordsIterator(
+            self.__dataset,
+            batch_size=batch_size,
+            start_offset=start_offset,
+            with_suggestions=with_suggestions,
+        )
 
     def add(self, records: Union[dict, List[dict]]) -> None:
         """

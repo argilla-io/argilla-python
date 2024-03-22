@@ -35,6 +35,44 @@ ARGILLA_API_KEY = os.getenv(key="ARGILLA_API_KEY", default=_DEFAULT_API_KEY)
 DEFAULT_HTTP_CONFIG = HTTPClientConfig(api_url=ARGILLA_API_URL, api_key=ARGILLA_API_KEY)
 
 
+class ArgillaAPI:
+    """Argilla API access object."""
+
+    def __init__(self, http_client: httpx.Client):
+        self.http_client = http_client
+
+        self.__workspaces = WorkspacesAPI(http_client=self.http_client)
+        self.__datasets = DatasetsAPI(http_client=self.http_client)
+        self.__users = UsersAPI(http_client=self.http_client)
+        self.__fields = FieldsAPI(http_client=self.http_client)
+        self.__questions = QuestionsAPI(http_client=self.http_client)
+        self.__records = RecordsAPI(http_client=self.http_client)
+
+    @property
+    def workspaces(self) -> "WorkspacesAPI":
+        return self.__workspaces
+
+    @property
+    def users(self) -> "UsersAPI":
+        return self.__users
+
+    @property
+    def datasets(self) -> "DatasetsAPI":
+        return self.__datasets
+
+    @property
+    def fields(self) -> "FieldsAPI":
+        return self.__fields
+
+    @property
+    def questions(self) -> "QuestionsAPI":
+        return self.__questions
+
+    @property
+    def records(self) -> "RecordsAPI":
+        return self.__records
+
+
 class APIClient:
     """Initialize the SDK with the given API URL and API key."""
 
@@ -57,28 +95,8 @@ class APIClient:
         )
 
     @property
-    def _workspaces(self) -> "WorkspacesAPI":
-        return WorkspacesAPI(http_client=self.http_client)
-
-    @property
-    def _users(self) -> "UsersAPI":
-        return UsersAPI(http_client=self.http_client)
-
-    @property
-    def _datasets(self) -> "DatasetsAPI":
-        return DatasetsAPI(http_client=self.http_client)
-
-    @property
-    def _fields(self) -> "FieldsAPI":
-        return FieldsAPI(http_client=self.http_client)
-
-    @property
-    def _questions(self) -> "QuestionsAPI":
-        return QuestionsAPI(http_client=self.http_client)
-
-    @property
-    def _records(self) -> "RecordsAPI":
-        return RecordsAPI(http_client=self.http_client)
+    def api(self) -> "ArgillaAPI":
+        return ArgillaAPI(http_client=self.http_client)
 
     ##############################
     # Utility methods

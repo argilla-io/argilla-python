@@ -12,15 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
-from threading import local
 import uuid
 from datetime import datetime
 
 import httpx
 import pytest
 from pytest_httpx import HTTPXMock
+
 import argilla_sdk as rg
+
 
 class TestWorkspacesSerialization:
     def test_serialize(self):
@@ -125,7 +125,7 @@ class TestWorkspacesAPI:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/v1/me/workspaces")
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            ws = client._workspaces.get_by_name("test-workspace")
+            ws = client.api.workspaces.get_by_name("test-workspace")
             assert ws is not None
             assert ws.name == "test-workspace"
             assert ws.id == uuid.UUID(mock_return_value["items"][0]["id"])
@@ -163,7 +163,7 @@ class TestWorkspacesAPI:
         httpx_mock.add_response(url=f"{api_url}/api/v1/workspaces/{workspace_id}", status_code=204)
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            client._workspaces.delete(workspace_id)
+            client.api.workspaces.delete(workspace_id)
 
     def test_list_workspace_datasets(self, httpx_mock: HTTPXMock):
         workspace_id = uuid.uuid4()
@@ -195,7 +195,7 @@ class TestWorkspacesAPI:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/v1/me/datasets")
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            datasets = client._datasets.list(workspace_id)
+            datasets = client.api.datasets.list(workspace_id)
             assert len(datasets) == 2
             for i in range(len(datasets)):
                 assert datasets[i].name == mock_return_value["items"][i]["name"]
@@ -229,7 +229,7 @@ class TestWorkspacesAPI:
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/workspaces/{workspace_id}/users")
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            users = client._users.list_by_workspace_id(workspace_id)
+            users = client.api.users.list_by_workspace_id(workspace_id)
             assert len(users) == 2
             for i in range(len(users)):
                 assert users[i].username == mock_return_value["items"][i]["username"]

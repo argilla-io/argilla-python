@@ -196,8 +196,8 @@ class TestDatasetsAPI:
         )
         with httpx.Client() as client:
             client = rg.Argilla("http://test_url")
-            client._datasets.delete(mock_dataset_id)
-            pytest.raises(httpx.HTTPError, client._datasets.get, mock_dataset_id)
+            client.api.datasets.delete(mock_dataset_id)
+            pytest.raises(httpx.HTTPError, client.api.datasets.get, mock_dataset_id)
 
     def test_publish_dataset(self, httpx_mock: HTTPXMock):
         # TODO: Add a test for the publish method in client when dataset is finished
@@ -224,8 +224,8 @@ class TestDatasetsAPI:
         )
         with httpx.Client() as client:
             client = rg.Argilla("http://test_url")
-            client._datasets.publish(mock_dataset_id)
-            dataset = client._datasets.get(mock_dataset_id)
+            client.api.datasets.publish(mock_dataset_id)
+            dataset = client.api.datasets.get(mock_dataset_id)
             assert dataset.status == "ready"
             assert dataset.id == mock_dataset_id
             assert dataset.name == "dataset-01"
@@ -251,7 +251,7 @@ class TestDatasetsAPI:
         )
         with httpx.Client():
             client = rg.Argilla(api_url)
-            dataset = client._datasets.get_by_name_and_workspace_id("dataset-01", mock_workspace_id)
+            dataset = client.api.datasets.get_by_name_and_workspace_id("dataset-01", mock_workspace_id)
             assert mock_dataset_id.hex == mock_return_value["items"][0]["id"]
             assert dataset.name == mock_return_value["items"][0]["name"]
             assert dataset.status == mock_return_value["items"][0]["status"]

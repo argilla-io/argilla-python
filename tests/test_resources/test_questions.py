@@ -51,4 +51,4 @@ class TestQuestionsAPI:
         )
         with httpx.Client() as client:
             client = rg.Argilla(api_url="http://test_url")
-            client._datasets.questions.create_many(dataset_id=mock_dataset_id, questions=[mock_question])
+            client.api.questions.create_many(dataset_id=mock_dataset_id, questions=[mock_question])

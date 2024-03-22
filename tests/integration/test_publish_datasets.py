@@ -24,8 +24,6 @@ def client() -> Argilla:
 
 
 def test_publish_datasets(client: "Argilla"):
-    ws = client.workspaces("admin")
-
     new_ws = client.workspaces("new_ws")
     if not new_ws.exists():
         new_ws.create()
@@ -38,11 +36,10 @@ def test_publish_datasets(client: "Argilla"):
 
     assert not ds.exists(), "The dataset was not deleted"
 
-    settings = Settings(
+    ds.settings = Settings(
         fields=[TextField(name="text-field")],
         questions=[TextQuestion(name="text-question")],
     )
 
-    ds.publish(settings=settings)
-
+    ds.publish()
     assert ds.is_published, "The dataset was not published"

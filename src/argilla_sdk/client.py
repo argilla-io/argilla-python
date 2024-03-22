@@ -13,7 +13,7 @@
 # limitations under the License.
 from collections.abc import Sequence
 from abc import abstractmethod
-from typing import TYPE_CHECKING, List, overload
+from typing import TYPE_CHECKING, overload
 
 from argilla_sdk import _api
 import argilla_sdk as rg

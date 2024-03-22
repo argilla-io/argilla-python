@@ -1,9 +1,10 @@
+from uuid import UUID
+
 from pydantic import BaseModel, validator
 
 from typing import Optional
 
 from argilla_sdk._helpers._log import log
-from argilla_sdk.settings.exceptions import InvalidFieldException
 
 
 class FieldSettings(BaseModel):
@@ -11,21 +12,18 @@ class FieldSettings(BaseModel):
     use_markdown: Optional[bool] = False
 
 
-class FieldBase(BaseModel):
+class FieldBaseModel(BaseModel):
+    id: Optional[UUID] = None
     name: str
+    settings: FieldSettings
+
     title: Optional[str] = None
     required: bool = True
-    settings: FieldSettings = FieldSettings(type="text")
     description: Optional[str] = None
 
     @validator("name")
     def __name_lower(cls, name):
         formatted_name = name.lower().replace(" ", "_")
-        if len(formatted_name) == 0:
-            raise InvalidFieldException(f"Name have characters. Got {formatted_name}")
-        if not any(char.isalpha() for char in formatted_name):
-            raise InvalidFieldException(f"Name must contain at least one letter. Got {formatted_name}")
-        log(f"Formatted TextField name to {formatted_name}")
         return formatted_name
 
     @validator("title", always=True)
@@ -35,5 +33,5 @@ class FieldBase(BaseModel):
         return validated_title
 
 
-class TextField(FieldBase):
-    use_markdown: Optional[bool] = None
+class TextFieldModel(FieldBaseModel):
+    settings: FieldSettings = FieldSettings(type="text", use_markdown=False)

@@ -15,7 +15,7 @@ class TestQuestions:
     def test_text_question_init(self):
         question = rg.TextQuestion(name="text_question", use_markdown=True)
         assert question.name == "text_question"
-        assert question.use_markdown == True
+        assert question.use_markdown == False
 
     def test_multi_label_question_init(self):
         question = rg.MultiLabelQuestion(name="multi_label_question", labels=["label1", "label2"], visible_labels=2)

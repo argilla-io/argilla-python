@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional
 from datetime import datetime
-from uuid import UUID
 from typing import Literal
+from typing import Optional
+from uuid import UUID
 
 from pydantic import field_serializer
 
@@ -27,6 +27,9 @@ __all__ = ["DatasetModel"]
 class DatasetModel(ResourceModel):
     name: str
     status: Literal["draft", "ready"] = "draft"
+
+    guidelines: Optional[str] = None
+    allow_extra_metadata: bool = True  # Ideally, the default value should be provided by the server
 
     workspace_id: Optional[UUID] = None
     last_activity_at: Optional[datetime] = None

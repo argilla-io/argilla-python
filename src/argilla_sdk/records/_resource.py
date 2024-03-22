@@ -35,12 +35,13 @@ class Record:
 class DatasetRecordsIterator:
     """This class is used to iterate over records in a dataset"""
 
-    def __init__(self, dataset: "Dataset", batch_size: Optional[int] = None):
+    def __init__(self, dataset: "Dataset", batch_size: Optional[int] = None, with_suggestions:bool=False):
         self.__dataset = dataset
         self.__api = dataset._client._datasets
         self.__records_batch = []
         self.__offset = 0
         self.__size = batch_size or 100
+        self.__with_suggestions = with_suggestions
 
     def __iter__(self):
         return self
@@ -65,13 +66,13 @@ class DatasetRecordsIterator:
     def _list(self, size: int, offset: int) -> Sequence[Record]:
         records = self.__api.list_records(
             self.__dataset.id,
-            with_responses=False,  # We skip this for now
-            with_suggestions=False,  # We skip this for now
             limit=size,
             offset=offset,
+            with_responses=False,
+            with_suggestions=self.__with_suggestions,
         )
         for record in records:
-            yield _record_model_to_record(record)
+            yield _record_model_to_record(self.__dataset, record)
 
 
 class DatasetRecords:
@@ -91,8 +92,8 @@ class DatasetRecords:
     def __iter__(self):
         return DatasetRecordsIterator(self.__dataset)
 
-    def __call__(self, batch_size: Optional[int] = 100):
-        return DatasetRecordsIterator(self.__dataset, batch_size=batch_size)
+    def __call__(self, batch_size: Optional[int] = 100, with_suggestions: bool = False):
+        return DatasetRecordsIterator(self.__dataset, batch_size=batch_size, with_suggestions=with_suggestions,)
 
     def add(self, records: Union[dict, List[dict]]) -> None:
         """
@@ -112,12 +113,20 @@ class DatasetRecords:
         self.__datasets_api.create_records(dataset_id=self.__dataset.id, records=serialized_records)
 
 
-def _record_model_to_record(model: RecordModel) -> Record:
-    """Converts a record dictionary to a Record object."""
+def _record_model_to_record(dataset: "Dataset", model: RecordModel) -> Record:
+    """
+    Converts a record dictionary to a Record object.
+
+    Dataset is used to map the question ids to question names. In the future, this could be done in the record resource
+    by passing the linked dataset to the record object, or fetching question names from the API.
+    """
     kwargs = {
         **model.fields,
         **model.metadata,
-        **{suggestion.question_name: suggestion.value for suggestion in model.suggestions},
+        **{
+            dataset.settings.question_by_id(suggestion.question_id).name: suggestion.value
+            for suggestion in model.suggestions
+        },
     }
 
     return Record(id=model.id, external_id=model.external_id, **kwargs)

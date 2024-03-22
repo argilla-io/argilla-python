@@ -26,7 +26,6 @@ __all__ = ["Argilla"]
 
 
 class Argilla(_api.APIClient):
-
     @property
     def workspaces(self) -> "Workspaces":
         return Workspaces(client=self)
@@ -41,7 +40,7 @@ class Argilla(_api.APIClient):
 
     @property
     def me(self) -> "User":
-        return rg.User(client=self, _model=self._users.get_me())
+        return User(client=self, _model=self._users.get_me())
 
 
 class Users(Sequence):

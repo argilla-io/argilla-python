@@ -27,6 +27,7 @@ class LabelQuestionSettings(QuestionSettings):
 
 
 class QuestionBaseModel(BaseModel):
+    id: Optional[UUID] = None
     name: str
     settings: QuestionSettings
 

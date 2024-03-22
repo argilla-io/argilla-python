@@ -1,6 +1,5 @@
-from typing import List, Optional
+from typing import List, Optional, Union
 
-from argilla_sdk._resource import Resource
 from argilla_sdk._models import (
     LabelQuestionModel,
     LabelQuestionSettings,
@@ -10,8 +9,8 @@ from argilla_sdk._models import (
     TextQuestionSettings,
     QuestionSettings,
     RatingQuestionModel,
-    QuestionBaseModel,
 )
+from argilla_sdk.settings._common import SettingsPropertyBase
 
 __all__ = [
     "LabelQuestion",
@@ -19,30 +18,11 @@ __all__ = [
     "RankingQuestion",
     "TextQuestion",
     "RatingQuestion",
+    "QuestionType",
 ]
 
 
-class QuestionBase(Resource):
-    _model: QuestionBaseModel
-
-    @property
-    def name(self) -> str:
-        return self._model.name
-
-    @property
-    def title(self) -> Optional[str]:
-        return self._model.title
-
-    @property
-    def description(self) -> Optional[str]:
-        return self._model.description
-
-    @property
-    def required(self) -> bool:
-        return self._model.required
-
-
-class LabelQuestion(QuestionBase):
+class LabelQuestion(SettingsPropertyBase):
     _model: LabelQuestionModel
 
     def __init__(
@@ -79,7 +59,7 @@ class LabelQuestion(QuestionBase):
         self._model.labels = labels
 
 
-class TextQuestion(QuestionBase):
+class TextQuestion(SettingsPropertyBase):
     _model: TextQuestionModel
 
     def __init__(
@@ -111,7 +91,7 @@ class TextQuestion(QuestionBase):
         return self._model.settings.use_markdown
 
 
-class MultiLabelQuestion(LabelQuestion):
+class MultiLabelQuestion(SettingsPropertyBase):
     _model: MultiLabelQuestionModel
 
     def __init__(
@@ -150,7 +130,7 @@ class MultiLabelQuestion(LabelQuestion):
         self._model.visible_labels = visible_labels
 
 
-class RatingQuestion(QuestionBase):
+class RatingQuestion(SettingsPropertyBase):
     _model: RatingQuestionModel
 
     def __init__(
@@ -187,7 +167,7 @@ class RatingQuestion(QuestionBase):
         self._model.values = values
 
 
-class RankingQuestion(QuestionBase):
+class RankingQuestion(SettingsPropertyBase):
     _model: RankingQuestionModel
 
     def __init__(
@@ -222,3 +202,12 @@ class RankingQuestion(QuestionBase):
     @values.setter
     def values(self, values: List[int]) -> None:
         self._model.values = values
+
+
+QuestionType = Union[
+    LabelQuestion,
+    MultiLabelQuestion,
+    RankingQuestion,
+    TextQuestion,
+    RatingQuestion,
+]

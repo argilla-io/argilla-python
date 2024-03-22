@@ -28,6 +28,9 @@ class DatasetModel(ResourceModel):
     name: str
     status: Literal["draft", "ready"] = "draft"
 
+    guidelines: Optional[str] = None
+    allow_extra_metadata: Optional[bool] = True
+
     workspace_id: Optional[UUID] = None
     last_activity_at: Optional[datetime] = None
     url: Optional[str] = None

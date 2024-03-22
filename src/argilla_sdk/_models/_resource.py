@@ -1,6 +1,6 @@
-from typing import Optional
 from datetime import datetime
-from uuid import UUID, uuid4
+from typing import Optional
+from uuid import UUID
 
 from pydantic import BaseModel, field_serializer
 
@@ -8,7 +8,7 @@ from pydantic import BaseModel, field_serializer
 class ResourceModel(BaseModel):
     """Base model for all resources (DatasetModel, WorkspaceModel, UserModel, etc.)"""
 
-    id: Optional[UUID] = uuid4()
+    id: Optional[UUID] = None
     inserted_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 

@@ -95,11 +95,6 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
             if dataset.name == name:
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
-    def create_fields(self, dataset_id: UUID, fields: List[dict]) -> List[FieldBaseModel]:
-        return [
-            self.create_field(dataset_id, field)
-            for field in fields
-        ]
 
     def create_field(self, dataset_id: UUID, field: dict) -> FieldBaseModel:
         # TODO: Move this to a separate FieldsAPI
@@ -115,12 +110,6 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
         _http.raise_for_status(response=response)
         response_models = [FieldBaseModel(**field) for field in response.json()["items"]]
         return response_models
-
-    def create_questions(self, dataset_id:UUID, questions: List[dict]) -> List[QuestionBaseModel]:
-        return [
-            self.create_question(dataset_id, question)
-            for question in questions
-        ]
 
     def create_question(self, dataset_id: UUID, question: dict) -> QuestionBaseModel:
         # TODO: Move this to a separate QuestionsAPI
@@ -149,13 +138,25 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
         # TODO: migrate to `RecordsAPI.create_many()`
 
     def list_records(
-        self, dataset_id: UUID, with_suggestions: bool = True, with_responses: bool = True
+        self,
+        dataset_id: UUID,
+        offset: int = 0,
+        limit: int = 100,
+        with_suggestions: bool = True,
+        with_responses: bool = True,
     ) -> List[RecordModel]:
-        include = [
-            "suggestions" if with_suggestions else "",
-            "responses" if with_responses else "",
-        ]
-        params = {"include": ",".join(include)}
+        include = []
+        if with_suggestions:
+            include.append("suggestions")
+        if with_responses:
+            include.append("responses")
+
+        params = {
+            "offset": offset,
+            "limit": limit,
+            "include": include,
+        }
+
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/records", params=params)
         _http.raise_for_status(response=response)
         json_records = response.json()["items"]

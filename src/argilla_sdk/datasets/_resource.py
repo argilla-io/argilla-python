@@ -18,8 +18,8 @@ from argilla_sdk._api import DatasetsAPI
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
-from argilla_sdk.datasets._dataset_records import DatasetRecords
 from argilla_sdk.datasets._exceptions import DatasetNotPublished
+from argilla_sdk.records import DatasetRecords
 from argilla_sdk.settings import Settings
 
 __all__ = ["Dataset"]
@@ -69,7 +69,7 @@ class Dataset(Resource):
         self._model = _model
         self.__define_settings(settings=settings or Settings())
         self.question_name_map = {}
-
+        self.__records = DatasetRecords(client=self._client, dataset=self)
         self._sync(model=self._model)
 
     @property
@@ -77,10 +77,6 @@ class Dataset(Resource):
         if not self.is_published:
             raise DatasetNotPublished("Cannot access records before publishing the dataset. Call `publish` first.")
         return self.__records
-
-    @records.setter
-    def records(self, value: "DatasetRecords") -> None:
-        self.__records = value
 
     @property
     def is_published(self) -> bool:
@@ -118,6 +114,10 @@ class Dataset(Resource):
     def allow_extra_metadata(self, value: bool) -> None:
         self._settings.allow_extra_metadata = value
 
+    @property
+    def schema(self):
+        return self._settings.schema
+
     def exists(self) -> bool:
         return self._api.exists(self.id)
 
@@ -138,9 +138,6 @@ class Dataset(Resource):
 
         if publish:
             self.__publish()
-            self.__get_remote_question_id_map()
-            # This may be done in the __init__ method
-            self.records = DatasetRecords(client=self._client, dataset=self)
 
         return self.get()
 
@@ -160,9 +157,3 @@ class Dataset(Resource):
         if not self.is_published:
             response_model = self._api.publish(dataset_id=self._model.id)
             self._sync(response_model)
-
-    def __get_remote_question_id_map(self) -> Dict[str, str]:
-        remote_questions = self._api.list_questions(dataset_id=self._model.id)
-        question_name_map = {question.name: str(question.id) for question in remote_questions}
-        self.question_name_map = question_name_map
-        return question_name_map

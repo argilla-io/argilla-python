@@ -63,16 +63,30 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
         # TODO: Once server returns the records, return them here
 
-    def list(self, dataset_id: UUID, with_suggestions: bool = True, with_responses: bool = True) -> List[RecordModel]:
-        include = [
-            "suggestions" if with_suggestions else "",
-            "responses" if with_responses else "",
-        ]
-        params = {"include": ",".join(include)}
+    def list(
+        self,
+        dataset_id: UUID,
+        offset: int = 0,
+        limit: int = 100,
+        with_suggestions: bool = True,
+        with_responses: bool = True,
+    ) -> List[RecordModel]:
+        include = []
+        if with_suggestions:
+            include.append("suggestions")
+        if with_responses:
+            include.append("responses")
+
+        params = {
+            "offset": offset,
+            "limit": limit,
+            "include": include,
+        }
+
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/records", params=params)
         _http.raise_for_status(response=response)
         json_records = response.json()["items"]
-        return self._model_from_jsons(response_jsons=json_records)
+        return [RecordModel(**record) for record in json_records]
 
     ####################
     # Private methods #

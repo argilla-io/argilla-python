@@ -11,12 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from collections.abc import Sequence
 from abc import abstractmethod
+from collections.abc import Sequence
 from typing import TYPE_CHECKING, overload
 
-from argilla_sdk import _api
 import argilla_sdk as rg
+from argilla_sdk import _api
 
 if TYPE_CHECKING:
     from argilla_sdk import Workspace
@@ -41,7 +41,7 @@ class Argilla(_api.APIClient):
 
     @property
     def me(self) -> "User":
-        return User(client=self, _model=self._users.get_me())
+        return User(client=self, _model=self.api.users.get_me())
 
 
 class Users(Sequence):
@@ -49,7 +49,7 @@ class Users(Sequence):
 
     def __init__(self, client: "Argilla") -> None:
         self._client = client
-        self._api = _api.UsersAPI(http_client=client.http_client)
+        self._api = client.api.users
 
     def __call__(self, username: str, **kwargs) -> "User":
         from argilla_sdk.users._resource import User
@@ -84,7 +84,7 @@ class Workspaces(Sequence):
 
     def __init__(self, client: "Argilla") -> None:
         self._client = client
-        self._api = _api.WorkspacesAPI(http_client=client.http_client)
+        self._api = client.api.workspaces
 
     def __call__(self, name: str, **kwargs) -> "Workspace":
         from argilla_sdk.workspaces._resource import Workspace
@@ -120,7 +120,7 @@ class Datasets(Sequence):
 
     def __init__(self, client: "Argilla") -> None:
         self._client = client
-        self._api = _api.DatasetsAPI(http_client=client.http_client)
+        self._api = client.api.datasets
 
     def __call__(self, name: str, workspace: "Workspace", **kwargs) -> "Dataset":
         from argilla_sdk.datasets._resource import Dataset

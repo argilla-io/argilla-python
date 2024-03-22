@@ -38,12 +38,13 @@ class DatasetRecordsIterator:
     def __init__(
         self,
         dataset: "Dataset",
+        client: "Argilla",
         start_offset: int = 0,
         batch_size: Optional[int] = None,
         with_suggestions: bool = False,
     ):
         self.__dataset = dataset
-        self.__api = dataset._client._datasets
+        self.__client = client
         self.__records_batch = []
         self.__offset = start_offset or 0
         self.__batch_size = batch_size or 100
@@ -70,7 +71,7 @@ class DatasetRecordsIterator:
         self.__offset += len(self.__records_batch)
 
     def _list(self) -> Sequence[Record]:
-        records = self.__api.list_records(
+        records = self.__client.api.records.list(
             self.__dataset.id,
             limit=self.__batch_size,
             offset=self.__offset,
@@ -93,14 +94,14 @@ class DatasetRecords:
     def __init__(self, client: "Argilla", dataset: "Dataset"):
         self.__client = client
         self.__dataset = dataset
-        self.__datasets_api = client._datasets
 
     def __iter__(self):
-        return DatasetRecordsIterator(self.__dataset)
+        return DatasetRecordsIterator(self.__dataset, self.__client)
 
     def __call__(self, batch_size: Optional[int] = 100, start_offset: int = 0, with_suggestions: bool = False):
         return DatasetRecordsIterator(
             self.__dataset,
+            self.__client,
             batch_size=batch_size,
             start_offset=start_offset,
             with_suggestions=with_suggestions,
@@ -121,7 +122,7 @@ class DatasetRecords:
         record_schema = self.__dataset.schema
         serialized_records = [_dict_to_record_model(r, record_schema).model_dump() for r in records]
 
-        self.__datasets_api.create_records(dataset_id=self.__dataset.id, records=serialized_records)
+        self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=serialized_records)
 
 
 def _record_model_to_record(dataset: "Dataset", model: RecordModel) -> Record:

@@ -55,8 +55,7 @@ class Dataset(Resource):
             id: (UUID): To predefine dataset_id or to reference existing datasets.
                 Random UUID is used if not assigned.
         """
-        super().__init__(client=client, api=client._datasets)
-
+        super().__init__(client=client, api=client.api.datasets)
         if name is None:
             name = str(id)
             self.log(f"Settings dataset name to unique UUID: {id}")

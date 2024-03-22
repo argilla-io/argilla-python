@@ -26,7 +26,7 @@ __all__ = ["WorkspacesAPI"]
 
 class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
     http_client: httpx.Client
-    url_stub = "{self.url_stub}"
+    url_stub = "/api/v1/workspaces"
 
     ################
     # CRUD methods #

@@ -130,6 +130,40 @@ def test_add_dict_records(client: Argilla):
         assert record.label == data["label"]
 
 
+def test_add_single_record(client: Argilla):
+    new_ws = client.workspaces("new_ws")
+    if not new_ws.exists():
+        new_ws.create()
+
+    ds = client.datasets("new_ds", workspace=new_ws)
+    if ds.exists():
+        ds.delete()
+
+    ds.settings = rg.Settings(
+        fields=[rg.TextField(name="text")],
+        questions=[rg.TextQuestion(name="label")],
+    )
+
+    ds.publish()
+
+    data = {
+        "text": "Hello World, how are you?",
+        "label": "positive",
+        "external_id": "1",
+    }
+
+    # Now the dataset is published and is ready for annotate
+    ds.records.add(data)
+
+    records = list(ds.records)
+    assert len(records) == 1
+
+    record = records[0]
+    assert record.id
+    assert record.external_id == data["external_id"]
+    assert record.text == data["text"]
+
+
 def test_add_records_with_suggestions(client) -> None:
     workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_add_record_with_suggestions {datetime.now().strftime('%Y%m%d%H%M%S')}"

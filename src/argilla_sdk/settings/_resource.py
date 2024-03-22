@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 from functools import cached_property
-from typing import List, Optional, Union, TYPE_CHECKING
+from typing import List, Optional, TYPE_CHECKING
 
 from argilla_sdk._models import TextFieldModel, TextQuestionModel
 from argilla_sdk.client import Argilla
@@ -57,6 +57,7 @@ class Settings:
         self._dataset = _dataset
 
         self.__datasets_api = client._datasets
+        # TODO: Align settings client use with other resources
         self.__client = client
 
     #####################
@@ -150,14 +151,12 @@ class Settings:
 
     def __upsert_questions(self) -> None:
         for question in self.__questions:
-            question_model = self.__datasets_api.questions.create(
-                dataset_id=self._dataset.id, question=question.serialize()
-            )
+            question_model = self.__client._questions.create(dataset_id=self._dataset.id, question=question.serialize())
             question._model = question_model
 
     def __upsert_fields(self) -> None:
         for field in self.__fields:
-            field_model = self.__datasets_api.fields.create(dataset_id=self._dataset.id, field=field.serialize())
+            field_model = self.__client._fields.create(dataset_id=self._dataset.id, field=field.serialize())
             field._model = field_model
 
     def serialize(self):

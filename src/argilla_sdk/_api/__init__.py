@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._api._datasets._core import *  # noqa 403
+from argilla_sdk._api._datasets import *  # noqa 403
 from argilla_sdk._api._http import *  # noqa 403
 from argilla_sdk._api._workspaces import *  # noqa 403
 from argilla_sdk._api._users import *  # noqa 403
 from argilla_sdk._api._client import *  # noqa 403
+from argilla_sdk._api._fields import *  # noqa 403
+from argilla_sdk._api._records import *  # noqa 403
+from argilla_sdk._api._questions import *  # noqa 403

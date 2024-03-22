@@ -163,7 +163,7 @@ class Dataset(Resource):
             self._sync(response_model)
 
     def __get_remote_question_id_map(self) -> Dict[str, str]:
-        remote_questions = self._api.questions.list(dataset_id=self._model.id)
+        remote_questions = self._client._questions.list(dataset_id=self._model.id)
         question_name_map = {question.name: str(question.id) for question in remote_questions}
         self.question_name_map = question_name_map
         return question_name_map

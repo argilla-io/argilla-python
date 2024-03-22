@@ -47,11 +47,11 @@ class DatasetRecords:
     def __add_records_to_server(self, records):
         """Add records to a dataset"""
         serialized_records = self.__serialize_records(records)
-        return self.client._datasets.records.create_many(dataset_id=self.dataset_id, records=serialized_records)
+        return self.client._records.create_many(dataset_id=self.dataset_id, records=serialized_records)
 
     def __list_records_from_server(self):
         """Get records from the server"""
-        return self.client._datasets.records.list(
+        return self.client._records.list(
             dataset_id=self.dataset_id, with_suggestions=True, with_responses=True
         )
 

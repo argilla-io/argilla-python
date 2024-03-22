@@ -1,0 +1,2 @@
+class DatasetNotPublished(Exception):
+    pass

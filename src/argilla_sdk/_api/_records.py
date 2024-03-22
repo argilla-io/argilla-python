@@ -32,7 +32,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     # CRUD methods #
     ################
 
-    def read(self, record_id: UUID) -> RecordModel:
+    def get(self, record_id: UUID) -> RecordModel:
         response = self.http_client.get(f"/api/v1/records/{record_id}")
         _http.raise_for_status(response=response)
         return self._model_from_json(response_json=response.json())

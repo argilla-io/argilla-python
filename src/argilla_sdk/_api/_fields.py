@@ -31,13 +31,15 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
     ################
     # CRUD methods #
     ################
-    
-    def create(self, dataset_id: UUID, field: dict) -> Union[TextFieldModel, FieldBaseModel]:
+
+    def create(
+        self, dataset_id: UUID, field: Union[TextFieldModel, FieldBaseModel]
+    ) -> Union[TextFieldModel, FieldBaseModel]:
         url = f"/api/v1/datasets/{dataset_id}/fields"
-        response = self.http_client.post(url=url, json=field)
+        response = self.http_client.post(url=url, json=field.model_dump())
         _http.raise_for_status(response=response)
-        self.log(message=f"Created field {field['name']} in dataset {dataset_id}")
         field_model = self._model_from_json(response_json=response.json())
+        self.log(message=f"Created field {field_model.name} in dataset {dataset_id}")
         return field_model
 
     def update(self, field: Union[TextFieldModel, FieldBaseModel]) -> Union[TextFieldModel, FieldBaseModel]:

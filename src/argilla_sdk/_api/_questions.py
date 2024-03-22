@@ -40,7 +40,16 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
     ################
 
     def create(
-        self, dataset_id: UUID, question: dict
+        self,
+        dataset_id: UUID,
+        question: Union[
+            TextQuestionModel,
+            LabelQuestionModel,
+            MultiLabelQuestionModel,
+            RankingQuestionModel,
+            RatingQuestionModel,
+            QuestionBaseModel,
+        ],
     ) -> Union[
         TextQuestionModel,
         LabelQuestionModel,
@@ -50,10 +59,11 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
         QuestionBaseModel,
     ]:
         url = f"/api/v1/datasets/{dataset_id}/questions"
-        response = self.http_client.post(url=url, json=question)
+        response = self.http_client.post(url=url, json=question.model_dump())
         _http.raise_for_status(response=response)
-        self.log(message=f"Created question {question['name']} in dataset {dataset_id}")
-        return self._model_from_json(response_json=response.json())
+        question_model = self._model_from_json(response_json=response.json())
+        self.log(message=f"Created question {question_model.name} in dataset {dataset_id}")
+        return question_model
 
     def update(
         self,

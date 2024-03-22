@@ -151,12 +151,12 @@ class Settings:
 
     def __upsert_questions(self) -> None:
         for question in self.__questions:
-            question_model = self.__client._questions.create(dataset_id=self._dataset.id, question=question.serialize())
+            question_model = self.__client._questions.create(dataset_id=self._dataset.id, question=question._model)
             question._model = question_model
 
     def __upsert_fields(self) -> None:
         for field in self.__fields:
-            field_model = self.__client._fields.create(dataset_id=self._dataset.id, field=field.serialize())
+            field_model = self.__client._fields.create(dataset_id=self._dataset.id, field=field._model)
             field._model = field_model
 
     def serialize(self):

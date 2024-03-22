@@ -16,6 +16,7 @@ from abc import abstractmethod
 from typing import TYPE_CHECKING, overload
 
 from argilla_sdk import _api
+import argilla_sdk as rg
 
 if TYPE_CHECKING:
     from argilla_sdk import Workspace

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional
+from typing import Dict, List, Optional
 from uuid import UUID
 
 import httpx
@@ -104,7 +104,7 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
     # Private methods #
     ####################
 
-    def _model_from_json(self, json_workspace) -> WorkspaceModel:
+    def _model_from_json(self, json_workspace: Dict) -> WorkspaceModel:
         return WorkspaceModel(
             id=UUID(json_workspace["id"]),
             name=json_workspace["name"],
@@ -112,5 +112,5 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
             updated_at=self._date_from_iso_format(date=json_workspace["updated_at"]),
         )
 
-    def _model_from_jsons(self, json_workspaces) -> List[WorkspaceModel]:
+    def _model_from_jsons(self, json_workspaces: List[Dict]) -> List[WorkspaceModel]:
         return list(map(self._model_from_json, json_workspaces))

@@ -29,7 +29,7 @@ class DatasetModel(ResourceModel):
     status: Literal["draft", "ready"] = "draft"
 
     guidelines: Optional[str] = None
-    allow_extra_metadata: Optional[bool] = True
+    allow_extra_metadata: bool = True  # Ideally, the default value should be provided by the server
 
     workspace_id: Optional[UUID] = None
     last_activity_at: Optional[datetime] = None

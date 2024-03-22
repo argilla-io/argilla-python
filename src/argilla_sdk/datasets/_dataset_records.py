@@ -25,7 +25,10 @@ class DatasetRecords:
     def __init__(self, client: "Argilla", dataset: "Dataset"):
         self.client = client
         self.dataset_id = dataset.id
-        self.question_name_map = dataset.question_name_map
+        self.question_name_map = {
+            question.name: str(question.id)
+            for question in dataset.questions
+        }
 
     def add(self, records):
         """Add records to a dataset"""
@@ -80,9 +83,9 @@ class DatasetRecords:
         normalized_records = []
         for record in records:
             if isinstance(record, dict):
-                record = Record(question_name_map=self.question_name_map, **record)
+                record = Record(**record)
             elif isinstance(record, RecordModel):
-                record = Record(question_name_map=self.question_name_map, **record.model_dump())
+                record = Record(**record.model_dump())
             elif isinstance(record, Record):
                 pass
             else:

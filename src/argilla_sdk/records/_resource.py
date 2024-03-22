@@ -77,10 +77,10 @@ class DatasetRecordsIterator:
 
 class DatasetRecords:
     """
-    This class is similar to the DatasetRecords class and normally should be replaced if we validate this approach.
-    The class naming is optional and just to do not break the existing code.
+    This class is used to work with records from a dataset.
 
-    The class should be renamed to DatasetRecords and the old class should be removed.
+    The responsibility of this class is to provide an interface to interact with records in a dataset,
+    by adding, updating, fetching, querying, and deleting records.
 
     """
 

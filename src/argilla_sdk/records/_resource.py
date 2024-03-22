@@ -40,7 +40,7 @@ class DatasetRecordsIterator:
         self.__api = dataset._client._datasets
         self.__records_batch = []
         self.__offset = 0
-        self.__size = batch_size or 100
+        self.__batch_size = batch_size or 100
         self.__with_suggestions = with_suggestions
 
     def __iter__(self):
@@ -60,14 +60,14 @@ class DatasetRecordsIterator:
         return len(self.__records_batch) > 0
 
     def _fetch_next_batch(self) -> None:
-        self.__records_batch = list(self._list(size=self.__size, offset=self.__offset))
+        self.__records_batch = list(self._list())
         self.__offset += len(self.__records_batch)
 
-    def _list(self, size: int, offset: int) -> Sequence[Record]:
+    def _list(self) -> Sequence[Record]:
         records = self.__api.list_records(
             self.__dataset.id,
-            limit=size,
-            offset=offset,
+            limit=self.__batch_size,
+            offset=self.__offset,
             with_responses=False,
             with_suggestions=self.__with_suggestions,
         )
@@ -93,7 +93,7 @@ class DatasetRecords:
         return DatasetRecordsIterator(self.__dataset)
 
     def __call__(self, batch_size: Optional[int] = 100, with_suggestions: bool = False):
-        return DatasetRecordsIterator(self.__dataset, batch_size=batch_size, with_suggestions=with_suggestions,)
+        return DatasetRecordsIterator(self.__dataset, batch_size=batch_size, with_suggestions=with_suggestions)
 
     def add(self, records: Union[dict, List[dict]]) -> None:
         """

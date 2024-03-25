@@ -20,6 +20,7 @@ import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
+from argilla_sdk._models import TextFieldModel
 
 
 class TestFieldsAPI:
@@ -32,7 +33,7 @@ class TestFieldsAPI:
             "title": "string",
             "required": True,
             "settings": {"type": "text", "use_markdown": False},
-            "dataset_id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "dataset_id": str(mock_dataset_id),
             "inserted_at": datetime.now().isoformat(),
             "updated_at": datetime.now().isoformat(),
         }
@@ -42,6 +43,7 @@ class TestFieldsAPI:
             "required": True,
             "settings": {"type": "text", "use_markdown": False},
         }
+        mock_field = TextFieldModel(**mock_field)
         httpx_mock.add_response(
             json=mock_return_value,
             url=f"http://test_url/api/v1/datasets/{mock_dataset_id}/fields",

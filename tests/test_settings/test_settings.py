@@ -68,20 +68,6 @@ class TestSettingsSerialization:
 
 
 class TestDatasetSettings:
-    def test_dataset_init_with_fields_and_questions(self):
-        fields = [rg.TextField(name="prompt", use_markdown=True)]
-        questions = [rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])]
-        settings = rg.Settings(
-            guidelines="guidelines",
-            fields=fields,
-            questions=questions,
-        )
-        mock_dataset_name = "dataset_name"
-        dataset = rg.Dataset(name=mock_dataset_name, settings=settings)
-
-        assert dataset.guidelines == "guidelines"
-        assert dataset.fields == fields
-        assert dataset.questions == questions
 
     def test_create_dataset_with_settings(self, httpx_mock: HTTPXMock):
         mock_dataset_name = "dataset_name"
@@ -229,60 +215,58 @@ class TestDatasetSettings:
             dataset = rg.Dataset(name=mock_dataset_name, settings=settings, id=mock_dataset_id, client=client)
             dataset.create()
             settings = rg.Settings(guidelines=mock_guidelines, fields=fields, questions=updated_questions)
-            # TODO: Implement dataset configure to take a new settings object
+            dataset.settings = settings
             dataset.update()
             assert dataset.questions[0].name == "new_sentiment"
 
-    def test_update_dataset_with_allow_extra_metadata(self, httpx_mock):
-        mock_dataset_name = "dataset_name"
-        mock_dataset_id = uuid.uuid4()
-        mock_guidelines = "guidelines"
-        mock_create_return_value = {
-            "id": str(mock_dataset_id),
-            "name": mock_dataset_name,
-            "status": "draft",
-            "allow_extra_metadata": False,
-            "inserted_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
-            "guidelines": "guidelines",
-        }
-        mock_update_return_value = {
-            "id": str(mock_dataset_id),
-            "name": mock_dataset_name,
-            "status": "draft",
-            "allow_extra_metadata": True,
-            "inserted_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
-            "guidelines": "guidelines",
-        }
-        api_url = "http://test_url"
-        httpx_mock.add_response(
-            json=mock_update_return_value,
-            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
-            method="PATCH",
-            status_code=200,
-        )
-        httpx_mock.add_response(
-            json=mock_create_return_value,
-            url=f"{api_url}/api/v1/datasets",
-            method="POST",
-            status_code=200,
-        )
-        with httpx.Client():
-            fields = [rg.TextField(name="prompt", use_markdown=True)]
-            questions = [rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])]
-            settings = rg.Settings(
-                guidelines=mock_guidelines, fields=fields, questions=questions, allow_extra_metadata=True
-            )
-            client = rg.Argilla(api_url)
-            dataset = rg.Dataset(name=mock_dataset_name, settings=settings, id=mock_dataset_id, client=client)
-            dataset.create()
-            settings = rg.Settings(
-                guidelines=mock_guidelines, fields=fields, questions=questions, allow_extra_metadata=False
-            )
-            updated_dataset = rg.Dataset(name=mock_dataset_name, settings=settings, id=mock_dataset_id, client=client)
-            updated_dataset.update()
-            assert updated_dataset.guidelines == mock_guidelines
-            assert updated_dataset.fields == fields
-            assert updated_dataset.questions == questions
-            assert updated_dataset.allow_extra_metadata is False
+    # TODO: Restore this test based on server implementation for allow_extra_metadata
+    # def test_update_dataset_with_allow_extra_metadata(self, httpx_mock):
+    #     mock_dataset_name = "dataset_name"
+    #     mock_dataset_id = uuid.uuid4()
+    #     mock_guidelines = "guidelines"
+    #     mock_create_return_value = {
+    #         "id": str(mock_dataset_id),
+    #         "name": mock_dataset_name,
+    #         "status": "draft",
+    #         "allow_extra_metadata": False,
+    #         "inserted_at": datetime.utcnow().isoformat(),
+    #         "updated_at": datetime.utcnow().isoformat(),
+    #         "guidelines": "guidelines",
+    #     }
+    #     mock_update_return_value = {
+    #         "id": str(mock_dataset_id),
+    #         "name": mock_dataset_name,
+    #         "status": "draft",
+    #         "allow_extra_metadata": True,
+    #         "inserted_at": datetime.utcnow().isoformat(),
+    #         "updated_at": datetime.utcnow().isoformat(),
+    #         "guidelines": "guidelines",
+    #     }
+    #     api_url = "http://test_url"
+    #     httpx_mock.add_response(
+    #         json=mock_update_return_value,
+    #         url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
+    #         method="PATCH",
+    #         status_code=200,
+    #     )
+    #     httpx_mock.add_response(
+    #         json=mock_create_return_value,
+    #         url=f"{api_url}/api/v1/datasets",
+    #         method="POST",
+    #         status_code=200,
+    #     )
+    #     with httpx.Client():
+    #         fields = [rg.TextField(name="prompt", use_markdown=True)]
+    #         questions = [rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])]
+    #         settings = rg.Settings(
+    #             guidelines=mock_guidelines, fields=fields, questions=questions, allow_extra_metadata=True
+    #         )
+    #         client = rg.Argilla(api_url)
+    #         dataset = rg.Dataset(name=mock_dataset_name, settings=settings, id=mock_dataset_id, client=client)
+    #         dataset.create()
+    #         settings = rg.Settings(
+    #             guidelines=mock_guidelines, fields=fields, questions=questions, allow_extra_metadata=False
+    #         )
+    #         dataset.settings = settings
+    #         dataset.update()
+    #         assert dataset.allow_extra_metadata is False

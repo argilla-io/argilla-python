@@ -20,7 +20,7 @@ import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
-
+from argilla_sdk._models import TextQuestionModel
 
 class TestQuestionsAPI:
     def test_create_many_questions(self, httpx_mock: HTTPXMock):
@@ -43,6 +43,7 @@ class TestQuestionsAPI:
             "required": True,
             "settings": {"type": "text", "use_markdown": False},
         }
+        mock_question = TextQuestionModel(**mock_question)
         httpx_mock.add_response(
             json=mock_return_value,
             url=f"http://test_url/api/v1/datasets/{mock_dataset_id}/questions",

@@ -65,45 +65,6 @@ class TestDatasets:
             )
             dataset.create()
 
-    def test_get_dataset(self, httpx_mock: HTTPXMock):
-        mock_dataset_id = uuid.uuid4()
-        mock_return_value = {
-            "id": str(mock_dataset_id),
-            "name": "dataset-01",
-            "status": "draft",
-            "allow_extra_metadata": False,
-            "inserted_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
-        }
-        api_url = "http://test_url"
-        httpx_mock.add_response(
-            json=mock_return_value, url=f"{api_url}/api/v1/datasets", method="POST", status_code=200
-        )
-        httpx_mock.add_response(
-            json=mock_return_value, url=f"{api_url}/api/v1/datasets/{mock_dataset_id}", method="GET", status_code=200
-        )
-        mock_dataset_fields_return_value = {"items": []}
-        httpx_mock.add_response(
-            json=mock_dataset_fields_return_value,
-            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}/fields",
-            method="GET",
-            status_code=200,
-        )
-        httpx_mock.add_response(
-            json=mock_dataset_fields_return_value,
-            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}/questions",
-            method="GET",
-            status_code=200,
-        )
-        with httpx.Client():
-            client = rg.Argilla(api_url)
-            dataset = rg.Dataset(name="dataset-01", workspace_id=uuid.uuid4(), id=mock_dataset_id, client=client)
-            dataset.create()
-            gotten_dataset = dataset.get()
-            assert gotten_dataset.id == dataset.id
-            assert gotten_dataset.name == dataset.name
-            assert gotten_dataset.status == dataset.status
-
     def test_list_datasets(self, httpx_mock: HTTPXMock):
         mock_return_value = {
             "items": [

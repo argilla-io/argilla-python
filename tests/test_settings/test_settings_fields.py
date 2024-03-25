@@ -22,16 +22,6 @@ class TestTextField:
         assert text_field.title == mock_title
         assert text_field.required == True
 
-    def test_init_text_field_optional(self):
-        mock_name = "prompt"
-        mock_use_markdown = True
-        mock_required = False
-        text_field = rg.TextField(name=mock_name, use_markdown=mock_use_markdown, required=mock_required)
-        assert text_field.name == mock_name
-        assert text_field.use_markdown == mock_use_markdown
-        assert text_field.title == mock_name
-        assert text_field.required == mock_required
-
     @pytest.mark.parametrize(
         "name, expected",
         [

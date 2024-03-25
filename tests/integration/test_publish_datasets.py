@@ -19,8 +19,7 @@ from argilla_sdk import Argilla, Settings, TextField, TextQuestion
 
 @pytest.fixture
 def client() -> Argilla:
-    client = Argilla(api_url="http://localhost:6900")
-    return client
+    return Argilla(api_url="http://localhost:6900", api_key="owner.apikey")
 
 
 def test_publish_datasets(client: "Argilla"):

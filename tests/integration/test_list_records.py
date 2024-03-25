@@ -8,7 +8,7 @@ from argilla_sdk import Argilla, Dataset, Settings, TextField, TextQuestion, Wor
 
 @pytest.fixture
 def client() -> Argilla:
-    return Argilla()
+    return Argilla(api_url="http://localhost:6900", api_key="owner.apikey")
 
 
 @pytest.fixture
@@ -26,7 +26,6 @@ def workspace(client: Argilla) -> Workspace:
 
 @pytest.fixture
 def dataset(client: Argilla, workspace: Workspace) -> Dataset:
-
     name = "".join(random.choices(ascii_lowercase, k=16))
     settings = Settings(
         fields=[TextField(name="text")],

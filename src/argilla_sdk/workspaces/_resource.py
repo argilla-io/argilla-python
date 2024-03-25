@@ -52,12 +52,12 @@ class Workspace(Resource):
         Returns:
             Workspace: The initialized workspace object
         """
-        super().__init__(client=client, api=client._workspaces)
+        super().__init__(client=client, api=client.api.workspaces)
         self._sync(model=WorkspaceModel(name=name, id=id) if not _model else _model)
 
-    def list_datasets(self, workspace_id: UUID) -> List["DatasetModel"]:
-        datasets = self._client._datasets.list(workspace_id)
-        self.log(f"Got {len(datasets)} datasets for workspace {workspace_id}")
+    def list_datasets(self) -> List["DatasetModel"]:
+        datasets = self._client.api.datasets.list(self.id)
+        self.log(f"Got {len(datasets)} datasets for workspace {self.id}")
         return datasets
 
     def exists(self) -> bool:

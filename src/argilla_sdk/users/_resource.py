@@ -45,7 +45,7 @@ class User(Resource):
         """
         super().__init__(
             client=client,
-            api=client._users,
+            api=client.api.users,
         )
         if _model is None:
             _model = UserModel(

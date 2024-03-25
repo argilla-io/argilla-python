@@ -57,8 +57,6 @@ class Settings:
         self.__fields = fields
         self._dataset = _dataset
 
-        self.__datasets_api = client._datasets
-        # TODO: Align settings client use with other resources
         self.__client = client
 
     #####################
@@ -162,12 +160,12 @@ class Settings:
 
     def __upsert_questions(self) -> None:
         for question in self.__questions:
-            question_model = self.__client._questions.create(dataset_id=self._dataset.id, question=question._model)
+            question_model = self.__client.api.questions.create(dataset_id=self._dataset.id, question=question._model)
             question._model = question_model
 
     def __upsert_fields(self) -> None:
         for field in self.__fields:
-            field_model = self.__client._fields.create(dataset_id=self._dataset.id, field=field._model)
+            field_model = self.__client.api.fields.create(dataset_id=self._dataset.id, field=field._model)
             field._model = field_model
 
     def serialize(self):
@@ -181,7 +179,6 @@ class Settings:
     def _set_dataset(self, dataset: "Dataset"):
         self._dataset = dataset
         self.__client = dataset._client
-        self.__datasets_api = dataset._api
 
     #####################
     #  Utility methods  #

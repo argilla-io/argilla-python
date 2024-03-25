@@ -18,6 +18,9 @@ def workspace(client: Argilla) -> Workspace:
         workspace.create()
     yield workspace
 
+    for dataset in workspace.list_datasets():
+        client.api.datasets.delete(dataset.id)
+
     workspace.delete()
 
 

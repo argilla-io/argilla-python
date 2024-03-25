@@ -50,4 +50,4 @@ class TestFieldsAPI:
         )
         with httpx.Client() as client:
             client = rg.Argilla(api_url="http://test_url")
-            client._fields.create_many(dataset_id=mock_dataset_id, fields=[mock_field])
+            client.api.fields.create_many(dataset_id=mock_dataset_id, fields=[mock_field])

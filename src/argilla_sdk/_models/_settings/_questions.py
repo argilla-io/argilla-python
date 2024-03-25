@@ -82,7 +82,7 @@ class TextQuestionModel(QuestionBaseModel):
     @validator("settings", pre=True, always=True)
     def __move_use_markdown(cls, settings, values):
         use_markdown = values.get("use_markdown", False)
-        settings.use_markdown = use_markdown
+        settings = TextQuestionSettings(type="text", use_markdown=use_markdown)
         return settings
 
 

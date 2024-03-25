@@ -12,17 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 import logging
+import os
 from typing import Optional
 
 import httpx
 
 from argilla_sdk._api import HTTPClientConfig, create_http_client
-from argilla_sdk._api._workspaces import WorkspacesAPI
-from argilla_sdk._api._users import UsersAPI
 from argilla_sdk._api._datasets import DatasetsAPI
-from argilla_sdk._constants import _DEFAULT_API_URL, _DEFAULT_API_KEY
+from argilla_sdk._api._fields import FieldsAPI
+from argilla_sdk._api._questions import QuestionsAPI
+from argilla_sdk._api._records import RecordsAPI
+from argilla_sdk._api._users import UsersAPI
+from argilla_sdk._api._workspaces import WorkspacesAPI
+from argilla_sdk._constants import _DEFAULT_API_KEY, _DEFAULT_API_URL
 
 __all__ = ["APIClient"]
 
@@ -64,6 +67,22 @@ class APIClient:
     @property
     def _datasets(self) -> "DatasetsAPI":
         return DatasetsAPI(http_client=self.http_client)
+
+    @property
+    def _fields(self) -> "FieldsAPI":
+        return FieldsAPI(http_client=self.http_client)
+
+    @property
+    def _questions(self) -> "QuestionsAPI":
+        return QuestionsAPI(http_client=self.http_client)
+
+    @property
+    def _records(self) -> "RecordsAPI":
+        return RecordsAPI(http_client=self.http_client)
+
+    ##############################
+    # Utility methods
+    ##############################
 
     def log(self, message: str, level: int = logging.INFO) -> None:
         class_name = self.__class__.__name__

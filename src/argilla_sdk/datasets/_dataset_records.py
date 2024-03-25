@@ -13,8 +13,8 @@
 # limitations under the License.
 from typing import TYPE_CHECKING
 
-from argilla_sdk._models import RecordModel
 from argilla_sdk.datasets._record import Record
+from argilla_sdk._models import RecordModel
 
 if TYPE_CHECKING:
     from argilla_sdk import Dataset
@@ -50,11 +50,11 @@ class DatasetRecords:
     def __add_records_to_server(self, records):
         """Add records to a dataset"""
         serialized_records = self.__serialize_records(records)
-        return self.client._datasets.create_records(dataset_id=self.dataset_id, records=serialized_records)
+        return self.client._records.create_many(dataset_id=self.dataset_id, records=serialized_records)
 
     def __list_records_from_server(self):
         """Get records from the server"""
-        return self.client._datasets.list_records(
+        return self.client._records.list(
             dataset_id=self.dataset_id, with_suggestions=True, with_responses=True
         )
 

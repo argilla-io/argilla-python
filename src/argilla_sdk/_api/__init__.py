@@ -17,4 +17,6 @@ from argilla_sdk._api._http import *  # noqa 403
 from argilla_sdk._api._workspaces import *  # noqa 403
 from argilla_sdk._api._users import *  # noqa 403
 from argilla_sdk._api._client import *  # noqa 403
+from argilla_sdk._api._fields import *  # noqa 403
+from argilla_sdk._api._records import *  # noqa 403
 from argilla_sdk._api._questions import *  # noqa 403

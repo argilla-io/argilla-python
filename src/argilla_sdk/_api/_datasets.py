@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional
+from typing import List, Optional, Dict
 from uuid import UUID
 
 import httpx
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
-from argilla_sdk._models import DatasetModel, RecordModel, FieldBaseModel, QuestionBaseModel
+from argilla_sdk._models import DatasetModel
 
 __all__ = ["DatasetsAPI"]
 
@@ -27,6 +27,7 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     """Manage datasets via the API"""
 
     http_client: httpx.Client
+    url_stub = "/api/v1/datasets"
 
     ################
     # CRUD methods #
@@ -35,7 +36,7 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     def create(self, dataset: "DatasetModel") -> "DatasetModel":
         json_body = dataset.model_dump()
         response = self.http_client.post(
-            url="/api/v1/datasets",
+            url=self.url_stub,
             json=json_body,
         )
         _http.raise_for_status(response=response)
@@ -46,14 +47,14 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     def update(self, dataset: "DatasetModel") -> "DatasetModel":
         json_body = dataset.model_dump()
         dataset_id = json_body["id"]  # type: ignore
-        response = self.http_client.patch(f"/api/v1/datasets/{dataset_id}", json=json_body)
+        response = self.http_client.patch(f"{self.url_stub}/{dataset_id}", json=json_body)
         _http.raise_for_status(response=response)
         dataset = self._model_from_json(json_dataset=response.json())
         self.log(message=f"Updated dataset {dataset.url}")
         return dataset
 
     def get(self, dataset_id: UUID) -> "DatasetModel":
-        response = self.http_client.get(url=f"/api/v1/datasets/{dataset_id}")
+        response = self.http_client.get(url=f"{self.url_stub}/{dataset_id}")
         _http.raise_for_status(response=response)
         json_dataset = response.json()
         dataset = self._model_from_json(json_dataset=json_dataset)
@@ -61,12 +62,12 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
         return dataset
 
     def delete(self, dataset_id: UUID) -> None:
-        response = self.http_client.delete(f"/api/v1/datasets/{dataset_id}")
+        response = self.http_client.delete(f"{self.url_stub}/{dataset_id}")
         _http.raise_for_status(response=response)
         self.log(message=f"Deleted dataset {dataset_id}")
 
     def exists(self, dataset_id: UUID) -> bool:
-        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}")
+        response = self.http_client.get(f"{self.url_stub}/{dataset_id}")
         return response.status_code == 200
 
     ####################
@@ -74,7 +75,7 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     ####################
 
     def publish(self, dataset_id: UUID) -> "DatasetModel":
-        response = self.http_client.put(url=f"/api/v1/datasets/{dataset_id}/publish")
+        response = self.http_client.put(url=f"{self.url_stub}/{dataset_id}/publish")
         _http.raise_for_status(response=response)
         self.log(message=f"Published dataset {dataset_id}")
         return self._model_from_json(response.json())
@@ -96,80 +97,14 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
 
-    def create_field(self, dataset_id: UUID, field: dict) -> FieldBaseModel:
-        # TODO: Move this to a separate FieldsAPI
-        url = f"/api/v1/datasets/{dataset_id}/fields"
-        response = self.http_client.post(url=url, json=field)
-        _http.raise_for_status(response=response)
-        self.log(message=f"Created field {field['name']} in dataset {dataset_id}")
-        return FieldBaseModel(**response.json())
-
-    def list_fields(self, dataset_id: UUID) -> List[FieldBaseModel]:
-        # TODO: Move this to a separate FieldsAPI
-        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/fields")
-        _http.raise_for_status(response=response)
-        response_models = [FieldBaseModel(**field) for field in response.json()["items"]]
-        return response_models
-
-    def create_question(self, dataset_id: UUID, question: dict) -> QuestionBaseModel:
-        # TODO: Move this to a separate QuestionsAPI
-        url = f"/api/v1/datasets/{dataset_id}/questions"
-        response = self.http_client.post(url=url, json=question)
-        _http.raise_for_status(response=response)
-        self.log(message=f"Created question {question['name']} in dataset {dataset_id}")
-
-        return QuestionBaseModel(**response.json())
-
-    def list_questions(self, dataset_id: UUID) -> List[QuestionBaseModel]:
-        # TODO: Move this to a separate QuestionsAPI
-        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/questions")
-        _http.raise_for_status(response=response)
-        response_models = [QuestionBaseModel(**question) for question in response.json()["items"]]
-        return response_models
-
-    def create_records(self, dataset_id: UUID, records: List[dict]) -> None:
-        response = self.http_client.post(
-            url=f"/api/v1/datasets/{dataset_id}/records",
-            json={"items": records},
-        )
-        _http.raise_for_status(response=response)
-        self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
-        # TODO: Once server returns the records, return them here
-        # TODO: migrate to `RecordsAPI.create_many()`
-
-    def list_records(
-        self,
-        dataset_id: UUID,
-        offset: int = 0,
-        limit: int = 100,
-        with_suggestions: bool = True,
-        with_responses: bool = True,
-    ) -> List[RecordModel]:
-        include = []
-        if with_suggestions:
-            include.append("suggestions")
-        if with_responses:
-            include.append("responses")
-
-        params = {
-            "offset": offset,
-            "limit": limit,
-            "include": include,
-        }
-
-        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/records", params=params)
-        _http.raise_for_status(response=response)
-        json_records = response.json()["items"]
-        return [RecordModel(**record) for record in json_records]
-
     ####################
     # Private methods #
     ####################
 
-    def _model_from_json(self, json_dataset: dict) -> "DatasetModel":
+    def _model_from_json(self, json_dataset: Dict) -> "DatasetModel":
         json_dataset["inserted_at"] = self._date_from_iso_format(date=json_dataset["inserted_at"])
         json_dataset["updated_at"] = self._date_from_iso_format(date=json_dataset["updated_at"])
         return DatasetModel(**json_dataset)
 
-    def _model_from_jsons(self, json_datasets: List[dict]) -> List["DatasetModel"]:
+    def _model_from_jsons(self, json_datasets: List[Dict]) -> List["DatasetModel"]:
         return list(map(self._model_from_json, json_datasets))

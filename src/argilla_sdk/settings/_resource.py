@@ -58,6 +58,7 @@ class Settings:
         self._dataset = _dataset
 
         self.__datasets_api = client._datasets
+        # TODO: Align settings client use with other resources
         self.__client = client
 
     #####################
@@ -159,19 +160,14 @@ class Settings:
         ds_model.guidelines = self.guidelines
         ds_model.allow_extra_metadata = self.allow_extra_metadata
 
-        updated_dataset_model = self.__datasets_api.update(ds_model)
-        self._dataset._sync(updated_dataset_model)
-
     def __upsert_questions(self) -> None:
         for question in self.__questions:
-            question_model = self.__datasets_api.create_question(
-                dataset_id=self._dataset.id, question=question.serialize()
-            )
+            question_model = self.__client._questions.create(dataset_id=self._dataset.id, question=question._model)
             question._model = question_model
 
     def __upsert_fields(self) -> None:
         for field in self.__fields:
-            field_model = self.__datasets_api.create_field(dataset_id=self._dataset.id, field=field.serialize())
+            field_model = self.__client._fields.create(dataset_id=self._dataset.id, field=field._model)
             field._model = field_model
 
     def serialize(self):
@@ -181,6 +177,11 @@ class Settings:
             "questions": self.__serialize_questions(questions=self.questions),
             "allow_extra_metadata": self.allow_extra_metadata,
         }
+
+    def _set_dataset(self, dataset: "Dataset"):
+        self._dataset = dataset
+        self.__client = dataset._client
+        self.__datasets_api = dataset._api
 
     #####################
     #  Utility methods  #

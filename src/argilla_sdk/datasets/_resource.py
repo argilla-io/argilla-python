@@ -56,10 +56,10 @@ class Dataset(Resource):
                 Random UUID is used if not assigned.
         """
         super().__init__(client=client, api=client._datasets)
+
         if name is None:
             name = str(id)
             self.log(f"Settings dataset name to unique UUID: {id}")
-
         _model = _model or DatasetModel(
             name=name,
             status=status,
@@ -67,7 +67,7 @@ class Dataset(Resource):
             id=self._convert_optional_uuid(uuid=id),
         )
         self._model = _model
-        self.__define_settings(settings=settings or Settings())
+        self.__define_settings(settings=settings)
         self.question_name_map = {}
         self.__records = DatasetRecords(client=self._client, dataset=self)
         self._sync(model=self._model)
@@ -138,15 +138,15 @@ class Dataset(Resource):
 
         if publish:
             self.__publish()
-
-        return self.get()
+        return self.get() # type: ignore
 
     def __define_settings(
         self,
-        settings: Settings,
+        settings: Optional[Settings] = None,
     ) -> None:
         """Populate the dataset object with settings"""
-        settings._dataset = self
+        settings = settings or Settings()
+        settings._set_dataset(self)
         self._settings = settings
 
     def __create(self) -> None:

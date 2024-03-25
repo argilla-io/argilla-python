@@ -22,6 +22,7 @@ from argilla_sdk.client import Argilla
 
 if TYPE_CHECKING:
     from argilla_sdk._models import DatasetModel
+    from argilla_sdk._api._workspaces import WorkspacesAPI
 
 
 __all__ = ["Workspace"]

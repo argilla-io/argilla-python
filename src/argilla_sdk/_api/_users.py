@@ -28,6 +28,7 @@ class UsersAPI(ResourceAPI[UserModel]):
     """Manage users via the API"""
 
     http_client: httpx.Client
+    url_stub = "api/v1/users"
 
     ################
     # CRUD methods #

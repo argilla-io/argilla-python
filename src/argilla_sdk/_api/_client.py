@@ -74,7 +74,9 @@ class ArgillaAPI:
 
 
 class APIClient:
-    """Initialize the SDK with the given API URL and API key."""
+    """Initialize the SDK with the given API URL and API key.
+    This class is used to create an instance of the Argilla API client.
+    """
 
     def __init__(
         self,

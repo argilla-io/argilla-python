@@ -129,6 +129,14 @@ class MultiLabelQuestion(SettingsPropertyBase):
     def visible_labels(self, visible_labels: Optional[int]) -> None:
         self._model.visible_labels = visible_labels
 
+    @property
+    def labels(self) -> List[str]:
+        return self._model.labels
+
+    @labels.setter
+    def labels(self, labels: List[str]) -> None:
+        self._model.labels = labels
+
 
 class RatingQuestion(SettingsPropertyBase):
     _model: RatingQuestionModel

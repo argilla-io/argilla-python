@@ -88,6 +88,31 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         json_records = response.json()["items"]
         return [RecordModel(**record) for record in json_records]
 
+    def update_many(self, dataset_id: UUID, records: List[Dict]) -> None:
+        response = self.http_client.patch(
+            url=f"/api/v1/datasets/{dataset_id}/records",
+            json={"items": records},
+        )
+        _http.raise_for_status(response=response)
+        self.log(message=f"Updated {len(records)} records in dataset {dataset_id}")
+
+    ####################
+    # Response methods #
+    ####################
+
+    def create_record_response(self, record_id: UUID, record_response: Dict) -> None:
+        response = self.http_client.post(
+            url=f"/api/v1/records/{record_id}/responses",
+            json=record_response,
+        )
+        _http.raise_for_status(response=response)
+        self.log(message=f"Created response for record {record_id}")
+
+    def create_record_responses(self, record: Dict) -> None:
+        record_responses = record.get("responses", [])
+        for record_response in record_responses:
+            self.create_record_response(record_id=record["id"], record_response=record_response)
+
     ####################
     # Private methods #
     ####################

@@ -79,7 +79,7 @@ class Record(Resource):
     # Public methods
     ############################
 
-    def serialize(self) -> RecordModel:
+    def serialize(self) -> Dict[str, Any]:
         serialized_model = self._model.model_dump()
         serialized_suggestions = [suggestion.model_dump() for suggestion in self.__suggestions.models]
         serialized_responses = [response.model_dump() for response in self.__responses.models]
@@ -132,6 +132,8 @@ class RecordResponses:
     def __init__(self, responses: List[Response], dataset: Optional["Dataset"] = None) -> None:
         self.__responses = responses or []
         for response in self.__responses:
+            if dataset is None:
+                continue
             question_name = dataset.settings.question_by_id(response.question_id).name
             setattr(self, question_name, response.value)
 
@@ -150,6 +152,8 @@ class RecordSuggestions:
     def __init__(self, suggestions: List[Suggestion], dataset: Optional["Dataset"] = None) -> None:
         self.__suggestions = suggestions or []
         for suggestion in self.__suggestions:
+            if suggestion.question_name is None and dataset is None:
+                continue
             question_name = dataset.settings.question_by_id(suggestion.question_id).name
             setattr(self, question_name, suggestion.value)
 

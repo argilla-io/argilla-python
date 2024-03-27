@@ -2,8 +2,10 @@ import warnings
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Tuple
 from uuid import UUID, uuid4
 
-from argilla_sdk._models import RecordModel, SuggestionModel
+from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel
 from argilla_sdk._resource import Resource
+from argilla_sdk.response import Response
+from argilla_sdk.suggestion import Suggestion
 from argilla_sdk.client import Argilla
 from argilla_sdk.settings import FieldType, QuestionType
 
@@ -11,30 +13,125 @@ if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
 
 
-class Record:
+class Record(Resource):
     """
     This record would be used for fetching records in a custom schema.
-    Let's see this when tackle the fetch records endpoint
+    Let's see this when we tackle the fetch records endpoint
     """
 
     # TODO: Once the RecordsAPI is implemented, this class could be adapted to extend a Resource class and
     #  provide mechanisms to update and delete single records.
 
-    id: Optional[UUID]
-    external_id: Optional[str]
-
-    _model: RecordModel
-
-    def __init__(self, model, **kwargs):
-        self.id = None
-        self.external_id = None
-        self.__dict__.update(kwargs)
-        self._model = model
-        self.suggestions = self._model.suggestions
+    def __init__(
+        self,
+        fields: Dict[str, Union[str, None]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+        vectors: Optional[Dict[str, List[float]]] = None,
+        responses: Optional[List[Response]] = None,
+        suggestions: Optional[Union[Tuple[Suggestion], List[Suggestion]]] = None,
+        external_id: Optional[str] = None,
+        id: Optional[str] = None,
+    ):
+        self._model = RecordModel(
+            fields=fields,
+            metadata=metadata,
+            vectors=vectors,
+            external_id=external_id or uuid4(),
+            id=id or uuid4(),
+        )
+        self.__responses = RecordResponses(responses=responses)
+        self.__suggestions = RecordSuggestions(suggestions=suggestions)
+        self._model.responses = self.__responses.models
+        self._model.suggestions = self.__suggestions.models
 
     def __repr__(self):
         record_body = ",".join([f"{k}={v}" for k, v in self.__dict__.items()])
         return f"<Record {record_body}>"
+
+    ############################
+    # Properties
+    ############################
+
+    @property
+    def external_id(self) -> str:
+        return self._model.external_id
+
+    @external_id.setter
+    def external_id(self, value: str) -> None:
+        self._model.external_id = str(value)
+
+    @property
+    def responses(self) -> "RecordResponses":
+        return self.__responses
+
+    @property
+    def suggestions(self) -> "RecordSuggestions":
+        return self.__suggestions
+
+    ############################
+    # Public methods
+    ############################
+
+    def serialize(self) -> RecordModel:
+        serialized_model = self._model.model_dump()
+        serialized_suggestions = [suggestion.model_dump() for suggestion in self.__suggestions.models]
+        serialized_responses = [response.model_dump() for response in self.__responses.models]
+        serialized_model["responses"] = serialized_responses
+        serialized_model["suggestions"] = serialized_suggestions
+        return serialized_model
+
+    @classmethod
+    def from_dict(cls, dataset: "Dataset", record_as_dict: Dict) -> "Record":
+        """
+        Converts a record dictionary to a Record object.
+
+        Dataset is used to map the question ids to question names. In the future, this could be done in the record resource
+        by passing the linked dataset to the record object, or fetching question names from the API.
+        """
+        model = _dict_to_record_model(data=record_as_dict, schema=dataset.schema)
+        return cls.from_model(model=model)
+
+    @classmethod
+    def from_model(cls, model: RecordModel) -> "Record":
+        return cls(
+            id=model.id,
+            external_id=model.external_id,
+            fields=model.fields,
+            metadata=model.metadata,
+            vectors=model.vectors,
+            responses=[Response.from_model(response) for response in model.responses],
+            suggestions=[Suggestion.from_model(suggestion) for suggestion in model.suggestions],
+        )
+
+
+class RecordResponses:
+    def __init__(self, responses: List[Response]) -> None:
+        self.__responses = responses or []
+
+    @property
+    def models(self) -> List[ResponseModel]:
+        return [response._model for response in self.__responses]
+
+    def __iter__(self):
+        return iter(self.__responses)
+
+    def __getitem__(self, index):
+        return self.__responses[index]
+
+
+class RecordSuggestions:
+    def __init__(self, suggestions: List[Suggestion]) -> None:
+        self.__suggestions = suggestions or []
+
+    @property
+    def models(self) -> List[SuggestionModel]:
+        return [suggestion._model for suggestion in self.__suggestions]
+
+    def __iter__(self):
+        return iter(self.__suggestions)
+
+    def __getitem__(self, index):
+        return self.__suggestions[index]
 
 
 class DatasetRecordsIterator:
@@ -76,15 +173,15 @@ class DatasetRecordsIterator:
         self.__offset += len(self.__records_batch)
 
     def _list(self) -> Sequence[Record]:
-        records = self.__client.api.records.list(
-            self.__dataset.id,
+        record_models = self.__client.api.records.list(
+            dataset_id=self.__dataset.id,
             limit=self.__batch_size,
             offset=self.__offset,
             with_responses=False,
             with_suggestions=self.__with_suggestions,
         )
-        for record in records:
-            yield _record_model_to_record(self.__dataset, record)
+        for record_model in record_models:
+            yield Record.from_model(model=record_model)
 
 
 class DatasetRecords(Resource):
@@ -119,7 +216,7 @@ class DatasetRecords(Resource):
 
         # TODO: Once we have implemented the new records bulk endpoint, this method should use it
         #   and return the response from the API.
-        records = _cast_return_records(records)
+        records = self.__cast_return_records(records)
         record_schema = self.__dataset.schema
         serialized_records = [_dict_to_record_model(r, record_schema).model_dump() for r in records]
 
@@ -127,7 +224,7 @@ class DatasetRecords(Resource):
 
     def update(self, records):
         """Update records in a dataset"""
-        records = _cast_return_records(records)
+        records = self.__cast_return_records(records)
         record_schema = self.__dataset.schema
         serialized_records = [_dict_to_record_model(r, record_schema) for r in records]
         records_to_update, records_to_add = self.__align_split_records(serialized_records)
@@ -141,7 +238,7 @@ class DatasetRecords(Resource):
         if len(records_to_add) > 0:
             self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=records_to_add)
         records = self.__list_records_from_server()
-        self.__records = [_record_model_to_record(self.__dataset, record) for record in records]
+        self.__records = [Record.from_model(model=record) for record in records]
         return self.__records
 
     def __list_records_from_server(self):
@@ -175,30 +272,12 @@ class DatasetRecords(Resource):
         for record in records:
             self.__client.api.records.create_record_responses(record)
 
-
-def _cast_return_records(records: Union[dict, List[dict]]) -> List[dict]:
-    single_record = isinstance(records, dict)
-    if single_record:
-        records = [records]
-    return records
-
-
-def _record_model_to_record(dataset: "Dataset", model: RecordModel) -> Record:
-    """
-    Converts a record dictionary to a Record object.
-
-    Dataset is used to map the question ids to question names. In the future, this could be done in the record resource
-    by passing the linked dataset to the record object, or fetching question names from the API.
-    """
-    kwargs = {
-        **model.fields,
-        **model.metadata,
-        **{
-            dataset.settings.question_by_id(suggestion.question_id).name: suggestion.value
-            for suggestion in model.suggestions
-        },
-    }
-    return Record(id=model.id, external_id=model.external_id, model=model, **kwargs)
+    def __cast_return_records(self, records: Union[dict, List[dict]]) -> List[dict]:
+        """Cast the return records to a list of records"""
+        single_record = isinstance(records, dict)
+        if single_record:
+            records = [records]
+        return records
 
 
 def _dict_to_record_model(data: dict, schema: Dict[str, Any]) -> RecordModel:

@@ -143,10 +143,14 @@ class DatasetRecords(Resource):
         """Ingest records as dictionaries and return a list of RecordModel instances."""
         if isinstance(records, dict) or isinstance(records, Record):
             records = [records]
-        if isinstance(records[0], dict):
-            record_models = [dict_to_record_model(data=r, schema=self.__dataset.schema) for r in records]
-        elif isinstance(records[0], Record):
-            record_models = [r._model for r in records]
+        if all(map(lambda r: isinstance(r, dict), records)):
+            record_models = [dict_to_record_model(data=r, schema=self.__dataset.schema) for r in records]  # type: ignore
+        elif all(map(lambda r: isinstance(r, Record), records)):
+            record_models = [r._model for r in records]  # type: ignore
+        else:
+            raise ValueError(
+                "Records should be a dictionary, a list of dictionaries, a Record instance, or a list of Record instances."
+            )
         return record_models
 
     def __align_split_records(self, records) -> Tuple[List[RecordModel], List[RecordModel]]:

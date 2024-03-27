@@ -1,6 +1,6 @@
 from typing import Any, Optional, Literal
-import uu
 from uuid import UUID, uuid4
+
 from pydantic import BaseModel, field_serializer
 
 

@@ -212,24 +212,23 @@ def test_add_records_with_suggestions(client) -> None:
     assert dataset_records[2].suggestions.comment == "I'm doing great, thank you!"
 
 
-@pytest.mark.skip("Responses are not supported yet")
 def test_add_records_with_responses(client) -> None:
     workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
     mock_data = [
         {
             "text": "Hello World, how are you?",
-            "label": "positive",
+            "comment": "I'm doing great, thank you!",
             "external_id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
-            "label": "negative",
+            "comment": "Life is good!",
             "external_id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
-            "label": "positive",
+            "comment": "I'm doing great, thank you!",
             "external_id": uuid.uuid4(),
         },
     ]
@@ -238,7 +237,7 @@ def test_add_records_with_responses(client) -> None:
             rg.TextField(name="text"),
         ],
         questions=[
-            rg.TextQuestion(name="text", use_markdown=False),
+            rg.TextQuestion(name="comment", use_markdown=False),
         ],
     )
     dataset = rg.Dataset(
@@ -255,19 +254,12 @@ def test_add_records_with_responses(client) -> None:
     )
     user.create()
     dataset.publish()
-    dataset.records.add(
-        records=[
-            rg.Record(
-                fields={
-                    "text": _record["text"],
-                },
-                external_id=_record["external_id"],
-                responses=[rg.Response(question_name="text", value=_record["label"], user_id=user.id, status="draft")],
-            )
-            for _record in mock_data
-        ]
-    )
+    dataset.records.add(records=mock_data, as_suggestions=False, user_id=user.id)
     assert dataset.name == mock_dataset_name
-    assert dataset.records[0].external_id == mock_data[0]["external_id"]
-    assert dataset.records[1].fields["text"] == mock_data[1]["text"]
-    assert dataset.records[2].responses[0].values["text"]["value"] == "positive"
+
+    dataset_records = list(dataset.records(with_suggestions=True))
+
+    assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
+    assert dataset_records[1].fields.text == mock_data[1]["text"]
+    assert dataset_records[2].responses.comment[0].value == "I'm doing great, thank you!"
+    assert dataset_records[2].responses.comment[0].user_id == user.id

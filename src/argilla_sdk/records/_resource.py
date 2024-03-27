@@ -13,8 +13,9 @@
 # limitations under the License.
 
 import warnings
+from collections import defaultdict
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Tuple
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel
 from argilla_sdk._resource import Resource
@@ -126,7 +127,7 @@ class Record(Resource):
         Returns:
             A Record object.
         """
-        model = cls.__flat_dict_to_record_model(data=record_as_dict, schema=dataset.schema)
+        model = cls._dict_to_record_model(data=record_as_dict, schema=dataset.schema)
         return cls.from_model(model=model)
 
     @classmethod
@@ -154,7 +155,9 @@ class Record(Resource):
     ############################
 
     @staticmethod
-    def _dict_to_record_model(data: dict, schema: Dict[str, Any]) -> RecordModel:
+    def _dict_to_record_model(
+        data: dict, schema: Dict[str, Any], as_suggestions: bool = True, user_id: Optional[UUID] = None
+    ) -> RecordModel:
         """Converts a flat Record-like dictionary object to a RecordModel.
         Args:
             data: A dictionary representing the record with flat attributes.
@@ -163,27 +166,38 @@ class Record(Resource):
             A RecordModel object.
         """
 
+        def _suggestion_model(value, question_id, question_name):
+            return SuggestionModel(value=value, question_id=question_id, question_name=question_name)
+
+        def _response_model(value, question_id, question_name):
+            return ResponseModel(values={question_name: {"value": value}}, user_id=user_id)
+
+        if as_suggestions:
+            question_type = _suggestion_model
+        elif not as_suggestions and user_id is not None:
+            question_type = _response_model
+        else:
+            raise ValueError("user_id is required for responses")
+
         fields = {}
-        suggestions = []
+        question_responses: List[Union[SuggestionModel, ResponseModel]] = []
 
         for attribute, value in data.items():
             if attribute not in schema:
                 warnings.warn(f"Record attribute {attribute} is not in the schema. Skipping.")
                 continue
-
             schema_item = schema.get(attribute)
             if isinstance(schema_item, FieldType):
                 fields[attribute] = value
             elif isinstance(schema_item, QuestionType):
-                suggestion = SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute)
-                suggestions.append(suggestion.model_dump())
-            else:
-                warnings.warn(f"Property {attribute} is not a valid schema item. Skipping.")
+                question_response = question_type(value=value, question_id=schema_item.id, question_name=attribute)
+                question_responses.append(question_response.model_dump())  # type: ignore
 
         return RecordModel(
             id=data.get("id") or str(uuid4()),
             fields=fields,
-            suggestions=suggestions,
+            suggestions=question_responses if as_suggestions else [],  # type: ignore
+            responses=question_responses if not as_suggestions else [],  # type: ignore
             external_id=data.get("external_id"),
         )
 
@@ -211,15 +225,18 @@ class RecordFields:
 class RecordResponses:
     """This is a container class for the responses of a Record.
     It allows for accessing responses by attribute and iterating over them.
+    A record can have multiple responses per question so we set the response
+    in a list default dictionary with the question name as the key.
     """
+
+    __question_map: Dict[str, List[Response]] = defaultdict(list)
 
     def __init__(self, responses: List[Response], dataset: Optional["Dataset"] = None) -> None:
         self.__responses = responses or []
         for response in self.__responses:
             if dataset is None:
                 continue
-            question_name = dataset.settings.question_by_id(response.question_id).name
-            setattr(self, question_name, response.value)
+            self.__question_map[response.question_name].append(response)
 
     @property
     def models(self) -> List[ResponseModel]:
@@ -231,10 +248,15 @@ class RecordResponses:
     def __getitem__(self, index):
         return self.__responses[index]
 
+    def __getattr__(self, name):
+        return self.__question_map.get(name, [])
+
 
 class RecordSuggestions:
     """This is a container class for the suggestions of a Record.
     It allows for accessing suggestions by attribute and iterating over them.
+    A record can currently have one suggestion per question so we set the suggestion
+    value as an attribute.
     """
 
     def __init__(self, suggestions: List[Suggestion], dataset: Optional["Dataset"] = None) -> None:

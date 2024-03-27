@@ -4,7 +4,6 @@ from argilla_sdk._models import RecordModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
 from argilla_sdk.records._resource import Record
-from argilla_sdk.records._utils import dict_to_record_model
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -70,6 +69,11 @@ class DatasetRecords(Resource):
     """
 
     def __init__(self, client: "Argilla", dataset: "Dataset"):
+        """Initializes a DatasetRecords object with a client and a dataset.
+        Args:
+            client: An Argilla client object.
+            dataset: A Dataset object.
+        """
         self.__client = client
         self.__dataset = dataset
 
@@ -85,6 +89,10 @@ class DatasetRecords(Resource):
             with_suggestions=with_suggestions,
         )
 
+    ############################
+    # Public methods
+    ############################
+
     def add(self, records: Union[dict, List[dict]]) -> None:
         """
         Add new records to a dataset on the server.
@@ -94,7 +102,7 @@ class DatasetRecords(Resource):
                      with keys corresponding to the fields in the dataset schema.
         """
         # TODO: Once we have implemented the new records bulk endpoint, this method should use it
-        #   and return the response from the API.
+        # and return the response from the API.
         records_models = self.__ingest_records(records=records)
         self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=records_models)
 
@@ -144,7 +152,7 @@ class DatasetRecords(Resource):
         if isinstance(records, dict) or isinstance(records, Record):
             records = [records]
         if all(map(lambda r: isinstance(r, dict), records)):
-            record_models = [dict_to_record_model(data=r, schema=self.__dataset.schema) for r in records]  # type: ignore
+            record_models = [Record._dict_to_record_model(data=r, schema=self.__dataset.schema) for r in records]  # type: ignore
         elif all(map(lambda r: isinstance(r, Record), records)):
             record_models = [r._model for r in records]  # type: ignore
         else:

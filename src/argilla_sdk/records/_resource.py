@@ -140,7 +140,7 @@ class Record(Resource):
     ############################
 
     @staticmethod
-    def __flat_dict_to_record_model(data: dict, schema: Dict[str, Any]) -> RecordModel:
+    def _dict_to_record_model(data: dict, schema: Dict[str, Any]) -> RecordModel:
         """Converts a flat Record-like dictionary object to a RecordModel.
         Args:
             data: A dictionary representing the record with flat attributes.

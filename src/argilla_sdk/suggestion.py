@@ -67,6 +67,10 @@ class Suggestion(Resource):
     def agent(self) -> Optional[str]:
         return self._model.agent
 
+    @property
+    def question_id(self) -> Optional[UUID]:
+        return self._model.question_id
+
     @classmethod
     def from_model(cls, model: SuggestionModel) -> "Suggestion":
         return cls(**model.model_dump())

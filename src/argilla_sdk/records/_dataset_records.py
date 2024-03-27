@@ -57,7 +57,7 @@ class DatasetRecordsIterator:
             with_suggestions=self.__with_suggestions,
         )
         for record_model in record_models:
-            yield Record.from_model(model=record_model)
+            yield Record.from_model(model=record_model, dataset=self.__dataset)
 
 
 class DatasetRecords(Resource):
@@ -108,7 +108,7 @@ class DatasetRecords(Resource):
                      with keys corresponding to the fields in the dataset schema. Ids or
                      external_ids should be provided to identify the records to be updated.
         """
-        record_models = self.__ingest_records(records)
+        record_models = self.__ingest_records(records=records)
         records_to_update, records_to_add = self.__align_split_records(record_models)
         if len(records_to_update) > 0:
             self.__client.api.records.update_many(dataset_id=self.__dataset.id, records=records_to_update)
@@ -122,7 +122,7 @@ class DatasetRecords(Resource):
         if len(records_to_add) > 0:
             self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=records_to_add)
         records = self.__list_records_from_server()
-        self.__records = [Record.from_model(model=record) for record in records]
+        self.__records = [Record.from_model(model=record, dataset=self.__dataset) for record in records]
 
     ############################
     # Utility methods
@@ -144,8 +144,7 @@ class DatasetRecords(Resource):
         if isinstance(records, dict) or isinstance(records, Record):
             records = [records]
         if isinstance(records[0], dict):
-            record_schema = self.__dataset.schema
-            record_models = [dict_to_record_model(r, record_schema) for r in records]
+            record_models = [dict_to_record_model(data=r, schema=self.__dataset.schema) for r in records]
         elif isinstance(records[0], Record):
             record_models = [r._model for r in records]
         return record_models

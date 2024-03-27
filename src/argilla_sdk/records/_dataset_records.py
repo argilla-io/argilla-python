@@ -13,6 +13,7 @@
 # limitations under the License.
 
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Tuple
+from uuid import UUID
 
 from argilla_sdk._models import RecordModel
 from argilla_sdk._resource import Resource
@@ -33,6 +34,7 @@ class DatasetRecordsIterator:
         start_offset: int = 0,
         batch_size: Optional[int] = None,
         with_suggestions: bool = False,
+        with_responses: bool = False,
     ):
         self.__dataset = dataset
         self.__client = client
@@ -40,6 +42,7 @@ class DatasetRecordsIterator:
         self.__offset = start_offset or 0
         self.__batch_size = batch_size or 100
         self.__with_suggestions = with_suggestions
+        self.__with_responses = with_responses
 
     def __iter__(self):
         return self
@@ -66,7 +69,7 @@ class DatasetRecordsIterator:
             dataset_id=self.__dataset.id,
             limit=self.__batch_size,
             offset=self.__offset,
-            with_responses=False,
+            with_responses=self.__with_responses,
             with_suggestions=self.__with_suggestions,
         )
         for record_model in record_models:
@@ -94,20 +97,29 @@ class DatasetRecords(Resource):
     def __iter__(self):
         return DatasetRecordsIterator(self.__dataset, self.__client)
 
-    def __call__(self, batch_size: Optional[int] = 100, start_offset: int = 0, with_suggestions: bool = True):
+    def __call__(
+        self,
+        batch_size: Optional[int] = 100,
+        start_offset: int = 0,
+        with_suggestions: bool = True,
+        with_responses: bool = True,
+    ):
         return DatasetRecordsIterator(
             self.__dataset,
             self.__client,
             batch_size=batch_size,
             start_offset=start_offset,
             with_suggestions=with_suggestions,
+            with_responses=with_responses,
         )
 
     ############################
     # Public methods
     ############################
 
-    def add(self, records: Union[dict, List[dict]]) -> None:
+    def add(
+        self, records: Union[dict, List[dict]], as_suggestions: bool = True, user_id: Optional[UUID] = None
+    ) -> None:
         """
         Add new records to a dataset on the server.
         Args:
@@ -117,10 +129,12 @@ class DatasetRecords(Resource):
         """
         # TODO: Once we have implemented the new records bulk endpoint, this method should use it
         # and return the response from the API.
-        records_models = self.__ingest_records(records=records)
+        records_models = self.__ingest_records(records=records, as_suggestions=as_suggestions, user_id=user_id)
         self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=records_models)
 
-    def update(self, records) -> None:
+    def update(
+        self, records: Union[dict, List[dict]], as_suggestions: bool = True, user_id: Optional[UUID] = None
+    ) -> None:
         """Update records in a dataset on the server using the provided records
             and matching based on the external_id or id.
 
@@ -130,11 +144,11 @@ class DatasetRecords(Resource):
                      with keys corresponding to the fields in the dataset schema. Ids or
                      external_ids should be provided to identify the records to be updated.
         """
-        record_models = self.__ingest_records(records=records)
+        record_models = self.__ingest_records(records=records, as_suggestions=as_suggestions, user_id=user_id)
         records_to_update, records_to_add = self.__align_split_records(record_models)
         if len(records_to_update) > 0:
             self.__client.api.records.update_many(dataset_id=self.__dataset.id, records=records_to_update)
-            self.__update_record_responses(records=records_to_update)
+            self.__create_record_responses(records=records_to_update)
         else:
             message = """
             No existing records founds to update. 
@@ -154,20 +168,30 @@ class DatasetRecords(Resource):
         """Get records from the server"""
         return self.__client.api.records.list(dataset_id=self.__dataset.id, with_suggestions=True, with_responses=True)
 
-    def __update_record_responses(self, records):
-        """Update the record responses in the server on a per record basis."""
+    def __create_record_responses(self, records):
+        """Create record responses in the server on a per record basis."""
         for record in records:
             self.__client.api.records.create_record_responses(record)
 
     def __ingest_records(
-        self, records: Union[List[Dict[str, Any]], Dict[str, Any], List[Record], Record]
+        self,
+        records: Union[List[Dict[str, Any]], Dict[str, Any], List[Record], Record],
+        as_suggestions: bool = True,
+        user_id: Optional[UUID] = None,
     ) -> List[RecordModel]:
         """Ingest records as dictionaries and return a list of RecordModel instances."""
         if isinstance(records, dict) or isinstance(records, Record):
             records = [records]
         if all(map(lambda r: isinstance(r, dict), records)):
-            record_models = [Record._dict_to_record_model(data=r, schema=self.__dataset.schema) for r in records]  # type: ignore
+            # Records as flat dicts of values to be matched to questions as suggestion or response
+            record_models = [
+                Record._dict_to_record_model(
+                    data=r, schema=self.__dataset.schema, as_suggestions=as_suggestions, user_id=user_id
+                )
+                for r in records
+            ]  # type: ignore
         elif all(map(lambda r: isinstance(r, Record), records)):
+            # Pre-constructed Record instances with suggestions and responses declared
             record_models = [r._model for r in records]  # type: ignore
         else:
             raise ValueError(

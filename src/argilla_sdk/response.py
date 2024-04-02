@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from typing import Any
 from argilla_sdk._models import ResponseModel, ResponseStatus
 from argilla_sdk._resource import Resource
 
@@ -56,6 +57,11 @@ class Response(Resource):
         """Returns the user_id of the Response"""
         return self._model.user_id
 
+    @property
+    def status(self) -> ResponseStatus:
+        """Returns the status of the Response"""
+        return self._model.status
+
     @classmethod
     def from_model(cls, model: ResponseModel) -> "Response":
         """Creates a Response from a ResponseModel"""
@@ -64,6 +70,13 @@ class Response(Resource):
         user_id = str(model.user_id)
         status = model.status
         return cls(question_name, value, user_id, status)
+
+    def serialize(self) -> dict[str, Any]:
+        """Serializes the Response to a dictionary"""
+        model_dict = self._model.model_dump()
+        model_dict["question_name"] = self.question_name
+        model_dict["value"] = self.value
+        return model_dict
 
     #####################
     # Private Interface #

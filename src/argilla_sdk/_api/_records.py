@@ -108,7 +108,6 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             json=record_response.model_dump(),
         )
         _http.raise_for_status(response=response)
-        self.log(message=f"Created response for record {record_id}")
 
     def create_record_responses(self, record: RecordModel) -> None:
         if not record.responses:

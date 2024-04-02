@@ -106,14 +106,18 @@ class Record(Resource):
     def suggestions(self) -> "RecordSuggestions":
         return self.__suggestions
 
+    @property
+    def metadata(self) -> Dict[str, Any]:
+        return self._model.metadata or {}
+
     ############################
     # Public methods
     ############################
 
     def serialize(self) -> Dict[str, Any]:
         serialized_model = self._model.model_dump()
-        serialized_suggestions = [suggestion.model_dump() for suggestion in self.__suggestions.models]
-        serialized_responses = [response.model_dump() for response in self.__responses.models]
+        serialized_suggestions = [suggestion.serialize() for suggestion in self.__suggestions]
+        serialized_responses = [response.serialize() for response in self.__responses]
         serialized_model["responses"] = serialized_responses
         serialized_model["suggestions"] = serialized_suggestions
         return serialized_model
@@ -221,6 +225,9 @@ class RecordFields:
     def __repr__(self):
         return f"<RecordFields {self.__fields}>"
 
+    def serialize(self) -> Dict[str, Any]:
+        return self.__fields
+
 
 class RecordResponses:
     """This is a container class for the responses of a Record.
@@ -265,6 +272,7 @@ class RecordSuggestions:
             if suggestion.question_name is None and dataset is None:
                 continue
             question_name = dataset.settings.question_by_id(suggestion.question_id).name
+            suggestion.question_name = question_name
             setattr(self, question_name, suggestion.value)
 
     @property

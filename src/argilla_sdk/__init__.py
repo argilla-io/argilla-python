@@ -19,3 +19,4 @@ from argilla_sdk.users._resource import *  # noqa
 from argilla_sdk.settings import *  # noqa
 from argilla_sdk.suggestion import *  # noqa
 from argilla_sdk.response import *  # noqa
+from argilla_sdk.records import *  # noqa

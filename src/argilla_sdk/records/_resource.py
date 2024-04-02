@@ -118,15 +118,15 @@ class Record(Resource):
         return serialized_model
 
     @classmethod
-    def from_dict(cls, dataset: "Dataset", record_as_dict: Dict) -> "Record":
+    def from_dict(cls, dataset: "Dataset", data: Dict) -> "Record":
         """Converts a record dictionary to a Record object.
         Args:
             dataset: The dataset object to which the record belongs.
-            record_as_dict: A dictionary representing the record.
+            data: A dictionary representing the record.
         Returns:
             A Record object.
         """
-        model = cls.__flat_dict_to_record_model(data=record_as_dict, schema=dataset.schema)
+        model = cls._dict_to_record_model(data=data, schema=dataset.schema)
         return cls.from_model(model=model)
 
     @classmethod
@@ -228,7 +228,7 @@ class RecordResponses:
     def __iter__(self):
         return iter(self.__responses)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         return self.__responses[index]
 
 
@@ -252,5 +252,5 @@ class RecordSuggestions:
     def __iter__(self):
         return iter(self.__suggestions)
 
-    def __getitem__(self, index):
+    def __getitem__(self, index: int):
         return self.__suggestions[index]

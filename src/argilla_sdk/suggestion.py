@@ -27,7 +27,7 @@ class Suggestion(Resource):
     def __init__(
         self,
         value: Any,
-        question_name: Optional[str] = None,
+        question_name: str,
         type: Optional[Literal["model", "human"]] = None,
         score: Optional[float] = None,
         agent: Optional[str] = None,

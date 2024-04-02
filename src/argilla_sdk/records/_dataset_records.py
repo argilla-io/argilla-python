@@ -119,6 +119,10 @@ class DatasetRecords(Resource):
         # and return the response from the API.
         records_models = self.__ingest_records(records=records)
         self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=records_models)
+        self.log(
+            message=f"Added {len(records_models)} records to dataset {self.__dataset.name}",
+            level="info",
+        )
 
     def update(self, records) -> None:
         """Update records in a dataset on the server using the provided records
@@ -145,7 +149,11 @@ class DatasetRecords(Resource):
             self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=records_to_add)
         records = self.__list_records_from_server()
         self.__records = [Record.from_model(model=record, dataset=self.__dataset) for record in records]
-
+        self.log(
+            message=f"Updated {len(records_to_update)} records and added {len(records_to_add)} records to dataset {self.__dataset.name}",
+            level="info",
+        )
+        
     ############################
     # Utility methods
     ############################

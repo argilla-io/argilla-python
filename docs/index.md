@@ -1,7 +1,104 @@
 ---
-description: Argilla-python is the reference argilla python server SDK.
+description: Argilla is a **collaboration platform for AI engineers and domain experts** that require **high-quality outputs, full data ownership, and overall efficiency**.
 ---
 
-# argilla-sdk
+# Introduction
 
-Placeholder text
+Argilla is a **collaboration platform for AI engineers and domain experts** that require **high-quality outputs, full data ownership, and overall efficiency**.
+
+<div class="grid cards" markdown>
+
+-   :material-clock-fast:{ .lg .middle } __Get started in 5 minutes__
+
+    ---
+
+    Install [`argilla`](#) with [`pip`](#) and deploy a [`Docker`](#) for free on Hugging Face to get up and running in minutes.
+
+    [:octicons-arrow-right-24: Getting started](/argilla-python/overview/quickstart/)
+
+-   :material-clipboard-flow-outline:{ .lg .middle } __Installation__
+
+    ---
+
+    Learn how to [`pip`](#) install Argilla and configure the server and UI using [`Docker`](#), [`k8s`](#) and cloud proivders.
+
+    [:octicons-arrow-right-24: Installation](/argilla-python/overview/installation/)
+
+-   :material-clipboard-flow-outline:{ .lg .middle } __How to guides__
+
+    ---
+
+    Get familiar with common workflows for Argilla. From managing [`Users`](#), [`Workspaces`](#). [`Datasets`](#) and [`Records`](#) to fine-tuning a model.
+
+    [:octicons-arrow-right-24: How to guide](/argilla-python/how_to_guides/)
+
+-   :material-format-font:{ .lg .middle } __Tutorials__
+
+    ---
+
+    Discover cool applied examples of Argilla working on techniques like RAG with [`haystack`](#), fine-tuning [`transformers`](#),  few-shot textcat with [`setfit`](#) and more.
+
+    [:octicons-arrow-right-24: Tutorials](/argilla-python/tutorials/)
+
+-   :material-format-font:{ .lg .middle } __UI demo__
+
+    ---
+
+    If you just want to get started, we recommend our [`UI demo`](#) which contains non-technical human readable examples to showcase the diversity of Argilla.
+
+    [:octicons-arrow-right-24: UI demo](https://demo.argilla.io/sign-in?auth=ZGVtbzoxMjM0NTY3OA%3D%3D)
+
+-   :material-format-font:{ .lg .middle } __API Reference__
+
+    ---
+
+    Get familiar with the codebase of our [`Python SDK`](#) and [`FastAPI server`](#).
+
+    [:octicons-arrow-right-24: API Reference](/argilla-python/reference)
+
+</div>
+
+If you just want to get started, we recommend our [UI demo](https://demo.argilla.io/sign-in?auth=ZGVtbzoxMjM0NTY3OA%3D%3D) or our [2-click deployment quick start](https://docs.argilla.io/en/latest/getting_started/cheatsheet.html). Curious, and want to know more? Read our [documentation](https://docs.argilla.io/).
+
+## Why use Argilla?
+
+Whether you are working on monitoring and improving complex **generative tasks** involving LLM pipelines with RAG, or you are working on a **predictive task** for things like AB-testing of span- and text-classification models. Our versatile platform helps you ensure **your data work pays off**.
+
+### Improve your AI output quality through data quality
+
+Compute is expensive and output quality is important. We help you focus on data, which tackles the root cause of both of these problems at once. Argilla helps you to **achieve and keep high-quality standards** for your data. This means you can improve the quality of your AI output.
+
+### Take control of your data and models
+
+Most AI platforms are black boxes. Argilla is different. We believe that you should be the owner of both your data and your models. That's why we provide you with all the tools your team needs to **manage your data and models in a way that suits you best**.
+
+### Improve efficiency by quickly iterating on the right data and models
+
+Gathering data is a time-consuming process. Argilla helps by providing a platform that allows you to **interact with your data in a more engaging way**. This means you can quickly and easily label your data with filters, AI feedback suggestions and semantic search. So you can focus on training your models and monitoring their performance.
+
+## Community
+
+We are an open-source community-driven project and we love to hear from you. Here are some ways to get involved:
+
+- [Community Meetup](https://lu.ma/embed-checkout/evt-IQtRiSuXZCIW6FB): listen in or present during one of our bi-weekly events.
+
+- [Slack](https://join.slack.com/t/rubrixworkspace/shared_invite/zt-whigkyjn-a3IUJLD7gDbTZ0rKlvcJ5g): get direct support from the community.
+
+- [Roadmap](https://github.com/orgs/argilla-io/projects/10/views/1): plans change but we love to discuss those with our community so feel encouraged to participate.
+
+## What do people build with Argilla?
+
+### Open-source datasets and models
+
+Argilla is a tool that can be used to achieve and keep **high-quality data standards** with a **focus on NLP and LLMs**. Our community uses Argilla to create amazing open-source [datasets](https://huggingface.co/datasets?other=argilla) and [models](https://huggingface.co/models?other=distilabel), and **we love contributions to open-source** ourselves too.
+
+- Our [cleaned UltraFeedback dataset](https://huggingface.co/datasets/argilla/ultrafeedback-binarized-preferences-cleaned) and the [Notus](https://huggingface.co/argilla/notus-7b-v1) and [Notux](https://huggingface.co/argilla/notux-8x7b-v1) models, where we improved benchmark and empirical human judgment for the Mistral and Mixtral models with cleaner data using **human feedback**.
+- Our [distilabeled Intel Orca DPO dataset](https://huggingface.co/datasets/argilla/distilabel-intel-orca-dpo-pairs) and the [improved OpenHermes model](https://huggingface.co/argilla/distilabeled-OpenHermes-2.5-Mistral-7B), show how we improve model performance by filtering out 50% of the original dataset through **human and AI feedback**.
+
+### Internal Use cases
+
+AI teams from companies like [the Red Cross](https://510.global/), [Loris.ai](https://loris.ai/) and [Prolific](https://www.prolific.com/) use Argilla to **improve the quality and efficiency of AI** projects. They shared their experiences in our [AI community meetup](https://lu.ma/embed-checkout/evt-IQtRiSuXZCIW6FB).
+
+- AI for good: [the Red Cross presentation](https://youtu.be/ZsCqrAhzkFU?feature=shared) showcases **how their experts and AI team collaborate** by classifying and redirecting requests from refugees of the Ukrainian crisis to streamline the support processes of the Red Cross.
+- Customer support: during [the Loris meetup](https://youtu.be/jWrtgf2w4VU?feature=shared) they showed how their AI team uses unsupervised and few-shot contrastive learning to help them **quickly validate and gain labelled samples for a huge amount of multi-label classifiers**.
+- Research studies: [the showcase from Prolific](https://youtu.be/ePDlhIxnuAs?feature=shared) announced their integration with our platform. They use it to actively **distribute data collection projects** among their annotating workforce. This allows them to quickly and **efficiently collect high-quality data** for their research studies.

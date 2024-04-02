@@ -22,6 +22,8 @@ __all__ = ["Suggestion"]
 
 
 class Suggestion(Resource):
+    """Class for interacting with Argilla Suggestions of records"""
+
     _model: SuggestionModel
 
     def __init__(
@@ -34,6 +36,18 @@ class Suggestion(Resource):
         id: Optional[UUID] = None,
         question_id: Optional[UUID] = None,
     ) -> None:
+        """Initializes a Suggestion with a value, question_name, type, score, agent, id, and question_id.
+        A suggestion is a proposed value for a question in a record. Typically a suggestion is created by a model
+        and is used to propose a value for a question in a record. The suggestion can be accepted or rejected by a user.
+        Args:
+            value (Any): The value of the suggestion.
+            question_name (str): The name of the question that the suggestion is proposing a value for.
+            type (Optional[Literal["model", "human"]], optional): The type of the suggestion. Defaults to None.
+            score (Optional[float], optional): The score of the suggestion. Defaults to None.
+            agent (Optional[str], optional): The agent that created the suggestion. Defaults to None.
+            id (Optional[UUID], optional): The id of the suggestion. Defaults to None.
+            question_id (Optional[UUID], optional): The id of the question that the suggestion is proposing a value for. Defaults to None.
+        """
         self._model = SuggestionModel(
             value=value,
             question_name=question_name,
@@ -47,6 +61,10 @@ class Suggestion(Resource):
     def __repr__(self) -> str:
         return repr(f"{self.__class__.__name__}({self._model})")
 
+    ####################
+    # Public Interface #
+    ####################
+
     @property
     def value(self) -> Any:
         return self._model.value
@@ -54,6 +72,10 @@ class Suggestion(Resource):
     @property
     def question_name(self) -> Optional[str]:
         return self._model.question_name
+
+    @question_name.setter
+    def question_name(self, value: str) -> None:
+        self._model.question_name = value
 
     @property
     def type(self) -> Optional[Literal["model", "human"]]:
@@ -74,3 +96,7 @@ class Suggestion(Resource):
     @classmethod
     def from_model(cls, model: SuggestionModel) -> "Suggestion":
         return cls(**model.model_dump())
+
+    def serialize(self) -> dict[str, Any]:
+        model_dict = self._model.model_dump()
+        return model_dict

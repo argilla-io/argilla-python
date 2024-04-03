@@ -18,7 +18,7 @@ from uuid import UUID
 import httpx
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
-from argilla_sdk._models import RecordModel
+from argilla_sdk._models import RecordModel, ResponseModel
 
 __all__ = ["RecordsAPI"]
 
@@ -54,10 +54,11 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     # Utility methods #
     ####################
 
-    def create_many(self, dataset_id: UUID, records: List[Dict]) -> None:
+    def create_many(self, dataset_id: UUID, records: List[RecordModel]) -> None:
+        record_dicts = [record.model_dump() for record in records]
         response = self.http_client.post(
             url=f"/api/v1/datasets/{dataset_id}/records",
-            json={"items": records},
+            json={"items": record_dicts},
         )
         _http.raise_for_status(response=response)
         self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
@@ -87,6 +88,34 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         _http.raise_for_status(response=response)
         json_records = response.json()["items"]
         return [RecordModel(**record) for record in json_records]
+
+    def update_many(self, dataset_id: UUID, records: List[RecordModel]) -> None:
+        record_dicts = [record.model_dump() for record in records]
+        response = self.http_client.patch(
+            url=f"/api/v1/datasets/{dataset_id}/records",
+            json={"items": record_dicts},
+        )
+        _http.raise_for_status(response=response)
+        self.log(message=f"Updated {len(records)} records in dataset {dataset_id}")
+
+    ####################
+    # Response methods #
+    ####################
+
+    def create_record_response(self, record_id: UUID, record_response: ResponseModel) -> None:
+        response = self.http_client.post(
+            url=f"/api/v1/records/{record_id}/responses",
+            json=record_response.model_dump(),
+        )
+        _http.raise_for_status(response=response)
+
+    def create_record_responses(self, record: RecordModel) -> None:
+        if not record.responses:
+            return
+        if not record.id:
+            raise ValueError("Record must have an ID to create responses")
+        for record_response in record.responses:
+            self.create_record_response(record_id=record.id, record_response=record_response)
 
     ####################
     # Private methods #

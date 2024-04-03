@@ -1,172 +1,261 @@
-import warnings
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence
-from uuid import UUID
+# Copyright 2024-present, Argilla, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-from argilla_sdk._models import RecordModel, SuggestionModel
-from argilla_sdk.client import Argilla
+import warnings
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Tuple
+from uuid import uuid4
+
+from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel
+from argilla_sdk._resource import Resource
+from argilla_sdk.responses import Response
 from argilla_sdk.settings import FieldType, QuestionType
+from argilla_sdk.suggestions import Suggestion
+
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
 
 
-class Record:
-    """
-    This record would be used for fetching records in a custom schema.
-    Let's see this when tackle the fetch records endpoint
-    """
+class Record(Resource):
+    """This is the class for interacting with Argilla Records."""
 
-    # TODO: Once the RecordsAPI is implemented, this class could be adapted to extend a Resource class and
-    #  provide mechanisms to update and delete single records.
+    _model: RecordModel
 
-    id: Optional[UUID]
-    external_id: Optional[str]
+    # TODO: Once the RecordsAPI is implemented, this class could
+    # be adapted to extend a Resource class and
+    # provide mechanisms to update and delete single records.
+    # This record would be used for fetching records in a custom schema.
+    # Let's see this when we tackle the fetch records endpoint
 
-    def __init__(self, **kwargs):
-        self.id = None
-        self.external_id = None
-        self.__dict__.update(kwargs)
+    def __init__(
+        self,
+        fields: Dict[str, Union[str, None]] = None,
+        metadata: Optional[Dict[str, Any]] = None,
+        vectors: Optional[Dict[str, List[float]]] = None,
+        responses: Optional[List[Response]] = None,
+        suggestions: Optional[Union[Tuple[Suggestion], List[Suggestion]]] = None,
+        external_id: Optional[str] = None,
+        id: Optional[str] = None,
+        dataset: Optional["Dataset"] = None,
+    ):
+        """Initializes a Record with fields, metadata, vectors, responses, suggestions, external_id, and id.
+        Records are typically defined as flat dictionary objects with fields, metadata, vectors, responses, and suggestions
+        and passed to Dataset.DatasetRecords.add() as a list of dictionaries.
+
+        Args:
+            fields: A dictionary of fields for the record.
+            metadata: A dictionary of metadata for the record.
+            vectors: A dictionary of vectors for the record.
+            responses: A list of Response objects for the record.
+            suggestions: A list of Suggestion objects for the record.
+            external_id: An external id for the record.
+            id: An id for the record.
+            dataset: The dataset object to which the record belongs.
+        """
+        self.dataset = dataset
+        self._model = RecordModel(
+            fields=fields,
+            metadata=metadata,
+            vectors=vectors,
+            external_id=external_id or uuid4(),
+            id=id or uuid4(),
+        )
+        self.__responses = RecordResponses(responses=responses, record=self)
+        self.__suggestions = RecordSuggestions(suggestions=suggestions, record=self)
+        self._model.responses = self.__responses.models
+        self._model.suggestions = self.__suggestions.models
+        # TODO: This should be done in the RecordModel class as above
+        self.__fields = RecordFields(fields=self._model.fields)
 
     def __repr__(self):
         record_body = ",".join([f"{k}={v}" for k, v in self.__dict__.items()])
         return f"<Record {record_body}>"
 
+    ############################
+    # Properties
+    ############################
 
-class DatasetRecordsIterator:
-    """This class is used to iterate over records in a dataset"""
+    @property
+    def external_id(self) -> str:
+        return self._model.external_id
 
-    def __init__(
-        self,
-        dataset: "Dataset",
-        client: "Argilla",
-        start_offset: int = 0,
-        batch_size: Optional[int] = None,
-        with_suggestions: bool = False,
-    ):
-        self.__dataset = dataset
-        self.__client = client
-        self.__records_batch = []
-        self.__offset = start_offset or 0
-        self.__batch_size = batch_size or 100
-        self.__with_suggestions = with_suggestions
+    @external_id.setter
+    def external_id(self, value: str) -> None:
+        self._model.external_id = str(value)
 
-    def __iter__(self):
-        return self
+    @property
+    def fields(self) -> "RecordFields":
+        return self.__fields
 
-    def __next__(self) -> Record:
-        if not self._has_local_records():
-            self._fetch_next_batch()
-            if not self._has_local_records():
-                raise StopIteration()
-        return self._next_record()
+    @property
+    def responses(self) -> "RecordResponses":
+        return self.__responses
 
-    def _next_record(self) -> Record:
-        return self.__records_batch.pop(0)
+    @property
+    def suggestions(self) -> "RecordSuggestions":
+        return self.__suggestions
 
-    def _has_local_records(self) -> bool:
-        return len(self.__records_batch) > 0
+    ############################
+    # Public methods
+    ############################
 
-    def _fetch_next_batch(self) -> None:
-        self.__records_batch = list(self._list())
-        self.__offset += len(self.__records_batch)
+    def serialize(self) -> Dict[str, Any]:
+        serialized_model = self._model.model_dump()
+        serialized_suggestions = [suggestion.model_dump() for suggestion in self.__suggestions.models]
+        serialized_responses = [response.model_dump() for response in self.__responses.models]
+        serialized_model["responses"] = serialized_responses
+        serialized_model["suggestions"] = serialized_suggestions
+        return serialized_model
 
-    def _list(self) -> Sequence[Record]:
-        records = self.__client.api.records.list(
-            self.__dataset.id,
-            limit=self.__batch_size,
-            offset=self.__offset,
-            with_responses=False,
-            with_suggestions=self.__with_suggestions,
-        )
-        for record in records:
-            yield _record_model_to_record(self.__dataset, record)
+    @classmethod
+    def from_dict(cls, dataset: "Dataset", data: Dict) -> "Record":
+        """Converts a record dictionary to a Record object.
+        Args:
+            dataset: The dataset object to which the record belongs.
+            data: A dictionary representing the record.
+        Returns:
+            A Record object.
+        """
+        model = cls._dict_to_record_model(data=data, schema=dataset.schema)
+        return cls.from_model(model=model)
 
-
-class DatasetRecords:
-    """
-    This class is used to work with records from a dataset.
-
-    The responsibility of this class is to provide an interface to interact with records in a dataset,
-    by adding, updating, fetching, querying, and deleting records.
-
-    """
-
-    def __init__(self, client: "Argilla", dataset: "Dataset"):
-        self.__client = client
-        self.__dataset = dataset
-
-    def __iter__(self):
-        return DatasetRecordsIterator(self.__dataset, self.__client)
-
-    def __call__(self, batch_size: Optional[int] = 100, start_offset: int = 0, with_suggestions: bool = False):
-        return DatasetRecordsIterator(
-            self.__dataset,
-            self.__client,
-            batch_size=batch_size,
-            start_offset=start_offset,
-            with_suggestions=with_suggestions,
+    @classmethod
+    def from_model(cls, model: RecordModel, dataset: Optional["Dataset"] = None) -> "Record":
+        """Converts a RecordModel object to a Record object.
+        Args:
+            model: A RecordModel object.
+            dataset: The dataset object to which the record belongs.
+        Returns:
+            A Record object.
+        """
+        return cls(
+            id=model.id,
+            external_id=model.external_id,
+            fields=model.fields,
+            metadata=model.metadata,
+            vectors=model.vectors,
+            responses=[Response.from_model(model=response) for response in model.responses],
+            suggestions=[Suggestion.from_model(model=suggestion) for suggestion in model.suggestions],
+            dataset=dataset,
         )
 
-    def add(self, records: Union[dict, List[dict]]) -> None:
+    ############################
+    # Utility methods
+    ############################
+
+    @staticmethod
+    def _dict_to_record_model(data: dict, schema: Dict[str, Any]) -> RecordModel:
+        """Converts a flat Record-like dictionary object to a RecordModel.
+        Args:
+            data: A dictionary representing the record with flat attributes.
+            schema: The schema of the dataset to which the record belongs.
+        Returns:
+            A RecordModel object.
         """
-        Add records to a dataset
-        """
 
-        # TODO: Once we have implemented the new records bulk endpoint, this method should use it
-        #   and return the response from the API.
+        fields = {}
+        suggestions = []
 
-        single_record = isinstance(records, dict)
-        if single_record:
-            records = [records]
+        for attribute, value in data.items():
+            if attribute not in schema:
+                warnings.warn(f"Record attribute {attribute} is not in the schema. Skipping.")
+                continue
 
-        record_schema = self.__dataset.schema
-        serialized_records = [_dict_to_record_model(r, record_schema).model_dump() for r in records]
+            schema_item = schema.get(attribute)
+            if isinstance(schema_item, FieldType):
+                fields[attribute] = value
+            elif isinstance(schema_item, QuestionType):
+                suggestion = SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute)
+                suggestions.append(suggestion.model_dump())
+            else:
+                warnings.warn(f"Property {attribute} is not a valid schema item. Skipping.")
 
-        self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=serialized_records)
+        return RecordModel(
+            id=data.get("id") or str(uuid4()),
+            fields=fields,
+            suggestions=suggestions,
+            external_id=data.get("external_id"),
+        )
 
 
-def _record_model_to_record(dataset: "Dataset", model: RecordModel) -> Record:
+class RecordFields:
+    """This is a container class for the fields of a Record.
+    It allows for accessing fields by attribute and iterating over them.
     """
-    Converts a record dictionary to a Record object.
 
-    Dataset is used to map the question ids to question names. In the future, this could be done in the record resource
-    by passing the linked dataset to the record object, or fetching question names from the API.
+    def __init__(self, fields: Dict[str, Union[str, None]]) -> None:
+        self.__fields = fields or {}
+        for key, value in self.__fields.items():
+            setattr(self, key, value)
+
+    def __getitem__(self, key: str) -> Optional[str]:
+        return self.__fields.get(key)
+
+    def __iter__(self):
+        return iter(self.__fields)
+
+    def __repr__(self):
+        return f"<RecordFields {self.__fields}>"
+
+
+class RecordResponses:
+    """This is a container class for the responses of a Record.
+    It allows for accessing responses by attribute and iterating over them.
     """
-    kwargs = {
-        **model.fields,
-        **model.metadata,
-        **{
-            dataset.settings.question_by_id(suggestion.question_id).name: suggestion.value
-            for suggestion in model.suggestions
-        },
-    }
 
-    return Record(id=model.id, external_id=model.external_id, **kwargs)
+    def __init__(self, responses: List[Response], record: Record) -> None:
+        self.__responses = responses or []
+        self.record = record
+        dataset = record.dataset
+        for response in self.__responses:
+            if dataset is None:
+                continue
+            question_name = dataset.settings.question_by_id(response.question_id).name
+            setattr(self, question_name, response.value)
+
+    @property
+    def models(self) -> List[ResponseModel]:
+        return [response._model for response in self.__responses]
+
+    def __iter__(self):
+        return iter(self.__responses)
+
+    def __getitem__(self, index: int):
+        return self.__responses[index]
 
 
-def _dict_to_record_model(data: dict, schema: Dict[str, Any]) -> RecordModel:
-    """Converts a Record object to a record dictionary."""
+class RecordSuggestions:
+    """This is a container class for the suggestions of a Record.
+    It allows for accessing suggestions by attribute and iterating over them.
+    """
 
-    fields = {}
-    suggestions = []
+    def __init__(self, suggestions: List[Suggestion], record: Record) -> None:
+        self.__suggestions = suggestions or []
+        self.record = record
+        dataset = record.dataset
+        for suggestion in self.__suggestions:
+            if suggestion.question_name is None and dataset is None:
+                continue
+            question_name = dataset.settings.question_by_id(suggestion.question_id).name
+            setattr(self, question_name, suggestion.value)
 
-    for attribute, value in data.items():
-        if attribute not in schema:
-            warnings.warn(f"Record attribute {attribute} is not in the schema. Skipping.")
-            continue
+    @property
+    def models(self) -> List[SuggestionModel]:
+        return [suggestion._model for suggestion in self.__suggestions]
 
-        schema_item = schema.get(attribute)
-        if isinstance(schema_item, FieldType):
-            fields[attribute] = value
-        elif isinstance(schema_item, QuestionType):
-            suggestion = SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute)
-            suggestions.append(suggestion.model_dump())
-        else:
-            warnings.warn(f"Property {attribute} is not a valid schema item. Skipping.")
+    def __iter__(self):
+        return iter(self.__suggestions)
 
-    return RecordModel(
-        id=data.get("id"),
-        fields=fields,
-        suggestions=suggestions,
-        external_id=data.get("external_id"),
-    )
+    def __getitem__(self, index: int):
+        return self.__suggestions[index]

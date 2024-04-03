@@ -79,9 +79,9 @@ def test_add_records(client):
     assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
     assert dataset_records[1].external_id == str(mock_data[1]["external_id"])
     assert dataset_records[2].external_id == str(mock_data[2]["external_id"])
-    assert dataset_records[0].text == mock_data[0]["text"]
-    assert dataset_records[1].text == mock_data[1]["text"]
-    assert dataset_records[2].text == mock_data[2]["text"]
+    assert dataset_records[0].fields.text == mock_data[0]["text"]
+    assert dataset_records[1].fields.text == mock_data[1]["text"]
+    assert dataset_records[2].fields.text == mock_data[2]["text"]
 
 
 def test_add_dict_records(client: Argilla):
@@ -122,12 +122,12 @@ def test_add_dict_records(client: Argilla):
     for record, data in zip(ds.records, mock_data):
         assert record.id
         assert record.external_id == data["external_id"]
-        assert record.text == data["text"]
+        assert record.fields.text == data["text"]
         assert "label" not in record.__dict__
 
     for record, data in zip(ds.records(batch_size=1, with_suggestions=True), mock_data):
         assert record.external_id == data["external_id"]
-        assert record.label == data["label"]
+        assert record.suggestions.label == data["label"]
 
 
 def test_add_single_record(client: Argilla):
@@ -161,7 +161,7 @@ def test_add_single_record(client: Argilla):
     record = records[0]
     assert record.id
     assert record.external_id == data["external_id"]
-    assert record.text == data["text"]
+    assert record.fields.text == data["text"]
 
 
 def test_add_records_with_suggestions(client) -> None:
@@ -208,8 +208,8 @@ def test_add_records_with_suggestions(client) -> None:
     dataset_records = list(dataset.records(with_suggestions=True))
 
     assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
-    assert dataset_records[1].text == mock_data[1]["text"]
-    assert dataset_records[2].comment == "I'm doing great, thank you!"
+    assert dataset_records[1].fields.text == mock_data[1]["text"]
+    assert dataset_records[2].suggestions.comment == "I'm doing great, thank you!"
 
 
 @pytest.mark.skip("Responses are not supported yet")

@@ -18,9 +18,9 @@ from uuid import uuid4
 
 from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel
 from argilla_sdk._resource import Resource
-from argilla_sdk.response import Response
+from argilla_sdk.responses import Response
 from argilla_sdk.settings import FieldType, QuestionType
-from argilla_sdk.suggestion import Suggestion
+from argilla_sdk.suggestions import Suggestion
 
 
 if TYPE_CHECKING:

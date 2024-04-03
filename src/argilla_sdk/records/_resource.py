@@ -63,6 +63,7 @@ class Record(Resource):
             id: An id for the record.
             dataset: The dataset object to which the record belongs.
         """
+        self.dataset = dataset
         self._model = RecordModel(
             fields=fields,
             metadata=metadata,
@@ -70,8 +71,8 @@ class Record(Resource):
             external_id=external_id or uuid4(),
             id=id or uuid4(),
         )
-        self.__responses = RecordResponses(responses=responses, dataset=dataset)
-        self.__suggestions = RecordSuggestions(suggestions=suggestions, dataset=dataset)
+        self.__responses = RecordResponses(responses=responses, record=self)
+        self.__suggestions = RecordSuggestions(suggestions=suggestions, record=self)
         self._model.responses = self.__responses.models
         self._model.suggestions = self.__suggestions.models
         # TODO: This should be done in the RecordModel class as above
@@ -213,8 +214,10 @@ class RecordResponses:
     It allows for accessing responses by attribute and iterating over them.
     """
 
-    def __init__(self, responses: List[Response], dataset: Optional["Dataset"] = None) -> None:
+    def __init__(self, responses: List[Response], record: Record) -> None:
         self.__responses = responses or []
+        self.record = record
+        dataset = record.dataset
         for response in self.__responses:
             if dataset is None:
                 continue
@@ -237,8 +240,10 @@ class RecordSuggestions:
     It allows for accessing suggestions by attribute and iterating over them.
     """
 
-    def __init__(self, suggestions: List[Suggestion], dataset: Optional["Dataset"] = None) -> None:
+    def __init__(self, suggestions: List[Suggestion], record: Record) -> None:
         self.__suggestions = suggestions or []
+        self.record = record
+        dataset = record.dataset
         for suggestion in self.__suggestions:
             if suggestion.question_name is None and dataset is None:
                 continue

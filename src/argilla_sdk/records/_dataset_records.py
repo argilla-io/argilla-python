@@ -118,7 +118,7 @@ class DatasetRecords(Resource):
     ############################
 
     def add(
-        self, records: Union[dict, List[dict]], as_suggestions: bool = True, user_id: Optional[UUID] = None
+        self, records: Union[dict, List[dict]], mapping: Optional[Dict[str, str]] = None, user_id: Optional[UUID] = None
     ) -> None:
         """
         Add new records to a dataset on the server.
@@ -129,7 +129,7 @@ class DatasetRecords(Resource):
         """
         # TODO: Once we have implemented the new records bulk endpoint, this method should use it
         # and return the response from the API.
-        records_models = self.__ingest_records(records=records, as_suggestions=as_suggestions, user_id=user_id)
+        records_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id)
         self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=records_models)
         self.log(
             message=f"Added {len(records_models)} records to dataset {self.__dataset.name}",
@@ -137,7 +137,7 @@ class DatasetRecords(Resource):
         )
 
     def update(
-        self, records: Union[dict, List[dict]], as_suggestions: bool = True, user_id: Optional[UUID] = None
+        self, records: Union[dict, List[dict]], mapping: Optional[Dict[str, str]] = None, user_id: Optional[UUID] = None
     ) -> None:
         """Update records in a dataset on the server using the provided records
             and matching based on the external_id or id.
@@ -148,7 +148,7 @@ class DatasetRecords(Resource):
                      with keys corresponding to the fields in the dataset schema. Ids or
                      external_ids should be provided to identify the records to be updated.
         """
-        record_models = self.__ingest_records(records=records, as_suggestions=as_suggestions, user_id=user_id)
+        record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id)
         records_to_update, records_to_add = self.__align_split_records(record_models)
         if len(records_to_update) > 0:
             self.__client.api.records.update_many(dataset_id=self.__dataset.id, records=records_to_update)
@@ -167,7 +167,7 @@ class DatasetRecords(Resource):
             message=f"Updated {len(records_to_update)} records and added {len(records_to_add)} records to dataset {self.__dataset.name}",
             level="info",
         )
-        
+
     ############################
     # Utility methods
     ############################
@@ -184,7 +184,7 @@ class DatasetRecords(Resource):
     def __ingest_records(
         self,
         records: Union[List[Dict[str, Any]], Dict[str, Any], List[Record], Record],
-        as_suggestions: bool = True,
+        mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
     ) -> List[RecordModel]:
         """Ingest records as dictionaries and return a list of RecordModel instances."""
@@ -193,9 +193,7 @@ class DatasetRecords(Resource):
         if all(map(lambda r: isinstance(r, dict), records)):
             # Records as flat dicts of values to be matched to questions as suggestion or response
             record_models = [
-                Record._dict_to_record_model(
-                    data=r, schema=self.__dataset.schema, as_suggestions=as_suggestions, user_id=user_id
-                )
+                Record._dict_to_record_model(data=r, schema=self.__dataset.schema, mapping=mapping, user_id=user_id)
                 for r in records
             ]  # type: ignore
         elif all(map(lambda r: isinstance(r, Record), records)):

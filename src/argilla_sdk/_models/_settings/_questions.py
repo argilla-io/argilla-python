@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import List, Optional
+from typing import Dict, List, Optional
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, validator, field_serializer
@@ -7,7 +7,7 @@ from pydantic import BaseModel, validator, field_serializer
 
 class QuestionSettings(BaseModel):
     type: str
-    
+
 
 class TextQuestionSettings(QuestionSettings):
     use_markdown: bool = False
@@ -15,15 +15,16 @@ class TextQuestionSettings(QuestionSettings):
 
 class LabelQuestionSettings(QuestionSettings):
     type: str = "label_selection"
-    options: List[str] = []
+    options: List[Dict[str, Optional[str]]] = []
 
     @validator("options", pre=True, always=True)
     def __labels_are_unique(cls, labels, values):
         """Ensure that labels are unique"""
-        unique_labels = list(set(labels))
+
+        unique_labels = list(set([label["value"] for label in labels]))
         if len(unique_labels) != len(labels):
             raise ValueError("All labels must be unique")
-        return unique_labels
+        return labels
 
 
 class QuestionBaseModel(BaseModel):
@@ -66,7 +67,6 @@ class QuestionBaseModel(BaseModel):
 
 
 class LabelQuestionModel(QuestionBaseModel):
-    labels: List[str]
     settings: LabelQuestionSettings = LabelQuestionSettings(type="label_selection")
 
 

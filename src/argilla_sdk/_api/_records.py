@@ -25,6 +25,7 @@ __all__ = ["RecordsAPI"]
 
 class RecordsAPI(ResourceAPI[RecordModel]):
     """Manage datasets via the API"""
+    MAX_RECORDS_PER_REQUEST = 1000
 
     http_client: httpx.Client
 
@@ -97,6 +98,20 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         )
         _http.raise_for_status(response=response)
         self.log(message=f"Updated {len(records)} records in dataset {dataset_id}")
+
+    def upsert_many(self, dataset_id: UUID, records: List[RecordModel]) -> List[RecordModel]:
+        if len(records) > self.MAX_RECORDS_PER_REQUEST:
+            raise ValueError(f"Cannot upsert more than {self.MAX_RECORDS_PER_REQUEST} records at once")
+
+        record_dicts = [record.model_dump() for record in records]
+        response = self.http_client.post(
+            url=f"/api/v1/datasets/{dataset_id}/records/bulk",
+            json={"items": record_dicts},
+        )
+        _http.raise_for_status(response=response)
+        response_items = response.json()["items"]
+        return [RecordModel.parse_obj(item) for item in response_items]
+
 
     ####################
     # Response methods #

@@ -137,7 +137,10 @@ class DatasetRecords(Resource):
         )
 
     def update(
-        self, records: Union[dict, List[dict]], mapping: Optional[Dict[str, str]] = None, user_id: Optional[UUID] = None
+        self,
+        records: Union[dict, List[dict]],
+        mapping: Optional[Dict[str, str]] = None,
+        user_id: Optional[UUID] = None,
     ) -> None:
         """Update records in a dataset on the server using the provided records
             and matching based on the external_id or id.
@@ -167,6 +170,32 @@ class DatasetRecords(Resource):
             message=f"Updated {len(records_to_update)} records and added {len(records_to_add)} records to dataset {self.__dataset.name}",
             level="info",
         )
+
+    def upsert(
+        self,
+        records: Union[dict, List[dict]],
+        mapping: Optional[Dict[str, str]] = None,
+        user_id: Optional[UUID] = None,
+        batch_size: int = 256,
+    ) -> List[Record]:  # Create or update records
+        """Create or update records in a dataset"""
+        record_models = self.__ingest_records(records, mapping=mapping, user_id=user_id)
+
+        norm_batch_size = min(batch_size, len(record_models), self.__client.api.records.MAX_RECORDS_PER_REQUEST)
+        if batch_size != norm_batch_size:
+            self.log(
+                message=f"The provided batch size {batch_size} was normalized. Using {norm_batch_size}.",
+                level="warning",
+            )
+
+        upsert_records = []
+        for batch in range(0, len(records), batch_size):
+            self.log(message=f"Upsert records from {batch} to {batch + batch_size}.")
+            batch_records = record_models[batch : batch + batch_size]
+            models = self.__client.api.records.upsert_many(dataset_id=self.__dataset.id, records=batch_records)
+            upsert_records.extend([Record.from_model(model=model, dataset=self.__dataset) for model in models])
+
+        return upsert_records
 
     ############################
     # Utility methods

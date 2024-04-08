@@ -17,5 +17,5 @@ from argilla_sdk.datasets import *  # noqa
 from argilla_sdk.workspaces._resource import *  # noqa
 from argilla_sdk.users._resource import *  # noqa
 from argilla_sdk.settings import *  # noqa
-from argilla_sdk.suggestion import *  # noqa
-from argilla_sdk.response import *  # noqa
+from argilla_sdk.suggestions import *  # noqa
+from argilla_sdk.responses import *  # noqa

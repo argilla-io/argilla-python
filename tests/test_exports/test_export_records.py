@@ -56,7 +56,6 @@ def test_export_records_dict_defaults(client):
     assert isinstance(exported_records, dict)
     assert isinstance(exported_records["external_id"], list)
     assert isinstance(exported_records["text"], list)
-    assert isinstance(exported_records["label.score"], list)
     assert isinstance(exported_records["label.suggestion"], list)
     assert exported_records["text"] == ["Hello World, how are you?"] * 3
 

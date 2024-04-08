@@ -85,18 +85,11 @@ class GenericExportMixin:
         """Flatten a record with field, question, metadata, suggestion and response names as keys."""
         record_dict = {}
         record_dict["external_id"] = record.external_id
-        record_dict.update(self.__flatten_record_fields(record))
+        record_dict.update(record.fields.to_dict())
         record_dict.update(self.__flatten_record_metadata(record))
         record_dict.update(self.__flatten_record_suggestions(record))
         record_dict.update(self.__flatten_record_responses(record))
         return record_dict
-
-    def __flatten_record_fields(self, record: "Record") -> Dict[str, Any]:
-        """Flatten the fields of a record."""
-        record_fileds_dict = {}
-        for field in record.fields:
-            record_fileds_dict[field] = dict(record.fields[field])
-        return record_fileds_dict
 
     def __flatten_record_suggestions(self, record: "Record") -> Dict[str, Any]:
         """Flatten the suggestions of a record."""

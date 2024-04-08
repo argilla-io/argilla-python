@@ -19,9 +19,9 @@ from uuid import uuid4, UUID
 
 from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel
 from argilla_sdk._resource import Resource
-from argilla_sdk.response import Response
+from argilla_sdk.responses import Response
 from argilla_sdk.settings import FieldType, QuestionType
-from argilla_sdk.suggestion import Suggestion
+from argilla_sdk.suggestions import Suggestion
 
 
 if TYPE_CHECKING:
@@ -64,6 +64,7 @@ class Record(Resource):
             id: An id for the record.
             dataset: The dataset object to which the record belongs.
         """
+        self.dataset = dataset
         self._model = RecordModel(
             fields=fields,
             metadata=metadata,
@@ -71,8 +72,8 @@ class Record(Resource):
             external_id=external_id or uuid4(),
             id=id or uuid4(),
         )
-        self.__responses = RecordResponses(responses=responses, dataset=dataset)
-        self.__suggestions = RecordSuggestions(suggestions=suggestions, dataset=dataset)
+        self.__responses = RecordResponses(responses=responses, record=self)
+        self.__suggestions = RecordSuggestions(suggestions=suggestions, record=self)
         self._model.responses = self.__responses.models
         self._model.suggestions = self.__suggestions.models
         # TODO: This should be done in the RecordModel class as above
@@ -160,7 +161,7 @@ class Record(Resource):
 
     @staticmethod
     def _dict_to_record_model(
-        data: dict, schema: Dict[str, Any], as_suggestions: bool = True, user_id: Optional[UUID] = None
+        data: dict, schema: Dict[str, Any], mapping: Optional[Dict[str, str]] = None, user_id: Optional[UUID] = None
     ) -> RecordModel:
         """Converts a flat Record-like dictionary object to a RecordModel.
         Args:
@@ -170,40 +171,64 @@ class Record(Resource):
             A RecordModel object.
         """
 
-        def _suggestion_model(value, question_id, question_name):
-            return SuggestionModel(value=value, question_id=question_id, question_name=question_name)
-
-        def _response_model(value, question_id, question_name):
-            return ResponseModel(values={question_name: {"value": value}}, user_id=user_id)
-
-        if as_suggestions:
-            question_type = _suggestion_model
-        elif not as_suggestions and user_id is not None:
-            question_type = _response_model
+        if mapping is not None:
+            schema_switch = Record.__construct_schema_from_mapping(input_mapping=mapping)
         else:
-            raise ValueError("user_id is required for responses")
+            schema_switch = {question_name: (question_name, "suggestion") for question_name in schema.keys()}
 
         fields = {}
-        question_responses: List[Union[SuggestionModel, ResponseModel]] = []
+        suggestions = []
+        responses = []
 
         for attribute, value in data.items():
-            if attribute not in schema:
-                warnings.warn(f"Record attribute {attribute} is not in the schema. Skipping.")
+            if attribute not in schema and attribute not in schema_switch:
+                warnings.warn(f"Record attribute {attribute} is not in the schema or mapping. Skipping.")
                 continue
             schema_item = schema.get(attribute)
             if isinstance(schema_item, FieldType):
                 fields[attribute] = value
-            elif isinstance(schema_item, QuestionType):
-                question_response = question_type(value=value, question_id=schema_item.id, question_name=attribute)
-                question_responses.append(question_response.model_dump())  # type: ignore
+            elif isinstance(schema_item, QuestionType) or attribute in schema_switch:
+                question_name, destination = schema_switch[attribute]
+                schema_item = schema.get(question_name)
+                if destination == "suggestion":
+                    question_id = schema_item.id
+                    suggestions.append(
+                        SuggestionModel(value=value, question_id=question_id, question_name=question_name)
+                    )
+                elif destination == "response":
+                    responses.append(ResponseModel(values={question_name: {"value": value}}, user_id=user_id))
+            else:
+                warnings.warn(f"Record attribute {attribute} is not in the schema or mapping. Skipping.")
 
         return RecordModel(
             id=data.get("id") or str(uuid4()),
             fields=fields,
-            suggestions=question_responses if as_suggestions else [],  # type: ignore
-            responses=question_responses if not as_suggestions else [],  # type: ignore
+            suggestions=suggestions,
+            responses=responses,
             external_id=data.get("external_id"),
         )
+
+    @staticmethod
+    def __construct_schema_from_mapping(input_mapping: Dict[str, str]) -> Dict[str, Tuple[str, str]]:
+        """Constructs a mapping of question names to question ids.
+        Args:
+            mapping: A dictionary of question names to question ids.
+        Returns:
+            A dictionary of question names to question ids.
+        """
+        schema_mapping = {}
+        for input_key, schema_destination in input_mapping.items():
+            schema_destination = schema_destination.split(".")
+            if len(schema_destination) == 1:
+                schema_mapping[input_key] = (schema_destination[0], "suggestion")
+            elif len(schema_destination) == 2:
+                question_name, destination = schema_destination
+                if destination not in ["suggestion", "response"]:
+                    raise ValueError(f"Invalid mapping destination {schema_destination[1]}.")
+                schema_mapping[input_key] = (question_name, destination)
+            else:
+                raise ValueError(f"Invalid mapping destination {schema_destination}.")
+        return schema_mapping
 
 
 class RecordFields:
@@ -225,7 +250,7 @@ class RecordFields:
     def __repr__(self):
         return f"<RecordFields {self.__fields}>"
 
-    def serialize(self) -> Dict[str, Any]:
+    def to_dict(self) -> Dict[str, Union[str, None]]:
         return self.__fields
 
 
@@ -236,10 +261,13 @@ class RecordResponses:
     in a list default dictionary with the question name as the key.
     """
 
-    __question_map: Dict[str, List[Response]] = defaultdict(list)
+    __question_map: Dict[str, List[Response]]
 
-    def __init__(self, responses: List[Response], dataset: Optional["Dataset"] = None) -> None:
+    def __init__(self, responses: List[Response], record: Record) -> None:
         self.__responses = responses or []
+        self.record = record
+        dataset = record.dataset
+        self.__question_map = defaultdict(list)
         for response in self.__responses:
             if dataset is None:
                 continue
@@ -262,17 +290,18 @@ class RecordResponses:
 class RecordSuggestions:
     """This is a container class for the suggestions of a Record.
     It allows for accessing suggestions by attribute and iterating over them.
-    A record can currently have one suggestion per question so we set the suggestion
-    value as an attribute.
     """
 
-    def __init__(self, suggestions: List[Suggestion], dataset: Optional["Dataset"] = None) -> None:
+    def __init__(self, suggestions: List[Suggestion], record: Record) -> None:
         self.__suggestions = suggestions or []
+        self.record = record
+        dataset = record.dataset
         for suggestion in self.__suggestions:
             if suggestion.question_name is None and dataset is None:
                 continue
-            question_name = dataset.settings.question_by_id(suggestion.question_id).name
-            suggestion.question_name = question_name
+            if suggestion.question_name is None:
+                question_name = dataset.settings.question_by_id(suggestion.question_id).name
+                suggestion.question_name = question_name
             setattr(self, question_name, suggestion.value)
 
     @property

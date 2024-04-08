@@ -99,7 +99,8 @@ plugins:
   - mknotebooks
   - tags:
       tags_hierarchy: true
-      tags_file: tags.md
+      tags_hierarchy_separator: ":"
+      tags_file: tutorials/index.md
 
 
 nav:
@@ -114,7 +115,10 @@ nav:
     - Concepts (WIP):
       - overview/concepts/index.md
     - Changelog (WIP): overview/changelog.md
-    - Community (WIP): overview/community.md
+    - Contributing:
+      - GitHub workflows: overview/community/contributor.md
+      - Development environment: overview/community/developer.md
+    - Community: overview/community/index.md
     - FAQ: overview/faq.md
   - How to guides:
     - how_to_guides/index.md
@@ -150,4 +154,3 @@ nav:
   - API Reference:
     - Python SDK: reference/
     - FastAPI Server: reference/
-  - Tags: tags.md

@@ -34,33 +34,33 @@ These are the how-to guides for the Argilla-python SDK. They provide step-by-ste
 
 -   :material-scale-balance:{ .lg .middle } __Query, filter and export data__
 
-    ---w
+    ---
 
-    Learn how to apply export [`Records`](#) with the right filters.
+    Learn how to apply export [`Records`](#) with the right filters and queries.
 
     [:octicons-arrow-right-24: License](#)
 
 -   :material-scale-balance:{ .lg .middle } __Distribute annotation work__
 
-    ---w
+    ---
 
-    D
+    Learn how to distribute [`Records`](#) to [`Users`](#) and [`Workspaces`](#) for managing annotation efforts the way you require.
 
     [:octicons-arrow-right-24: License](#)
 
--   :material-scale-balance:{ .lg .middle } __Compute metrics and KPIs__
+-   :material-scale-balance:{ .lg .middle } __Evaluate annotators and models with metrics and KPIs__
 
-    ---w
+    ---
 
-    D
+    Learn how to evaluate [`Users`](#) and Models with [`Metrics`](#) and [`KPIs`](#) to ensure the quality of your data, models and annotations.
 
     [:octicons-arrow-right-24: License](#)
 
 -   :material-scale-balance:{ .lg .middle } __Fine-tune a model__
 
-    ---w
+    ---
 
-    D
+    Learn how to fine-tune your own model with [`transformers`](#) and take ownership of your data and models.
 
     [:octicons-arrow-right-24: License](#)
 

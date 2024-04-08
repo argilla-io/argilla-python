@@ -13,8 +13,9 @@
 # limitations under the License.
 
 import warnings
+from collections import defaultdict
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Tuple
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel
 from argilla_sdk._resource import Resource
@@ -155,7 +156,9 @@ class Record(Resource):
     ############################
 
     @staticmethod
-    def _dict_to_record_model(data: dict, schema: Dict[str, Any]) -> RecordModel:
+    def _dict_to_record_model(
+        data: dict, schema: Dict[str, Any], mapping: Optional[Dict[str, str]] = None, user_id: Optional[UUID] = None
+    ) -> RecordModel:
         """Converts a flat Record-like dictionary object to a RecordModel.
         Args:
             data: A dictionary representing the record with flat attributes.
@@ -164,29 +167,64 @@ class Record(Resource):
             A RecordModel object.
         """
 
+        if mapping is not None:
+            schema_switch = Record.__construct_schema_from_mapping(input_mapping=mapping)
+        else:
+            schema_switch = {question_name: (question_name, "suggestion") for question_name in schema.keys()}
+
         fields = {}
         suggestions = []
+        responses = []
 
         for attribute, value in data.items():
-            if attribute not in schema:
-                warnings.warn(f"Record attribute {attribute} is not in the schema. Skipping.")
+            if attribute not in schema and attribute not in schema_switch:
+                warnings.warn(f"Record attribute {attribute} is not in the schema or mapping. Skipping.")
                 continue
-
             schema_item = schema.get(attribute)
             if isinstance(schema_item, FieldType):
                 fields[attribute] = value
-            elif isinstance(schema_item, QuestionType):
-                suggestion = SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute)
-                suggestions.append(suggestion.model_dump())
+            elif isinstance(schema_item, QuestionType) or attribute in schema_switch:
+                question_name, destination = schema_switch[attribute]
+                schema_item = schema.get(question_name)
+                if destination == "suggestion":
+                    question_id = schema_item.id
+                    suggestions.append(
+                        SuggestionModel(value=value, question_id=question_id, question_name=question_name)
+                    )
+                elif destination == "response":
+                    responses.append(ResponseModel(values={question_name: {"value": value}}, user_id=user_id))
             else:
-                warnings.warn(f"Property {attribute} is not a valid schema item. Skipping.")
+                warnings.warn(f"Record attribute {attribute} is not in the schema or mapping. Skipping.")
 
         return RecordModel(
             id=data.get("id") or str(uuid4()),
             fields=fields,
             suggestions=suggestions,
+            responses=responses,
             external_id=data.get("external_id"),
         )
+
+    @staticmethod
+    def __construct_schema_from_mapping(input_mapping: Dict[str, str]) -> Dict[str, Tuple[str, str]]:
+        """Constructs a mapping of question names to question ids.
+        Args:
+            mapping: A dictionary of question names to question ids.
+        Returns:
+            A dictionary of question names to question ids.
+        """
+        schema_mapping = {}
+        for input_key, schema_destination in input_mapping.items():
+            schema_destination = schema_destination.split(".")
+            if len(schema_destination) == 1:
+                schema_mapping[input_key] = (schema_destination[0], "suggestion")
+            elif len(schema_destination) == 2:
+                question_name, destination = schema_destination
+                if destination not in ["suggestion", "response"]:
+                    raise ValueError(f"Invalid mapping destination {schema_destination[1]}.")
+                schema_mapping[input_key] = (question_name, destination)
+            else:
+                raise ValueError(f"Invalid mapping destination {schema_destination}.")
+        return schema_mapping
 
 
 class RecordFields:
@@ -212,17 +250,21 @@ class RecordFields:
 class RecordResponses:
     """This is a container class for the responses of a Record.
     It allows for accessing responses by attribute and iterating over them.
+    A record can have multiple responses per question so we set the response
+    in a list default dictionary with the question name as the key.
     """
+
+    __question_map: Dict[str, List[Response]]
 
     def __init__(self, responses: List[Response], record: Record) -> None:
         self.__responses = responses or []
         self.record = record
         dataset = record.dataset
+        self.__question_map = defaultdict(list)
         for response in self.__responses:
             if dataset is None:
                 continue
-            question_name = dataset.settings.question_by_id(response.question_id).name
-            setattr(self, question_name, response.value)
+            self.__question_map[response.question_name].append(response)
 
     @property
     def models(self) -> List[ResponseModel]:
@@ -233,6 +275,9 @@ class RecordResponses:
 
     def __getitem__(self, index: int):
         return self.__responses[index]
+
+    def __getattr__(self, name):
+        return self.__question_map.get(name, [])
 
 
 class RecordSuggestions:
@@ -247,7 +292,8 @@ class RecordSuggestions:
         for suggestion in self.__suggestions:
             if suggestion.question_name is None and dataset is None:
                 continue
-            question_name = dataset.settings.question_by_id(suggestion.question_id).name
+            if suggestion.question_name is None:
+                question_name = dataset.settings.question_by_id(suggestion.question_id).name
             setattr(self, question_name, suggestion.value)
 
     @property

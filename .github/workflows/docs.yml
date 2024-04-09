@@ -37,6 +37,9 @@ jobs:
       - name: Install pdm
         run: pip install pdm
 
+      - name: Install mike
+        run: pip install mike
+
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: pdm install

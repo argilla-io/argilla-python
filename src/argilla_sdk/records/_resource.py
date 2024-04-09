@@ -116,6 +116,7 @@ class Record(Resource):
     ############################
 
     def serialize(self) -> Dict[str, Any]:
+        """Serializes the Record to a dictionary for interaction with the API"""
         serialized_model = self._model.model_dump()
         serialized_suggestions = [suggestion.serialize() for suggestion in self.__suggestions]
         serialized_responses = [response.serialize() for response in self.__responses]
@@ -286,6 +287,18 @@ class RecordResponses:
     def __getattr__(self, name):
         return self.__question_map.get(name, [])
 
+    def to_dict(self) -> Dict[str, List[Dict]]:
+        """Converts the responses to a dictionary.
+        Returns:
+            A dictionary of responses.
+        """
+        response_dict = defaultdict(list)
+        for response in self.__responses:
+            response_dict[response.question_name].append(
+                {"value": response.value, "user_id": response.user_id, "status": response.status}
+            )
+        return response_dict
+
 
 class RecordSuggestions:
     """This is a container class for the suggestions of a Record.
@@ -313,3 +326,17 @@ class RecordSuggestions:
 
     def __getitem__(self, index: int):
         return self.__suggestions[index]
+
+    def to_dict(self) -> Dict[str, List[str]]:
+        """Converts the suggestions to a dictionary.
+        Returns:
+            A dictionary of suggestions.
+        """
+        suggestion_dict: dict = {}
+        for suggestion in self.__suggestions:
+            suggestion_dict[suggestion.question_name] = {
+                "value": suggestion.value,
+                "score": suggestion.score,
+                "agent": suggestion.agent,
+            }
+        return suggestion_dict

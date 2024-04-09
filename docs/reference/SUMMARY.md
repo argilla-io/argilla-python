@@ -1,11 +1,4 @@
 * argilla_sdk
-    * [questions](argilla_sdk/questions.md)
     * [client](argilla_sdk/client.md)
-    * [response](argilla_sdk/response.md)
-    * settings
-        * [base](argilla_sdk/settings/base.md)
-        * [exceptions](argilla_sdk/settings/exceptions.md)
-        * [fields](argilla_sdk/settings/fields.md)
-        * [guidelines](argilla_sdk/settings/guidelines.md)
-        * [questions](argilla_sdk/settings/questions.md)
-    * [suggestion](argilla_sdk/suggestion.md)
+    * [responses](argilla_sdk/responses.md)
+    * [suggestions](argilla_sdk/suggestions.md)

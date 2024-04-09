@@ -98,8 +98,6 @@ plugins:
   - social
   - mknotebooks
   - tags:
-      tags_hierarchy: true
-      tags_hierarchy_separator: ":"
       tags_file: tutorials/index.md
 
 

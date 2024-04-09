@@ -1,0 +1,1 @@
+::: argilla_sdk._api._questions._settings._rating

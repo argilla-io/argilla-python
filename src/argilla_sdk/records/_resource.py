@@ -136,6 +136,27 @@ class Record(Resource):
         model = cls._dict_to_record_model(data=data, schema=dataset.schema)
         return cls.from_model(model=model)
 
+    def to_dict(self) -> Dict[str, Dict]:
+        """Converts a Record object to a dictionary for export.
+        Returns:
+            A dictionary representing the record where the keys are "fields", 
+            "metadata", "suggestions", and "responses". Each field and question is
+            represented as a key-value pair in the dictionary of the respective key. i.e.
+            `{"fields": {"prompt": "...", "response": "..."}, "responses": {"rating": "..."},
+        """
+        fields = self.fields.to_dict()
+        metadata = self.metadata
+        suggestions = self.suggestions.to_dict()
+        responses = self.responses.to_dict()
+        record_dict = {
+            "fields": fields,
+            "metadata": metadata,
+            "suggestions": suggestions,
+            "responses": responses,
+            "external_id": self.external_id,
+        }
+        return record_dict
+
     @classmethod
     def from_model(cls, model: RecordModel, dataset: Optional["Dataset"] = None) -> "Record":
         """Converts a RecordModel object to a Record object.

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Tuple
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence
 from uuid import UUID
 
 from argilla_sdk._models import RecordModel
@@ -118,8 +118,12 @@ class DatasetRecords(Resource):
     ############################
 
     def add(
-        self, records: Union[dict, List[dict]], mapping: Optional[Dict[str, str]] = None, user_id: Optional[UUID] = None
-    ) -> None:
+        self,
+        records: Union[dict, List[dict]],
+        mapping: Optional[Dict[str, str]] = None,
+        user_id: Optional[UUID] = None,
+        batch_size: int = 256,
+    ) -> List[Record]:
         """
         Add new records to a dataset on the server.
         Args:
@@ -127,18 +131,35 @@ class DatasetRecords(Resource):
                      to be added to the dataset. Records are defined as dictionaries
                      with keys corresponding to the fields in the dataset schema.
         """
-        # TODO: Once we have implemented the new records bulk endpoint, this method should use it
-        # and return the response from the API.
-        records_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id)
-        self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=records_models)
+        record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id)
+
+        batch_size = self._normalize_batch_size(
+            batch_size,
+            len(record_models),
+            self.__client.api.records.MAX_RECORDS_PER_CREATE_BULK,
+        )
+
+        created_records = []
+        for batch in range(0, len(records), batch_size):
+            self.log(message=f"Sending records from {batch} to {batch + batch_size}.")
+            batch_records = record_models[batch : batch + batch_size]
+            models = self.__client.api.records.bulk_create(dataset_id=self.__dataset.id, records=batch_records)
+            created_records.extend([Record.from_model(model=model, dataset=self.__dataset) for model in models])
+
         self.log(
-            message=f"Added {len(records_models)} records to dataset {self.__dataset.name}",
+            message=f"Added {len(created_records)} records to dataset {self.__dataset.name}",
             level="info",
         )
 
+        return created_records
+
     def update(
-        self, records: Union[dict, List[dict]], mapping: Optional[Dict[str, str]] = None, user_id: Optional[UUID] = None
-    ) -> None:
+        self,
+        records: Union[dict, List[dict]],
+        mapping: Optional[Dict[str, str]] = None,
+        user_id: Optional[UUID] = None,
+        batch_size: int = 256,
+    ) -> List[Record]:
         """Update records in a dataset on the server using the provided records
             and matching based on the external_id or id.
 
@@ -149,37 +170,32 @@ class DatasetRecords(Resource):
                      external_ids should be provided to identify the records to be updated.
         """
         record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id)
-        records_to_update, records_to_add = self.__align_split_records(record_models)
-        if len(records_to_update) > 0:
-            self.__client.api.records.update_many(dataset_id=self.__dataset.id, records=records_to_update)
-            self.__create_record_responses(records=records_to_update)
-        else:
-            message = """
-            No existing records founds to update. 
-            If you want to add new records, you should use the `Dataset.records.add` method.
-            """
-            self.log(message=message, level="warning")
-        if len(records_to_add) > 0:
-            self.__client.api.records.create_many(dataset_id=self.__dataset.id, records=records_to_add)
-        records = self.__list_records_from_server()
-        self.__records = [Record.from_model(model=record, dataset=self.__dataset) for record in records]
+        batch_size = self._normalize_batch_size(
+            batch_size,
+            len(record_models),
+            self.__client.api.records.MAX_RECORDS_PER_UPSERT_BULK,
+        )
+
+        created_or_updated = []
+        records_updated = 0
+        for batch in range(0, len(records), batch_size):
+            self.log(message=f"Sending records from {batch} to {batch + batch_size}.")
+            batch_records = record_models[batch : batch + batch_size]
+            models, updated = self.__client.api.records.bulk_upsert(dataset_id=self.__dataset.id, records=batch_records)
+            created_or_updated.extend([Record.from_model(model=model, dataset=self.__dataset) for model in models])
+            records_updated += updated
+
+        records_created = len(created_or_updated) - records_updated
         self.log(
-            message=f"Updated {len(records_to_update)} records and added {len(records_to_add)} records to dataset {self.__dataset.name}",
+            message=f"Updated {records_updated} records and added {records_created} records to dataset {self.__dataset.name}",
             level="info",
         )
-        
+
+        return created_or_updated
+
     ############################
     # Utility methods
     ############################
-
-    def __list_records_from_server(self):
-        """Get records from the server"""
-        return self.__client.api.records.list(dataset_id=self.__dataset.id, with_suggestions=True, with_responses=True)
-
-    def __create_record_responses(self, records):
-        """Create record responses in the server on a per record basis."""
-        for record in records:
-            self.__client.api.records.create_record_responses(record)
 
     def __ingest_records(
         self,
@@ -201,29 +217,18 @@ class DatasetRecords(Resource):
             record_models = [r._model for r in records]  # type: ignore
         else:
             raise ValueError(
-                "Records should be a dictionary, a list of dictionaries, a Record instance, or a list of Record instances."
+                "Records should be a dictionary, a list of dictionaries, a Record instance, "
+                "or a list of Record instances."
             )
         return record_models
 
-    def __align_split_records(self, records) -> Tuple[List[RecordModel], List[RecordModel]]:
-        """Align records with server ids and external_ids and split them into two lists: records to update and records to add."""
-        server_records = self.__list_records_from_server()
-        server_records_map = {str(record.external_id): str(record.id) for record in server_records}
-        records_to_update = []
-        records_to_add = []
-        for record in records:
-            external_id = str(record.external_id) if record.external_id is not None else None
-            record_id = str(record.id) if record.id is not None else None
-            if record_id is None and external_id is None:
-                # the record is new and doesn't have an external_id
-                records_to_add.append(record)
-            elif external_id in server_records_map:
-                # the record has an external_id and is already in the server
-                record.id = server_records_map.get(external_id)
-                records_to_update.append(record)
-            elif record_id in server_records_map.values():
-                # the record is already in the server but we don't have the external_id
-                records_to_update.append(record)
-        self.log(message=f"Updating {len(records_to_update)} records.")
-        self.log(message=f"Adding {len(records_to_add)} records.")
-        return records_to_update, records_to_add
+    def _normalize_batch_size(self, batch_size: int, records_length, max_value: int):
+        norm_batch_size = min(batch_size, records_length, max_value)
+
+        if batch_size != norm_batch_size:
+            self.log(
+                message=f"The provided batch size {batch_size} was normalized. Using value {norm_batch_size}.",
+                level="warning",
+            )
+
+        return norm_batch_size

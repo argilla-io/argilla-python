@@ -24,11 +24,15 @@ class GenericExportMixin:
         Returns:
             dataset_records (Dict[str, Union[str, float, int, list]]): The exported records in a dictionary format.
         """
-        dataset_records: dict = {}
         if orient == "names":
-            dataset_records.update(self.__dict_orient_names(records, flatten))
+            dataset_records: dict = defaultdict(list)
+            for record in records:
+                for key, value in self.__record_to_dict(record=record, flatten=flatten).items():
+                    dataset_records[key].append(value)
         elif orient == "index":
-            dataset_records.update(self.__dict_orient_index(records, flatten))
+            dataset_records: dict = {}
+            for record in records:
+                dataset_records[record.external_id] = self.__record_to_dict(record=record, flatten=flatten)
         else:
             raise ValueError(f"Invalid value for orient parameter: {orient}")
         return dataset_records
@@ -45,110 +49,44 @@ class GenericExportMixin:
         """
         dataset_records: list = []
         for record in records:
-            if flatten:
-                dataset_records.append(self.__flatten_record(record))
-            else:
-                dataset_records.append(self.__nest_record(record))
+            dataset_records.append(self.__record_to_dict(record=record, flatten=flatten))
         return dataset_records
 
-    #########################
-    # Dict Oriented Exports
-    #########################
-
-    def __dict_orient_names(self, records: List["Record"], flatten: bool = True) -> Dict[str, Any]:
-        """Orient a record with field, question, metadata, suggestion and response names as keys."""
-        dataset_records: defaultdict = defaultdict(list)
-        for record in records:
-            if flatten:
-                record_dict = self.__flatten_record(record)
-            else:
-                record_dict = self.__nest_record(record)
-            for key, value in record_dict.items():
-                dataset_records[key].append(value)
-        return dataset_records
-
-    def __dict_orient_index(self, records: List["Record"], flatten: bool = True) -> Dict[str, Any]:
-        """Orient a record with external_id as keys."""
-        dataset_records: dict = {}
-        for record in records:
-            if flatten:
-                dataset_records[record.external_id] = self.__flatten_record(record)
-            else:
-                dataset_records[record.external_id] = self.__nest_record(record)
-        return dataset_records
-
-    #########################
-    # Flattening Records
-    #########################
-
-    def __flatten_record(self, record: "Record") -> Dict[str, Any]:
-        """Flatten a record with field, question, metadata, suggestion and response names as keys."""
-        record_dict = {}
-        record_dict["external_id"] = record.external_id
-        record_dict.update(record.fields.to_dict())
-        record_dict.update(self.__flatten_record_metadata(record))
-        record_dict.update(self.__flatten_record_suggestions(record))
-        record_dict.update(self.__flatten_record_responses(record))
-        return record_dict
-
-    def __flatten_record_suggestions(self, record: "Record") -> Dict[str, Any]:
-        """Flatten the suggestions of a record."""
-        record_suggestion_dict = {}
-        for suggestion in record.suggestions:
-            record_suggestion_dict[f"{suggestion.question_name}.suggestion"] = suggestion.value
-            record_suggestion_dict[f"{suggestion.question_name}.score"] = suggestion.score
-            if suggestion.agent is not None:
-                record_suggestion_dict[f"{suggestion.question_name}.agent"] = suggestion.agent
-        return record_suggestion_dict
-
-    def __flatten_record_responses(self, record: "Record") -> Dict[str, Any]:
-        """Flatten the responses of a record."""
-        record_response_dict = {}
-        for response in record.responses:
-            record_response_dict[response.question_name] = response.value
-            record_response_dict[f"{response.question_name}.user_id"] = response.user_id
-            record_response_dict[f"{response.question_name}.status"] = response.status
-        return record_response_dict
-
-    def __flatten_record_metadata(self, record: "Record") -> Dict[str, Any]:
-        """Flatten the metadata of a record."""
-        record_metadata_dict = {}
-        for key, value in record.metadata.items():
-            record_metadata_dict[key] = value
-        return record_metadata_dict
-
-    #########################
-    # Nesting Records
-    #########################
-
-    def __nest_record(self, record: "Record") -> Dict[str, Any]:
-        """Nest a record with field, question, metadata, suggestion and response names as keys."""
-        record_dict = {}
-        record_dict["external_id"] = record.external_id
-        record_dict["fields"] = record.fields
-        record_dict["metadata"] = record.metadata
-        record_dict["responses"] = self.__nested_record_responses(record)
-        record_dict["suggestions"] = self.__nested_record_suggestions(record)
-        return record_dict
-
-    def __nested_record_responses(self, record: "Record") -> Dict[str, Any]:
-        """Nest the responses of a record."""
-        record_response_dict = {}
-        for response in record.responses:
-            record_response_dict[response.question_name] = {
-                "value": response.value,
-                "user_id": response.user_id,
-                "status": response.status,
+    def __record_to_dict(self, record: "Record", flatten=True) -> Dict[str, Any]:
+        """Converts a Record object to a dictionary for export.
+        Returns:
+            A dictionary representing the record.
+        """
+        fields = record.fields.to_dict()
+        metadata = record.metadata
+        suggestions = record.suggestions.to_dict()
+        responses = record.responses.to_dict()
+        question_names = set(suggestions.keys()).union(responses.keys())
+        if flatten:
+            record_dict = {
+                **fields,
+                **metadata,
+                "external_id": record.external_id,
             }
-        return record_response_dict
-
-    def __nested_record_suggestions(self, record: "Record") -> Dict[str, Any]:
-        """Nest the suggestions of a record."""
-        record_suggestion_dict = {}
-        for suggestion in record.suggestions:
-            record_suggestion_dict[suggestion.question_name] = {
-                "value": suggestion.value,
-                "score": suggestion.score,
-                "agent": suggestion.agent,
+            for question_name in question_names:
+                _suggestion = suggestions.get(question_name)
+                if _suggestion:
+                    record_dict[f"{question_name}.suggestion"] = _suggestion.pop("value")
+                    record_dict.update(
+                        {f"{question_name}.suggestion.{key}": value for key, value in _suggestion.items()}
+                    )
+                for _response in responses.get(question_name, []):
+                    user_id = _response.pop("user_id")
+                    record_dict[f"{question_name}.response.{user_id}"] = _response.pop("value")
+                    record_dict.update(
+                        {f"{question_name}.response.{user_id}.{key}": value for key, value in _response.items()}
+                    )
+        else:
+            record_dict = {
+                "fields": fields,
+                "metadata": metadata,
+                "suggestions": suggestions,
+                "responses": responses,
+                "external_id": record.external_id,
             }
-        return record_suggestion_dict
+        return record_dict

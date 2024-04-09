@@ -1,3 +1,17 @@
+# Copyright 2024-present, Argilla, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 from typing import Any, Dict, List, TYPE_CHECKING, Union
 from collections import defaultdict
 
@@ -54,22 +68,28 @@ class GenericExportMixin:
 
     def __record_to_dict(self, record: "Record", flatten=True) -> Dict[str, Any]:
         """Converts a Record object to a dictionary for export.
+        Args:
+            record (Record): The Record object to convert.
+            flatten (bool): The structure of the exported dictionary.
+                - True: The record fields, metadata, suggestions and responses will be flattened
+                        so that their keys becomes the keys of the record dictionary, using
+                        dot notation for nested keys. i.e. `label.suggestion` and `label.response`
+                - False: The record fields, metadata, suggestions and responses will be nested as
+                        dictionaries within the record dictionary. i.e. `label: {suggestion: ..., response: ...}`
         Returns:
             A dictionary representing the record.
         """
-        fields = record.fields.to_dict()
-        metadata = record.metadata
-        suggestions = record.suggestions.to_dict()
-        responses = record.responses.to_dict()
-        question_names = set(suggestions.keys()).union(responses.keys())
+        record_dict = record.to_dict()
         if flatten:
-            record_dict = {
-                **fields,
-                **metadata,
-                "external_id": record.external_id,
-            }
+            responses: dict = record_dict.pop("responses")
+            suggestions: dict = record_dict.pop("suggestions")
+            fields: dict = record_dict.pop("fields")
+            metadata: dict = record_dict.pop("metadata")
+            record_dict.update(fields)
+            record_dict.update(metadata)
+            question_names = set(suggestions.keys()).union(responses.keys())
             for question_name in question_names:
-                _suggestion = suggestions.get(question_name)
+                _suggestion: Union[Dict, None] = suggestions.get(question_name)
                 if _suggestion:
                     record_dict[f"{question_name}.suggestion"] = _suggestion.pop("value")
                     record_dict.update(
@@ -81,12 +101,4 @@ class GenericExportMixin:
                     record_dict.update(
                         {f"{question_name}.response.{user_id}.{key}": value for key, value in _response.items()}
                     )
-        else:
-            record_dict = {
-                "fields": fields,
-                "metadata": metadata,
-                "suggestions": suggestions,
-                "responses": responses,
-                "external_id": record.external_id,
-            }
         return record_dict

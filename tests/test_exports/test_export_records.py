@@ -1,11 +1,9 @@
-import random
 import uuid
 from datetime import datetime
 
 import pytest
 
 import argilla_sdk as rg
-from argilla_sdk import Argilla
 
 
 @pytest.fixture
@@ -52,7 +50,7 @@ def test_export_records_dict_defaults(client):
     dataset.records.add(records=mock_data)
     dataset.records.pull()
     exported_records = dataset.records.to_dict()
-    assert len(exported_records) == len(mock_data[0]) + 1  # +1 for suggestion score
+    assert len(exported_records) == 5
     assert isinstance(exported_records, dict)
     assert isinstance(exported_records["external_id"], list)
     assert isinstance(exported_records["text"], list)
@@ -106,7 +104,7 @@ def test_export_records_list_defaults(client):
     assert isinstance(exported_records[0]["label.suggestion"], str)
     assert exported_records[0]["text"] == "Hello World, how are you?"
     assert exported_records[0]["label.suggestion"] == "positive"
-    assert exported_records[0]["label.score"] == None
+    assert exported_records[0]["label.suggestion.score"] == None
 
 
 def test_export_records_list_nested(client):
@@ -194,7 +192,6 @@ def test_export_records_dict_nested(client):
     assert isinstance(exported_records, dict)
     assert exported_records["fields"][0]["text"] == "Hello World, how are you?"
     assert exported_records["suggestions"][0]["label"]["value"] == "positive"
-    
 
 
 def test_export_records_dict_nested_orient_index(client):

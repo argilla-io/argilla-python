@@ -34,6 +34,9 @@ jobs:
           path: ${{ env.pythonLocation }}
           key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-docs
 
+      - name: Install pdm
+        run: pip install pdm
+
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
         run: pdm install

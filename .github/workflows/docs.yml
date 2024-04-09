@@ -11,46 +11,31 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10"]
     steps:
       - name: checkout docs-site
         uses: actions/checkout@v4
         with:
           ref: gh-pages
-
       - uses: actions/checkout@v4
-
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: pdm-project/setup-pdm@v3
         with:
           python-version: ${{ matrix.python-version }}
-          # Looks like it's not working very well for other people:
-          # https://github.com/actions/setup-python/issues/436
-          # cache: "pip"
-          # cache-dependency-path: pyproject.toml
-
-      - uses: actions/cache@v3
-        id: cache
-        with:
-          path: ${{ env.pythonLocation }}
-          key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ hashFiles('pyproject.toml') }}-docs
-
-      - name: Install pdm
-        run: pip install pdm
-
-      - name: Install mike
-        run: pip install mike
-
+          cache: true
+          cache-dependency-path: |
+            pyproject.toml
       - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: pdm install
-
+        run: |
+          pdm install
       - name: Set git credentials
         run: |
           git config --global user.name "${{ github.actor }}"
           git config --global user.email "${{ github.actor }}@users.noreply.github.com"
-
       - run: mike deploy dev --push
         if: github.ref == 'refs/heads/main'
-
       - run: mike deploy ${{ github.ref_name }} latest --update-aliases --push
         if: startsWith(github.ref, 'refs/tags/')

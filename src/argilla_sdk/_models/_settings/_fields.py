@@ -1,8 +1,7 @@
+from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, validator
-
-from typing import Optional
+from pydantic import BaseModel, validator, field_serializer
 
 from argilla_sdk._helpers._log import log
 
@@ -31,6 +30,10 @@ class FieldBaseModel(BaseModel):
         validated_title = title or values["name"]
         log(f"TextField title is {validated_title}")
         return validated_title
+
+    @field_serializer("id", when_used="unless-none")
+    def serialize_id(self, value: UUID) -> str:
+        return str(value)
 
 
 class TextFieldModel(FieldBaseModel):

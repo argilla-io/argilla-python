@@ -167,39 +167,50 @@ class Record(Resource):
             A RecordModel object.
         """
 
-        fields = {}
-        suggestions = []
-        responses = []
+        fields: Dict[str, str] = {}
+        suggestions: List[SuggestionModel] = []
+        responses: List[ResponseModel] = []
+        external_id: Optional[str] = None
 
         for attribute, value in data.items():
             schema_item = schema.get(attribute)
-            attribute_mapping = mapping.get(attribute)
-
-            if schema_item is None and attribute_mapping is not None:
+            attribute_type = None
+                        
+            # Map source data keys using the mapping
+            if attribute == "id" or attribute == "external_id":
+                external_id = value
+                continue
+            elif schema_item is None and mapping is not None and attribute in mapping:
+                attribute_mapping = mapping.get(attribute)
                 attribute_mapping = attribute_mapping.split(".")
                 attribute = attribute_mapping[0]
                 schema_item = schema.get(attribute)
                 if len(attribute_mapping) > 1:
                     attribute_type = attribute_mapping[1]
-                else:
-                    attribute_type = None
-            elif schema_item is attribute_mapping is None:
-                warnings.warn(f"Record attribute {attribute} is not in the schema or mapping. Skipping.")
+            elif schema_item is mapping is None:
+                warnings.warn(
+                    message=f"""Record attribute {attribute} is not in the schema so skipping. 
+                    Define a mapping to map source data fields to Argilla Fields, Questions, and ids
+                    """
+                )
                 continue
-
+            
+            # Assign the value to question, field, or response based on schema item
             if isinstance(schema_item, FieldType):
                 fields[attribute] = value
             elif isinstance(schema_item, QuestionType) and attribute_type != "response":
                 suggestions.append(SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute))
             elif attribute_type == "response" and isinstance(schema_item, QuestionType):
                 responses.append(ResponseModel(values={attribute: {"value": value}}, user_id=user_id))
+            else:
+                warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
+                continue
 
         return RecordModel(
-            id=data.get("id") or str(uuid4()),
             fields=fields,
             suggestions=suggestions,
             responses=responses,
-            external_id=data.get("external_id"),
+            external_id=external_id,
         )
 
 

@@ -55,6 +55,9 @@ class Workspace(Resource):
         super().__init__(client=client, api=client.api.workspaces)
         self._sync(model=WorkspaceModel(name=name, id=id) if not _model else _model)
 
+    def __len__(self) -> int:
+        return len(self.datasets)
+
     def list_datasets(self) -> List["DatasetModel"]:
         datasets = self._client.api.datasets.list(self.id)
         self.log(f"Got {len(datasets)} datasets for workspace {self.id}")
@@ -62,3 +65,11 @@ class Workspace(Resource):
 
     def exists(self) -> bool:
         return self._api.exists(self.id)
+
+    ############################
+    # Properties
+    ############################
+
+    @property
+    def datasets(self) -> List["DatasetModel"]:
+        return self.list_datasets()

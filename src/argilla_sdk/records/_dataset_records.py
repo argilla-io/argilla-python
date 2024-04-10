@@ -94,6 +94,7 @@ class DatasetRecords(Resource, GenericExportMixin):
         """
         self.__client = client
         self.__dataset = dataset
+        self.__records = []
 
     def __iter__(self):
         return DatasetRecordsIterator(self.__dataset, self.__client)
@@ -113,6 +114,9 @@ class DatasetRecords(Resource, GenericExportMixin):
             with_suggestions=with_suggestions,
             with_responses=with_responses,
         )
+
+    def __len__(self) -> int:
+        return len(self.__records)
 
     ############################
     # Public methods
@@ -136,6 +140,7 @@ class DatasetRecords(Resource, GenericExportMixin):
             message=f"Added {len(records_models)} records to dataset {self.__dataset.name}",
             level="info",
         )
+        self.__records = records_models
 
     def update(
         self, records: Union[dict, List[dict]], mapping: Optional[Dict[str, str]] = None, user_id: Optional[UUID] = None

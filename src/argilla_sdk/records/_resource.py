@@ -167,34 +167,32 @@ class Record(Resource):
             A RecordModel object.
         """
 
-        if mapping is not None:
-            schema_switch = Record.__construct_schema_from_mapping(input_mapping=mapping)
-        else:
-            schema_switch = {question_name: (question_name, "suggestion") for question_name in schema.keys()}
-
         fields = {}
         suggestions = []
         responses = []
 
         for attribute, value in data.items():
-            if attribute not in schema and attribute not in schema_switch:
+            schema_item = schema.get(attribute)
+            attribute_mapping = mapping.get(attribute)
+
+            if schema_item is None and attribute_mapping is not None:
+                attribute_mapping = attribute_mapping.split(".")
+                attribute = attribute_mapping[0]
+                schema_item = schema.get(attribute)
+                if len(attribute_mapping) > 1:
+                    attribute_type = attribute_mapping[1]
+                else:
+                    attribute_type = None
+            elif schema_item is attribute_mapping is None:
                 warnings.warn(f"Record attribute {attribute} is not in the schema or mapping. Skipping.")
                 continue
-            schema_item = schema.get(attribute)
+
             if isinstance(schema_item, FieldType):
                 fields[attribute] = value
-            elif isinstance(schema_item, QuestionType) or attribute in schema_switch:
-                question_name, destination = schema_switch[attribute]
-                schema_item = schema.get(question_name)
-                if destination == "suggestion":
-                    question_id = schema_item.id
-                    suggestions.append(
-                        SuggestionModel(value=value, question_id=question_id, question_name=question_name)
-                    )
-                elif destination == "response":
-                    responses.append(ResponseModel(values={question_name: {"value": value}}, user_id=user_id))
-            else:
-                warnings.warn(f"Record attribute {attribute} is not in the schema or mapping. Skipping.")
+            elif isinstance(schema_item, QuestionType) and attribute_type != "response":
+                suggestions.append(SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute))
+            elif attribute_type == "response" and isinstance(schema_item, QuestionType):
+                responses.append(ResponseModel(values={attribute: {"value": value}}, user_id=user_id))
 
         return RecordModel(
             id=data.get("id") or str(uuid4()),
@@ -203,28 +201,6 @@ class Record(Resource):
             responses=responses,
             external_id=data.get("external_id"),
         )
-
-    @staticmethod
-    def __construct_schema_from_mapping(input_mapping: Dict[str, str]) -> Dict[str, Tuple[str, str]]:
-        """Constructs a mapping of question names to question ids.
-        Args:
-            mapping: A dictionary of question names to question ids.
-        Returns:
-            A dictionary of question names to question ids.
-        """
-        schema_mapping = {}
-        for input_key, schema_destination in input_mapping.items():
-            schema_destination = schema_destination.split(".")
-            if len(schema_destination) == 1:
-                schema_mapping[input_key] = (schema_destination[0], "suggestion")
-            elif len(schema_destination) == 2:
-                question_name, destination = schema_destination
-                if destination not in ["suggestion", "response"]:
-                    raise ValueError(f"Invalid mapping destination {schema_destination[1]}.")
-                schema_mapping[input_key] = (question_name, destination)
-            else:
-                raise ValueError(f"Invalid mapping destination {schema_destination}.")
-        return schema_mapping
 
 
 class RecordFields:

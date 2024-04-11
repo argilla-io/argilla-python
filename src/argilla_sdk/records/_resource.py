@@ -107,14 +107,18 @@ class Record(Resource):
     def suggestions(self) -> "RecordSuggestions":
         return self.__suggestions
 
+    @property
+    def metadata(self) -> Dict[str, Any]:
+        return self._model.metadata or {}
+
     ############################
     # Public methods
     ############################
 
     def serialize(self) -> Dict[str, Any]:
         serialized_model = self._model.model_dump()
-        serialized_suggestions = [suggestion.model_dump() for suggestion in self.__suggestions.models]
-        serialized_responses = [response.model_dump() for response in self.__responses.models]
+        serialized_suggestions = [suggestion.serialize() for suggestion in self.__suggestions]
+        serialized_responses = [response.serialize() for response in self.__responses]
         serialized_model["responses"] = serialized_responses
         serialized_model["suggestions"] = serialized_suggestions
         return serialized_model
@@ -177,10 +181,7 @@ class Record(Resource):
             attribute_type = None
                         
             # Map source data keys using the mapping
-            if attribute == "id" or attribute == "external_id":
-                external_id = value
-                continue
-            elif schema_item is None and mapping is not None and attribute in mapping:
+            if schema_item is None and mapping is not None and attribute in mapping:
                 attribute_mapping = mapping.get(attribute)
                 attribute_mapping = attribute_mapping.split(".")
                 attribute = attribute_mapping[0]
@@ -195,13 +196,18 @@ class Record(Resource):
                 )
                 continue
             
+            # Skip if the attribute is an id or external_id
+            if attribute == "id" or attribute == "external_id":
+                external_id = value
+                continue
+
             # Assign the value to question, field, or response based on schema item
             if isinstance(schema_item, FieldType):
                 fields[attribute] = value
+            elif isinstance(schema_item, QuestionType) and attribute_type == "response":
+                responses.append(ResponseModel(values={attribute: {"value": value}}, user_id=user_id))
             elif isinstance(schema_item, QuestionType) and attribute_type != "response":
                 suggestions.append(SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute))
-            elif attribute_type == "response" and isinstance(schema_item, QuestionType):
-                responses.append(ResponseModel(values={attribute: {"value": value}}, user_id=user_id))
             else:
                 warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
                 continue
@@ -232,6 +238,9 @@ class RecordFields:
 
     def __repr__(self):
         return f"<RecordFields {self.__fields}>"
+
+    def to_dict(self) -> Dict[str, Union[str, None]]:
+        return self.__fields
 
 
 class RecordResponses:
@@ -281,6 +290,7 @@ class RecordSuggestions:
                 continue
             if suggestion.question_name is None:
                 question_name = dataset.settings.question_by_id(suggestion.question_id).name
+                suggestion.question_name = question_name
             setattr(self, question_name, suggestion.value)
 
     @property

@@ -22,9 +22,13 @@ nav = mkdocs_gen_files.Nav()
 
 src = Path(__file__).parent.parent.parent / "src"
 # Add here any files that shouldn't be taken into account
-excluded = []
+excluded = ["_"]
 
 for path in sorted(src.rglob("*.py")):
+    # remove leading with wildcard exclude
+
+    if any(path.name.startswith("_") for exclude in excluded):
+        continue
     if any(path.name.__contains__(exclude) for exclude in excluded):
         continue
     module_path = path.relative_to(src).with_suffix("")

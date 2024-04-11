@@ -334,3 +334,125 @@ def test_add_records_with_responses_and_suggestions(client) -> None:
     assert dataset_records[2].suggestions.label == "positive"
     assert dataset_records[2].responses.label[0].value == "negative"
     assert dataset_records[2].responses.label[0].user_id == user.id
+
+
+def test_add_records_with_fields_mapped(client) -> None:
+    workspace_id = client.workspaces[0].id
+    mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
+    mock_data = [
+        {
+            "x": "Hello World, how are you?",
+            "my_label": "negative",
+            "my_guess": "positive",
+            "external_id": uuid.uuid4(),
+        },
+        {
+            "x": "Hello World, how are you?",
+            "my_label": "negative",
+            "my_guess": "positive",
+            "external_id": uuid.uuid4(),
+        },
+        {
+            "x": "Hello World, how are you?",
+            "my_label": "negative",
+            "my_guess": "positive",
+            "external_id": uuid.uuid4(),
+        },
+    ]
+    settings = rg.Settings(
+        fields=[
+            rg.TextField(name="text"),
+        ],
+        questions=[
+            rg.LabelQuestion(name="label", labels=["positive", "negative"]),
+        ],
+    )
+    dataset = rg.Dataset(
+        name=mock_dataset_name,
+        workspace_id=workspace_id,
+        settings=settings,
+        client=client,
+    )
+    user = rg.User(
+        username=f"test_{random.randint(0, 1000)}",
+        first_name="test",
+        password="testtesttest",
+        client=client,
+    )
+    user.create()
+    dataset.publish()
+    dataset.records.add(
+        records=mock_data,
+        user_id=user.id,
+        mapping={"my_label": "label.response", "my_guess": "label.suggestion", "x": "text"},
+    )
+    assert dataset.name == mock_dataset_name
+
+    dataset_records = list(dataset.records(with_suggestions=True))
+
+    assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
+    assert dataset_records[1].fields.text == mock_data[1]["x"]
+    assert dataset_records[2].suggestions.label == "positive"
+    assert dataset_records[2].responses.label[0].value == "negative"
+    assert dataset_records[2].responses.label[0].user_id == user.id
+
+
+def test_add_records_with_id_mapped(client) -> None:
+    workspace_id = client.workspaces[0].id
+    mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
+    mock_data = [
+        {
+            "x": "Hello World, how are you?",
+            "my_label": "negative",
+            "my_guess": "positive",
+            "uuid": uuid.uuid4(),
+        },
+        {
+            "x": "Hello World, how are you?",
+            "my_label": "negative",
+            "my_guess": "positive",
+            "uuid": uuid.uuid4(),
+        },
+        {
+            "x": "Hello World, how are you?",
+            "my_label": "negative",
+            "my_guess": "positive",
+            "uuid": uuid.uuid4(),
+        },
+    ]
+    settings = rg.Settings(
+        fields=[
+            rg.TextField(name="text"),
+        ],
+        questions=[
+            rg.LabelQuestion(name="label", labels=["positive", "negative"]),
+        ],
+    )
+    dataset = rg.Dataset(
+        name=mock_dataset_name,
+        workspace_id=workspace_id,
+        settings=settings,
+        client=client,
+    )
+    user = rg.User(
+        username=f"test_{random.randint(0, 1000)}",
+        first_name="test",
+        password="testtesttest",
+        client=client,
+    )
+    user.create()
+    dataset.publish()
+    dataset.records.add(
+        records=mock_data,
+        user_id=user.id,
+        mapping={"my_label": "label.response", "my_guess": "label.suggestion", "x": "text", "uuid": "id"},
+    )
+    assert dataset.name == mock_dataset_name
+
+    dataset_records = list(dataset.records(with_suggestions=True))
+
+    assert dataset_records[0].external_id == str(mock_data[0]["uuid"])
+    assert dataset_records[1].fields.text == mock_data[1]["x"]
+    assert dataset_records[2].suggestions.label == "positive"
+    assert dataset_records[2].responses.label[0].value == "negative"
+    assert dataset_records[2].responses.label[0].user_id == user.id

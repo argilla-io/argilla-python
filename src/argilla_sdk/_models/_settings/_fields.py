@@ -35,3 +35,6 @@ class FieldBaseModel(BaseModel):
 
 class TextFieldModel(FieldBaseModel):
     settings: FieldSettings = FieldSettings(type="text", use_markdown=False)
+
+
+FieldsModelType = TextFieldModel

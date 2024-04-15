@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, validator, field_serializer
@@ -101,3 +101,13 @@ class MultiLabelQuestionModel(QuestionBaseModel):
 class RankingQuestionModel(QuestionBaseModel):
     values: List[int]
     settings: QuestionSettings = QuestionSettings(type="ranking")
+
+
+QuestionModelType = Union[
+    LabelQuestionModel,
+    RatingQuestionModel,
+    TextQuestionModel,
+    MultiLabelQuestionModel,
+    RankingQuestionModel,
+    QuestionBaseModel,
+]

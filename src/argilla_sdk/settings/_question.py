@@ -46,9 +46,9 @@ class LabelQuestion(SettingsPropertyBase):
             title=title,
             description=description,
             required=required,
-            settings=LabelQuestionSettings(options=self.__render_labels_as_options(labels), type="label_selection"),
+            settings=LabelQuestionSettings(options=self._render_labels_as_options(labels), type="label_selection"),
         )
-        
+
     ##############################
     # Public properties
     ##############################
@@ -65,10 +65,10 @@ class LabelQuestion(SettingsPropertyBase):
     # Private methods
     ##############################
 
-    def __render_labels_as_options(
+    def _render_labels_as_options(
         self, labels: Union[List[str], List[Dict[str, Optional[str]]]]
     ) -> List[Dict[str, str]]:
-        """ Render labels as options for the question so that the model conforms to the API schema"""
+        """Render labels as options for the question so that the model conforms to the API schema"""
         if isinstance(labels, list) and all(isinstance(label, str) for label in labels):
             return [{"text": label, "value": label} for label in labels]
         elif (
@@ -113,7 +113,7 @@ class TextQuestion(SettingsPropertyBase):
         return self._model.settings.use_markdown
 
 
-class MultiLabelQuestion(SettingsPropertyBase):
+class MultiLabelQuestion(LabelQuestion):
     _model: MultiLabelQuestionModel
 
     def __init__(
@@ -138,9 +138,10 @@ class MultiLabelQuestion(SettingsPropertyBase):
             title=title,
             description=description,
             required=required,
-            labels=labels,
             visible_labels=visible_labels,
-            settings=LabelQuestionSettings(options=labels, type="multi_label_selection"),
+            settings=LabelQuestionSettings(
+                options=self._render_labels_as_options(labels), type="multi_label_selection"
+            ),
         )
 
     @property
@@ -153,11 +154,11 @@ class MultiLabelQuestion(SettingsPropertyBase):
 
     @property
     def labels(self) -> List[str]:
-        return self._model.labels
+        return [option["value"] for option in self._model.settings.options]
 
     @labels.setter
     def labels(self, labels: List[str]) -> None:
-        self._model.labels = labels
+        self._model.settings.options = self.__render_labels_as_options(labels)
 
 
 class RatingQuestion(SettingsPropertyBase):

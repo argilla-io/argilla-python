@@ -1,5 +1,4 @@
 from typing import Any, Dict, List, Optional, Tuple, Union
-from uuid import UUID, uuid4
 
 from pydantic import Field, field_serializer
 

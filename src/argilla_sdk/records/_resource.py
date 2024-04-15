@@ -116,6 +116,7 @@ class Record(Resource):
     ############################
 
     def serialize(self) -> Dict[str, Any]:
+        """Serializes the Record to a dictionary for interaction with the API"""
         serialized_model = self._model.model_dump()
         serialized_suggestions = [suggestion.serialize() for suggestion in self.__suggestions]
         serialized_responses = [response.serialize() for response in self.__responses]
@@ -134,6 +135,27 @@ class Record(Resource):
         """
         model = cls._dict_to_record_model(data=data, schema=dataset.schema)
         return cls.from_model(model=model)
+
+    def to_dict(self) -> Dict[str, Dict]:
+        """Converts a Record object to a dictionary for export.
+        Returns:
+            A dictionary representing the record where the keys are "fields", 
+            "metadata", "suggestions", and "responses". Each field and question is
+            represented as a key-value pair in the dictionary of the respective key. i.e.
+            `{"fields": {"prompt": "...", "response": "..."}, "responses": {"rating": "..."},
+        """
+        fields = self.fields.to_dict()
+        metadata = self.metadata
+        suggestions = self.suggestions.to_dict()
+        responses = self.responses.to_dict()
+        record_dict = {
+            "fields": fields,
+            "metadata": metadata,
+            "suggestions": suggestions,
+            "responses": responses,
+            "external_id": self.external_id,
+        }
+        return record_dict
 
     @classmethod
     def from_model(cls, model: RecordModel, dataset: Optional["Dataset"] = None) -> "Record":
@@ -275,6 +297,18 @@ class RecordResponses:
     def __getattr__(self, name):
         return self.__question_map.get(name, [])
 
+    def to_dict(self) -> Dict[str, List[Dict]]:
+        """Converts the responses to a dictionary.
+        Returns:
+            A dictionary of responses.
+        """
+        response_dict = defaultdict(list)
+        for response in self.__responses:
+            response_dict[response.question_name].append(
+                {"value": response.value, "user_id": response.user_id, "status": response.status}
+            )
+        return response_dict
+
 
 class RecordSuggestions:
     """This is a container class for the suggestions of a Record.
@@ -302,3 +336,17 @@ class RecordSuggestions:
 
     def __getitem__(self, index: int):
         return self.__suggestions[index]
+
+    def to_dict(self) -> Dict[str, List[str]]:
+        """Converts the suggestions to a dictionary.
+        Returns:
+            A dictionary of suggestions.
+        """
+        suggestion_dict: dict = {}
+        for suggestion in self.__suggestions:
+            suggestion_dict[suggestion.question_name] = {
+                "value": suggestion.value,
+                "score": suggestion.score,
+                "agent": suggestion.agent,
+            }
+        return suggestion_dict

@@ -54,6 +54,10 @@ class Suggestion(Resource):
     @property
     def question_name(self) -> Optional[str]:
         return self._model.question_name
+    
+    @question_name.setter
+    def question_name(self, value: str) -> None:
+        self._model.question_name = value
 
     @property
     def type(self) -> Optional[Literal["model", "human"]]:

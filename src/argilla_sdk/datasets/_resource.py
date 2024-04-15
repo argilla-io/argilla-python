@@ -73,8 +73,6 @@ class Dataset(Resource):
 
     @property
     def records(self) -> "DatasetRecords":
-        if not self.is_published:
-            raise DatasetNotPublished("Cannot access records before publishing the dataset. Call `publish` first.")
         return self.__records
 
     @property
@@ -137,7 +135,7 @@ class Dataset(Resource):
 
         if publish:
             self.__publish()
-        return self.get() # type: ignore
+        return self.get()  # type: ignore
 
     def __define_settings(
         self,

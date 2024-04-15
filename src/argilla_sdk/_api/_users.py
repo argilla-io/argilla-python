@@ -34,7 +34,7 @@ class UsersAPI(ResourceAPI[UserModel]):
     # CRUD methods #
     ################
 
-    def create(self, user: UserModel) -> "UserModel":
+    def create(self, user: UserModel) -> UserModel:
         json_body = user.model_dump()
         response = self.http_client.post(
             "/api/users",
@@ -45,7 +45,7 @@ class UsersAPI(ResourceAPI[UserModel]):
         self.log(message=f"Created user {user.username}")
         return user
 
-    def get(self, user_id: UUID) -> "UserModel":
+    def get(self, user_id: UUID) -> UserModel:
         response = self.http_client.get(url=f"/api/users/{user_id}")
         _http.raise_for_status(response=response)
         response_json = response.json()
@@ -62,7 +62,7 @@ class UsersAPI(ResourceAPI[UserModel]):
     # Utility methods #
     ####################
 
-    def list(self) -> List["UserModel"]:
+    def list(self) -> List[UserModel]:
         response = self.http_client.get(url="/api/users")
         _http.raise_for_status(response=response)
         response_json = response.json()
@@ -70,7 +70,7 @@ class UsersAPI(ResourceAPI[UserModel]):
         self.log(message=f"Listed {len(users)} users")
         return users
 
-    def list_by_workspace_id(self, workspace_id: UUID) -> List["UserModel"]:
+    def list_by_workspace_id(self, workspace_id: UUID) -> List[UserModel]:
         response = self.http_client.get(url=f"/api/workspaces/{workspace_id}/users")
         _http.raise_for_status(response=response)
         response_json = response.json()["items"]
@@ -78,7 +78,7 @@ class UsersAPI(ResourceAPI[UserModel]):
         self.log(message=f"Listed {len(users)} users")
         return users
 
-    def get_me(self) -> "UserModel":
+    def get_me(self) -> UserModel:
         response = self.http_client.get("/api/me")
         _http.raise_for_status(response=response)
         user = self._model_from_json(json_user=response.json())
@@ -99,10 +99,10 @@ class UsersAPI(ResourceAPI[UserModel]):
     # Private methods #
     ####################
 
-    def _model_from_json(self, json_user) -> "UserModel":
+    def _model_from_json(self, json_user) -> UserModel:
         json_user["inserted_at"] = self._date_from_iso_format(date=json_user["inserted_at"])
         json_user["updated_at"] = self._date_from_iso_format(date=json_user["updated_at"])
         return UserModel(**json_user)
 
-    def _model_from_jsons(self, json_users) -> List["UserModel"]:
+    def _model_from_jsons(self, json_users) -> List[UserModel]:
         return list(map(self._model_from_json, json_users))

@@ -1,8 +1,9 @@
 # Project information
-site_name: argilla-python
+site_name: Argilla
 site_url: https://argilla-io.github.io/argilla-python
 site_author: Argilla, Inc.
 site_description: The Argilla python server SDK
+copyright: Copyright &copy; 2017 - 2024 Argilla
 
 # Repository
 repo_name: argilla-io/argilla-python
@@ -11,15 +12,23 @@ repo_url: https://github.com/argilla-io/argilla-python
 extra:
   version:
     provider: mike
+  social:
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/company/argilla-io
+    - icon: fontawesome/brands/x-twitter
+      link: https://twitter.com/argilla_io
+    - icon: fontawesome/brands/youtube
+      link: https://www.youtube.com/channel/UCAIz8TmvQQrLqbD7sd-5S2A
+    - icon: fontawesome/brands/slack
+      link: https://join.slack.com/t/rubrixworkspace/shared_invite/zt-20wllqq29-Z11~kp2SeFYjJ0qevJRiPg
 
 extra_css:
   - stylesheets/extra.css
 
 theme:
   name: material
-  # NOTE: Should we add some here?
-  # logo: assets/logo.svg
-  # favicon: assets/logo.svg
+  logo: assets/logo-dark-mode.svg
+  favicon: assets/favicon.ico
   features:
     - navigation.instant
     - navigation.tabs
@@ -65,9 +74,17 @@ markdown_extensions:
   - pymdownx.tabbed:
       alternate_style: true
   - footnotes
+  - tables
+  - attr_list
+  - md_in_html
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
   # activating permalink: true makes the anchor link works in the notebooks
   - toc:
       permalink: true
+
 
 plugins:
   - search
@@ -80,6 +97,58 @@ plugins:
   - mkdocstrings
   - social
   - mknotebooks
+  - tags:
+      tags_file: tutorials/index.md
+
 
 nav:
-  - Getting started: index.md
+  - Overview:
+    - index.md
+    - Quickstart (WIP): overview/quickstart.md
+    - Installation (WIP):
+      - overview/installation/index.md
+      - Python SDK: overview/installation/telemetry.md
+      - FastAPI Server:
+        - overview/installation/telemetry.md
+    - Concepts (WIP):
+      - overview/concepts/index.md
+    - Changelog (WIP): overview/changelog.md
+    - Contributing:
+      - GitHub workflows: overview/community/contributor.md
+      - Development environment: overview/community/developer.md
+    - Community: overview/community/index.md
+    - FAQ: overview/faq.md
+  - How to guides:
+    - how_to_guides/index.md
+    - Manage your annotation team:
+      - how_to_guides/team/index.md
+      - Workspaces: how_to_guides/team/workspace.md
+      - Users: how_to_guides/team/user.md
+    - Define and change your dataset settings:
+      - how_to_guides/dataset/index.md
+      - Fields: how_to_guides/dataset/fields.md
+      - Questions: how_to_guides/dataset/questions.md
+      - Metadata: how_to_guides/dataset/metadata.md
+      - Vectors: how_to_guides/dataset/vectors.md
+    - Work with records in your dataset:
+      - how_to_guides/record/index.md
+      - Fields: how_to_guides/record/fields.md
+      - Questions: how_to_guides/record/questions.md
+      - Metadata: how_to_guides/record/metadata.md
+      - Vectors: how_to_guides/record/vectors.md
+    - Filter and query a dataset: how_to_guides/export.md
+    - Distribute annotation work: how_to_guides/distribute.md
+    - Compute metrics and KPIs:
+      - Dataset progress: how_to_guides/metrics/dataset.md
+      - Model performance: how_to_guides/metrics/model.md
+      - Annotator performance: how_to_guides/metrics/annotator.md
+    - Fine-tune a model: fine_tune.md
+  - Tutorials:
+    - tutorials/index.md
+    - tutorials/rag_llm.md
+    - tutorials/rag_rankers_and_retrievers.md
+  - Integrations:
+    - integrations/index.md
+  - API Reference:
+    - Python SDK: reference/
+    - FastAPI Server: reference/

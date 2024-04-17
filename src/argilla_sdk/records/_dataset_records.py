@@ -19,6 +19,7 @@ from argilla_sdk._models import RecordModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
 from argilla_sdk.records._resource import Record
+from argilla_sdk.records._export import GenericExportMixin
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -76,7 +77,7 @@ class DatasetRecordsIterator:
             yield Record.from_model(model=record_model, dataset=self.__dataset)
 
 
-class DatasetRecords(Resource):
+class DatasetRecords(Resource, GenericExportMixin):
     """
     This class is used to work with records from a dataset.
 
@@ -191,7 +192,18 @@ class DatasetRecords(Resource):
             level="info",
         )
 
-        return created_or_updated
+    def pull(self) -> None:
+        """Fetch all records from the server and update the local records."""
+        records = self.__list_records_from_server()
+        self.__records = [Record.from_model(model=record, dataset=self.__dataset) for record in records]
+
+    def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
+        """Return the records as a dictionary."""
+        return self._export_to_dict(records=self.__records, flatten=flatten, orient=orient)
+
+    def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
+        """Return the records as a list of dictionaries."""
+        return self._export_to_list(records=self.__records, flatten=flatten)
 
     ############################
     # Utility methods

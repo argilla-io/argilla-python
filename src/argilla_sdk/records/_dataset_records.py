@@ -192,22 +192,27 @@ class DatasetRecords(Resource, GenericExportMixin):
             level="info",
         )
 
-    def pull(self) -> None:
-        """Fetch all records from the server and update the local records."""
-        records = self.__list_records_from_server()
-        self.__records = [Record.from_model(model=record, dataset=self.__dataset) for record in records]
-
     def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
         """Return the records as a dictionary."""
-        return self._export_to_dict(records=self.__records, flatten=flatten, orient=orient)
+        records = self.__pull_records_from_server()
+        return self._export_to_dict(records=records, flatten=flatten, orient=orient)
 
     def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
         """Return the records as a list of dictionaries."""
-        return self._export_to_list(records=self.__records, flatten=flatten)
+        records = self.__pull_records_from_server()
+        return self._export_to_list(records=records, flatten=flatten)
 
     ############################
     # Utility methods
     ############################
+
+    def __pull_records_from_server(self):
+        """Get records from the server"""
+        record_models = self.__client.api.records.list(
+            dataset_id=self.__dataset.id, with_suggestions=True, with_responses=True
+        )
+        records = [Record.from_model(model=record, dataset=self.__dataset) for record in record_models]
+        return records
 
     def __ingest_records(
         self,

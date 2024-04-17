@@ -8,7 +8,7 @@ import argilla_sdk as rg
 
 @pytest.fixture
 def client() -> rg.Argilla:
-    client = rg.Argilla(api_url="http://localhost:6900", api_key="owner.apikey")
+    client = rg.Argilla(api_url="http://localhost:6900", api_key="argilla.apikey")
     return client
 
 
@@ -48,7 +48,6 @@ def test_export_records_dict_defaults(client):
     )
     dataset.publish()
     dataset.records.add(records=mock_data)
-    dataset.records.pull()
     exported_records = dataset.records.to_dict()
     assert len(exported_records) == 5
     assert isinstance(exported_records, dict)
@@ -94,7 +93,6 @@ def test_export_records_list_defaults(client):
     )
     dataset.publish()
     dataset.records.add(records=mock_data)
-    dataset.records.pull()
     exported_records = dataset.records.to_list()
     assert len(exported_records) == len(mock_data)
     assert isinstance(exported_records, list)
@@ -143,7 +141,6 @@ def test_export_records_list_nested(client):
     )
     dataset.publish()
     dataset.records.add(records=mock_data)
-    dataset.records.pull()
     exported_records = dataset.records.to_list(flatten=False)
     assert len(exported_records) == len(mock_data)
     assert exported_records[0]["fields"]["text"] == "Hello World, how are you?"
@@ -187,7 +184,6 @@ def test_export_records_dict_nested(client):
     )
     dataset.publish()
     dataset.records.add(records=mock_data)
-    dataset.records.pull()
     exported_records = dataset.records.to_dict(flatten=False)
     assert isinstance(exported_records, dict)
     assert exported_records["fields"][0]["text"] == "Hello World, how are you?"
@@ -230,7 +226,6 @@ def test_export_records_dict_nested_orient_index(client):
     )
     dataset.publish()
     dataset.records.add(records=mock_data)
-    dataset.records.pull()
     exported_records = dataset.records.to_dict(flatten=False, orient="index")
     assert isinstance(exported_records, dict)
     for mock_record, (id_, exported_record) in zip(mock_data, exported_records.items()):

@@ -139,7 +139,7 @@ class Record(Resource):
     def to_dict(self) -> Dict[str, Dict]:
         """Converts a Record object to a dictionary for export.
         Returns:
-            A dictionary representing the record where the keys are "fields", 
+            A dictionary representing the record where the keys are "fields",
             "metadata", "suggestions", and "responses". Each field and question is
             represented as a key-value pair in the dictionary of the respective key. i.e.
             `{"fields": {"prompt": "...", "response": "..."}, "responses": {"rating": "..."},
@@ -193,64 +193,54 @@ class Record(Resource):
             A RecordModel object.
         """
 
-        if mapping is not None:
-            schema_switch = Record.__construct_schema_from_mapping(input_mapping=mapping)
-        else:
-            schema_switch = {question_name: (question_name, "suggestion") for question_name in schema.keys()}
-
-        fields = {}
-        suggestions = []
-        responses = []
+        fields: Dict[str, str] = {}
+        suggestions: List[SuggestionModel] = []
+        responses: List[ResponseModel] = []
+        record_id: Optional[str] = None
 
         for attribute, value in data.items():
-            if attribute not in schema and attribute not in schema_switch:
-                warnings.warn(f"Record attribute {attribute} is not in the schema or mapping. Skipping.")
-                continue
             schema_item = schema.get(attribute)
+            attribute_type = None
+
+            # Map source data keys using the mapping
+            if schema_item is None and mapping is not None and attribute in mapping:
+                attribute_mapping = mapping.get(attribute)
+                attribute_mapping = attribute_mapping.split(".")
+                attribute = attribute_mapping[0]
+                schema_item = schema.get(attribute)
+                if len(attribute_mapping) > 1:
+                    attribute_type = attribute_mapping[1]
+            elif schema_item is mapping is None:
+                warnings.warn(
+                    message=f"""Record attribute {attribute} is not in the schema so skipping. 
+                    Define a mapping to map source data fields to Argilla Fields, Questions, and ids
+                    """
+                )
+                continue
+
+            # Skip if the attribute is an id or external_id
+            if attribute == "id":
+                record_id = value
+                continue
+
+            # Assign the value to question, field, or response based on schema item
             if isinstance(schema_item, FieldType):
                 fields[attribute] = value
-            elif isinstance(schema_item, QuestionType) or attribute in schema_switch:
-                question_name, destination = schema_switch[attribute]
-                schema_item = schema.get(question_name)
-                if destination == "suggestion":
-                    question_id = schema_item.id
-                    suggestions.append(
-                        SuggestionModel(value=value, question_id=question_id, question_name=question_name)
-                    )
-                elif destination == "response":
-                    responses.append(ResponseModel(values={question_name: {"value": value}}, user_id=user_id))
+            elif isinstance(schema_item, QuestionType) and attribute_type == "response":
+                responses.append(ResponseModel(values={attribute: {"value": value}}, user_id=user_id))
+            elif isinstance(schema_item, QuestionType) and attribute_type != "response":
+                suggestions.append(SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute))
             else:
-                warnings.warn(f"Record attribute {attribute} is not in the schema or mapping. Skipping.")
+                warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
+                continue
 
         return RecordModel(
-            id=data.get("id") or str(uuid4()),
+            id=record_id,
             fields=fields,
             suggestions=suggestions,
             responses=responses,
-            external_id=data.get("external_id"),
+            external_id=data.get("external_id") or record_id,
         )
-
-    @staticmethod
-    def __construct_schema_from_mapping(input_mapping: Dict[str, str]) -> Dict[str, Tuple[str, str]]:
-        """Constructs a mapping of question names to question ids.
-        Args:
-            mapping: A dictionary of question names to question ids.
-        Returns:
-            A dictionary of question names to question ids.
-        """
-        schema_mapping = {}
-        for input_key, schema_destination in input_mapping.items():
-            schema_destination = schema_destination.split(".")
-            if len(schema_destination) == 1:
-                schema_mapping[input_key] = (schema_destination[0], "suggestion")
-            elif len(schema_destination) == 2:
-                question_name, destination = schema_destination
-                if destination not in ["suggestion", "response"]:
-                    raise ValueError(f"Invalid mapping destination {schema_destination[1]}.")
-                schema_mapping[input_key] = (question_name, destination)
-            else:
-                raise ValueError(f"Invalid mapping destination {schema_destination}.")
-        return schema_mapping
 
 
 class RecordFields:

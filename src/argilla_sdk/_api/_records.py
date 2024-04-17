@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Dict
+from typing import List, Dict, Tuple, Union
 from uuid import UUID
 
 import httpx
+
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
 from argilla_sdk._models import RecordModel, ResponseModel
@@ -25,6 +26,9 @@ __all__ = ["RecordsAPI"]
 
 class RecordsAPI(ResourceAPI[RecordModel]):
     """Manage datasets via the API"""
+
+    MAX_RECORDS_PER_CREATE_BULK = 500
+    MAX_RECORDS_PER_UPSERT_BULK = 500
 
     http_client: httpx.Client
 
@@ -54,16 +58,6 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     # Utility methods #
     ####################
 
-    def create_many(self, dataset_id: UUID, records: List[RecordModel]) -> None:
-        record_dicts = [record.model_dump() for record in records]
-        response = self.http_client.post(
-            url=f"/api/v1/datasets/{dataset_id}/records",
-            json={"items": record_dicts},
-        )
-        _http.raise_for_status(response=response)
-        self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
-        # TODO: Once server returns the records, return them here
-
     def list(
         self,
         dataset_id: UUID,
@@ -86,8 +80,19 @@ class RecordsAPI(ResourceAPI[RecordModel]):
 
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/records", params=params)
         _http.raise_for_status(response=response)
+
         json_records = response.json()["items"]
-        return [RecordModel(**record) for record in json_records]
+        return self._model_from_jsons(json_records)
+
+    def create_many(self, dataset_id: UUID, records: List[RecordModel]) -> None:
+        record_dicts = [record.model_dump() for record in records]
+        response = self.http_client.post(
+            url=f"/api/v1/datasets/{dataset_id}/records",
+            json={"items": record_dicts},
+        )
+        _http.raise_for_status(response=response)
+        self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
+        # TODO: Once server returns the records, return them here
 
     def update_many(self, dataset_id: UUID, records: List[RecordModel]) -> None:
         record_dicts = [record.model_dump() for record in records]
@@ -97,6 +102,45 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         )
         _http.raise_for_status(response=response)
         self.log(message=f"Updated {len(records)} records in dataset {dataset_id}")
+
+    def bulk_create(
+        self, dataset_id: UUID, records: List[RecordModel]
+    ) -> Union[List[RecordModel], Tuple[List[RecordModel], int]]:
+        if len(records) > self.MAX_RECORDS_PER_CREATE_BULK:
+            raise ValueError(f"Cannot create more than {self.MAX_RECORDS_PER_CREATE_BULK} records at once")
+
+        record_dicts = [record.model_dump() for record in records]
+
+        response = self.http_client.post(
+            url=f"/api/v1/datasets/{dataset_id}/records/bulk",
+            json={"items": record_dicts},
+        )
+
+        _http.raise_for_status(response=response)
+        self.log(message=f"Created {len(records)} in dataset {dataset_id}")
+
+        json_records = response.json()["items"]
+        return self._model_from_jsons(json_records)
+
+    def bulk_upsert(self, dataset_id: UUID, records: List[RecordModel]) -> Tuple[List[RecordModel], int]:
+        if len(records) > self.MAX_RECORDS_PER_UPSERT_BULK:
+            raise ValueError(f"Cannot upsert more than {self.MAX_RECORDS_PER_UPSERT_BULK} records at once")
+
+        record_dicts = [record.model_dump() for record in records]
+        response = self.http_client.put(
+            url=f"/api/v1/datasets/{dataset_id}/records/bulk",
+            json={"items": record_dicts},
+        )
+
+        _http.raise_for_status(response=response)
+        json_response = response.json()
+        updated = len(json_response.get("updated_item_ids", []))
+        self.log(
+            message=f"Updated {updated} records and create {len(records) - updated} records in dataset {dataset_id}"
+        )
+
+        json_records = json_response["items"]
+        return self._model_from_jsons(json_records), updated
 
     ####################
     # Response methods #

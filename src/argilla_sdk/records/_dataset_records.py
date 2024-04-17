@@ -212,11 +212,7 @@ class DatasetRecords(Resource, GenericExportMixin):
 
     def __pull_records_from_server(self):
         """Get records from the server"""
-        record_models = self.__client.api.records.list(
-            dataset_id=self.__dataset.id, with_suggestions=True, with_responses=True
-        )
-        records = [Record.from_model(model=record, dataset=self.__dataset) for record in record_models]
-        return records
+        return list(self(with_suggestions=True, with_responses=True))
 
     def __ingest_records(
         self,

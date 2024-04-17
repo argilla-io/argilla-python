@@ -15,11 +15,12 @@
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence
 from uuid import UUID
 
+from argilla_sdk._api import RecordsAPI
 from argilla_sdk._models import RecordModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
-from argilla_sdk.records._resource import Record
 from argilla_sdk.records._export import GenericExportMixin
+from argilla_sdk.records._resource import Record
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -86,6 +87,8 @@ class DatasetRecords(Resource, GenericExportMixin):
 
     """
 
+    _api: RecordsAPI
+
     def __init__(self, client: "Argilla", dataset: "Dataset"):
         """Initializes a DatasetRecords object with a client and a dataset.
         Args:
@@ -94,6 +97,7 @@ class DatasetRecords(Resource, GenericExportMixin):
         """
         self.__client = client
         self.__dataset = dataset
+        self._api = self.__client.api.records
 
     def __iter__(self):
         return DatasetRecordsIterator(self.__dataset, self.__client)
@@ -135,16 +139,16 @@ class DatasetRecords(Resource, GenericExportMixin):
         record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id)
 
         batch_size = self._normalize_batch_size(
-            batch_size,
-            len(record_models),
-            self.__client.api.records.MAX_RECORDS_PER_CREATE_BULK,
+            batch_size=batch_size,
+            records_length=len(record_models),
+            max_value=self._api.MAX_RECORDS_PER_CREATE_BULK,
         )
 
         created_records = []
         for batch in range(0, len(records), batch_size):
             self.log(message=f"Sending records from {batch} to {batch + batch_size}.")
             batch_records = record_models[batch : batch + batch_size]
-            models = self.__client.api.records.bulk_create(dataset_id=self.__dataset.id, records=batch_records)
+            models = self._api.bulk_create(dataset_id=self.__dataset.id, records=batch_records)
             created_records.extend([Record.from_model(model=model, dataset=self.__dataset) for model in models])
 
         self.log(
@@ -172,9 +176,9 @@ class DatasetRecords(Resource, GenericExportMixin):
         """
         record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id)
         batch_size = self._normalize_batch_size(
-            batch_size,
-            len(record_models),
-            self.__client.api.records.MAX_RECORDS_PER_UPSERT_BULK,
+            batch_size=batch_size,
+            records_length=len(record_models),
+            max_value=self._api.MAX_RECORDS_PER_UPSERT_BULK,
         )
 
         created_or_updated = []
@@ -182,7 +186,7 @@ class DatasetRecords(Resource, GenericExportMixin):
         for batch in range(0, len(records), batch_size):
             self.log(message=f"Sending records from {batch} to {batch + batch_size}.")
             batch_records = record_models[batch : batch + batch_size]
-            models, updated = self.__client.api.records.bulk_upsert(dataset_id=self.__dataset.id, records=batch_records)
+            models, updated = self._api.bulk_upsert(dataset_id=self.__dataset.id, records=batch_records)
             created_or_updated.extend([Record.from_model(model=model, dataset=self.__dataset) for model in models])
             records_updated += updated
 

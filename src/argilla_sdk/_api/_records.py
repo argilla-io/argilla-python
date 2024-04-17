@@ -80,8 +80,9 @@ class RecordsAPI(ResourceAPI[RecordModel]):
 
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/records", params=params)
         _http.raise_for_status(response=response)
+
         json_records = response.json()["items"]
-        return [RecordModel(**record) for record in json_records]
+        return self._model_from_jsons(json_records)
 
     def create_many(self, dataset_id: UUID, records: List[RecordModel]) -> None:
         record_dicts = [record.model_dump() for record in records]
@@ -118,7 +119,8 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         _http.raise_for_status(response=response)
         self.log(message=f"Created {len(records)} in dataset {dataset_id}")
 
-        return [RecordModel(**record) for record in response.json()["items"]]
+        json_records = response.json()["items"]
+        return self._model_from_jsons(json_records)
 
     def bulk_upsert(self, dataset_id: UUID, records: List[RecordModel]) -> Tuple[List[RecordModel], int]:
         if len(records) > self.MAX_RECORDS_PER_UPSERT_BULK:
@@ -138,7 +140,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         )
 
         json_records = json_response["items"]
-        return [RecordModel(**record) for record in json_records], updated
+        return self._model_from_jsons(json_records), updated
 
     ####################
     # Response methods #

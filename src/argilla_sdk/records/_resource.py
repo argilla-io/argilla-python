@@ -139,7 +139,7 @@ class Record(Resource):
     def to_dict(self) -> Dict[str, Dict]:
         """Converts a Record object to a dictionary for export.
         Returns:
-            A dictionary representing the record where the keys are "fields", 
+            A dictionary representing the record where the keys are "fields",
             "metadata", "suggestions", and "responses". Each field and question is
             represented as a key-value pair in the dictionary of the respective key. i.e.
             `{"fields": {"prompt": "...", "response": "..."}, "responses": {"rating": "..."},
@@ -196,12 +196,11 @@ class Record(Resource):
         fields: Dict[str, str] = {}
         suggestions: List[SuggestionModel] = []
         responses: List[ResponseModel] = []
-        external_id: Optional[str] = None
+        record_id: Optional[str] = None
 
         for attribute, value in data.items():
             schema_item = schema.get(attribute)
             attribute_type = None
-                        
             # Map source data keys using the mapping
             if schema_item is None and mapping is not None and attribute in mapping:
                 attribute_mapping = mapping.get(attribute)
@@ -217,10 +216,10 @@ class Record(Resource):
                     """
                 )
                 continue
-            
+
             # Skip if the attribute is an id or external_id
-            if attribute == "id" or attribute == "external_id":
-                external_id = value
+            if attribute == "id":
+                record_id = value
                 continue
 
             # Assign the value to question, field, or response based on schema item
@@ -235,10 +234,11 @@ class Record(Resource):
                 continue
 
         return RecordModel(
+            id=record_id,
             fields=fields,
             suggestions=suggestions,
             responses=responses,
-            external_id=external_id,
+            external_id=data.get("external_id") or record_id,
         )
 
 

@@ -1,4 +1,5 @@
 import random
+from unittest import mock
 import uuid
 from datetime import datetime
 
@@ -269,7 +270,7 @@ def test_add_records_with_responses(client) -> None:
         assert record.external_id == str(mock_record["external_id"])
         assert record.fields.text == mock_record["text"]
         assert record.responses.label[0].value == mock_record["my_label"]
-        assert record.responses.label[0].user_id == user.id 
+        assert record.responses.label[0].user_id == user.id
 
 
 def test_add_records_with_responses_and_suggestions(client) -> None:
@@ -456,3 +457,49 @@ def test_add_records_with_id_mapped(client) -> None:
     assert dataset_records[2].suggestions.label == "positive"
     assert dataset_records[2].responses.label[0].value == "negative"
     assert dataset_records[2].responses.label[0].user_id == user.id
+
+
+def test_add_record_resources(client):
+    workspace_id = client.workspaces[0].id
+    user_id = client.users[0].id
+    mock_dataset_name = f"test_add_records{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    mock_resources = [
+        rg.Record(
+            fields={"text": "Hello World, how are you?"},
+            responses=[rg.Response("label", "positive", user_id=user_id)],
+            external_id=str(uuid.uuid4()),
+        ),
+        rg.Record(
+            fields={"text": "Hello World, how are you?"},
+            responses=[rg.Response("label", "positive", user_id=user_id)],
+            external_id=str(uuid.uuid4()),
+        ),
+        rg.Record(
+            fields={"text": "Hello World, how are you?"},
+            responses=[rg.Response("label", "positive", user_id=user_id)],
+            external_id=str(uuid.uuid4()),
+        ),
+    ]
+    settings = rg.Settings(
+        fields=[
+            rg.TextField(name="text"),
+        ],
+        questions=[
+            rg.LabelQuestion(name="label", labels=["positive", "negative"]),
+        ],
+    )
+    dataset = rg.Dataset(
+        name=mock_dataset_name,
+        workspace_id=workspace_id,
+        settings=settings,
+        client=client,
+    )
+    dataset.publish()
+    dataset.records.add(records=mock_resources)
+
+    dataset_records = list(dataset.records)
+
+    assert dataset.name == mock_dataset_name
+    assert dataset_records[0].external_id == str(mock_resources[0].external_id)
+    assert dataset_records[1].external_id == str(mock_resources[1].external_id)
+    assert dataset_records[2].external_id == str(mock_resources[2].external_id)

@@ -17,10 +17,11 @@ from collections import defaultdict
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Tuple
 from uuid import uuid4, UUID
 
-from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel
+from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel, VectorModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.responses import Response
-from argilla_sdk.settings import FieldType, QuestionType
+from argilla_sdk.vectors import Vector
+from argilla_sdk.settings import FieldType, QuestionType, VectorField
 from argilla_sdk.suggestions import Suggestion
 
 
@@ -43,7 +44,7 @@ class Record(Resource):
         self,
         fields: Dict[str, Union[str, None]] = None,
         metadata: Optional[Dict[str, Any]] = None,
-        vectors: Optional[Dict[str, List[float]]] = None,
+        vectors: Optional[List[Vector]] = None,
         responses: Optional[List[Response]] = None,
         suggestions: Optional[Union[Tuple[Suggestion], List[Suggestion]]] = None,
         external_id: Optional[str] = None,
@@ -68,14 +69,15 @@ class Record(Resource):
         self._model = RecordModel(
             fields=fields,
             metadata=metadata,
-            vectors=vectors,
             external_id=external_id or uuid4(),
             id=id or uuid4(),
         )
+        self.__vectors = RecordVectors(vectors=vectors, record=self)
         self.__responses = RecordResponses(responses=responses, record=self)
         self.__suggestions = RecordSuggestions(suggestions=suggestions, record=self)
         self._model.responses = self.__responses.models
         self._model.suggestions = self.__suggestions.models
+        self._model.vectors = self.__vectors.models
         # TODO: This should be done in the RecordModel class as above
         self.__fields = RecordFields(fields=self._model.fields)
 
@@ -110,6 +112,10 @@ class Record(Resource):
     @property
     def metadata(self) -> Dict[str, Any]:
         return self._model.metadata or {}
+
+    @property
+    def vectors(self) -> "RecordVectors":
+        return self.__vectors
 
     ############################
     # Public methods
@@ -171,7 +177,7 @@ class Record(Resource):
             external_id=model.external_id,
             fields=model.fields,
             metadata=model.metadata,
-            vectors=model.vectors,
+            vectors=[Vector.from_model(model=vector) for vector in model.vectors],
             responses=[Response.from_model(model=response) for response in model.responses],
             suggestions=[Suggestion.from_model(model=suggestion) for suggestion in model.suggestions],
             dataset=dataset,
@@ -197,6 +203,7 @@ class Record(Resource):
         suggestions: List[SuggestionModel] = []
         responses: List[ResponseModel] = []
         record_id: Optional[str] = None
+        vectors: List[VectorModel] = []
 
         for attribute, value in data.items():
             schema_item = schema.get(attribute)
@@ -229,6 +236,8 @@ class Record(Resource):
                 responses.append(ResponseModel(values={attribute: {"value": value}}, user_id=user_id))
             elif isinstance(schema_item, QuestionType) and attribute_type != "response":
                 suggestions.append(SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute))
+            elif isinstance(schema_item, VectorField):
+                vectors.append(VectorModel(name=attribute, vector_values=value))
             else:
                 warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
                 continue
@@ -238,6 +247,7 @@ class Record(Resource):
             fields=fields,
             suggestions=suggestions,
             responses=responses,
+            vectors=vectors,
             external_id=data.get("external_id") or record_id,
         )
 
@@ -350,3 +360,26 @@ class RecordSuggestions:
                 "agent": suggestion.agent,
             }
         return suggestion_dict
+
+
+class RecordVectors:
+    """This is a container class for the vectors of a Record.
+    It allows for accessing suggestions by attribute and iterating over them.
+    """
+
+    def __init__(self, vectors: List[Vector], record: Record) -> None:
+        self.__vectors = vectors or []
+        self.record = record
+        for vector in self.__vectors:
+            setattr(self, vector.name, vector.values)
+
+    @property
+    def models(self) -> List[VectorModel]:
+        return [vector._model for vector in self.__vectors]
+
+    def to_dict(self) -> Dict[str, List[str]]:
+        """Converts the vectors to a dictionary.
+        Returns:
+            A dictionary of vectors.
+        """
+        return {vector.name: vector.values for vector in self.__vectors}

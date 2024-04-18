@@ -65,12 +65,15 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         limit: int = 100,
         with_suggestions: bool = True,
         with_responses: bool = True,
+        with_vectors: bool = False,
     ) -> List[RecordModel]:
         include = []
         if with_suggestions:
             include.append("suggestions")
         if with_responses:
             include.append("responses")
+        if with_vectors:
+            include.append("vectors")
 
         params = {
             "offset": offset,
@@ -168,6 +171,10 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     def _model_from_json(self, response_json: Dict) -> RecordModel:
         response_json["inserted_at"] = self._date_from_iso_format(date=response_json["inserted_at"])
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
+        if "vectors" in response_json:
+            response_json["vectors"] = [
+                {"name": key, "vector_values": value} for key, value in response_json["vectors"].items()
+            ]
         return RecordModel(**response_json)
 
     def _model_from_jsons(self, response_jsons: List[Dict]) -> List[RecordModel]:

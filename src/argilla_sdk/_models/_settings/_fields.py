@@ -40,4 +40,12 @@ class TextFieldModel(FieldBaseModel):
     settings: FieldSettings = FieldSettings(type="text", use_markdown=False)
 
 
-FieldModel = TextFieldModel
+class VectorFieldModel(FieldBaseModel):
+    dimensions: int
+    settings: FieldSettings = FieldSettings(type="vector", use_markdown=False)
+
+    @validator("dimensions")
+    def __dimension_gt_zero(cls, dimensions):
+        if dimensions <= 0:
+            raise ValueError("dimensions must be greater than 0")
+        return dimensions

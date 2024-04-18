@@ -21,6 +21,7 @@ from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
 from argilla_sdk.records._export import GenericExportMixin
 from argilla_sdk.records._resource import Record
+from argilla_sdk.records._search import Query
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -33,6 +34,7 @@ class DatasetRecordsIterator:
         self,
         dataset: "Dataset",
         client: "Argilla",
+        query: Optional[Query] = None,
         start_offset: int = 0,
         batch_size: Optional[int] = None,
         with_suggestions: bool = False,
@@ -40,11 +42,12 @@ class DatasetRecordsIterator:
     ):
         self.__dataset = dataset
         self.__client = client
-        self.__records_batch = []
+        self.__query = query or Query()
         self.__offset = start_offset or 0
         self.__batch_size = batch_size or 100
         self.__with_suggestions = with_suggestions
         self.__with_responses = with_responses
+        self.__records_batch = []
 
     def __iter__(self):
         return self
@@ -67,15 +70,36 @@ class DatasetRecordsIterator:
         self.__offset += len(self.__records_batch)
 
     def _list(self) -> Sequence[Record]:
-        record_models = self.__client.api.records.list(
+        for record_model in self._fetch_from_server():
+            yield Record.from_model(model=record_model, dataset=self.__dataset)
+
+    def _fetch_from_server(self) -> List[RecordModel]:
+        if self._is_search_query():
+            return self._fetch_from_server_with_search()
+        return self._fetch_from_server_with_list()
+
+    def _fetch_from_server_with_list(self) -> List[RecordModel]:
+        return self.__client.api.records.list(
             dataset_id=self.__dataset.id,
             limit=self.__batch_size,
             offset=self.__offset,
             with_responses=self.__with_responses,
             with_suggestions=self.__with_suggestions,
         )
-        for record_model in record_models:
-            yield Record.from_model(model=record_model, dataset=self.__dataset)
+
+    def _fetch_from_server_with_search(self) -> List[RecordModel]:
+        search_items, total = self.__client.api.records.search(
+            dataset_id=self.__dataset.id,
+            query=self.__query.model,
+            limit=self.__batch_size,
+            offset=self.__offset,
+            with_responses=self.__with_responses,
+            with_suggestions=self.__with_suggestions,
+        )
+        return [record_model for record_model, _ in search_items]
+
+    def _is_search_query(self) -> bool:
+        return bool(self.__query and (self.__query.query or self.__query.filters))
 
 
 class DatasetRecords(Resource, GenericExportMixin):
@@ -104,14 +128,19 @@ class DatasetRecords(Resource, GenericExportMixin):
 
     def __call__(
         self,
+        query: Optional[Union[str, Query]] = None,
         batch_size: Optional[int] = 100,
         start_offset: int = 0,
         with_suggestions: bool = True,
         with_responses: bool = True,
     ):
+        if query and isinstance(query, str):
+            query = Query(query=query)
+
         return DatasetRecordsIterator(
             self.__dataset,
             self.__client,
+            query=query,
             batch_size=batch_size,
             start_offset=start_offset,
             with_suggestions=with_suggestions,

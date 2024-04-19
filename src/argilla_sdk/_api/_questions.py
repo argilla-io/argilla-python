@@ -93,6 +93,7 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
         return list(map(self._model_from_json, response_jsons))
 
     def _get_model_from_response(self, response_json: Dict) -> QuestionModel:
+        """Get the model from the response"""
         try:
             question_type = response_json.get("settings", {}).get("type")
         except Exception as e:

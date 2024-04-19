@@ -14,7 +14,7 @@ class FieldSettings(BaseModel):
 class FieldBaseModel(BaseModel):
     id: Optional[UUID] = None
     name: str
-    settings: FieldSettings
+    settings: Optional[FieldSettings]
 
     title: Optional[str] = None
     required: bool = True
@@ -42,7 +42,6 @@ class TextFieldModel(FieldBaseModel):
 
 class VectorFieldModel(FieldBaseModel):
     dimensions: int
-    settings: FieldSettings = FieldSettings(type="vector", use_markdown=False)
 
     @validator("dimensions")
     def __dimension_gt_zero(cls, dimensions):

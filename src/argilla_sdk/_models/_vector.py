@@ -14,7 +14,7 @@
 
 from argilla_sdk._models import ResourceModel
 
-__all__ = ["Vector"]
+__all__ = ["VectorModel"]
 
 
 class VectorModel(ResourceModel):

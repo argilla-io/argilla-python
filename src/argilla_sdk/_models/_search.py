@@ -26,8 +26,12 @@ class MetadataFilterScopeModel(BaseModel):
     metadata_property: str
 
 
-Scope = Annotated[
-    Union[ResponseFilterScopeModel, SuggestionFilterScopeModel, MetadataFilterScopeModel,],
+ScopeModel = Annotated[
+    Union[
+        ResponseFilterScopeModel,
+        SuggestionFilterScopeModel,
+        MetadataFilterScopeModel,
+    ],
     Field(discriminator="entity"),
 ]
 
@@ -37,40 +41,50 @@ class TermsFilterModel(BaseModel):
 
     type: Literal["terms"] = "terms"
     values: List[str]
-    scope: Scope
+    scope: ScopeModel
 
 
 class RangeFilterModel(BaseModel):
     """Filter model for range filter."""
+
     type: Literal["range"] = "range"
     ge: Any
     le: Any
-    scope: Scope
+    scope: ScopeModel
 
 
 FilterModel = Annotated[
-    Union[TermsFilterModel, RangeFilterModel,],
-    Field(discriminator="type")
+    Union[
+        TermsFilterModel,
+        RangeFilterModel,
+    ],
+    Field(discriminator="type"),
 ]
 
 
 class AndFilterModel(BaseModel):
     """And filter model."""
-    and_: List[FilterModel] = Field(alias="and")
+
+    type: Literal["and"] = "and"
+
+    and_: List["FilterModel"] = Field(alias="and")
 
 
 class TextQueryModel(BaseModel):
     """Text query model."""
+
     q: str
     field: Union[str, None] = None
 
 
 class QueryModel(BaseModel):
     """Query part of the search query model"""
+
     text: TextQueryModel
 
 
 class SearchQueryModel(BaseModel):
     """The main search query model."""
+
     query: Union[QueryModel, None] = None
     filters: Union[AndFilterModel, None] = None

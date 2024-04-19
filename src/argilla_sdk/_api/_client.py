@@ -24,6 +24,7 @@ from argilla_sdk._api._fields import FieldsAPI
 from argilla_sdk._api._questions import QuestionsAPI
 from argilla_sdk._api._records import RecordsAPI
 from argilla_sdk._api._users import UsersAPI
+from argilla_sdk._api._vectors import VectorsAPI
 from argilla_sdk._api._workspaces import WorkspacesAPI
 from argilla_sdk._constants import _DEFAULT_API_KEY, _DEFAULT_API_URL
 
@@ -47,6 +48,7 @@ class ArgillaAPI:
         self.__fields = FieldsAPI(http_client=self.http_client)
         self.__questions = QuestionsAPI(http_client=self.http_client)
         self.__records = RecordsAPI(http_client=self.http_client)
+        self.__vectors = VectorsAPI(http_client=self.http_client)
 
     @property
     def workspaces(self) -> "WorkspacesAPI":
@@ -71,6 +73,10 @@ class ArgillaAPI:
     @property
     def records(self) -> "RecordsAPI":
         return self.__records
+
+    @property
+    def vectors(self) -> "VectorsAPI":
+        return self.__vectors
 
 
 class APIClient:

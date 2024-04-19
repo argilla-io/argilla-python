@@ -12,13 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Dict, Union
+from typing import List, Dict
 from uuid import UUID
 
 import httpx
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
-from argilla_sdk._models import FieldBaseModel, TextFieldModel
+from argilla_sdk._models import FieldBaseModel, TextFieldModel, FieldsModelType
 
 __all__ = ["FieldsAPI"]
 
@@ -32,9 +32,7 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
     # CRUD methods #
     ################
 
-    def create(
-        self, dataset_id: UUID, field: Union[TextFieldModel, FieldBaseModel]
-    ) -> Union[TextFieldModel, FieldBaseModel]:
+    def create(self, dataset_id: UUID, field: FieldsModelType) -> FieldsModelType:
         url = f"/api/v1/datasets/{dataset_id}/fields"
         response = self.http_client.post(url=url, json=field.model_dump())
         _http.raise_for_status(response=response)
@@ -42,7 +40,7 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
         self.log(message=f"Created field {field_model.name} in dataset {dataset_id}")
         return field_model
 
-    def update(self, field: Union[TextFieldModel, FieldBaseModel]) -> Union[TextFieldModel, FieldBaseModel]:
+    def update(self, field: FieldsModelType) -> FieldsModelType:
         # TODO: Implement update method for fields with server side ID
         raise NotImplementedError
 
@@ -54,14 +52,14 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
     # Utility methods #
     ####################
 
-    def create_many(self, dataset_id: UUID, fields: List[Dict]) -> List[Union[TextFieldModel, FieldBaseModel]]:
+    def create_many(self, dataset_id: UUID, fields: List[FieldsModelType]) -> List[FieldsModelType]:
         field_models = []
         for field in fields:
             field_model = self.create(dataset_id=dataset_id, field=field)
             field_models.append(field_model)
         return field_models
 
-    def list(self, dataset_id: UUID) -> List[Union[TextFieldModel, FieldBaseModel]]:
+    def list(self, dataset_id: UUID) -> List[FieldsModelType]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/fields")
         _http.raise_for_status(response=response)
         response_jsons = response.json()["items"]
@@ -72,15 +70,15 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
     # Private methods #
     ####################
 
-    def _model_from_json(self, response_json: Dict) -> Union["TextFieldModel", "FieldBaseModel"]:
+    def _model_from_json(self, response_json: Dict) -> FieldsModelType:
         response_json["inserted_at"] = self._date_from_iso_format(date=response_json["inserted_at"])
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
         return self._get_model_from_response(response_json=response_json)
 
-    def _model_from_jsons(self, response_jsons: List[Dict]) -> List[Union["TextFieldModel", "FieldBaseModel"]]:
+    def _model_from_jsons(self, response_jsons: List[FieldsModelType]) -> List[FieldsModelType]:
         return list(map(self._model_from_json, response_jsons))
 
-    def _get_model_from_response(self, response_json: Dict) -> Union["TextFieldModel", "FieldBaseModel"]:
+    def _get_model_from_response(self, response_json: Dict) -> FieldsModelType:
         try:
             field_type = response_json.get("settings", {}).get("type")
         except Exception as e:

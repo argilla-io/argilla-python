@@ -32,7 +32,7 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
     # CRUD methods #
     ################
 
-    def create(self, workspace: WorkspaceModel) -> "WorkspaceModel":
+    def create(self, workspace: WorkspaceModel) -> WorkspaceModel:
         # TODO: Unify API endpoint
         response = self.http_client.post(url="/api/workspaces", json={"name": workspace.name})
         _http.raise_for_status(response=response)

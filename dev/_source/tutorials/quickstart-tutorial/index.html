@@ -12,7 +12,7 @@
         <meta name="author" content="Argilla, Inc.">
       
       
-        <link rel="canonical" href="https://argilla-io.github.io/argilla-python/dev/_source/tutorials/add-suggestions-and-responses-005/">
+        <link rel="canonical" href="https://argilla-io.github.io/argilla-python/dev/_source/tutorials/quickstart-tutorial/">
       
       
       
@@ -22,7 +22,7 @@
     
     
       
-        <title>Add suggestions and responses 005 - Argilla</title>
+        <title>Quickstart tutorial - Argilla</title>
       
     
     
@@ -67,11 +67,11 @@
       
         <meta  property="og:type"  content="website" >
       
-        <meta  property="og:title"  content="Add suggestions and responses 005 - Argilla" >
+        <meta  property="og:title"  content="Quickstart tutorial - Argilla" >
       
         <meta  property="og:description"  content="The Argilla python server SDK" >
       
-        <meta  property="og:image"  content="https://argilla-io.github.io/argilla-python/dev/assets/images/social/_source/tutorials/add-suggestions-and-responses-005.png" >
+        <meta  property="og:image"  content="https://argilla-io.github.io/argilla-python/dev/assets/images/social/_source/tutorials/quickstart-tutorial.png" >
       
         <meta  property="og:image:type"  content="image/png" >
       
@@ -79,15 +79,15 @@
       
         <meta  property="og:image:height"  content="630" >
       
-        <meta  property="og:url"  content="https://argilla-io.github.io/argilla-python/dev/_source/tutorials/add-suggestions-and-responses-005/" >
+        <meta  property="og:url"  content="https://argilla-io.github.io/argilla-python/dev/_source/tutorials/quickstart-tutorial/" >
       
         <meta  name="twitter:card"  content="summary_large_image" >
       
-        <meta  name="twitter:title"  content="Add suggestions and responses 005 - Argilla" >
+        <meta  name="twitter:title"  content="Quickstart tutorial - Argilla" >
       
         <meta  name="twitter:description"  content="The Argilla python server SDK" >
       
-        <meta  name="twitter:image"  content="https://argilla-io.github.io/argilla-python/dev/assets/images/social/_source/tutorials/add-suggestions-and-responses-005.png" >
+        <meta  name="twitter:image"  content="https://argilla-io.github.io/argilla-python/dev/assets/images/social/_source/tutorials/quickstart-tutorial.png" >
       
     
     
@@ -110,7 +110,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#add-responses-and-suggestions-to-feedbackdataset" class="md-skip">
+        <a href="#end-to-end-tutorial-for-using-the-new-argilla-sdk" class="md-skip">
           Skip to content
         </a>
       
@@ -147,7 +147,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Add suggestions and responses 005
+              Quickstart tutorial
             
           </span>
         </div>
@@ -1899,116 +1899,6 @@
     
   
   
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#table-of-contents" class="md-nav__link">
-    <span class="md-ellipsis">
-      Table of Contents
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#running-argilla" class="md-nav__link">
-    <span class="md-ellipsis">
-      Running Argilla
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#get-the-dataset" class="md-nav__link">
-    <span class="md-ellipsis">
-      Get the Dataset
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Get the Dataset">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#from-argilla" class="md-nav__link">
-    <span class="md-ellipsis">
-      From Argilla
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pull-the-original-dataset" class="md-nav__link">
-    <span class="md-ellipsis">
-      Pull the Original Dataset
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#add-responses" class="md-nav__link">
-    <span class="md-ellipsis">
-      Add Responses
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#add-suggestions" class="md-nav__link">
-    <span class="md-ellipsis">
-      Add Suggestions
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#publish-the-responses-and-suggestions-to-argilla" class="md-nav__link">
-    <span class="md-ellipsis">
-      Publish the Responses and Suggestions to Argilla
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="Publish the Responses and Suggestions to Argilla">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#to-huggingface-hub" class="md-nav__link">
-    <span class="md-ellipsis">
-      To HuggingFace Hub
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#conclusion" class="md-nav__link">
-    <span class="md-ellipsis">
-      Conclusion
-    </span>
-  </a>
-  
-</li>
-      
-    </ul>
-  
 </nav>
                   </div>
                 </div>
@@ -2058,77 +1948,28 @@
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="add-responses-and-suggestions-to-feedbackdataset">Add <code>Responses</code> and <code>Suggestions</code> to <code>FeedbackDataset</code><a class="headerlink" href="#add-responses-and-suggestions-to-feedbackdataset" title="Permanent link">&para;</a></h1>
-<p>In this part of the end-to-end tutorial series, we will see how we can update the records of our dataset with the responses and suggestions. You can refer to previous tutorials for <a href="../create-dataset-001/">creating the dataset</a>, <a href="../configure-users-and-workspaces-000/">configuring the users and workspaces</a> or <a href="./add-metadata-003.ipynb">adding metadata</a>. Feel free to check out the <a href="../../../../practical_guides/practical_guides.md">practical guides</a> page for more in-depth information.</p>
-<p>In Argilla, <code>responses</code> are the answers that the annotators give to the questions that we ask them. If we have a dataset that has been annotated already, we can add these gold responses to our dataset as responses. This comes in handy in that we will not have to annotate the dataset again. On the other hand, <code>suggestions</code> are the model predictions that we show to our annotators in the UI during the annotation process. This way, the annotation process will become much faster and easier for the annotators.</p>
-<p><img alt="workflow" src="../../../../_static/tutorials/end2end/base/workflow_suggestions_and_responses.svg" /></p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="table-of-contents">Table of Contents<a class="headerlink" href="#table-of-contents" title="Permanent link">&para;</a></h2>
+<h1 id="end-to-end-tutorial-for-using-the-new-argilla-sdk">End to end tutorial for using the new Argilla SDK<a class="headerlink" href="#end-to-end-tutorial-for-using-the-new-argilla-sdk" title="Permanent link">&para;</a></h1>
+<p>This tutorial encomposses the full workflow of using the Argilla SDK to manage human feedback tasks. The main three areas are:</p>
 <ol>
-<li><a href="#Pull-the-Dataset">Pull the Dataset</a></li>
-<li><a href="#From-Argilla">From Argilla</a></li>
-<li><a href="#From-HuggingFace-Hub">From HuggingFace Hub</a></li>
-<li><a href="#Pull-the-Original-Dataset">Pull the Original Dataset</a></li>
-<li><a href="#Add-Responses">Add Responses</a></li>
-<li><a href="#Add-Suggestions">Add Suggestions</a></li>
-<li><a href="#Push-the-Dataset">Push the Dataset</a></li>
-<li><a href="#To-Argilla">To Argilla</a></li>
-<li><a href="#To-HuggingFace-Hub">To HuggingFace Hub</a></li>
-<li><a href="#Conclusion">Conclusion</a></li>
+<li><strong>Setting up a project</strong>:</li>
+<li><strong>Connecting to an Argilla server</strong>:</li>
+<li><strong>Creating a workspace</strong>:</li>
+<li><strong>Creating users</strong>:</li>
+<li><strong>Creating a dataset</strong>:</li>
+<li><strong>Defining the dataset's feedback task</strong>:</li>
+<li><strong>Adding records to the dataset</strong>:</li>
+<li><strong>Manipulating records</strong>:</li>
+<li><strong>Adding records with suggestions</strong></li>
+<li><strong>Adding or Updating records with responses</strong></li>
 </ol>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="running-argilla">Running Argilla<a class="headerlink" href="#running-argilla" title="Permanent link">&para;</a></h2>
-<p>For this tutorial, you will need to have an Argilla server running. There are two main options for deploying and running Argilla:</p>
-<p><strong>Deploy Argilla on Hugging Face Spaces:</strong> If you want to run tutorials with external notebooks (e.g., Google Colab) and you have an account on Hugging Face, you can deploy Argilla on Spaces with a few clicks:</p>
-<p><a href="https://huggingface.co/new-space?template=argilla/argilla-template-space"><img alt="deploy on spaces" src="https://huggingface.co/datasets/huggingface/badges/raw/main/deploy-to-spaces-lg.svg" /></a></p>
-<p>For details about configuring your deployment, check the <a href="https://huggingface.co/docs/hub/spaces-sdks-docker-argilla">official Hugging Face Hub guide</a>.</p>
-<p><strong>Launch Argilla using Argilla's quickstart Docker image</strong>: This is the recommended option if you want <a href="../../../../getting_started/quickstart.md">Argilla running on your local machine</a>. Note that this option will only let you run the tutorial locally and not with an external notebook service.</p>
-<p>For more information on deployment options, please check the Deployment section of the documentation.</p>
-<div class="alert alert-info">
-
-Tip
-
-This tutorial is a Jupyter Notebook. There are two options to run it:
-
-- Use the Open in Colab button at the top of this page. This option allows you to run the notebook directly on Google Colab. Don't forget to change the runtime type to GPU for faster model training and inference.
-- Download the .ipynb file by clicking on the View source link at the top of the page. This option allows you to download the notebook and run it on your local machine or on a Jupyter notebook tool of your choice.
-</div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>First, let's install our dependencies and import the necessary libraries:</p>
+<p>We will work through each of these areas and show three depths of control: A line, B line, and C line. The A line is the simplest and most abstracted, the B line is a bit more detailed, and the C line is the most detailed and flexible.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="s2">&quot;argilla-python&quot;</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="err">!</span><span class="n">pip</span> <span class="n">install</span> <span class="n">datasets</span> <span class="n">transformers</span>
-</span></code></pre></div>
-
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="kn">from</span> <span class="nn">transformers</span> <span class="kn">import</span> <span class="n">pipeline</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span></code></pre></div>
 
 </div>
@@ -2136,63 +1977,90 @@ This tutorial is a Jupyter Notebook. There are two options to run it:
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>In order to run this notebook we will need some credentials to push and load datasets from <code>Argilla</code> and <code>🤗 Hub</code>, let's set them in the following cell:</p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Log in to argilla:</p>
+<h1 id="1-setting-up-a-project">1. Setting up a project<a class="headerlink" href="#1-setting-up-a-project" title="Permanent link">&para;</a></h1>
+<ul>
+<li>Connecting to an Argilla server</li>
+<li>Creating a workspace</li>
+<li>Creating users</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">()</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;http://localhost:6900&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;owner.apikey&quot;</span><span class="p">)</span>
 </span></code></pre></div>
 
 </div>
 </div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="get-the-dataset">Get the Dataset<a class="headerlink" href="#get-the-dataset" title="Permanent link">&para;</a></h2>
-<p>As we uploaded the dataset that we created in the <a href="../create-dataset-001/">previous tutorial</a> to both Argilla and HuggingFace Hub, we can now get the dataset. Let us see how we can pull the dataset from both.</p>
-<h3 id="from-argilla">From Argilla<a class="headerlink" href="#from-argilla" title="Permanent link">&para;</a></h3>
-<p>We can pull the dataset from Argilla by using the <code>from_argilla</code> method.</p>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;end2end_textclassification&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="s2">&quot;argilla&quot;</span><span class="p">)</span>
-</span></code></pre></div>
-
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Let us briefly examine what our dataset looks like. It is a dataset that consists of data items with the field <code>text</code> that is yet to be annotated.</p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">dataset</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">fields</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="n">client</span><span class="o">.</span><span class="n">workspaces</span>
 </span></code></pre></div>
 
 </div>
 <div class="output_wrapper">
 <div class="output">
 <div class="output_area">
-<div class="output_text output_subarea output_execute_result">
+<div class="output_html rendered_html output_subarea output_execute_result">
+<h3 id="workspaces">Workspaces<a class="headerlink" href="#workspaces" title="Permanent link">&para;</a></h3><table><tr><th>datasets</th><th>name</th><th>id</th><th>updated_at</th></tr><tr><td>749</td><td>admin</td><td>47a2ace0-a9b2-4dde-9710-0656646a3de3</td><td>2024-01-31T18:48:50.856584</td></tr><tr><td>1</td><td>new_ws</td><td>b4b7410c-7014-4ae4-a923-ec095d4a7272</td><td>2024-03-19T05:59:06.362275</td></tr><tr><td>0</td><td>end-to-end</td><td>e5bf1534-b89a-4245-9a30-99284710a1a9</td><td>2024-04-08T13:41:11.967896</td></tr></table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">ws</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Workspace</span><span class="p">(</span><span class="s2">&quot;end-to-end&quot;</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
+</span></code></pre></div>
+
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="k">try</span><span class="p">:</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">ws</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Workspace exists&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
 <pre>
-<code>{'text': "Wall St. Bears Claw Back Into the Black (Reuters) Reuters - Short-sellers, Wall Street's dwindling\\band of ultra-cynics, are seeing green again."}</code>
+<code>Workspace exists
+</code>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">user</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">User</span><span class="p">(</span><span class="n">username</span><span class="o">=</span><span class="s2">&quot;end-user&quot;</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="s2">&quot;password&quot;</span><span class="p">,</span> <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="k">try</span><span class="p">:</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>    <span class="n">ws</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;User exists&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+<code>User exists
+</code>
 </pre>
 </div>
 </div>
@@ -2202,21 +2070,89 @@ This tutorial is a Jupyter Notebook. There are two options to run it:
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="pull-the-original-dataset">Pull the Original Dataset<a class="headerlink" href="#pull-the-original-dataset" title="Permanent link">&para;</a></h3>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>As we will be using the gold labels in the original dataset as the responses, we can pull the original dataset from HuggingFace Hub. We can do this by using the <code>load_dataset</code> method.</p>
+<h1 id="2-creating-a-dataset">2. Creating a dataset<a class="headerlink" href="#2-creating-a-dataset" title="Permanent link">&para;</a></h1>
+<ul>
+<li>Defining the dataset's feedback task</li>
+<li>Adding records to the dataset</li>
+<li>Collecting the records</li>
+</ul>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
-<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="n">dataset_org</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;ag_news&quot;</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train[:1000]&quot;</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># !pip install -qqq datasets</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="kn">from</span> <span class="nn">datasets</span> <span class="kn">import</span> <span class="n">load_dataset</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="n">ds</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;imdb&quot;</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train[:100]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="n">ds</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">],</span> <span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;positive&quot;</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="s2">&quot;negative&quot;</span><span class="p">,</span> <span class="s2">&quot;external_id&quot;</span><span class="p">:</span> <span class="n">uuid4</span><span class="p">()}</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ds</span><span class="p">]</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="nb">print</span><span class="p">(</span><span class="n">ds</span><span class="p">[:</span><span class="mi">5</span><span class="p">],</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+<code>/home/ben/code/argilla-python/.venv/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</code>
+</pre>
+</div>
+</div>
+<div class="output_area">
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>
+<code>[{'text': 'I rented I AM CURIOUS-YELLOW from my video store because of all the controversy that surrounded it when it was first released in 1967. I also heard that at first it was seized by U.S. customs if it ever tried to enter this country, therefore being a fan of films considered "controversial" I really had to see this for myself.&lt;br /&gt;&lt;br /&gt;The plot is centered around a young Swedish drama student named Lena who wants to learn everything she can about life. In particular she wants to focus her attentions to making some sort of documentary on what the average Swede thought about certain political issues such as the Vietnam War and race issues in the United States. In between asking politicians and ordinary denizens of Stockholm about their opinions on politics, she has sex with her drama teacher, classmates, and married men.&lt;br /&gt;&lt;br /&gt;What kills me about I AM CURIOUS-YELLOW is that 40 years ago, this was considered pornographic. Really, the sex and nudity scenes are few and far between, even then it\'s not shot like some cheaply made porno. While my countrymen mind find it shocking, in reality sex and nudity are a major staple in Swedish cinema. Even Ingmar Bergman, arguably their answer to good old boy John Ford, had sex scenes in his films.&lt;br /&gt;&lt;br /&gt;I do commend the filmmakers for the fact that any sex shown in the film is shown for artistic purposes rather than just to shock people and make money to be shown in pornographic theaters in America. I AM CURIOUS-YELLOW is a good film for anyone wanting to study the meat and potatoes (no pun intended) of Swedish cinema. But really, this film doesn\'t have much of a plot.', 'label': 'negative', 'external_id': UUID('7cfc65f5-16fe-4d4b-96eb-505bdb4ebf92')}, {'text': '"I Am Curious: Yellow" is a risible and pretentious steaming pile. It doesn\'t matter what one\'s political views are because this film can hardly be taken seriously on any level. As for the claim that frontal male nudity is an automatic NC-17, that isn\'t true. I\'ve seen R-rated films with male nudity. Granted, they only offer some fleeting views, but where are the R-rated films with gaping vulvas and flapping labia? Nowhere, because they don\'t exist. The same goes for those crappy cable shows: schlongs swinging in the breeze but not a clitoris in sight. And those pretentious indie movies like The Brown Bunny, in which we\'re treated to the site of Vincent Gallo\'s throbbing johnson, but not a trace of pink visible on Chloe Sevigny. Before crying (or implying) "double-standard" in matters of nudity, the mentally obtuse should take into account one unavoidably obvious anatomical difference between men and women: there are no genitals on display when actresses appears nude, and the same cannot be said for a man. In fact, you generally won\'t see female genitals in an American film in anything short of porn or explicit erotica. This alleged double-standard is less a double standard than an admittedly depressing ability to come to terms culturally with the insides of women\'s bodies.', 'label': 'negative', 'external_id': UUID('7b70b469-0eb9-4111-b26b-b496f614ebbc')}, {'text': "If only to avoid making this type of film in the future. This film is interesting as an experiment but tells no cogent story.&lt;br /&gt;&lt;br /&gt;One might feel virtuous for sitting thru it because it touches on so many IMPORTANT issues but it does so without any discernable motive. The viewer comes away with no new perspectives (unless one comes up with one while one's mind wanders, as it will invariably do during this pointless film).&lt;br /&gt;&lt;br /&gt;One might better spend one's time staring out a window at a tree growing.&lt;br /&gt;&lt;br /&gt;", 'label': 'negative', 'external_id': UUID('a39f6772-8479-4a66-8b36-69ee106ebc67')}, {'text': "This film was probably inspired by Godard's Masculin, féminin and I urge you to see that film instead.&lt;br /&gt;&lt;br /&gt;The film has two strong elements and those are, (1) the realistic acting (2) the impressive, undeservedly good, photo. Apart from that, what strikes me most is the endless stream of silliness. Lena Nyman has to be most annoying actress in the world. She acts so stupid and with all the nudity in this film,...it's unattractive. Comparing to Godard's film, intellectuality has been replaced with stupidity. Without going too far on this subject, I would say that follows from the difference in ideals between the French and the Swedish society.&lt;br /&gt;&lt;br /&gt;A movie of its time, and place. 2/10.", 'label': 'negative', 'external_id': UUID('ca380a0e-ab99-4b34-8e87-a3643b50dc6a')}, {'text': 'Oh, brother...after hearing about this ridiculous film for umpteen years all I can think of is that old Peggy Lee song..&lt;br /&gt;&lt;br /&gt;"Is that all there is??" ...I was just an early teen when this smoked fish hit the U.S. I was too young to get in the theater (although I did manage to sneak into "Goodbye Columbus"). Then a screening at a local film museum beckoned - Finally I could see this film, except now I was as old as my parents were when they schlepped to see it!!&lt;br /&gt;&lt;br /&gt;The ONLY reason this film was not condemned to the anonymous sands of time was because of the obscenity case sparked by its U.S. release. MILLIONS of people flocked to this stinker, thinking they were going to see a sex film...Instead, they got lots of closeups of gnarly, repulsive Swedes, on-street interviews in bland shopping malls, asinie political pretension...and feeble who-cares simulated sex scenes with saggy, pale actors.&lt;br /&gt;&lt;br /&gt;Cultural icon, holy grail, historic artifact..whatever this thing was, shred it, burn it, then stuff the ashes in a lead box!&lt;br /&gt;&lt;br /&gt;Elite esthetes still scrape to find value in its boring pseudo revolutionary political spewings..But if it weren\'t for the censorship scandal, it would have been ignored, then forgotten.&lt;br /&gt;&lt;br /&gt;Instead, the "I Am Blank, Blank" rhythymed title was repeated endlessly for years as a titilation for porno films (I am Curious, Lavender - for gay films, I Am Curious, Black - for blaxploitation films, etc..) and every ten years or so the thing rises from the dead, to be viewed by a new generation of suckers who want to see that "naughty sex film" that "revolutionized the film industry"...&lt;br /&gt;&lt;br /&gt;Yeesh, avoid like the plague..Or if you MUST see it - rent the video and fast forward to the "dirty" parts, just to get it over with.&lt;br /&gt;&lt;br /&gt;', 'label': 'negative', 'external_id': UUID('61806eaa-c97a-41fb-8302-9dc00a7d3974')}]
+</code>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Defining the dataset&#39;s feedback task</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">settings</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Settings</span><span class="p">(</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">guidelines</span><span class="o">=</span><span class="s2">&quot;Classify the articles into one of the four categories.&quot;</span><span class="p">,</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="n">fields</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>        <span class="n">rg</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Text from the article&quot;</span><span class="p">,</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>            <span class="n">use_markdown</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>        <span class="p">),</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>    <span class="p">],</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>    <span class="n">questions</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>        <span class="n">rg</span><span class="o">.</span><span class="n">LabelQuestion</span><span class="p">(</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>            <span class="n">title</span><span class="o">=</span><span class="s2">&quot;In which category does this article fit?&quot;</span><span class="p">,</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>            <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">],</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>        <span class="p">)</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>    <span class="p">],</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a><span class="p">)</span>
+</span></code></pre></div>
+
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">name</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;IMDB-dataset-</span><span class="si">{</span><span class="n">uuid4</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="n">workspace_id</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">id</span><span class="p">),</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">,</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a><span class="p">)</span>
 </span></code></pre></div>
 
 </div>
@@ -2224,71 +2160,15 @@ This tutorial is a Jupyter Notebook. There are two options to run it:
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>The labels in the original dataset are in the form of integers while we need to present them to the annotators in the form of strings. Therefore, we will create a dictionary that maps the integer labels to their string counterparts.</p>
+<h1 id="3-manipulating-records">3. Manipulating records<a class="headerlink" href="#3-manipulating-records" title="Permanent link">&para;</a></h1>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="add-responses">Add <code>Responses</code><a class="headerlink" href="#add-responses" title="Permanent link">&para;</a></h2>
-<p>Now that we have the original dataset and the dataset that we created in the previous tutorial, we can add the responses. The process is slightly different for the local FeedbackDataset and the RemoteFeedbackDataset. Let us see how we can do it for both.</p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">record</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">):</span>
-</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    <span class="n">record</span><span class="o">.</span><span class="n">responses</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span>
-</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>        <span class="n">value</span><span class="o">=</span><span class="n">dataset_org</span><span class="p">[</span><span class="n">index</span><span class="p">][</span><span class="s2">&quot;label&quot;</span><span class="p">],</span>
-</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="p">)</span>
-</span></code></pre></div>
-
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="add-suggestions">Add <code>Suggestions</code><a class="headerlink" href="#add-suggestions" title="Permanent link">&para;</a></h2>
-<p>As we have mentioned, suggestions are the predictions by any model of your preference to be added as suggested responses to our dataset. In this tutorial, we will be using the <code>cointegrated/rubert-tiny-bilingual-nli</code> model from the <a href="https://huggingface.co/cointegrated/rubert-tiny-bilingual-nli">HuggingFace Hub</a> to obtain our model predictions. To obtain the predictions, we will use the <code>pipeline</code> method from the <code>transformers</code> library, which makes it easy to use models for inference. Let us first load the model. To give us our zero-shot model, we also create a list of the labels that we want to predict.</p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">model_name</span> <span class="o">=</span> <span class="s2">&quot;cointegrated/rubert-tiny-bilingual-nli&quot;</span>
-</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">classifier</span> <span class="o">=</span> <span class="n">pipeline</span><span class="p">(</span><span class="s2">&quot;zero-shot-classification&quot;</span><span class="p">,</span> <span class="n">model</span><span class="o">=</span><span class="n">model_name</span><span class="p">)</span>
-</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">candidate_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;World&quot;</span><span class="p">,</span> <span class="s2">&quot;Sports&quot;</span><span class="p">,</span> <span class="s2">&quot;Business&quot;</span><span class="p">,</span> <span class="s2">&quot;Sci/Tech&quot;</span><span class="p">]</span>
-</span></code></pre></div>
-
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>We can iterate over the data items and add the suggestions for each item by classifying the text with the model at the same time. Additionally, we would like to add the model as the <code>agent</code> of the suggestions for future reference.</p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-
-<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
-</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">record</span><span class="o">.</span><span class="n">suggestions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
-</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">classifier</span><span class="p">(</span><span class="n">record</span><span class="o">.</span><span class="n">fields</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">],</span> <span class="n">candidate_labels</span><span class="p">)[</span><span class="s2">&quot;labels&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">agent</span><span class="o">=</span><span class="n">model_name</span>
-</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>    <span class="p">)</span>
-</span></code></pre></div>
-
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="publish-the-responses-and-suggestions-to-argilla">Publish the Responses and Suggestions to Argilla<a class="headerlink" href="#publish-the-responses-and-suggestions-to-argilla" title="Permanent link">&para;</a></h2>
-<p>Now that we have added the responses and suggestions to our dataset, we can push the dataset to Argilla. We can do this by using the <code>publish</code> method.</p>
+<h2 id="adding-records-with-suggestions">Adding records with suggestions<a class="headerlink" href="#adding-records-with-suggestions" title="Permanent link">&para;</a></h2>
+<p>Argilla handles labels in the dataset with the same name as the question as suggestions. For example, if you have a <code>rg.TextQuestion(name="label")</code> and a <code>label</code> key in your sample, Argilla will assign the values of <code>label</code> to the question <code>label</code>. Below we'll customize this behaviour.</p>
 </div>
 </div>
 </div>
@@ -2296,63 +2176,156 @@ This tutorial is a Jupyter Notebook. There are two options to run it:
 <div class="input">
 
 <div class="language-python highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="n">dataset</span><span class="o">.</span><span class="n">publish</span><span class="p">()</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">records</span><span class="o">=</span><span class="n">ds</span><span class="p">)</span>
 </span></code></pre></div>
 
 </div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+<code>/home/ben/code/argilla-python/src/argilla_sdk/records/_resource.py:192: UserWarning: Record attribute external_id is not in the schema so skipping. 
+                    Define a mapping to map source data fields to Argilla Fields, Questions, and ids
+
+  warnings.warn(
+</code>
+</pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Let us go to Argilla and look at the dataset we created. When you first open the dataset, you should the message "You have no pending records" as we have uploaded all the responses and there is no pending record left. As seen below, if you go to the <code>Submitted</code> tab, you can see that all the records are submitted with the exact labels we have uploaded above.</p>
-<p><img alt="ui-responses" src="../../../../_static/tutorials/end2end/text-classification/argilla-annotation-ui-responses.png" /></p>
-<p>As all the records are submitted, we no longer see the suggestion for each one of the records. To demonstrate how they are seen, you can see the Argilla UI below where the record is not submitted yet and the suggestion (<code>Sports</code> in this case) is shown to the annotator.</p>
-<p><img alt="ui-suggestions" src="../../../../_static/tutorials/end2end/text-classification/argilla-annotation-ui-suggestions.png" /></p>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="to-huggingface-hub">To HuggingFace Hub<a class="headerlink" href="#to-huggingface-hub" title="Permanent link">&para;</a></h3>
-<p>If you would like to push the dataset you created to the HuggingFace Hub, you can simply use the <code>push_to_huggingface</code> method to upload it. Do not forget to create a model card as well, which will make the dataset more readable and understandable for the users.</p>
-<p>To be able to upload your dataset to the Hub, you must be logged in to the Hub. The following cell will log us with our previous token.</p>
-<p>If we don't have one already, we can obtain it from <a href="https://huggingface.co/docs/hub/security-tokens">here</a> (remember to set the write access).</p>
+<p>We can now pull and export the records from Argilla and see that we have dictionaries with a key <code>label.suggestion</code> that reflects the source data.</p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
-<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="kn">from</span> <span class="nn">huggingface_hub</span> <span class="kn">import</span> <span class="n">login</span>
-</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>
-</span><span id="__span-10-3"><a id="__codelineno-10-3" name="__codelineno-10-3" href="#__codelineno-10-3"></a><span class="n">hf_token</span> <span class="o">=</span> <span class="s2">&quot;YOUR_HF_TOKEN&quot;</span>
-</span><span id="__span-10-4"><a id="__codelineno-10-4" name="__codelineno-10-4" href="#__codelineno-10-4"></a><span class="n">login</span><span class="p">(</span><span class="n">token</span><span class="o">=</span><span class="n">hf_token</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">records</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
 </span></code></pre></div>
 
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_text output_subarea output_execute_result">
+<pre>
+<code>[{'external_id': UUID('4f29315f-67cf-4650-a887-d86abe9bf8dd'),
+  'text': 'I rented I AM CURIOUS-YELLOW from my video store because of all the controversy that surrounded it when it was first released in 1967. I also heard that at first it was seized by U.S. customs if it ever tried to enter this country, therefore being a fan of films considered "controversial" I really had to see this for myself.&lt;br /&gt;&lt;br /&gt;The plot is centered around a young Swedish drama student named Lena who wants to learn everything she can about life. In particular she wants to focus her attentions to making some sort of documentary on what the average Swede thought about certain political issues such as the Vietnam War and race issues in the United States. In between asking politicians and ordinary denizens of Stockholm about their opinions on politics, she has sex with her drama teacher, classmates, and married men.&lt;br /&gt;&lt;br /&gt;What kills me about I AM CURIOUS-YELLOW is that 40 years ago, this was considered pornographic. Really, the sex and nudity scenes are few and far between, even then it\'s not shot like some cheaply made porno. While my countrymen mind find it shocking, in reality sex and nudity are a major staple in Swedish cinema. Even Ingmar Bergman, arguably their answer to good old boy John Ford, had sex scenes in his films.&lt;br /&gt;&lt;br /&gt;I do commend the filmmakers for the fact that any sex shown in the film is shown for artistic purposes rather than just to shock people and make money to be shown in pornographic theaters in America. I AM CURIOUS-YELLOW is a good film for anyone wanting to study the meat and potatoes (no pun intended) of Swedish cinema. But really, this film doesn\'t have much of a plot.',
+  'label.suggestion': 'negative',
+  'label.score': None},
+ {'external_id': UUID('019ac0fc-d197-4201-a058-90ac24ef5f7b'),
+  'text': '"I Am Curious: Yellow" is a risible and pretentious steaming pile. It doesn\'t matter what one\'s political views are because this film can hardly be taken seriously on any level. As for the claim that frontal male nudity is an automatic NC-17, that isn\'t true. I\'ve seen R-rated films with male nudity. Granted, they only offer some fleeting views, but where are the R-rated films with gaping vulvas and flapping labia? Nowhere, because they don\'t exist. The same goes for those crappy cable shows: schlongs swinging in the breeze but not a clitoris in sight. And those pretentious indie movies like The Brown Bunny, in which we\'re treated to the site of Vincent Gallo\'s throbbing johnson, but not a trace of pink visible on Chloe Sevigny. Before crying (or implying) "double-standard" in matters of nudity, the mentally obtuse should take into account one unavoidably obvious anatomical difference between men and women: there are no genitals on display when actresses appears nude, and the same cannot be said for a man. In fact, you generally won\'t see female genitals in an American film in anything short of porn or explicit erotica. This alleged double-standard is less a double standard than an admittedly depressing ability to come to terms culturally with the insides of women\'s bodies.',
+  'label.suggestion': 'negative',
+  'label.score': None},
+ {'external_id': UUID('a8b9fe09-ce71-4355-a5de-4c15404a6def'),
+  'text': "If only to avoid making this type of film in the future. This film is interesting as an experiment but tells no cogent story.&lt;br /&gt;&lt;br /&gt;One might feel virtuous for sitting thru it because it touches on so many IMPORTANT issues but it does so without any discernable motive. The viewer comes away with no new perspectives (unless one comes up with one while one's mind wanders, as it will invariably do during this pointless film).&lt;br /&gt;&lt;br /&gt;One might better spend one's time staring out a window at a tree growing.&lt;br /&gt;&lt;br /&gt;",
+  'label.suggestion': 'negative',
+  'label.score': None},
+ {'external_id': UUID('d67c2f84-3812-42ec-a53f-f054f958e6d5'),
+  'text': "This film was probably inspired by Godard's Masculin, féminin and I urge you to see that film instead.&lt;br /&gt;&lt;br /&gt;The film has two strong elements and those are, (1) the realistic acting (2) the impressive, undeservedly good, photo. Apart from that, what strikes me most is the endless stream of silliness. Lena Nyman has to be most annoying actress in the world. She acts so stupid and with all the nudity in this film,...it's unattractive. Comparing to Godard's film, intellectuality has been replaced with stupidity. Without going too far on this subject, I would say that follows from the difference in ideals between the French and the Swedish society.&lt;br /&gt;&lt;br /&gt;A movie of its time, and place. 2/10.",
+  'label.suggestion': 'negative',
+  'label.score': None},
+ {'external_id': UUID('71b14ad5-2018-4396-b390-c28650d0bb95'),
+  'text': 'Oh, brother...after hearing about this ridiculous film for umpteen years all I can think of is that old Peggy Lee song..&lt;br /&gt;&lt;br /&gt;"Is that all there is??" ...I was just an early teen when this smoked fish hit the U.S. I was too young to get in the theater (although I did manage to sneak into "Goodbye Columbus"). Then a screening at a local film museum beckoned - Finally I could see this film, except now I was as old as my parents were when they schlepped to see it!!&lt;br /&gt;&lt;br /&gt;The ONLY reason this film was not condemned to the anonymous sands of time was because of the obscenity case sparked by its U.S. release. MILLIONS of people flocked to this stinker, thinking they were going to see a sex film...Instead, they got lots of closeups of gnarly, repulsive Swedes, on-street interviews in bland shopping malls, asinie political pretension...and feeble who-cares simulated sex scenes with saggy, pale actors.&lt;br /&gt;&lt;br /&gt;Cultural icon, holy grail, historic artifact..whatever this thing was, shred it, burn it, then stuff the ashes in a lead box!&lt;br /&gt;&lt;br /&gt;Elite esthetes still scrape to find value in its boring pseudo revolutionary political spewings..But if it weren\'t for the censorship scandal, it would have been ignored, then forgotten.&lt;br /&gt;&lt;br /&gt;Instead, the "I Am Blank, Blank" rhythymed title was repeated endlessly for years as a titilation for porno films (I am Curious, Lavender - for gay films, I Am Curious, Black - for blaxploitation films, etc..) and every ten years or so the thing rises from the dead, to be viewed by a new generation of suckers who want to see that "naughty sex film" that "revolutionized the film industry"...&lt;br /&gt;&lt;br /&gt;Yeesh, avoid like the plague..Or if you MUST see it - rent the video and fast forward to the "dirty" parts, just to get it over with.&lt;br /&gt;&lt;br /&gt;',
+  'label.suggestion': 'negative',
+  'label.score': None}]</code>
+</pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We only need to call the <code>to_datasets</code> method to convert the dataset to datasets format.</p>
+<h2 id="adding-or-updating-records-with-reponses">Adding or updating records with reponses<a class="headerlink" href="#adding-or-updating-records-with-reponses" title="Permanent link">&para;</a></h2>
+<p>Let's say that the source data contains responses that we want to handle as true values, for example mannually annotated labels. We can use a  <code>mapping</code> to map the keys in our source data to Argilla questions, and specify <code>response</code>. </p>
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 
-<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">ds</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">to_datasets</span><span class="p">()</span>
-</span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a><span class="n">ds</span><span class="o">.</span><span class="n">push_to_hub</span><span class="p">(</span><span class="s2">&quot;argilla/end2end_textclassification&quot;</span><span class="p">,</span> <span class="n">use_auth_token</span><span class="o">=</span><span class="n">hf_token</span><span class="p">)</span>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">records</span><span class="o">=</span><span class="n">ds</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="s2">&quot;label.response&quot;</span><span class="p">})</span>
 </span></code></pre></div>
 
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>
+<code>WARNING:root:DatasetRecords: 
+            No existing records founds to update. 
+            If you want to add new records, you should use the `Dataset.records.add` method.
+
+</code>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">records</span><span class="p">[:</span><span class="mi">5</span><span class="p">]</span>
+</span></code></pre></div>
+
+</div>
+<div class="output_wrapper">
+<div class="output">
+<div class="output_area">
+<div class="output_text output_subarea output_execute_result">
+<pre>
+<code>[{'external_id': UUID('5f604b00-e2b2-4c54-9a67-c563a1a09d05'),
+  'text': 'I rented I AM CURIOUS-YELLOW from my video store because of all the controversy that surrounded it when it was first released in 1967. I also heard that at first it was seized by U.S. customs if it ever tried to enter this country, therefore being a fan of films considered "controversial" I really had to see this for myself.&lt;br /&gt;&lt;br /&gt;The plot is centered around a young Swedish drama student named Lena who wants to learn everything she can about life. In particular she wants to focus her attentions to making some sort of documentary on what the average Swede thought about certain political issues such as the Vietnam War and race issues in the United States. In between asking politicians and ordinary denizens of Stockholm about their opinions on politics, she has sex with her drama teacher, classmates, and married men.&lt;br /&gt;&lt;br /&gt;What kills me about I AM CURIOUS-YELLOW is that 40 years ago, this was considered pornographic. Really, the sex and nudity scenes are few and far between, even then it\'s not shot like some cheaply made porno. While my countrymen mind find it shocking, in reality sex and nudity are a major staple in Swedish cinema. Even Ingmar Bergman, arguably their answer to good old boy John Ford, had sex scenes in his films.&lt;br /&gt;&lt;br /&gt;I do commend the filmmakers for the fact that any sex shown in the film is shown for artistic purposes rather than just to shock people and make money to be shown in pornographic theaters in America. I AM CURIOUS-YELLOW is a good film for anyone wanting to study the meat and potatoes (no pun intended) of Swedish cinema. But really, this film doesn\'t have much of a plot.',
+  'label.suggestion': 'negative',
+  'label.score': None},
+ {'external_id': UUID('1d607171-fc90-40ec-880e-0f30ae8eff5a'),
+  'text': '"I Am Curious: Yellow" is a risible and pretentious steaming pile. It doesn\'t matter what one\'s political views are because this film can hardly be taken seriously on any level. As for the claim that frontal male nudity is an automatic NC-17, that isn\'t true. I\'ve seen R-rated films with male nudity. Granted, they only offer some fleeting views, but where are the R-rated films with gaping vulvas and flapping labia? Nowhere, because they don\'t exist. The same goes for those crappy cable shows: schlongs swinging in the breeze but not a clitoris in sight. And those pretentious indie movies like The Brown Bunny, in which we\'re treated to the site of Vincent Gallo\'s throbbing johnson, but not a trace of pink visible on Chloe Sevigny. Before crying (or implying) "double-standard" in matters of nudity, the mentally obtuse should take into account one unavoidably obvious anatomical difference between men and women: there are no genitals on display when actresses appears nude, and the same cannot be said for a man. In fact, you generally won\'t see female genitals in an American film in anything short of porn or explicit erotica. This alleged double-standard is less a double standard than an admittedly depressing ability to come to terms culturally with the insides of women\'s bodies.',
+  'label.suggestion': 'negative',
+  'label.score': None},
+ {'external_id': UUID('10bf877f-f0c8-457b-a35e-9df8a745e0f9'),
+  'text': "If only to avoid making this type of film in the future. This film is interesting as an experiment but tells no cogent story.&lt;br /&gt;&lt;br /&gt;One might feel virtuous for sitting thru it because it touches on so many IMPORTANT issues but it does so without any discernable motive. The viewer comes away with no new perspectives (unless one comes up with one while one's mind wanders, as it will invariably do during this pointless film).&lt;br /&gt;&lt;br /&gt;One might better spend one's time staring out a window at a tree growing.&lt;br /&gt;&lt;br /&gt;",
+  'label.suggestion': 'negative',
+  'label.score': None},
+ {'external_id': UUID('c7bddb86-4303-4365-acff-c05bc60cbba0'),
+  'text': "This film was probably inspired by Godard's Masculin, féminin and I urge you to see that film instead.&lt;br /&gt;&lt;br /&gt;The film has two strong elements and those are, (1) the realistic acting (2) the impressive, undeservedly good, photo. Apart from that, what strikes me most is the endless stream of silliness. Lena Nyman has to be most annoying actress in the world. She acts so stupid and with all the nudity in this film,...it's unattractive. Comparing to Godard's film, intellectuality has been replaced with stupidity. Without going too far on this subject, I would say that follows from the difference in ideals between the French and the Swedish society.&lt;br /&gt;&lt;br /&gt;A movie of its time, and place. 2/10.",
+  'label.suggestion': 'negative',
+  'label.score': None},
+ {'external_id': UUID('ee08db3b-f3da-4bb2-860a-4242e743b7d8'),
+  'text': 'Oh, brother...after hearing about this ridiculous film for umpteen years all I can think of is that old Peggy Lee song..&lt;br /&gt;&lt;br /&gt;"Is that all there is??" ...I was just an early teen when this smoked fish hit the U.S. I was too young to get in the theater (although I did manage to sneak into "Goodbye Columbus"). Then a screening at a local film museum beckoned - Finally I could see this film, except now I was as old as my parents were when they schlepped to see it!!&lt;br /&gt;&lt;br /&gt;The ONLY reason this film was not condemned to the anonymous sands of time was because of the obscenity case sparked by its U.S. release. MILLIONS of people flocked to this stinker, thinking they were going to see a sex film...Instead, they got lots of closeups of gnarly, repulsive Swedes, on-street interviews in bland shopping malls, asinie political pretension...and feeble who-cares simulated sex scenes with saggy, pale actors.&lt;br /&gt;&lt;br /&gt;Cultural icon, holy grail, historic artifact..whatever this thing was, shred it, burn it, then stuff the ashes in a lead box!&lt;br /&gt;&lt;br /&gt;Elite esthetes still scrape to find value in its boring pseudo revolutionary political spewings..But if it weren\'t for the censorship scandal, it would have been ignored, then forgotten.&lt;br /&gt;&lt;br /&gt;Instead, the "I Am Blank, Blank" rhythymed title was repeated endlessly for years as a titilation for porno films (I am Curious, Lavender - for gay films, I Am Curious, Black - for blaxploitation films, etc..) and every ten years or so the thing rises from the dead, to be viewed by a new generation of suckers who want to see that "naughty sex film" that "revolutionized the film industry"...&lt;br /&gt;&lt;br /&gt;Yeesh, avoid like the plague..Or if you MUST see it - rent the video and fast forward to the "dirty" parts, just to get it over with.&lt;br /&gt;&lt;br /&gt;',
+  'label.suggestion': 'negative',
+  'label.score': None}]</code>
+</pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="cell border-box-sizing text_cell rendered">
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="conclusion">Conclusion<a class="headerlink" href="#conclusion" title="Permanent link">&para;</a></h2>
-<p>In this tutorial, we have seen how we can add responses and suggestions to our dataset. Adding responses to your dataset given that you already have the annotated labels is a great way to save time and effort for your project. Similarly, adding suggestions to your dataset will make the annotation process much faster and easier for your annotators. Now, with the dataset we obtained, we can move on to <a href="./train-model-006.ipynb">training our model</a> and <a href="./use-metrics-007.ipynb">computing the metrics</a>. For more detailed info on how to utilize various tools, please refer to our <a href="../../../../practical_guides/practical_guides.md">practical guides</a></p>
+<p>In this way, we could also handle diverse naming in our source data, so we could deal with:</p>
 </div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+
+<div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="n">source_data</span> <span class="o">=</span> <span class="p">[{</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="s2">&quot;I&#39;m a data sample in a dataset with vague field names :(&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="s2">&quot;negative&quot;</span><span class="p">,</span> <span class="s2">&quot;idx&quot;</span><span class="p">:</span> <span class="s2">&quot;90146&quot;</span><span class="p">}]</span>
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">records</span><span class="o">=</span><span class="n">source_data</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="s2">&quot;text&quot;</span><span class="p">,</span> <span class="s2">&quot;idx&quot;</span><span class="p">:</span> <span class="s2">&quot;id&quot;</span><span class="p">})</span>
+</span></code></pre></div>
+
 </div>
 </div>
 

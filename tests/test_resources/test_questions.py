@@ -20,7 +20,7 @@ import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
-from argilla_sdk._models import TextQuestionModel
+from argilla_sdk._models import TextQuestionModel, LabelQuestionModel
 
 
 class QuestionsAPI:
@@ -78,7 +78,7 @@ class QuestionsAPI:
                 "options": [{"text": "negative", "value": "negative"}, {"text": "positive", "value": "positive"}],
             },
         }
-        mock_question = TextQuestionModel(**mock_question)
+        mock_question = LabelQuestionModel(**mock_question)
         httpx_mock.add_response(
             json=mock_return_value,
             url=f"http://test_url/api/v1/datasets/{mock_dataset_id}/questions",

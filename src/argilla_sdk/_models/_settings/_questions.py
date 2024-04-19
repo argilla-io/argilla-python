@@ -86,10 +86,9 @@ class TextQuestionModel(QuestionBaseModel):
         return settings
 
 
-class MultiLabelQuestionModel(QuestionBaseModel):
-    labels: List[str]
+class MultiLabelQuestionModel(LabelQuestionModel):
     visible_labels: Optional[int] = None
-    settings: QuestionSettings = QuestionSettings(type="multi_label_selection")
+    settings: QuestionSettings = LabelQuestionSettings(type="multi_label_selection")
 
     @validator("visible_labels", always=True)
     def __default_to_all(cls, visible_labels, values):

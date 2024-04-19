@@ -17,7 +17,7 @@ from uuid import UUID
 
 from argilla_sdk._models import TextFieldModel, TextQuestionModel
 from argilla_sdk.client import Argilla
-from argilla_sdk.settings._field import FieldType
+from argilla_sdk.settings._field import FieldType, VectorField
 from argilla_sdk.settings._question import QuestionType
 
 if TYPE_CHECKING:
@@ -34,6 +34,7 @@ class Settings:
         self,
         fields: Optional[List[FieldType]] = None,
         questions: Optional[List[QuestionType]] = None,
+        vectors: Optional[List[VectorField]] = None,
         guidelines: Optional[str] = None,
         allow_extra_metadata: bool = False,
         client: Argilla = Argilla(),
@@ -50,13 +51,16 @@ class Settings:
             fields = []
         if questions is None:
             questions = []
+        if vectors is None:
+            vectors = []
 
         self.__guidelines = self.__process_guidelines(guidelines)
         self.__allow_extra_metadata = allow_extra_metadata
         self.__questions = questions
         self.__fields = fields
-        self._dataset = _dataset
+        self.__vectors = vectors
 
+        self._dataset = _dataset
         self.__client = client
 
     #####################
@@ -90,6 +94,14 @@ class Settings:
             self._dataset._model.guidelines = guidelines
 
     @property
+    def vectors(self) -> List[VectorField]:
+        return self.__vectors
+
+    @vectors.setter
+    def vectors(self, vectors: List[VectorField]):
+        self.__vectors = vectors
+
+    @property
     def allow_extra_metadata(self) -> bool:
         return self.__allow_extra_metadata
 
@@ -119,14 +131,14 @@ class Settings:
         for question in self.questions:
             schema_dict[question.name] = question
 
+        for vector in self.vectors:
+            schema_dict[vector.name] = vector
+
         return schema_dict
 
     @cached_property
     def schema_by_id(self) -> Dict[UUID, Union[FieldType, QuestionType]]:
-        return {
-            v.id: v
-            for v in self.schema.values()
-        }
+        return {v.id: v for v in self.schema.values()}
 
     #####################
     #  Public methods   #
@@ -135,6 +147,7 @@ class Settings:
     def create(self) -> "Settings":
         self.__upsert_fields()
         self.__upsert_questions()
+        self.__upsert_vectors()
         self.__update_dataset_related_attributes()
         return self
 
@@ -167,6 +180,11 @@ class Settings:
         for field in self.__fields:
             field_model = self.__client.api.fields.create(dataset_id=self._dataset.id, field=field._model)
             field._model = field_model
+
+    def __upsert_vectors(self) -> None:
+        for vector in self.__vectors:
+            vector_model = self.__client.api.vectors.create(dataset_id=self._dataset.id, vector=vector._model)
+            vector._model = vector_model
 
     def serialize(self):
         return {

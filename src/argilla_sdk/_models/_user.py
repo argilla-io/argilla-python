@@ -39,7 +39,10 @@ class UserModel(ResourceModel):
     @field_validator("first_name")
     def __validate_first_name(cls, v, values):
         """Set first_name to username if not provided"""
-        return v or values["username"]
+        if isinstance(v, str):
+            return v
+        elif not v:
+            return values["username"]
 
     @field_validator("username", mode="before")
     def __validate_username(cls, username):

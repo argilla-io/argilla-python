@@ -87,27 +87,24 @@ def test_query_records_by_suggestion_value(client: Argilla, dataset: Dataset):
 
     dataset.records.add(data)
 
-    query = rg.Query(filters=rg.Filter([("label", "==", "positive")]))
+    query = rg.Query(filter=rg.Filter([("label", "==", "positive")]))
     records = list(dataset.records(query=query))
 
     assert len(records) == 2
     assert records[0].external_id == "1"
     assert records[1].external_id == "3"
 
-    query = rg.Query(filters=[rg.Filter(("label", "==", "negative"))])
+    query = rg.Query(filter=rg.Filter(("label", "==", "negative")))
     records = list(dataset.records(query=query))
 
     assert len(records) == 1
     assert records[0].external_id == "2"
 
-    query = rg.Query(filters=[rg.Filter(("label", "in", ["positive", "negative"]))])
+    query = rg.Query(filter=rg.Filter(("label", "in", ["positive", "negative"])))
     records = list(dataset.records(query=query))
     assert len(records) == 3
 
-    test_filter = rg.Filter([
-        ("label", "==", "positive"),
-        ("label", "==", "negative")
-    ])
-    query = rg.Query(filters=[test_filter])
+    test_filter = rg.Filter([("label", "==", "positive"), ("label", "==", "negative")])
+    query = rg.Query(filter=test_filter)
     records = list(dataset.records(query=query))
     assert len(records) == 0

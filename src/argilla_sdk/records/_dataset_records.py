@@ -99,7 +99,7 @@ class DatasetRecordsIterator:
         return [record_model for record_model, _ in search_items]
 
     def _is_search_query(self) -> bool:
-        return bool(self.__query and (self.__query.query or self.__query.filters))
+        return bool(self.__query and (self.__query.query or self.__query.filter))
 
 
 class DatasetRecords(Resource, GenericExportMixin):

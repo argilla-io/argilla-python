@@ -1,4 +1,4 @@
-from typing import Optional, List, Any, Union, Tuple, NamedTuple
+from typing import Optional, List, Any, Union, Tuple
 
 from argilla_sdk._models import SearchQueryModel
 from argilla_sdk._models._search import (
@@ -77,12 +77,9 @@ class Query:
 
     query: Optional[str] = None
 
-    def __init__(self, *, query: Union[str, None] = None, filters: Union[List[Filter], Filter, None] = None):
-        if isinstance(filters, Filter):
-            filters = [filters]
-
+    def __init__(self, *, query: Union[str, None] = None, filter: Union[Filter, None] = None):
         self.query = query
-        self.filters = filters
+        self.filter = filter
 
     @property
     def model(self) -> SearchQueryModel:
@@ -91,8 +88,8 @@ class Query:
         if self.query is not None:
             model.query = TextQueryModel(q=self.query)
 
-        if self.filters:
-            model.filters = self.filters[0].model
+        if self.filter is not None:
+            model.filters = self.filter.model
 
         return model
 

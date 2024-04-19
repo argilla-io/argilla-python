@@ -25,7 +25,7 @@ from argilla_sdk._models import (
     RankingQuestionModel,
     RatingQuestionModel,
     QuestionBaseModel,
-    QuestionModelType,
+    QuestionModel,
 )
 
 __all__ = ["QuestionsAPI"]
@@ -43,8 +43,8 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
     def create(
         self,
         dataset_id: UUID,
-        question: QuestionModelType,
-    ) -> QuestionModelType:
+        question: QuestionModel,
+    ) -> QuestionModel:
         url = f"/api/v1/datasets/{dataset_id}/questions"
         response = self.http_client.post(url=url, json=question.model_dump())
         _http.raise_for_status(response=response)
@@ -54,8 +54,8 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
 
     def update(
         self,
-        question: QuestionModelType,
-    ) -> QuestionModelType:
+        question: QuestionModel,
+    ) -> QuestionModel:
         # TODO: Implement update method for fields with server side ID
         raise NotImplementedError
 
@@ -67,14 +67,14 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
     # Utility methods #
     ####################
 
-    def create_many(self, dataset_id: UUID, questions: List[Dict]) -> List[QuestionModelType]:
+    def create_many(self, dataset_id: UUID, questions: List[Dict]) -> List[QuestionModel]:
         response_models = []
         for question in questions:
             response_model = self.create(dataset_id=dataset_id, question=question)
             response_models.append(response_model)
         return response_models
 
-    def list(self, dataset_id: UUID) -> List[QuestionModelType]:
+    def list(self, dataset_id: UUID) -> List[QuestionModel]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/questions")
         _http.raise_for_status(response=response)
         response_models = self._model_from_jsons(response_jsons=response.json()["items"])
@@ -84,15 +84,15 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
     # Private methods #
     ####################
 
-    def _model_from_json(self, response_json: Dict) -> QuestionModelType:
+    def _model_from_json(self, response_json: Dict) -> QuestionModel:
         response_json["inserted_at"] = self._date_from_iso_format(date=response_json["inserted_at"])
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
         return self._get_model_from_response(response_json=response_json)
 
-    def _model_from_jsons(self, response_jsons: List[Dict]) -> List[QuestionModelType]:
+    def _model_from_jsons(self, response_jsons: List[Dict]) -> List[QuestionModel]:
         return list(map(self._model_from_json, response_jsons))
 
-    def _get_model_from_response(self, response_json: Dict) -> QuestionModelType:
+    def _get_model_from_response(self, response_json: Dict) -> QuestionModel:
         try:
             question_type = response_json.get("settings", {}).get("type")
         except Exception as e:

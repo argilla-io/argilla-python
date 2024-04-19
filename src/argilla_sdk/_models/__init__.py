@@ -19,7 +19,7 @@ from argilla_sdk._models._dataset import DatasetModel
 from argilla_sdk._models._record import RecordModel
 from argilla_sdk._models._suggestion import SuggestionModel
 from argilla_sdk._models._response import ResponseModel, ResponseStatus
-from argilla_sdk._models._settings._fields import TextFieldModel, FieldSettings, FieldBaseModel, FieldsModelType
+from argilla_sdk._models._settings._fields import TextFieldModel, FieldSettings, FieldBaseModel, FieldModel
 from argilla_sdk._models._settings._questions import (
     QuestionBaseModel,
     LabelQuestionModel,
@@ -30,6 +30,6 @@ from argilla_sdk._models._settings._questions import (
     TextQuestionSettings,
     QuestionSettings,
     RatingQuestionModel,
-    QuestionModelType,
+    QuestionModel,
 )
 from argilla_sdk._models._settings._guidelines import Guidelines

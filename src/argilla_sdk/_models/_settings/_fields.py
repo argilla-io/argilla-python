@@ -15,7 +15,7 @@ class FieldSettings(BaseModel):
 class FieldBaseModel(BaseModel):
     id: Optional[UUID] = None
     name: str
-    settings: FieldSettings
+    settings: Optional[FieldSettings]
 
     title: Optional[str] = None
     required: bool = True
@@ -37,4 +37,11 @@ class TextFieldModel(FieldBaseModel):
     settings: FieldSettings = FieldSettings(type="text", use_markdown=False)
 
 
-FieldsModelType = TextFieldModel
+class VectorFieldModel(FieldBaseModel):
+    dimensions: int
+
+    @validator("dimensions")
+    def __dimension_gt_zero(cls, dimensions):
+        if dimensions <= 0:
+            raise ValueError("dimensions must be greater than 0")
+        return dimensions

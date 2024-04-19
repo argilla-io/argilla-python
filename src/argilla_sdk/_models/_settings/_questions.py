@@ -103,7 +103,7 @@ class RankingQuestionModel(QuestionBaseModel):
     settings: QuestionSettings = QuestionSettings(type="ranking")
 
 
-QuestionModelType = Union[
+QuestionModel = Union[
     LabelQuestionModel,
     RatingQuestionModel,
     TextQuestionModel,

@@ -105,6 +105,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         limit: int = 100,
         with_suggestions: bool = True,
         with_responses: bool = True,
+        # TODO: Add support for `with_vectors`
     ) -> Tuple[List[Tuple[RecordModel, float]], int]:
 
         include = []
@@ -121,7 +122,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
 
         response = self.http_client.post(
             f"/api/v1/datasets/{dataset_id}/records/search",
-            json=query.model_dump(by_alias=True, exclude_none=True),
+            json=query.model_dump(by_alias=True),
             params=params
         )
         _http.raise_for_status(response=response)

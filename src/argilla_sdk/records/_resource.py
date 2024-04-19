@@ -208,7 +208,6 @@ class Record(Resource):
         for attribute, value in data.items():
             schema_item = schema.get(attribute)
             attribute_type = None
-
             # Map source data keys using the mapping
             if schema_item is None and mapping is not None and attribute in mapping:
                 attribute_mapping = mapping.get(attribute)

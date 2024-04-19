@@ -125,6 +125,9 @@ class DatasetRecords(Resource, GenericExportMixin):
             with_vectors=with_vectors,
         )
 
+    def __len__(self) -> int:
+        return len(self.__records)
+
     ############################
     # Public methods
     ############################

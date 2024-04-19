@@ -1,8 +1,7 @@
+from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, validator
-
-from typing import Optional
+from pydantic import BaseModel, validator, field_serializer
 
 from argilla_sdk._helpers._log import log
 
@@ -15,7 +14,7 @@ class FieldSettings(BaseModel):
 class FieldBaseModel(BaseModel):
     id: Optional[UUID] = None
     name: str
-    settings: FieldSettings
+    settings: Optional[FieldSettings]
 
     title: Optional[str] = None
     required: bool = True
@@ -32,6 +31,20 @@ class FieldBaseModel(BaseModel):
         log(f"TextField title is {validated_title}")
         return validated_title
 
+    @field_serializer("id", when_used="unless-none")
+    def serialize_id(self, value: UUID) -> str:
+        return str(value)
+
 
 class TextFieldModel(FieldBaseModel):
     settings: FieldSettings = FieldSettings(type="text", use_markdown=False)
+
+
+class VectorFieldModel(FieldBaseModel):
+    dimensions: int
+
+    @validator("dimensions")
+    def __dimension_gt_zero(cls, dimensions):
+        if dimensions <= 0:
+            raise ValueError("dimensions must be greater than 0")
+        return dimensions

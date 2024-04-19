@@ -27,7 +27,7 @@ from argilla_sdk._models._search import (
     TermsFilterModel,
     ScopeModel,
 )
-from argilla_sdk._models._settings._fields import TextFieldModel, FieldSettings, FieldBaseModel
+from argilla_sdk._models._settings._fields import TextFieldModel, FieldSettings, FieldBaseModel, VectorFieldModel
 from argilla_sdk._models._settings._guidelines import Guidelines
 from argilla_sdk._models._settings._questions import (
     QuestionBaseModel,
@@ -39,7 +39,6 @@ from argilla_sdk._models._settings._questions import (
     TextQuestionSettings,
     QuestionSettings,
     RatingQuestionModel,
+    QuestionModel,
 )
-from argilla_sdk._models._suggestion import SuggestionModel
-from argilla_sdk._models._user import UserModel, Role
-from argilla_sdk._models._workspace import WorkspaceModel
+from argilla_sdk._models._vector import VectorModel

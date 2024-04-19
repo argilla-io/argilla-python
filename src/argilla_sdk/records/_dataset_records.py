@@ -165,7 +165,6 @@ class DatasetRecords(Resource, GenericExportMixin):
             message=f"Added {len(created_records)} records to dataset {self.__dataset.name}",
             level="info",
         )
-        self.__records = records_models
 
         return created_records
 

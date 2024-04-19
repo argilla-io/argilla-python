@@ -105,7 +105,22 @@ class DatasetRecordsIterator:
         return bool(self.__query and (self.__query.query or self.__query.filters))
 
 
-class DatasetRecords(Resource, GenericExportMixin):
+class DatasetRecordsIteratorWithExportSupport(DatasetRecordsIterator, GenericExportMixin):
+
+    """This class is used to iterate over records in a dataset with export support: .to_list() and .to_dict())."""
+
+    def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
+        """Return the records as a dictionary."""
+        records = [r for r in self]
+        return self._export_to_dict(records=records, flatten=flatten, orient=orient)
+
+    def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
+        """Return the records as a list of dictionaries."""
+        records = [r for r in self]
+        return self._export_to_list(records=records, flatten=flatten)
+
+
+class DatasetRecords(Resource):
     """
     This class is used to work with records from a dataset.
 
@@ -140,11 +155,11 @@ class DatasetRecords(Resource, GenericExportMixin):
     ):
         if query and isinstance(query, str):
             query = Query(query=query)
-
+            
         if with_vectors:
             self.__validate_vector_names(vector_names=with_vectors)
 
-        return DatasetRecordsIterator(
+        return DatasetRecordsIteratorWithExportSupport(
             self.__dataset,
             self.__client,
             query=query,
@@ -237,22 +252,20 @@ class DatasetRecords(Resource, GenericExportMixin):
         )
 
     def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
-        """Return the records as a dictionary."""
-        records = self.__pull_records_from_server()
-        return self._export_to_dict(records=records, flatten=flatten, orient=orient)
+        """
+        Return the records as a dictionary. This is a convenient shortcut for dataset.records(...).to_dict().
+        """
+        return self(with_suggestions=True, with_responses=True).to_dict(flatten=flatten, orient=orient)
 
     def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
-        """Return the records as a list of dictionaries."""
-        records = self.__pull_records_from_server()
-        return self._export_to_list(records=records, flatten=flatten)
+        """
+        Return the records as a list of dictionaries. This is a convenient shortcut for dataset.records(...).to_list().
+        """
+        return self(with_suggestions=True, with_responses=True).to_list(flatten=flatten)
 
     ############################
     # Utility methods
     ############################
-
-    def __pull_records_from_server(self):
-        """Get records from the server"""
-        return list(self(with_suggestions=True, with_responses=True))
 
     def __ingest_records(
         self,

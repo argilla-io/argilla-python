@@ -71,6 +71,9 @@ class Dataset(Resource):
         self.__records = DatasetRecords(client=self._client, dataset=self)
         self._sync(model=self._model)
 
+    def __len__(self) -> int:
+        return len(self.records)
+
     @property
     def records(self) -> "DatasetRecords":
         return self.__records

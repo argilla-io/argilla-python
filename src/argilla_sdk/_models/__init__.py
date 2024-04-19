@@ -30,7 +30,7 @@ from argilla_sdk._models._settings._questions import (
     TextQuestionSettings,
     QuestionSettings,
     RatingQuestionModel,
-    QuestionModelType,
+    QuestionModel,
 )
 from argilla_sdk._models._settings._guidelines import Guidelines
 from argilla_sdk._models._vector import VectorModel

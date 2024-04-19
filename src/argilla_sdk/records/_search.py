@@ -11,11 +11,11 @@ from argilla_sdk._models._search import (
     TermsFilterModel,
     FilterModel,
     AndFilterModel,
+    QueryModel,
 )
 
 
 class Condition(Tuple[str, str, Any]):
-
     """This class is used to map user conditions to the internal filter models"""
 
     @property
@@ -86,7 +86,8 @@ class Query:
         model = SearchQueryModel()
 
         if self.query is not None:
-            model.query = TextQueryModel(q=self.query)
+            text_query = TextQueryModel(q=self.query)
+            model.query = QueryModel(text=text_query)
 
         if self.filter is not None:
             model.filters = self.filter.model

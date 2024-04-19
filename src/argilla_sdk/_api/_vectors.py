@@ -44,7 +44,7 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
         # TODO: Implement update method for vectors with server side ID
         raise NotImplementedError
 
-    def delete(self, dataset_id: UUID) -> None:
+    def delete(self, vector_id: UUID) -> None:
         # TODO: Implement delete method for vectors with server side ID
         raise NotImplementedError
 

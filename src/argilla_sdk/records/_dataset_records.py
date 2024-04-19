@@ -37,6 +37,7 @@ class DatasetRecordsIterator:
         batch_size: Optional[int] = None,
         with_suggestions: bool = False,
         with_responses: bool = False,
+        with_vectors: Optional[Union[str, List[str], bool]] = None,
     ):
         self.__dataset = dataset
         self.__client = client
@@ -45,6 +46,7 @@ class DatasetRecordsIterator:
         self.__batch_size = batch_size or 100
         self.__with_suggestions = with_suggestions
         self.__with_responses = with_responses
+        self.__with_vectors = with_vectors
 
     def __iter__(self):
         return self
@@ -73,6 +75,7 @@ class DatasetRecordsIterator:
             offset=self.__offset,
             with_responses=self.__with_responses,
             with_suggestions=self.__with_suggestions,
+            with_vectors=self.__with_vectors,
         )
         for record_model in record_models:
             yield Record.from_model(model=record_model, dataset=self.__dataset)
@@ -108,7 +111,10 @@ class DatasetRecords(Resource, GenericExportMixin):
         start_offset: int = 0,
         with_suggestions: bool = True,
         with_responses: bool = True,
+        with_vectors: Optional[Union[List, bool, str]] = None,
     ):
+        if with_vectors:
+            self.__validate_vector_names(vector_names=with_vectors)
         return DatasetRecordsIterator(
             self.__dataset,
             self.__client,
@@ -116,6 +122,7 @@ class DatasetRecords(Resource, GenericExportMixin):
             start_offset=start_offset,
             with_suggestions=with_suggestions,
             with_responses=with_responses,
+            with_vectors=with_vectors,
         )
 
     ############################
@@ -249,3 +256,12 @@ class DatasetRecords(Resource, GenericExportMixin):
             )
 
         return norm_batch_size
+
+    def __validate_vector_names(self, vector_names: Union[List[str], str]) -> None:
+        if not isinstance(vector_names, list):
+            vector_names = [vector_names]
+        for vector_name in vector_names:
+            if isinstance(vector_name, bool):
+                continue
+            if vector_name not in self.__dataset.schema:
+                raise ValueError(f"Vector field {vector_name} not found in dataset schema.")

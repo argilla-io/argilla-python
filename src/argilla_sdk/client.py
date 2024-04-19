@@ -11,12 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 from abc import abstractmethod
 from collections.abc import Sequence
 from typing import TYPE_CHECKING, overload
 
-import argilla_sdk as rg
 from argilla_sdk import _api
+from argilla_sdk._helpers._resource_repr import ResourceHTMLReprMixin
 
 if TYPE_CHECKING:
     from argilla_sdk import Workspace
@@ -44,7 +45,7 @@ class Argilla(_api.APIClient):
         return User(client=self, _model=self.api.users.get_me())
 
 
-class Users(Sequence):
+class Users(Sequence, ResourceHTMLReprMixin):
     """A collection of users. It can be used to create a new user or to get an existing one."""
 
     def __init__(self, client: "Argilla") -> None:
@@ -78,8 +79,12 @@ class Users(Sequence):
     def __len__(self) -> int:
         return len(self._api.list())
 
+    def _repr_html_(self) -> "HTML":
+        resources = [self[i] for i in range(len(self))]
+        return self._represent_as_html(resources=resources)
 
-class Workspaces(Sequence):
+
+class Workspaces(Sequence, ResourceHTMLReprMixin):
     """A collection of workspaces. It can be used to create a new workspace or to get an existing one."""
 
     def __init__(self, client: "Argilla") -> None:
@@ -114,8 +119,12 @@ class Workspaces(Sequence):
     def __len__(self) -> int:
         return len(self._api.list())
 
+    def _repr_html_(self) -> "HTML":
+        resources = [self[i] for i in range(len(self))]
+        return self._represent_as_html(resources=resources)
 
-class Datasets(Sequence):
+
+class Datasets(Sequence, ResourceHTMLReprMixin):
     """A collection of datasets. It can be used to create a new dataset or to get an existing one."""
 
     def __init__(self, client: "Argilla") -> None:
@@ -150,3 +159,7 @@ class Datasets(Sequence):
 
     def __len__(self) -> int:
         return len(self._api.list())
+
+    def _repr_html_(self) -> "HTML":
+        resources = [self[i] for i in range(len(self))]
+        return self._represent_as_html(resources=resources)

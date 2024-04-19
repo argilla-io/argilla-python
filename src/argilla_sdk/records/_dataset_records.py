@@ -39,6 +39,7 @@ class DatasetRecordsIterator:
         batch_size: Optional[int] = None,
         with_suggestions: bool = False,
         with_responses: bool = False,
+        with_vectors: Optional[Union[str, List[str], bool]] = None,
     ):
         self.__dataset = dataset
         self.__client = client
@@ -47,6 +48,7 @@ class DatasetRecordsIterator:
         self.__batch_size = batch_size or 100
         self.__with_suggestions = with_suggestions
         self.__with_responses = with_responses
+        self.__with_vectors = with_vectors
         self.__records_batch = []
 
     def __iter__(self):
@@ -85,6 +87,7 @@ class DatasetRecordsIterator:
             offset=self.__offset,
             with_responses=self.__with_responses,
             with_suggestions=self.__with_suggestions,
+            with_vectors=self.__with_vectors,
         )
 
     def _fetch_from_server_with_search(self) -> List[RecordModel]:
@@ -102,7 +105,22 @@ class DatasetRecordsIterator:
         return bool(self.__query and (self.__query.query or self.__query.filter))
 
 
-class DatasetRecords(Resource, GenericExportMixin):
+class DatasetRecordsIteratorWithExportSupport(DatasetRecordsIterator, GenericExportMixin):
+
+    """This class is used to iterate over records in a dataset with export support: .to_list() and .to_dict())."""
+
+    def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
+        """Return the records as a dictionary."""
+        records = [r for r in self]
+        return self._export_to_dict(records=records, flatten=flatten, orient=orient)
+
+    def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
+        """Return the records as a list of dictionaries."""
+        records = [r for r in self]
+        return self._export_to_list(records=records, flatten=flatten)
+
+
+class DatasetRecords(Resource):
     """
     This class is used to work with records from a dataset.
 
@@ -133,11 +151,15 @@ class DatasetRecords(Resource, GenericExportMixin):
         start_offset: int = 0,
         with_suggestions: bool = True,
         with_responses: bool = True,
+        with_vectors: Optional[Union[List, bool, str]] = None,
     ):
         if query and isinstance(query, str):
             query = Query(query=query)
+            
+        if with_vectors:
+            self.__validate_vector_names(vector_names=with_vectors)
 
-        return DatasetRecordsIterator(
+        return DatasetRecordsIteratorWithExportSupport(
             self.__dataset,
             self.__client,
             query=query,
@@ -145,6 +167,7 @@ class DatasetRecords(Resource, GenericExportMixin):
             start_offset=start_offset,
             with_suggestions=with_suggestions,
             with_responses=with_responses,
+            with_vectors=with_vectors,
         )
 
     ############################
@@ -226,22 +249,20 @@ class DatasetRecords(Resource, GenericExportMixin):
         )
 
     def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
-        """Return the records as a dictionary."""
-        records = self.__pull_records_from_server()
-        return self._export_to_dict(records=records, flatten=flatten, orient=orient)
+        """
+        Return the records as a dictionary. This is a convenient shortcut for dataset.records(...).to_dict().
+        """
+        return self(with_suggestions=True, with_responses=True).to_dict(flatten=flatten, orient=orient)
 
     def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
-        """Return the records as a list of dictionaries."""
-        records = self.__pull_records_from_server()
-        return self._export_to_list(records=records, flatten=flatten)
+        """
+        Return the records as a list of dictionaries. This is a convenient shortcut for dataset.records(...).to_list().
+        """
+        return self(with_suggestions=True, with_responses=True).to_list(flatten=flatten)
 
     ############################
     # Utility methods
     ############################
-
-    def __pull_records_from_server(self):
-        """Get records from the server"""
-        return list(self(with_suggestions=True, with_responses=True))
 
     def __ingest_records(
         self,
@@ -278,3 +299,12 @@ class DatasetRecords(Resource, GenericExportMixin):
             )
 
         return norm_batch_size
+
+    def __validate_vector_names(self, vector_names: Union[List[str], str]) -> None:
+        if not isinstance(vector_names, list):
+            vector_names = [vector_names]
+        for vector_name in vector_names:
+            if isinstance(vector_name, bool):
+                continue
+            if vector_name not in self.__dataset.schema:
+                raise ValueError(f"Vector field {vector_name} not found in dataset schema.")

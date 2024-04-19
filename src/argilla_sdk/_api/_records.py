@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Dict, Tuple, Union
+from typing import List, Dict, Tuple, Union, Optional
 from uuid import UUID
 
 import httpx
@@ -66,12 +66,24 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         limit: int = 100,
         with_suggestions: bool = True,
         with_responses: bool = True,
+        with_vectors: Optional[Union[List, bool]] = None,
     ) -> List[RecordModel]:
+        """List records in a dataset
+        Args:
+            dataset_id: The ID of the dataset
+            offset: The offset to start from
+            limit: The number of records to return
+            with_vectors: The name of vectors to include
+            with_suggestions: Whether to include suggestions
+            with_responses: Whether to include responses
+        """
         include = []
         if with_suggestions:
             include.append("suggestions")
         if with_responses:
             include.append("responses")
+        if with_vectors:
+            include.append(self._represent_vectors_to_include(with_vectors))
 
         params = {
             "offset": offset,
@@ -205,7 +217,25 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     def _model_from_json(self, response_json: Dict) -> RecordModel:
         response_json["inserted_at"] = self._date_from_iso_format(date=response_json["inserted_at"])
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
+        if "vectors" in response_json:
+            response_json["vectors"] = [
+                {"name": key, "vector_values": value} for key, value in response_json["vectors"].items()
+            ]
         return RecordModel(**response_json)
 
     def _model_from_jsons(self, response_jsons: List[Dict]) -> List[RecordModel]:
         return list(map(self._model_from_json, response_jsons))
+
+    def _represent_vectors_to_include(self, with_vectors: Union[List, str, bool]) -> Union[str, None]:
+        """Represent the vectors to include in the API request"""
+        vector_stub = "vectors"
+        if with_vectors is True:
+            return vector_stub
+        elif not with_vectors:
+            return None
+        elif isinstance(with_vectors, str):
+            return f"{vector_stub}:{with_vectors}"
+        elif isinstance(with_vectors, list):
+            return f"{vector_stub}:{','.join(with_vectors)}"
+        else:
+            raise ValueError(f"Invalid value for with_vectors: {with_vectors}")

@@ -108,7 +108,9 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         }
 
         response = self.http_client.post(
-            f"/api/v1/datasets/{dataset_id}/records/search", json=query.model_dump(by_alias=True, exclude_none=True), params=params
+            f"/api/v1/datasets/{dataset_id}/records/search",
+            json=query.model_dump(by_alias=True, exclude_none=True),
+            params=params
         )
         _http.raise_for_status(response=response)
 

@@ -19,7 +19,14 @@ from argilla_sdk._models._dataset import DatasetModel
 from argilla_sdk._models._record import RecordModel
 from argilla_sdk._models._suggestion import SuggestionModel
 from argilla_sdk._models._response import ResponseModel, ResponseStatus
-from argilla_sdk._models._search import SearchQueryModel, AndFilterModel, FilterModel, RangeFilterModel, TermsFilterModel, Scope
+from argilla_sdk._models._search import (
+    SearchQueryModel,
+    AndFilterModel,
+    FilterModel,
+    RangeFilterModel,
+    TermsFilterModel,
+    ScopeModel,
+)
 from argilla_sdk._models._settings._fields import TextFieldModel, FieldSettings, FieldBaseModel
 from argilla_sdk._models._settings._guidelines import Guidelines
 from argilla_sdk._models._settings._questions import (

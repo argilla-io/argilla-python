@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, Union
 from uuid import UUID
 
 from pydantic import BaseModel, validator, field_serializer
@@ -48,3 +48,6 @@ class VectorFieldModel(FieldBaseModel):
         if dimensions <= 0:
             raise ValueError("dimensions must be greater than 0")
         return dimensions
+
+
+FieldModel = Union[TextFieldModel, VectorFieldModel]

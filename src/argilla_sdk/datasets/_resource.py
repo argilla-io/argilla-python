@@ -11,14 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from typing import Optional, Literal, Union, Dict
+from typing import Optional, Literal, Union
 from uuid import UUID, uuid4
 
 from argilla_sdk._api import DatasetsAPI
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
-from argilla_sdk.datasets._exceptions import DatasetNotPublished
 from argilla_sdk.records import DatasetRecords
 from argilla_sdk.settings import Settings
 
@@ -66,8 +65,7 @@ class Dataset(Resource):
             id=self._convert_optional_uuid(uuid=id),
         )
         self._model = _model
-        self.__define_settings(settings=settings)
-        self.question_name_map = {}
+        self._settings = self.__configure_settings_for_dataset(settings=settings)
         self.__records = DatasetRecords(client=self._client, dataset=self)
         self._sync(model=self._model)
 
@@ -85,7 +83,7 @@ class Dataset(Resource):
 
     @settings.setter
     def settings(self, value: Settings) -> None:
-        self.__define_settings(settings=value)
+        self._settings = self.__configure_settings_for_dataset(settings=value)
 
     @property
     def fields(self) -> list:
@@ -115,6 +113,14 @@ class Dataset(Resource):
     def schema(self):
         return self._settings.schema
 
+    def get(self) -> "Dataset":
+        super().get()
+        # I've included the settings here to make sure that the settings are always in sync
+        # We can decide later if we want a lazy loading approach
+        self._settings.get()
+
+        return self
+
     def exists(self) -> bool:
         return self._api.exists(self.id)
 
@@ -130,21 +136,22 @@ class Dataset(Resource):
         if not self.exists():
             self.__create()
 
-        self.__define_settings(settings=settings)
-        settings.create()
+        self._settings = self.__configure_settings_for_dataset(settings=settings)
+        self._settings.create()
 
         if publish:
             self.__publish()
+
         return self.get()  # type: ignore
 
-    def __define_settings(
+    def __configure_settings_for_dataset(
         self,
         settings: Optional[Settings] = None,
-    ) -> None:
+    ) -> Settings:
         """Populate the dataset object with settings"""
         settings = settings or Settings()
-        settings._set_dataset(self)
-        self._settings = settings
+        settings.dataset = self
+        return settings
 
     def __create(self) -> None:
         response_model = self._api.create(self._model)

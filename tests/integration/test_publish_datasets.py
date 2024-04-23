@@ -19,7 +19,7 @@ from argilla_sdk import Argilla, Settings, TextField, TextQuestion
 
 @pytest.fixture
 def client() -> Argilla:
-    return Argilla(api_url="http://localhost:6900", api_key="owner.apikey")
+    return Argilla(api_url="http://localhost:6900")
 
 
 def test_publish_datasets(client: "Argilla"):
@@ -42,3 +42,7 @@ def test_publish_datasets(client: "Argilla"):
 
     ds.publish()
     assert ds.is_published, "The dataset was not published"
+
+    published_ds = client.datasets(name=ds.name, workspace=new_ws)
+    assert published_ds.exists(), "The dataset was not found"
+    assert published_ds.settings == ds.settings, "The settings were not saved"

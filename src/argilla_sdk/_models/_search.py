@@ -48,8 +48,8 @@ class RangeFilterModel(BaseModel):
     """Filter model for range filter."""
 
     type: Literal["range"] = "range"
-    ge: Any
-    le: Any
+    ge: Union[Any, None] = None
+    le: Union[Any, None] = None
     scope: ScopeModel
 
 

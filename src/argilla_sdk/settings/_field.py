@@ -83,3 +83,5 @@ def field_from_model(model: FieldModel) -> FieldType:
         return TextField.from_model(model)
     elif isinstance(model, VectorFieldModel):
         return VectorField.from_model(model)
+    else:
+        raise ValueError(f"Unsupported field model type: {type(model)}")

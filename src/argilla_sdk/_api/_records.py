@@ -16,10 +16,11 @@ from typing import List, Dict, Tuple, Union, Optional
 from uuid import UUID
 
 import httpx
+from typing_extensions import deprecated
 
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
-from argilla_sdk._models import RecordModel, ResponseModel
+from argilla_sdk._models import RecordModel, ResponseModel, SearchQueryModel
 
 __all__ = ["RecordsAPI"]
 
@@ -96,6 +97,41 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         json_records = response.json()["items"]
         return self._model_from_jsons(json_records)
 
+    def search(
+        self,
+        dataset_id: UUID,
+        query: SearchQueryModel,
+        offset: int = 0,
+        limit: int = 100,
+        with_suggestions: bool = True,
+        with_responses: bool = True,
+        # TODO: Add support for `with_vectors`
+    ) -> Tuple[List[Tuple[RecordModel, float]], int]:
+
+        include = []
+        if with_suggestions:
+            include.append("suggestions")
+        if with_responses:
+            include.append("responses")
+
+        params = {
+            "offset": offset,
+            "limit": limit,
+            "include": include,
+        }
+
+        response = self.http_client.post(
+            f"/api/v1/datasets/{dataset_id}/records/search",
+            json=query.model_dump(by_alias=True),
+            params=params
+        )
+        _http.raise_for_status(response=response)
+
+        json_items = response.json()["items"]
+        total = response.json()["total"]
+        return [(self._model_from_json(item["record"]), item["query_score"]) for item in json_items], total
+
+    @deprecated("Use `bulk_create` or `bulk_upsert` instead")
     def create_many(self, dataset_id: UUID, records: List[RecordModel]) -> None:
         record_dicts = [record.model_dump() for record in records]
         response = self.http_client.post(
@@ -106,6 +142,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
         # TODO: Once server returns the records, return them here
 
+    @deprecated("Use `bulk_create` or `bulk_upsert` instead")
     def update_many(self, dataset_id: UUID, records: List[RecordModel]) -> None:
         record_dicts = [record.model_dump() for record in records]
         response = self.http_client.patch(
@@ -172,6 +209,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             raise ValueError("Record must have an ID to create responses")
         for record_response in record.responses:
             self.create_record_response(record_id=record.id, record_response=record_response)
+
 
     ####################
     # Private methods #

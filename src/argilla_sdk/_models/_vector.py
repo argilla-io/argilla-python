@@ -14,9 +14,19 @@
 
 from argilla_sdk._models import ResourceModel
 
+import re
+from pydantic import field_validator
+
 __all__ = ["VectorModel"]
 
 
 class VectorModel(ResourceModel):
     name: str
     vector_values: list[float]
+
+    @field_validator("name")
+    def validate_name(cls, value):
+        """Validate the name of the vector is url safe"""
+        if not re.match(r"^[a-zA-Z0-9_-]+$", value):
+            raise ValueError("Vector name must be url safe")
+        return value

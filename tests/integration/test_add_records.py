@@ -86,11 +86,9 @@ def test_add_records(client):
 
 
 def test_add_dict_records(client: Argilla):
-    ws = client.workspaces("argilla")
-
-    new_ws = client.workspaces("new_ws")
-    if not new_ws.exists():
-        new_ws.create()
+    ws = client.workspaces("new_ws")
+    if not ws.exists():
+        ws.create()
 
     ds = client.datasets("new_ds", workspace=ws)
     if ds.exists():

@@ -21,6 +21,7 @@ from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
 from argilla_sdk.records._export import GenericExportMixin
 from argilla_sdk.records._resource import Record
+from argilla_sdk.records._search import Query
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -33,6 +34,7 @@ class DatasetRecordsIterator:
         self,
         dataset: "Dataset",
         client: "Argilla",
+        query: Optional[Query] = None,
         start_offset: int = 0,
         batch_size: Optional[int] = None,
         with_suggestions: bool = False,
@@ -41,12 +43,13 @@ class DatasetRecordsIterator:
     ):
         self.__dataset = dataset
         self.__client = client
-        self.__records_batch = []
+        self.__query = query or Query()
         self.__offset = start_offset or 0
         self.__batch_size = batch_size or 100
         self.__with_suggestions = with_suggestions
         self.__with_responses = with_responses
         self.__with_vectors = with_vectors
+        self.__records_batch = []
 
     def __iter__(self):
         return self
@@ -69,7 +72,16 @@ class DatasetRecordsIterator:
         self.__offset += len(self.__records_batch)
 
     def _list(self) -> Sequence[Record]:
-        record_models = self.__client.api.records.list(
+        for record_model in self._fetch_from_server():
+            yield Record.from_model(model=record_model, dataset=self.__dataset)
+
+    def _fetch_from_server(self) -> List[RecordModel]:
+        if self._is_search_query():
+            return self._fetch_from_server_with_search()
+        return self._fetch_from_server_with_list()
+
+    def _fetch_from_server_with_list(self) -> List[RecordModel]:
+        return self.__client.api.records.list(
             dataset_id=self.__dataset.id,
             limit=self.__batch_size,
             offset=self.__offset,
@@ -77,11 +89,38 @@ class DatasetRecordsIterator:
             with_suggestions=self.__with_suggestions,
             with_vectors=self.__with_vectors,
         )
-        for record_model in record_models:
-            yield Record.from_model(model=record_model, dataset=self.__dataset)
+
+    def _fetch_from_server_with_search(self) -> List[RecordModel]:
+        search_items, total = self.__client.api.records.search(
+            dataset_id=self.__dataset.id,
+            query=self.__query.model,
+            limit=self.__batch_size,
+            offset=self.__offset,
+            with_responses=self.__with_responses,
+            with_suggestions=self.__with_suggestions,
+        )
+        return [record_model for record_model, _ in search_items]
+
+    def _is_search_query(self) -> bool:
+        return bool(self.__query and (self.__query.query or self.__query.filter))
 
 
-class DatasetRecords(Resource, GenericExportMixin):
+class DatasetRecordsIteratorWithExportSupport(DatasetRecordsIterator, GenericExportMixin):
+
+    """This class is used to iterate over records in a dataset with export support: .to_list() and .to_dict())."""
+
+    def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
+        """Return the records as a dictionary."""
+        records = [r for r in self]
+        return self._export_to_dict(records=records, flatten=flatten, orient=orient)
+
+    def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
+        """Return the records as a list of dictionaries."""
+        records = [r for r in self]
+        return self._export_to_list(records=records, flatten=flatten)
+
+
+class DatasetRecords(Resource):
     """
     This class is used to work with records from a dataset.
 
@@ -107,17 +146,23 @@ class DatasetRecords(Resource, GenericExportMixin):
 
     def __call__(
         self,
+        query: Optional[Union[str, Query]] = None,
         batch_size: Optional[int] = 100,
         start_offset: int = 0,
         with_suggestions: bool = True,
         with_responses: bool = True,
         with_vectors: Optional[Union[List, bool, str]] = None,
     ):
+        if query and isinstance(query, str):
+            query = Query(query=query)
+            
         if with_vectors:
             self.__validate_vector_names(vector_names=with_vectors)
-        return DatasetRecordsIterator(
+
+        return DatasetRecordsIteratorWithExportSupport(
             self.__dataset,
             self.__client,
+            query=query,
             batch_size=batch_size,
             start_offset=start_offset,
             with_suggestions=with_suggestions,
@@ -204,22 +249,20 @@ class DatasetRecords(Resource, GenericExportMixin):
         )
 
     def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
-        """Return the records as a dictionary."""
-        records = self.__pull_records_from_server()
-        return self._export_to_dict(records=records, flatten=flatten, orient=orient)
+        """
+        Return the records as a dictionary. This is a convenient shortcut for dataset.records(...).to_dict().
+        """
+        return self(with_suggestions=True, with_responses=True).to_dict(flatten=flatten, orient=orient)
 
     def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
-        """Return the records as a list of dictionaries."""
-        records = self.__pull_records_from_server()
-        return self._export_to_list(records=records, flatten=flatten)
+        """
+        Return the records as a list of dictionaries. This is a convenient shortcut for dataset.records(...).to_list().
+        """
+        return self(with_suggestions=True, with_responses=True).to_list(flatten=flatten)
 
     ############################
     # Utility methods
     ############################
-
-    def __pull_records_from_server(self):
-        """Get records from the server"""
-        return list(self(with_suggestions=True, with_responses=True))
 
     def __ingest_records(
         self,

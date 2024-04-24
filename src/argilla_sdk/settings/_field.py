@@ -1,6 +1,6 @@
-from typing import Optional
+from typing import Optional, Union
 
-from argilla_sdk._models import TextFieldModel, FieldSettings, VectorFieldModel
+from argilla_sdk._models import TextFieldModel, FieldSettings, VectorFieldModel, FieldModel
 from argilla_sdk.settings._common import SettingsPropertyBase
 
 __all__ = ["TextField", "FieldType", "VectorField"]
@@ -30,6 +30,13 @@ class TextField(SettingsPropertyBase):
     def use_markdown(self) -> Optional[bool]:
         return self._model.settings.use_markdown
 
+    @classmethod
+    def from_model(cls, model: TextFieldModel) -> "TextField":
+        instance = cls(name=model.name)
+        instance._model = model
+
+        return instance
+
 
 class VectorField(SettingsPropertyBase):
     _model: VectorFieldModel
@@ -48,6 +55,13 @@ class VectorField(SettingsPropertyBase):
             dimensions=dimensions,
         )
 
+    @classmethod
+    def from_model(cls, model: VectorFieldModel) -> "VectorField":
+        instance = cls(name=model.name, dimensions=model.dimensions)
+        instance._model = model
+
+        return instance
+
     @property
     def dimensions(self) -> int:
         return self._model.dimensions
@@ -61,4 +75,13 @@ class VectorField(SettingsPropertyBase):
         return self._model.name
 
 
-FieldType = TextField
+FieldType = Union[TextField, VectorField]
+
+
+def field_from_model(model: FieldModel) -> FieldType:
+    if isinstance(model, TextFieldModel):
+        return TextField.from_model(model)
+    elif isinstance(model, VectorFieldModel):
+        return VectorField.from_model(model)
+    else:
+        raise ValueError(f"Unsupported field model type: {type(model)}")

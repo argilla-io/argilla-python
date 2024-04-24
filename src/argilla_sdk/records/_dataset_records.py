@@ -197,7 +197,7 @@ class DatasetRecords(Resource):
         )
 
         created_records = []
-        for batch in range(0, len(records), batch_size):
+        for batch in range(0, len(record_models), batch_size):
             self.log(message=f"Sending records from {batch} to {batch + batch_size}.")
             batch_records = record_models[batch : batch + batch_size]
             models = self._api.bulk_create(dataset_id=self.__dataset.id, records=batch_records)

@@ -36,6 +36,10 @@ class UserModel(ResourceModel):
     last_name: Optional[str] = None
     password: Optional[str] = None
 
+    class Config:
+        validate_assignment = True
+        anystr_strip_whitespace = True
+
     @field_validator("first_name")
     def __validate_first_name(cls, v, values):
         """Set first_name to username if not provided"""

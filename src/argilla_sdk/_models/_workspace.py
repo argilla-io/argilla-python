@@ -23,6 +23,10 @@ __all__ = ["WorkspaceModel"]
 class WorkspaceModel(ResourceModel):
     name: str
 
+    class Config:
+        validate_assignment = True
+        anystr_strip_whitespace = True
+
     @field_validator("name")
     def validate_name(cls, value):
         """Validate the name of the workspace is url safe"""

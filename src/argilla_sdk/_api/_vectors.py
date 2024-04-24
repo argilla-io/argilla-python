@@ -60,7 +60,7 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
         return vector_models
 
     def list(self, dataset_id: UUID) -> List[VectorFieldModel]:
-        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/vectors")
+        response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/vectors-settings")
         _http.raise_for_status(response=response)
         response_jsons = response.json()["items"]
         vector_models = self._model_from_jsons(response_jsons=response_jsons)

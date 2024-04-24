@@ -1,0 +1,2 @@
+class ArgillaSerializeError(Exception):
+    pass

@@ -51,7 +51,6 @@ class VectorField(SettingsPropertyBase):
         self._model = VectorFieldModel(
             name=name,
             title=title,
-            settings=FieldSettings(type="vector"),
             dimensions=dimensions,
         )
 

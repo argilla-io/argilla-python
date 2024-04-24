@@ -14,18 +14,19 @@ class FieldSettings(BaseModel):
 class FieldBaseModel(BaseModel):
     id: Optional[UUID] = None
     name: str
-    settings: Optional[FieldSettings]
 
     title: Optional[str] = None
     required: bool = True
     description: Optional[str] = None
 
     @validator("name")
+    @classmethod
     def __name_lower(cls, name):
         formatted_name = name.lower().replace(" ", "_")
         return formatted_name
 
     @validator("title", always=True)
+    @classmethod
     def __title_default(cls, title, values):
         validated_title = title or values["name"]
         log(f"TextField title is {validated_title}")

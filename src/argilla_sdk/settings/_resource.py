@@ -17,7 +17,7 @@ from uuid import UUID
 
 from argilla_sdk._models import TextFieldModel, TextQuestionModel
 from argilla_sdk.client import Argilla
-from argilla_sdk.settings._field import FieldType, VectorField, field_from_model
+from argilla_sdk.settings._field import FieldType, VectorField, TextField, field_from_model
 from argilla_sdk.settings._question import QuestionType, question_from_model
 
 if TYPE_CHECKING:

@@ -35,16 +35,15 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
     def create(self, workspace: WorkspaceModel) -> WorkspaceModel:
         # TODO: Unify API endpoint
         response = self.http_client.post(url="/api/workspaces", json={"name": workspace.name})
-        _http.raise_for_status(response=response)
-        workspace = self._model_from_json(json_workspace=response.json())
+        response = self._handle_response(response=response, resource=workspace)
+        workspace = self._model_from_json(json_workspace=response)
         self.log(message=f"Created workspace {workspace.name}")
         return workspace
 
     def get(self, workspace_id: UUID) -> WorkspaceModel:
         response = self.http_client.get(url=f"{self.url_stub}/{workspace_id}")
-        _http.raise_for_status(response=response)
-        response_json = response.json()
-        workspace = self._model_from_json(json_workspace=response_json)
+        response = self._handle_response(response=response, resource=workspace_id)
+        workspace = self._model_from_json(json_workspace=response)
         return workspace
 
     def delete(self, workspace_id: UUID) -> None:
@@ -61,25 +60,22 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
 
     def list(self) -> List[WorkspaceModel]:
         response = self.http_client.get(url="/api/v1/me/workspaces")
-        _http.raise_for_status(response=response)
-        response_jsons = response.json()["items"]
-        workspaces = self._model_from_jsons(json_workspaces=response_jsons)
+        response = self._handle_response(response=response, resource=None)
+        workspaces = self._model_from_jsons(json_workspaces=response["items"])
         self.log(message=f"Got {len(workspaces)} workspaces")
         return workspaces
 
     def list_by_user_id(self, user_id: UUID) -> List[WorkspaceModel]:
         response = self.http_client.get(f"/api/v1/users/{user_id}/workspaces")
-        _http.raise_for_status(response=response)
-        response_jsons = response.json()["items"]
-        workspaces = self._model_from_jsons(json_workspaces=response_jsons)
+        response = self._handle_response(response=response, resource=user_id)
+        workspaces = self._model_from_jsons(json_workspaces=response["items"])
         self.log(message=f"Got {len(workspaces)} workspaces")
         return workspaces
 
     def list_current_user_workspaces(self) -> List[WorkspaceModel]:
         response = self.http_client.get(url="/api/v1/me/workspaces")
-        _http.raise_for_status(response=response)
-        response_jsons = response.json()["items"]
-        workspaces = self._model_from_jsons(json_workspaces=response_jsons)
+        response = self._handle_response(response=response, resource=user_id)
+        workspaces = self._model_from_jsons(json_workspaces=response["items"])
         self.log(message=f"Got {len(workspaces)} workspaces")
         return workspaces
 
@@ -92,12 +88,12 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
 
     def add_user(self, workspace_id: UUID, user_id: UUID) -> None:
         response = self.http_client.post(f"{self.url_stub}/{workspace_id}/users/{user_id}")
-        _http.raise_for_status(response=response)
+        response = self._handle_response(response=response, resource=user_id)
         self.log(message=f"Added user {user_id} to workspace {workspace_id}")
 
     def remove_user(self, workspace_id: UUID, user_id: UUID) -> None:
         response = self.http_client.delete(f"{self.url_stub}/{workspace_id}/users/{user_id}")
-        _http.raise_for_status(response=response)
+        response = self._handle_response(response=response, resource=user_id)
         self.log(message=f"Removed user {user_id} from workspace {workspace_id}")
 
     ####################

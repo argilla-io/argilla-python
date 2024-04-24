@@ -39,20 +39,20 @@ class RecordsAPI(ResourceAPI[RecordModel]):
 
     def get(self, record_id: UUID) -> RecordModel:
         response = self.http_client.get(f"/api/v1/records/{record_id}")
-        _http.raise_for_status(response=response)
-        return self._model_from_json(response_json=response.json())
+        response = self._handle_response(response=response, resource=record_id)
+        return self._model_from_json(response_json=response)
 
     def update(self, record: RecordModel) -> RecordModel:
         response = self.http_client.patch(
             url=f"/api/v1/records/{record.id}",
             json=record.model_dump(),
         )
-        _http.raise_for_status(response=response)
-        return self._model_from_json(response_json=response.json())
+        response = self._handle_response(response=response, resource=record)
+        return self._model_from_json(response_json=response)
 
     def delete(self, record_id: UUID) -> None:
         response = self.http_client.delete(f"/api/v1/records/{record_id}")
-        _http.raise_for_status(response=response)
+        response = self._handle_response(response=response, resource=record_id)
         self.log(message=f"Deleted record {record_id}")
 
     ####################
@@ -92,9 +92,9 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         }
 
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/records", params=params)
-        _http.raise_for_status(response=response)
+        response = self._handle_response(response=response, resource=dataset_id)
 
-        json_records = response.json()["items"]
+        json_records = response["items"]
         return self._model_from_jsons(json_records)
 
     def search(
@@ -107,7 +107,6 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         with_responses: bool = True,
         # TODO: Add support for `with_vectors`
     ) -> Tuple[List[Tuple[RecordModel, float]], int]:
-
         include = []
         if with_suggestions:
             include.append("suggestions")
@@ -121,14 +120,12 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         }
 
         response = self.http_client.post(
-            f"/api/v1/datasets/{dataset_id}/records/search",
-            json=query.model_dump(by_alias=True),
-            params=params
+            f"/api/v1/datasets/{dataset_id}/records/search", json=query.model_dump(by_alias=True), params=params
         )
-        _http.raise_for_status(response=response)
+        response = self._handle_response(response=response, resource=dataset_id)
 
-        json_items = response.json()["items"]
-        total = response.json()["total"]
+        json_items = response["items"]
+        total = response["total"]
         return [(self._model_from_json(item["record"]), item["query_score"]) for item in json_items], total
 
     @deprecated("Use `bulk_create` or `bulk_upsert` instead")
@@ -138,7 +135,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             url=f"/api/v1/datasets/{dataset_id}/records",
             json={"items": record_dicts},
         )
-        _http.raise_for_status(response=response)
+        response = self._handle_response(response=response, resource=dataset_id)
         self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
         # TODO: Once server returns the records, return them here
 
@@ -149,7 +146,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             url=f"/api/v1/datasets/{dataset_id}/records",
             json={"items": record_dicts},
         )
-        _http.raise_for_status(response=response)
+        response = self._handle_response(response=response, resource=dataset_id)
         self.log(message=f"Updated {len(records)} records in dataset {dataset_id}")
 
     def bulk_create(
@@ -165,10 +162,11 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             json={"items": record_dicts},
         )
 
-        _http.raise_for_status(response=response)
+        response = self._handle_response(response=response, resource=dataset_id)
+
         self.log(message=f"Created {len(records)} in dataset {dataset_id}")
 
-        json_records = response.json()["items"]
+        json_records = response["items"]
         return self._model_from_jsons(json_records)
 
     def bulk_upsert(self, dataset_id: UUID, records: List[RecordModel]) -> Tuple[List[RecordModel], int]:
@@ -181,15 +179,14 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             json={"items": record_dicts},
         )
 
-        _http.raise_for_status(response=response)
-        json_response = response.json()
-        updated = len(json_response.get("updated_item_ids", []))
+        response = self._handle_response(response=response, resource=dataset_id)
+
+        updated = len(response.get("updated_item_ids", []))
         self.log(
             message=f"Updated {updated} records and create {len(records) - updated} records in dataset {dataset_id}"
         )
 
-        json_records = json_response["items"]
-        return self._model_from_jsons(json_records), updated
+        return self._model_from_jsons(response_jsons=response["items"]), updated
 
     ####################
     # Response methods #
@@ -200,7 +197,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             url=f"/api/v1/records/{record_id}/responses",
             json=record_response.model_dump(),
         )
-        _http.raise_for_status(response=response)
+        self._handle_response(response=response, resource=dataset_id)
 
     def create_record_responses(self, record: RecordModel) -> None:
         if not record.responses:
@@ -209,7 +206,6 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             raise ValueError("Record must have an ID to create responses")
         for record_response in record.responses:
             self.create_record_response(record_id=record.id, record_response=record_response)
-
 
     ####################
     # Private methods #

@@ -35,8 +35,8 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
     def create(self, dataset_id: UUID, field: FieldModel) -> FieldModel:
         url = f"/api/v1/datasets/{dataset_id}/fields"
         response = self.http_client.post(url=url, json=field.model_dump())
-        _http.raise_for_status(response=response)
-        field_model = self._model_from_json(response_json=response.json())
+        response = self._handle_response(response=response, resource=field)
+        field_model = self._model_from_json(response_json=response)
         self.log(message=f"Created field {field_model.name} in dataset {dataset_id}")
         return field_model
 
@@ -61,9 +61,8 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
 
     def list(self, dataset_id: UUID) -> List[FieldModel]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/fields")
-        _http.raise_for_status(response=response)
-        response_jsons = response.json()["items"]
-        field_models = self._model_from_jsons(response_jsons=response_jsons)
+        response = self._handle_response(response=response, resource=dataset_id)
+        field_models = self._model_from_jsons(response_jsons=response["items"])
         return field_models
 
     ####################

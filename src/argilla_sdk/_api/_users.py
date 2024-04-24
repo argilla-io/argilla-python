@@ -40,26 +40,25 @@ class UsersAPI(ResourceAPI[UserModel]):
             "/api/users",
             json=json_body,
         )
-        _http.raise_for_status(response=response)
-        user = self._model_from_json(json_user=response.json())
+        response = self._handle_response(response=response, resource=user)
+        user = self._model_from_json(json_user=response)
         self.log(message=f"Created user {user.username}")
         return user
 
     def get(self, user_id: UUID) -> UserModel:
         response = self.http_client.get(url=f"/api/users/{user_id}")
-        _http.raise_for_status(response=response)
-        response_json = response.json()
-        user = self._model_from_json(json_user=response_json)
+        response = self._handle_response(response=response, resource=user_id)
+        user = self._model_from_json(json_user=response)
         self.log(message=f"Got user {user.username}")
         return user
 
     def delete(self, user_id: UUID) -> None:
         response = self.http_client.delete(url=f"/api/users/{user_id}")
-        _http.raise_for_status(response=response)
+        response = self._handle_response(response=response, resource=user_id)
         self.log(message=f"Deleted user {id}")
 
     ####################
-    # Utility methods #
+    # V0 API methods #
     ####################
 
     def list(self) -> List[UserModel]:

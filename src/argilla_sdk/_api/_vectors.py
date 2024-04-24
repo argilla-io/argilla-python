@@ -35,8 +35,8 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
     def create(self, dataset_id: UUID, vector: VectorFieldModel) -> VectorFieldModel:
         url = f"/api/v1/datasets/{dataset_id}/vectors-settings"
         response = self.http_client.post(url=url, json=vector.model_dump())
-        _http.raise_for_status(response=response)
-        vector_model = self._model_from_json(response_json=response.json())
+        response = self._handle_response(response=response, resource=vector)
+        vector_model = self._model_from_json(response_json=response)
         self.log(message=f"Created vector {vector_model.name} in dataset {dataset_id}")
         return vector_model
 
@@ -61,9 +61,8 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
 
     def list(self, dataset_id: UUID) -> List[VectorFieldModel]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/vectors")
-        _http.raise_for_status(response=response)
-        response_jsons = response.json()["items"]
-        vector_models = self._model_from_jsons(response_jsons=response_jsons)
+        response = self._handle_response(response=response, resource=dataset_id)
+        vector_models = self._model_from_jsons(response_jsons=response["items"])
         return vector_models
 
     ####################

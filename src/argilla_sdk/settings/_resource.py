@@ -11,10 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import os
 from functools import cached_property
 from typing import List, Optional, TYPE_CHECKING, Dict, Union
 from uuid import UUID
 
+from argilla_sdk._exceptions import SettingsError, ArgillaAPIError, ArgillaSerializeError
 from argilla_sdk._models import TextFieldModel, TextQuestionModel
 from argilla_sdk.client import Argilla
 from argilla_sdk.settings._field import FieldType, VectorField
@@ -173,26 +175,40 @@ class Settings:
 
     def __upsert_questions(self) -> None:
         for question in self.__questions:
-            question_model = self.__client.api.questions.create(dataset_id=self._dataset.id, question=question._model)
-            question._model = question_model
+            try:
+                question_model = self.__client.api.questions.create(
+                    dataset_id=self._dataset.id, question=question._model
+                )
+                question._model = question_model
+            except ArgillaAPIError as e:
+                raise SettingsError(f"Failed to create question {question.name}") from e
 
     def __upsert_fields(self) -> None:
         for field in self.__fields:
-            field_model = self.__client.api.fields.create(dataset_id=self._dataset.id, field=field._model)
-            field._model = field_model
+            try:
+                field_model = self.__client.api.fields.create(dataset_id=self._dataset.id, field=field._model)
+                field._model = field_model
+            except ArgillaAPIError as e:
+                raise SettingsError(f"Failed to create field {field.name}") from e
 
     def __upsert_vectors(self) -> None:
         for vector in self.__vectors:
-            vector_model = self.__client.api.vectors.create(dataset_id=self._dataset.id, vector=vector._model)
-            vector._model = vector_model
+            try:
+                vector_model = self.__client.api.vectors.create(dataset_id=self._dataset.id, vector=vector._model)
+                vector._model = vector_model
+            except ArgillaAPIError as e:
+                raise SettingsError(f"Failed to create vector {vector.name}") from e
 
     def serialize(self):
-        return {
-            "guidelines": self.guidelines,
-            "fields": self.__serialize_fields(fields=self.fields),
-            "questions": self.__serialize_questions(questions=self.questions),
-            "allow_extra_metadata": self.allow_extra_metadata,
-        }
+        try:
+            return {
+                "guidelines": self.guidelines,
+                "fields": self.__serialize_fields(fields=self.fields),
+                "questions": self.__serialize_questions(questions=self.questions),
+                "allow_extra_metadata": self.allow_extra_metadata,
+            }
+        except Exception as e:
+            raise ArgillaSerializeError(f"Failed to serialize the settings. {e.__class__.__name__}") from e
 
     def _set_dataset(self, dataset: "Dataset"):
         self._dataset = dataset
@@ -203,17 +219,38 @@ class Settings:
     #####################
 
     def __process_fields(self, fields: List[FieldType]) -> List["TextFieldModel"]:
-        # TODO: Implement error handling for invalid fields
-        processed_fields = [field._model for field in fields]
+        processed_fields = []
+        for field in fields:
+            try:
+                processed_field = field._model
+            except Exception as e:
+                raise SettingsError(f"Failed to process field {field.name}") from e
+            processed_fields.append(processed_field)
         return processed_fields
 
     def __process_questions(self, questions: List[QuestionType]) -> List["TextQuestionModel"]:
-        # TODO: Implement error handling for invalid questions
-        processed_questions = [question._model for question in questions]
+        processed_questions = []
+        for question in questions:
+            try:
+                processed_question = question._model
+            except Exception as e:
+                raise SettingsError(f"Failed to process question {question.name}") from e
+            processed_questions.append(processed_question)
         return processed_questions
 
     def __process_guidelines(self, guidelines):
-        # TODO: process guidelines to be of type str or load str from file
+        """Process the guidelines, either by reading them from a file or returning the string"""
+
+        if guidelines is None:
+            return guidelines
+
+        if not isinstance(guidelines, str):
+            raise SettingsError("Guidelines must be a string or a path to a file")
+
+        if os.path.exists(guidelines):
+            with open(guidelines, "r") as file:
+                return file.read()
+
         return guidelines
 
     def __serialize_fields(self, fields):

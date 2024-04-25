@@ -1,13 +1,14 @@
 from typing import Optional, Union
 from uuid import UUID
 
-from pydantic import BaseModel, validator, field_serializer
+from pydantic import BaseModel, field_serializer, field_validator, Field
+from pydantic_core.core_schema import ValidationInfo
 
 from argilla_sdk._helpers._log import log
 
 
 class FieldSettings(BaseModel):
-    type: str
+    type: str = Field(validate_default=True)
     use_markdown: Optional[bool] = False
 
 
@@ -19,16 +20,17 @@ class FieldBaseModel(BaseModel):
     required: bool = True
     description: Optional[str] = None
 
-    @validator("name")
+    @field_validator("name")
     @classmethod
     def __name_lower(cls, name):
         formatted_name = name.lower().replace(" ", "_")
         return formatted_name
 
-    @validator("title", always=True)
+    @field_validator("title")
     @classmethod
-    def __title_default(cls, title, values):
-        validated_title = title or values["name"]
+    def __title_default(cls, title: str, info: ValidationInfo) -> str:
+        data = info.data
+        validated_title = title or data["name"]
         log(f"TextField title is {validated_title}")
         return validated_title
 
@@ -44,7 +46,8 @@ class TextFieldModel(FieldBaseModel):
 class VectorFieldModel(FieldBaseModel):
     dimensions: int
 
-    @validator("dimensions")
+    @field_validator("dimensions")
+    @classmethod
     def __dimension_gt_zero(cls, dimensions):
         if dimensions <= 0:
             raise ValueError("dimensions must be greater than 0")

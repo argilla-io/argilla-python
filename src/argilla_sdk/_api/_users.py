@@ -17,8 +17,8 @@ from uuid import UUID
 
 import httpx
 
-from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
+from argilla_sdk._exceptions import api_error_handler
 from argilla_sdk._models._user import UserModel
 
 __all__ = ["UsersAPI"]
@@ -34,74 +34,83 @@ class UsersAPI(ResourceAPI[UserModel]):
     # CRUD methods #
     ################
 
+    @api_error_handler
     def create(self, user: UserModel) -> UserModel:
         json_body = user.model_dump()
         response = self.http_client.post(
             "/api/users",
             json=json_body,
         )
-        response = self._handle_response(response=response, resource=user)
-        user = self._model_from_json(json_user=response)
+        response.raise_for_status()
+        response_json = response.json()
+        user = self._model_from_json(response_json=response_json)
         self.log(message=f"Created user {user.username}")
         return user
 
+    @api_error_handler
     def get(self, user_id: UUID) -> UserModel:
         response = self.http_client.get(url=f"/api/users/{user_id}")
-        response = self._handle_response(response=response, resource=user_id)
-        user = self._model_from_json(json_user=response)
+        response.raise_for_status()
+        response_json = response.json()
+        user = self._model_from_json(response_json=response_json)
         self.log(message=f"Got user {user.username}")
         return user
 
+    @api_error_handler
     def delete(self, user_id: UUID) -> None:
         response = self.http_client.delete(url=f"/api/users/{user_id}")
-        response = self._handle_response(response=response, resource=user_id)
+        response.raise_for_status()
         self.log(message=f"Deleted user {id}")
 
     ####################
     # V0 API methods #
     ####################
 
+    @api_error_handler
     def list(self) -> List[UserModel]:
         response = self.http_client.get(url="/api/users")
-        _http.raise_for_status(response=response)
+        response.raise_for_status()
         response_json = response.json()
-        users = self._model_from_jsons(json_users=response_json)
+        users = self._model_from_jsons(response_jsons=response_json)
         self.log(message=f"Listed {len(users)} users")
         return users
 
+    @api_error_handler
     def list_by_workspace_id(self, workspace_id: UUID) -> List[UserModel]:
         response = self.http_client.get(url=f"/api/workspaces/{workspace_id}/users")
-        _http.raise_for_status(response=response)
+        response.raise_for_status()
         response_json = response.json()["items"]
-        users = self._model_from_jsons(json_users=response_json)
+        users = self._model_from_jsons(response_jsons=response_json)
         self.log(message=f"Listed {len(users)} users")
         return users
 
+    @api_error_handler
     def get_me(self) -> UserModel:
         response = self.http_client.get("/api/me")
-        _http.raise_for_status(response=response)
-        user = self._model_from_json(json_user=response.json())
+        response.raise_for_status()
+        response_json = response.json()
+        user = self._model_from_json(response_json=response_json)
         self.log(message=f"Got user {user.username}")
         return user
 
+    @api_error_handler
     def add_to_workspace(self, workspace_id: UUID, user_id: UUID) -> None:
-        response = self.http_client.post(url=f"/api/workspaces/{workspace_id}/users/{user_id}")
-        _http.raise_for_status(response=response)
+        self.http_client.post(url=f"/api/workspaces/{workspace_id}/users/{user_id}").raise_for_status()
         self.log(message=f"Added user {user_id} to workspace {workspace_id}")
 
+    @api_error_handler
     def delete_from_workspace(self, workspace_id: UUID, user_id: UUID) -> None:
-        response = self.http_client.delete(url=f"/api/workspaces/{workspace_id}/users/{user_id}")
-        _http.raise_for_status(response=response)
+        self.http_client.delete(url=f"/api/workspaces/{workspace_id}/users/{user_id}").raise_for_status()
         self.log(message=f"Deleted user {user_id} from workspace {workspace_id}")
 
     ####################
     # Private methods #
     ####################
 
-    def _model_from_json(self, json_user) -> UserModel:
-        json_user["inserted_at"] = self._date_from_iso_format(date=json_user["inserted_at"])
-        json_user["updated_at"] = self._date_from_iso_format(date=json_user["updated_at"])
-        return UserModel(**json_user)
+    def _model_from_json(self, response_json) -> UserModel:
+        response_json["inserted_at"] = self._date_from_iso_format(date=response_json["inserted_at"])
+        response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
+        return UserModel(**response_json)
 
-    def _model_from_jsons(self, json_users) -> List[UserModel]:
-        return list(map(self._model_from_json, json_users))
+    def _model_from_jsons(self, response_jsons) -> List[UserModel]:
+        return list(map(self._model_from_json, response_jsons))

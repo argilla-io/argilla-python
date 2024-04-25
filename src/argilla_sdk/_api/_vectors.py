@@ -16,8 +16,8 @@ from typing import List, Dict
 from uuid import UUID
 
 import httpx
-from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
+from argilla_sdk._exceptions import api_error_handler
 from argilla_sdk._models import VectorFieldModel
 
 __all__ = ["VectorsAPI"]
@@ -32,18 +32,22 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
     # CRUD methods #
     ################
 
+    @api_error_handler
     def create(self, dataset_id: UUID, vector: VectorFieldModel) -> VectorFieldModel:
         url = f"/api/v1/datasets/{dataset_id}/vectors-settings"
         response = self.http_client.post(url=url, json=vector.model_dump())
-        response = self._handle_response(response=response, resource=vector)
-        vector_model = self._model_from_json(response_json=response)
+        response.raise_for_status()
+        response_json = response.json()
+        vector_model = self._model_from_json(response_json=response_json)
         self.log(message=f"Created vector {vector_model.name} in dataset {dataset_id}")
         return vector_model
 
+    @api_error_handler
     def update(self, vector: VectorFieldModel) -> VectorFieldModel:
         # TODO: Implement update method for vectors with server side ID
         raise NotImplementedError
 
+    @api_error_handler
     def delete(self, vector_id: UUID) -> None:
         # TODO: Implement delete method for vectors with server side ID
         raise NotImplementedError
@@ -59,10 +63,12 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
             vector_models.append(vector_model)
         return vector_models
 
+    @api_error_handler
     def list(self, dataset_id: UUID) -> List[VectorFieldModel]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/vectors")
-        response = self._handle_response(response=response, resource=dataset_id)
-        vector_models = self._model_from_jsons(response_jsons=response["items"])
+        response.raise_for_status()
+        response_json = response.json()
+        vector_models = self._model_from_jsons(response_jsons=response_json["items"])
         return vector_models
 
     ####################

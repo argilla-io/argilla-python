@@ -16,8 +16,8 @@ from typing import List, Dict
 from uuid import UUID
 
 import httpx
-from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
+from argilla_sdk._exceptions import api_error_handler
 from argilla_sdk._models import FieldBaseModel, TextFieldModel, FieldModel
 
 __all__ = ["FieldsAPI"]
@@ -32,18 +32,22 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
     # CRUD methods #
     ################
 
+    @api_error_handler
     def create(self, dataset_id: UUID, field: FieldModel) -> FieldModel:
         url = f"/api/v1/datasets/{dataset_id}/fields"
         response = self.http_client.post(url=url, json=field.model_dump())
-        response = self._handle_response(response=response, resource=field)
-        field_model = self._model_from_json(response_json=response)
+        response.raise_for_status()
+        response_json = response.json()
+        field_model = self._model_from_json(response_json=response_json)
         self.log(message=f"Created field {field_model.name} in dataset {dataset_id}")
         return field_model
 
+    @api_error_handler
     def update(self, field: FieldModel) -> FieldModel:
         # TODO: Implement update method for fields with server side ID
         raise NotImplementedError
 
+    @api_error_handler
     def delete(self, dataset_id: UUID) -> None:
         # TODO: Implement delete method for fields with server side ID
         raise NotImplementedError
@@ -59,10 +63,12 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
             field_models.append(field_model)
         return field_models
 
+    @api_error_handler
     def list(self, dataset_id: UUID) -> List[FieldModel]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/fields")
-        response = self._handle_response(response=response, resource=dataset_id)
-        field_models = self._model_from_jsons(response_jsons=response["items"])
+        response.raise_for_status()
+        response_json = response.json()
+        field_models = self._model_from_jsons(response_jsons=response_json["items"])
         return field_models
 
     ####################
@@ -74,7 +80,7 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
         return self._get_model_from_response(response_json=response_json)
 
-    def _model_from_jsons(self, response_jsons: List[FieldModel]) -> List[FieldModel]:
+    def _model_from_jsons(self, response_jsons: List[Dict]) -> List[FieldModel]:
         return list(map(self._model_from_json, response_jsons))
 
     def _get_model_from_response(self, response_json: Dict) -> FieldModel:

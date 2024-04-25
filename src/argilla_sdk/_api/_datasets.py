@@ -36,15 +36,13 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     @api_error_handler
     def create(self, dataset: "DatasetModel") -> "DatasetModel":
         json_body = dataset.model_dump()
-        response = (
-            self.http_client.post(
-                url=self.url_stub,
-                json=json_body,
-            )
-            .raise_for_status()
-            .json()
+        response = self.http_client.post(
+            url=self.url_stub,
+            json=json_body,
         )
-        dataset = self._model_from_json(json_dataset=response)
+        response.raise_for_status()
+        response_json = response.json()
+        dataset = self._model_from_json(response_json=response_json)
         self.log(message=f"Created dataset {dataset.name}")
         return dataset
 
@@ -52,26 +50,30 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     def update(self, dataset: "DatasetModel") -> "DatasetModel":
         json_body = dataset.model_dump()
         dataset_id = json_body["id"]  # type: ignore
-        response = self.http_client.patch(f"{self.url_stub}/{dataset_id}", json=json_body).raise_for_status().json()
-        dataset = self._model_from_json(json_dataset=response)
+        response = self.http_client.patch(f"{self.url_stub}/{dataset_id}", json=json_body)
+        response.raise_for_status()
+        response_json = response.json()
+        dataset = self._model_from_json(response_json=response_json)
         self.log(message=f"Updated dataset {dataset.url}")
         return dataset
 
     @api_error_handler
     def get(self, dataset_id: UUID) -> "DatasetModel":
-        response = self.http_client.get(url=f"{self.url_stub}/{dataset_id}").raise_for_status().json()
-        dataset = self._model_from_json(json_dataset=response)
+        response = self.http_client.get(url=f"{self.url_stub}/{dataset_id}")
+        response.raise_for_status()
+        response_json = response.json()
+        dataset = self._model_from_json(response_json=response_json)
         self.log(message=f"Got dataset {dataset.url}")
         return dataset
 
     @api_error_handler
     def delete(self, dataset_id: UUID) -> None:
-        self.http_client.delete(f"{self.url_stub}/{dataset_id}").raise_for_status().json()
+        response = self.http_client.delete(f"{self.url_stub}/{dataset_id}")
+        response.raise_for_status()
         self.log(message=f"Deleted dataset {dataset_id}")
 
-    @api_error_handler
     def exists(self, dataset_id: UUID) -> bool:
-        response = self.http_client.get(f"{self.url_stub}/{dataset_id}").raise_for_status()
+        response = self.http_client.get(f"{self.url_stub}/{dataset_id}")
         return response.status_code == 200
 
     ####################
@@ -80,15 +82,18 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
 
     @api_error_handler
     def publish(self, dataset_id: UUID) -> "DatasetModel":
-        response = self.http_client.put(url=f"{self.url_stub}/{dataset_id}/publish").raise_for_status().json()
+        response = self.http_client.put(url=f"{self.url_stub}/{dataset_id}/publish")
+        response.raise_for_status()
+        response_json = response.json()
         self.log(message=f"Published dataset {dataset_id}")
-        return self._model_from_json(response)
+        return self._model_from_json(response_json=response_json)
 
     @api_error_handler
     def list(self, workspace_id: Optional[UUID] = None) -> List["DatasetModel"]:
-        response = self.http_client.get("/api/v1/me/datasets").raise_for_status().json()
-        json_datasets = response["items"]
-        datasets = self._model_from_jsons(json_datasets=json_datasets)
+        response = self.http_client.get("/api/v1/me/datasets")
+        response.raise_for_status()
+        response_json = response.json()
+        datasets = self._model_from_jsons(response_jsons=response_json["items"])
         if workspace_id:
             datasets = [dataset for dataset in datasets if dataset.workspace_id == workspace_id]
         self.log(message=f"Listed {len(datasets)} datasets")
@@ -105,10 +110,10 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     # Private methods #
     ####################
 
-    def _model_from_json(self, json_dataset: Dict) -> "DatasetModel":
-        json_dataset["inserted_at"] = self._date_from_iso_format(date=json_dataset["inserted_at"])
-        json_dataset["updated_at"] = self._date_from_iso_format(date=json_dataset["updated_at"])
-        return DatasetModel(**json_dataset)
+    def _model_from_json(self, response_json: Dict) -> "DatasetModel":
+        response_json["inserted_at"] = self._date_from_iso_format(date=response_json["inserted_at"])
+        response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
+        return DatasetModel(**response_json)
 
-    def _model_from_jsons(self, json_datasets: List[Dict]) -> List["DatasetModel"]:
-        return list(map(self._model_from_json, json_datasets))
+    def _model_from_jsons(self, response_jsons: List[Dict]) -> List["DatasetModel"]:
+        return list(map(self._model_from_json, response_jsons))

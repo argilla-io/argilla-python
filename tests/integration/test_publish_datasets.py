@@ -14,7 +14,7 @@
 
 import pytest
 
-from argilla_sdk import Argilla, Settings, TextField, TextQuestion
+from argilla_sdk import Argilla, Settings, TextField, TextQuestion, SpanQuestion
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ def client() -> Argilla:
     return Argilla(api_url="http://localhost:6900")
 
 
-def test_publish_datasets(client: "Argilla"):
+def test_publish_dataset(client: "Argilla"):
     new_ws = client.workspaces("new_ws")
     if not new_ws.exists():
         new_ws.create()
@@ -37,7 +37,10 @@ def test_publish_datasets(client: "Argilla"):
 
     ds.settings = Settings(
         fields=[TextField(name="text-field")],
-        questions=[TextQuestion(name="text-question")],
+        questions=[
+            TextQuestion(name="text-question"),
+            SpanQuestion(name="span-question", field="text-field", labels=["label1", "label2"]),
+        ],
     )
 
     ds.publish()

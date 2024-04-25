@@ -29,6 +29,33 @@ class LabelQuestionSettings(QuestionSettings):
         return labels
 
 
+class SpanQuestionSettings(QuestionSettings):
+    type: str = "span"
+
+    allow_overlapping: bool = False
+    field: Optional[str] = None
+    options: List[Dict[str, Optional[str]]] = Field(default_factory=list, validate_default=True)
+    visible_options: Optional[int] = Field(None, validate_default=True)
+
+    @field_validator("visible_options", mode="before")
+    @classmethod
+    def __default_to_all(cls, visible_labels: Optional[int], info) -> int:
+        data = info.data
+        if visible_labels is None and data["options"]:
+            return len(data["options"])
+        return visible_labels
+
+    @field_validator("options", mode="before")
+    @classmethod
+    def __options_are_unique(cls, options: List[Dict[str, Optional[str]]]) -> List[Dict[str, Optional[str]]]:
+        """Ensure that labels are unique"""
+
+        unique_options = list(set([label["value"] for label in options]))
+        if len(unique_options) != len(options):
+            raise ValueError("All labels must be unique")
+        return options
+
+
 class QuestionBaseModel(BaseModel):
     id: Optional[UUID] = None
     name: str
@@ -44,12 +71,14 @@ class QuestionBaseModel(BaseModel):
         validate_assignment = True
 
     @field_validator("name")
-    def __name_lower(cls, name):
+    @classmethod
+    def __name_lower(cls, name: str, info: ValidationInfo):
         formatted_name = name.lower().replace(" ", "_")
         return formatted_name
 
     @field_validator("title", mode="before")
-    def __title_default(cls, title, info:ValidationInfo):
+    @classmethod
+    def __title_default(cls, title, info: ValidationInfo):
         validated_title = title or info.data["name"]
         return validated_title
 
@@ -104,6 +133,10 @@ class MultiLabelQuestionModel(LabelQuestionModel):
 class RankingQuestionModel(QuestionBaseModel):
     values: List[int]
     settings: QuestionSettings = QuestionSettings(type="ranking")
+
+
+class SpanQuestionModel(QuestionBaseModel):
+    settings: SpanQuestionSettings = Field(default_factory=SpanQuestionSettings)
 
 
 QuestionModel = Union[

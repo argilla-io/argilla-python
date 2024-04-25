@@ -35,15 +35,17 @@ from argilla_sdk._models._settings._fields import (
     FieldModel,
 )
 from argilla_sdk._models._settings._questions import (
-    QuestionBaseModel,
     LabelQuestionModel,
     LabelQuestionSettings,
     MultiLabelQuestionModel,
-    RankingQuestionModel,
-    TextQuestionModel,
-    TextQuestionSettings,
-    QuestionSettings,
-    RatingQuestionModel,
+    QuestionBaseModel,
     QuestionModel,
+    QuestionSettings,
+    RankingQuestionModel,
+    RatingQuestionModel,
+    SpanQuestionModel,
+    SpanQuestionSettings,
+    TextQuestionModel,
+    TextQuestionSettings
 )
 from argilla_sdk._models._vector import VectorModel

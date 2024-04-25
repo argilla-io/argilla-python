@@ -20,10 +20,9 @@ from uuid import uuid4, UUID
 from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel, VectorModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.responses import Response
-from argilla_sdk.vectors import Vector
-from argilla_sdk.settings import FieldType, QuestionType, VectorField
+from argilla_sdk.settings import QuestionType, VectorField, TextField
 from argilla_sdk.suggestions import Suggestion
-
+from argilla_sdk.vectors import Vector
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -230,7 +229,7 @@ class Record(Resource):
                 continue
 
             # Assign the value to question, field, or response based on schema item
-            if isinstance(schema_item, FieldType):
+            if isinstance(schema_item, TextField):
                 fields[attribute] = value
             elif isinstance(schema_item, QuestionType) and attribute_type == "response":
                 responses.append(ResponseModel(values={attribute: {"value": value}}, user_id=user_id))

@@ -54,12 +54,12 @@ class TestWorkspaces:
         "status_code, expected_exception, expected_message",
         [
             (200, None, None),
-            (400, BadRequestError, "Bad Request"),
-            (403, ForbiddenError, "Forbidden"),
-            (404, NotFoundError, "Not Found"),
-            (409, ConflictError, "Conflict"),
-            (422, UnprocessableEntityError, "Unprocessable Entity"),
-            (500, InternalServerError, "Internal Server Error"),
+            (400, BadRequestError, "BadRequestError"),
+            (403, ForbiddenError, "ForbiddenError"),
+            (404, NotFoundError, "NotFoundError"),
+            (409, ConflictError, "ConflictError"),
+            (422, UnprocessableEntityError, "UnprocessableEntityError"),
+            (500, InternalServerError, "InternalServerError"),
         ],
     )
     def test_create_workspace(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
@@ -88,12 +88,12 @@ class TestWorkspaces:
         "status_code, expected_exception, expected_message",
         [
             (200, None, None),
-            (400, BadRequestError, "Bad Request"),
-            (403, ForbiddenError, "Forbidden"),
-            (404, NotFoundError, "Not Found"),
-            (409, ConflictError, "Conflict"),
-            (422, UnprocessableEntityError, "Unprocessable Entity"),
-            (500, InternalServerError, "Internal Server Error"),
+            (400, BadRequestError, "BadRequestError"),
+            (403, ForbiddenError, "ForbiddenError"),
+            (404, NotFoundError, "NotFoundError"),
+            (409, ConflictError, "ConflictError"),
+            (422, UnprocessableEntityError, "UnprocessableEntityError"),
+            (500, InternalServerError, "InternalServerError"),
         ],
     )
     def test_get_workspace(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):

@@ -51,12 +51,12 @@ class TestDatasets:
         "status_code, expected_exception, expected_message",
         [
             (200, None, None),
-            (400, BadRequestError, "Bad Request"),
-            (403, ForbiddenError, "Forbidden"),
-            (404, NotFoundError, "Not Found"),
-            (409, ConflictError, "Conflict"),
-            (422, UnprocessableEntityError, "Unprocessable Entity"),
-            (500, InternalServerError, "Internal Server Error"),
+            (400, BadRequestError, "BadRequestError"),
+            (403, ForbiddenError, "ForbiddenError"),
+            (404, NotFoundError, "NotFoundError"),
+            (409, ConflictError, "ConflictError"),
+            (422, UnprocessableEntityError, "UnprocessableEntityError"),
+            (500, InternalServerError, "InternalServerError"),
         ],
     )
     def test_create_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
@@ -97,12 +97,12 @@ class TestDatasets:
         "status_code, expected_exception, expected_message",
         [
             (200, None, None),
-            (400, BadRequestError, "Bad Request"),
-            (403, ForbiddenError, "Forbidden"),
-            (404, NotFoundError, "Not Found"),
-            (409, ConflictError, "Conflict"),
-            (422, UnprocessableEntityError, "Unprocessable Entity"),
-            (500, InternalServerError, "Internal Server Error"),
+            (400, BadRequestError, "BadRequestError"),
+            (403, ForbiddenError, "ForbiddenError"),
+            (404, NotFoundError, "NotFoundError"),
+            (409, ConflictError, "ConflictError"),
+            (422, UnprocessableEntityError, "UnprocessableEntityError"),
+            (500, InternalServerError, "InternalServerError"),
         ],
     )
     def test_update_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
@@ -182,6 +182,46 @@ class TestDatasets:
             assert str(datasets[0].id) == mock_return_value["items"][0]["id"]
             assert datasets[0].name == mock_return_value["items"][0]["name"]
             assert datasets[0].status == mock_return_value["items"][0]["status"]
+
+    @pytest.mark.parametrize(
+        "status_code, expected_exception, expected_message",
+        [
+            (200, None, None),
+            (400, BadRequestError, "BadRequestError"),
+            (403, ForbiddenError, "ForbiddenError"),
+            (404, NotFoundError, "NotFoundError"),
+            (409, ConflictError, "ConflictError"),
+            (422, UnprocessableEntityError, "UnprocessableEntityError"),
+            (500, InternalServerError, "InternalServerError"),
+        ],
+    )
+    def test_delete_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
+        mock_dataset_id = uuid.uuid4()
+        mock_return_value = {
+            "id": str(mock_dataset_id),
+            "name": "dataset-01",
+            "status": "draft",
+            "allow_extra_metadata": False,
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        api_url = "http://test_url"
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"{api_url}/api/v1/datasets/{mock_dataset_id}",
+            method="DELETE",
+            status_code=status_code,
+        )
+        with httpx.Client():
+            client = rg.Argilla(api_url)
+            dataset = rg.Dataset(id=mock_dataset_id, name=mock_return_value["name"], client=client)
+            if expected_exception:
+                with pytest.raises(expected_exception=expected_exception) as excinfo:
+                    dataset.delete()
+                assert expected_message in str(excinfo.value)
+            else:
+                dataset.delete()
+                assert dataset.name == mock_return_value["name"]
 
 
 class TestDatasetsAPI:

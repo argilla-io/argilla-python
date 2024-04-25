@@ -11,6 +11,7 @@ from argilla_sdk._models import (
     RatingQuestionModel,
     QuestionModel,
 )
+from argilla_sdk._models._settings._questions import SpanQuestionSettings, SpanQuestionModel
 from argilla_sdk.settings._common import SettingsPropertyBase
 
 __all__ = [
@@ -19,6 +20,7 @@ __all__ = [
     "RankingQuestion",
     "TextQuestion",
     "RatingQuestion",
+    "SpanQuestion",
     "QuestionType",
 ]
 
@@ -273,26 +275,75 @@ class RankingQuestion(SettingsPropertyBase):
         self._model.values = values
 
 
+class SpanQuestion(MultiLabelQuestion):
+    _model: SpanQuestionModel
+
+    def __init__(
+        self,
+        name: str,
+        field: str,
+        labels: List[str],
+        allow_overlapping: bool = False,
+        visible_labels: Optional[int] = None,
+        title: Optional[str] = None,
+        description: Optional[str] = None,
+        required: bool = True,
+    ):
+        self._model = SpanQuestionModel(
+            name=name,
+            title=title,
+            description=description,
+            required=required,
+            settings=SpanQuestionSettings(
+                field=field,
+                allow_overlapping=allow_overlapping,
+                visible_options=visible_labels,
+                options=self._render_labels_as_options(labels),
+            ),
+        )
+
+    @property
+    def name(self):
+        return self._model.name
+
+    @property
+    def field(self):
+        return self._model.settings.field
+
+    @property
+    def allow_overlapping(self):
+        return self._model.settings.allow_overlapping
+
+    @property
+    def visible_labels(self) -> Optional[int]:
+        return self._model.settings.visible_options
+
+    @property
+    def labels(self) -> List[str]:
+        return [option["value"] for option in self._model.settings.options]
+
+
 QuestionType = Union[
     LabelQuestion,
     MultiLabelQuestion,
     RankingQuestion,
     TextQuestion,
     RatingQuestion,
+    SpanQuestion,
 ]
+
+_TYPE_TO_CLASS = {
+    "label": LabelQuestion,
+    "multi_label": MultiLabelQuestion,
+    "ranking": RankingQuestion,
+    "text": TextQuestion,
+    "rating": RatingQuestion,
+    "span": SpanQuestion,
+}
 
 
 def question_from_model(model: QuestionModel) -> QuestionType:
-    """Convert a model to a question object"""
-    if isinstance(model, LabelQuestionModel):
-        return LabelQuestion.from_model(model)
-    elif isinstance(model, MultiLabelQuestionModel):
-        return MultiLabelQuestion.from_model(model)
-    elif isinstance(model, RankingQuestionModel):
-        return RankingQuestion.from_model(model)
-    elif isinstance(model, TextQuestionModel):
-        return TextQuestion.from_model(model)
-    elif isinstance(model, RatingQuestionModel):
-        return RatingQuestion.from_model(model)
-    else:
-        raise ValueError(f"Unsupported question model type: {type(model)}")
+    try:
+        return _TYPE_TO_CLASS[model.settings.type].from_model(model)
+    except KeyError:
+        raise ValueError(f"Unsupported question model type: {model.settings.type}")

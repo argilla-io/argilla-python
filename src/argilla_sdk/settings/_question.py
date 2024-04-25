@@ -360,8 +360,8 @@ QuestionType = Union[
 ]
 
 _TYPE_TO_CLASS = {
-    "label": LabelQuestion,
-    "multi_label": MultiLabelQuestion,
+    "label_selection": LabelQuestion,
+    "multi_label_selection": MultiLabelQuestion,
     "ranking": RankingQuestion,
     "text": TextQuestion,
     "rating": RatingQuestion,

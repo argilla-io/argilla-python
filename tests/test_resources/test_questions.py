@@ -16,14 +16,14 @@ import uuid
 from datetime import datetime
 
 import httpx
-import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
 from argilla_sdk._models import TextQuestionModel, LabelQuestionModel
+from argilla_sdk._models._settings._questions import SpanQuestionModel
 
 
-class QuestionsAPI:
+class TestQuestionsAPI:
     def test_create_many_questions(self, httpx_mock: HTTPXMock):
         # TODO: Add a test for the delete method in client
         mock_dataset_id = uuid.uuid4()
@@ -88,3 +88,55 @@ class QuestionsAPI:
         with httpx.Client() as client:
             client = rg.Argilla(api_url="http://test_url")
             client.api.questions.create_many(dataset_id=mock_dataset_id, questions=[mock_question])
+
+    def test_create_span_question(self, httpx_mock: HTTPXMock):
+        mock_dataset_id = uuid.uuid4()
+        mock_return_value = {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "name": "string",
+            "title": "string",
+            "required": True,
+            "settings": {
+                "type": "span",
+                "allow_overlapping": True,
+                "field": "text",
+                "visible_options": 2,
+                "options": [
+                    {"value": "value 1", "text": "Value 1"},
+                    {"value": "value 2", "text": "Value 2"},
+                    {"value": "value 3", "text": "Value 3"},
+                ],
+            },
+            "inserted_at": datetime.now().isoformat(),
+            "updated_at": datetime.now().isoformat(),
+        }
+
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}/questions",
+            method="POST",
+            status_code=200,
+        )
+
+        with httpx.Client() as _:
+            question = SpanQuestionModel(
+                name="5044cv0wu5",
+                title="string",
+                description="string",
+                required=True,
+                settings={
+                    "type": "span",
+                    "allow_overlapping": True,
+                    "field": "text",
+                    "visible_options": 2,
+                    "options": [
+                        {"value": "value 1", "text": "Value 1"},
+                        {"value": "value 2", "text": "Value 2"},
+                        {"value": "value 3", "text": "Value 3"},
+                    ],
+                },
+            )
+
+            client = rg.Argilla(api_url="http://test_url")
+            created_question = client.api.questions.create(dataset_id=mock_dataset_id, question=question)
+            assert created_question.model_dump(exclude_unset=True) == mock_return_value

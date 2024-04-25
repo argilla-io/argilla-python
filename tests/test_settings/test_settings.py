@@ -1,4 +1,3 @@
-from unittest import mock
 import uuid
 from datetime import datetime
 
@@ -81,7 +80,6 @@ class TestDatasetSettings:
             "inserted_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
             "guidelines": mock_guidelines,
-            "allow_extra_metadata": False,
         }
         api_url = "http://test_url"
         httpx_mock.add_response(

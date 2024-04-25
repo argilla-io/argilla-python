@@ -27,3 +27,13 @@ class TestQuestions:
         question = rg.RankingQuestion(name="ranking_question", values=[1, 2])
         assert question.name == "ranking_question"
         assert question.values == [1, 2]
+
+    def test_span_question_init(self):
+        question = rg.SpanQuestion(
+            name="span_question", field="field", allow_overlapping=True, labels=["label1", "label2"]
+        )
+        assert question.name == "span_question"
+        assert question.field == "field"
+        assert question.allow_overlapping is True
+        assert question.labels == ["label1", "label2"]
+        assert question.visible_labels == 2

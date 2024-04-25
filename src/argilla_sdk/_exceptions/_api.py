@@ -45,6 +45,10 @@ class InternalServerError(ArgillaAPIError):
     message = "Internal server error"
 
 
+class UnauthorizedError(ArgillaAPIError):
+    message = "Unauthorized user request to the server"
+
+
 def api_error_handler(func):
     """Decorator to handle API errors from ResourceAPI methods
     and raise the appropriate exception.
@@ -62,6 +66,7 @@ def api_error_handler(func):
     def _error_switch(status_code: int):
         switch = {
             400: BadRequestError,
+            401: UnauthorizedError,
             403: ForbiddenError,
             404: NotFoundError,
             409: ConflictError,

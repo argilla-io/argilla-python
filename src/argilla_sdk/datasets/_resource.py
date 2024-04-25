@@ -18,7 +18,6 @@ from argilla_sdk._api import DatasetsAPI
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
-from argilla_sdk.datasets._exceptions import DatasetNotPublished
 from argilla_sdk.records import DatasetRecords
 from argilla_sdk.settings import Settings
 

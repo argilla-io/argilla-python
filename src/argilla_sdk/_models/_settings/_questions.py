@@ -6,7 +6,7 @@ from pydantic import BaseModel, field_serializer, field_validator, Field
 from pydantic_core.core_schema import ValidationInfo
 
 
-class QuestionSettings(BaseModel):
+class QuestionSettings(BaseModel, validate_assignment=True):
     type: str
 
 
@@ -35,13 +35,13 @@ class SpanQuestionSettings(QuestionSettings):
     allow_overlapping: bool = False
     field: Optional[str] = None
     options: List[Dict[str, Optional[str]]] = Field(default_factory=list, validate_default=True)
-    visible_options: Optional[int] = Field(None, validate_default=True)
+    visible_options: Optional[int] = Field(None, validate_default=True, ge=3)
 
     @field_validator("visible_options", mode="before")
     @classmethod
-    def __default_to_all(cls, visible_labels: Optional[int], info) -> int:
+    def __validate_visible_options(cls, visible_labels: Optional[int], info) -> int:
         data = info.data
-        if visible_labels is None and data["options"]:
+        if visible_labels is None and data["options"] and len(data["options"]) >= 3:
             return len(data["options"])
         return visible_labels
 
@@ -56,7 +56,7 @@ class SpanQuestionSettings(QuestionSettings):
         return options
 
 
-class QuestionBaseModel(BaseModel):
+class QuestionBaseModel(BaseModel, validate_assignment=True):
     id: Optional[UUID] = None
     name: str
     settings: QuestionSettings
@@ -66,9 +66,6 @@ class QuestionBaseModel(BaseModel):
     required: bool = True
     inserted_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
-
-    class Config:
-        validate_assignment = True
 
     @field_validator("name")
     @classmethod

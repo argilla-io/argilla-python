@@ -12,6 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._exceptions._settings import *
-from argilla_sdk._exceptions._api import *
-from argilla_sdk._exceptions._serialization import *
+
+class ArgillaErrorBase(Exception):
+    def __init__(self, message, status_code=None):
+        """Base class for all Argilla exceptions
+        Args:
+            message (str): The message to display when the exception is raised
+            status_code (int): The status code of the response that caused the exception
+        """
+        super().__init__(message)
+        self.status_code = status_code
+
+    def __str__(self):
+        return f"{self.__class__.__name__}"
+
+    def __repr__(self):
+        return f"{self.__class__.__name__}"

@@ -14,17 +14,19 @@
 
 
 class ArgillaErrorBase(Exception):
-    def __init__(self, message, status_code=None):
+    message_stub = "Argilla SDK error"
+    message: str = message_stub
+
+    def __init__(self):
         """Base class for all Argilla exceptions
         Args:
             message (str): The message to display when the exception is raised
             status_code (int): The status code of the response that caused the exception
         """
-        super().__init__(message)
-        self.status_code = status_code
+        super().__init__(self.message)
 
     def __str__(self):
-        return f"{self.__class__.__name__}"
+        return f"{self.message_stub}: {self.__class__.__name__}: {super().__str__()}"
 
     def __repr__(self):
-        return f"{self.__class__.__name__}"
+        return f"{self.message_stub}: {self.__class__.__name__}: {super().__repr__()}"

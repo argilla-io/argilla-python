@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from httpx import HTTPStatusError
+
 from argilla_sdk._exceptions._base import ArgillaErrorBase
 
 
@@ -20,24 +22,58 @@ class ArgillaAPIError(ArgillaErrorBase):
 
 
 class BadRequestError(ArgillaAPIError):
-    pass
+    message = "Bad request to the server"
 
 
 class ForbiddenError(ArgillaAPIError):
-    pass
+    message = "Forbidden request to the server"
 
 
 class NotFoundError(ArgillaAPIError):
-    pass
+    message = "Resource or entity not found on the server"
 
 
 class ConflictError(ArgillaAPIError):
-    pass
+    message = "Conflict with the server. Resource or entity already exists"
 
 
 class UnprocessableEntityError(ArgillaAPIError):
-    pass
+    message = "Unprocessable entity. The server cannot process the request"
 
 
 class InternalServerError(ArgillaAPIError):
-    pass
+    message = "Internal server error"
+
+
+def api_error_handler(func):
+    """Decorator to handle API errors from ResourceAPI methods
+    and raise the appropriate exception.
+    Args: func: the request method to decorate
+
+    Example:
+    ```python
+
+    @api_error_handler
+    def get(self, workspace_id: UUID) -> WorkspaceModel:
+        ... # same code as before
+    ```
+    """
+
+    def _error_switch(status_code: int):
+        switch = {
+            400: BadRequestError,
+            403: ForbiddenError,
+            404: NotFoundError,
+            409: ConflictError,
+            422: UnprocessableEntityError,
+            500: InternalServerError,
+        }
+        raise switch.get(status_code, ArgillaAPIError)
+
+    def _handler_wrapper(*args, **kwargs):
+        try:
+            return func(*args, **kwargs)
+        except HTTPStatusError as e:
+            _error_switch(e.response.status_code)
+
+    return _handler_wrapper

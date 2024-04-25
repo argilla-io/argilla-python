@@ -1,8 +1,9 @@
 from datetime import datetime
 from typing import Dict, List, Optional, Union
-from uuid import UUID, uuid4
+from uuid import UUID
 
-from pydantic import BaseModel, validator, field_serializer
+from pydantic import BaseModel, field_serializer, field_validator, Field
+from pydantic_core.core_schema import ValidationInfo
 
 
 class QuestionSettings(BaseModel):
@@ -15,10 +16,11 @@ class TextQuestionSettings(QuestionSettings):
 
 class LabelQuestionSettings(QuestionSettings):
     type: str = "label_selection"
-    options: List[Dict[str, Optional[str]]] = []
+    options: List[Dict[str, Optional[str]]] = Field(default_factory=list, validate_default=True)
 
-    @validator("options", pre=True, always=True)
-    def __labels_are_unique(cls, labels, values):
+    @field_validator("options", mode="before")
+    @classmethod
+    def __labels_are_unique(cls, labels: List[Dict[str, Optional[str]]]) -> List[Dict[str, Optional[str]]]:
         """Ensure that labels are unique"""
 
         unique_labels = list(set([label["value"] for label in labels]))
@@ -32,9 +34,8 @@ class QuestionBaseModel(BaseModel):
     name: str
     settings: QuestionSettings
 
-    id: UUID = uuid4()
-    title: Optional[str] = None
-    description: Optional[str] = None
+    title: str = Field(None, validate_default=True)
+    description: Optional[str] = Field(None, validate_default=True)
     required: bool = True
     inserted_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
@@ -42,20 +43,21 @@ class QuestionBaseModel(BaseModel):
     class Config:
         validate_assignment = True
 
-    @validator("name")
+    @field_validator("name")
     def __name_lower(cls, name):
         formatted_name = name.lower().replace(" ", "_")
         return formatted_name
 
-    @validator("title", always=True)
-    def __title_default(cls, title, values):
-        validated_title = title or values["name"]
+    @field_validator("title", mode="before")
+    def __title_default(cls, title, info:ValidationInfo):
+        validated_title = title or info.data["name"]
         return validated_title
 
-    @validator("description", always=True)
-    def __description_default(cls, description, values):
-        validated_description = description or values["title"]
-        return validated_description
+    @field_validator("description")
+    @classmethod
+    def __description_default(cls, description, info: ValidationInfo) -> Optional[str]:
+        data = info.data
+        return description or data["title"]
 
     @field_serializer("inserted_at", "updated_at", when_used="unless-none")
     def serialize_datetime(self, value: datetime) -> str:
@@ -77,21 +79,23 @@ class RatingQuestionModel(QuestionBaseModel):
 
 class TextQuestionModel(QuestionBaseModel):
     use_markdown: bool = False
-    settings: TextQuestionSettings = TextQuestionSettings(type="text")
+    settings: TextQuestionSettings = Field(TextQuestionSettings(type="text"), validate_default=True)
 
-    @validator("settings", pre=True, always=True)
-    def __move_use_markdown(cls, settings, values):
-        use_markdown = values.get("use_markdown", False)
-        settings = TextQuestionSettings(type="text", use_markdown=use_markdown)
-        return settings
+    @field_validator("settings", mode="before")
+    @classmethod
+    def __move_use_markdown(cls, _, info: ValidationInfo):
+        data = info.data
+        use_markdown = data.get("use_markdown", False)
+        return TextQuestionSettings(type="text", use_markdown=use_markdown)
 
 
 class MultiLabelQuestionModel(LabelQuestionModel):
-    visible_labels: Optional[int] = None
+    visible_labels: Optional[int] = Field(None, validate_default=True)
     settings: QuestionSettings = LabelQuestionSettings(type="multi_label_selection")
 
-    @validator("visible_labels", always=True)
-    def __default_to_all(cls, visible_labels, values):
+    @field_validator("visible_labels")
+    @classmethod
+    def __default_to_all(cls, visible_labels, values) -> int:
         if visible_labels is None:
             return len(values["labels"])
         return visible_labels

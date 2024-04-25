@@ -9,6 +9,7 @@ from argilla_sdk._models import (
     TextQuestionSettings,
     QuestionSettings,
     RatingQuestionModel,
+    QuestionModel,
 )
 from argilla_sdk.settings._common import SettingsPropertyBase
 
@@ -49,6 +50,15 @@ class LabelQuestion(SettingsPropertyBase):
             settings=LabelQuestionSettings(options=self._render_labels_as_options(labels), type="label_selection"),
         )
 
+    @classmethod
+    def from_model(cls, model: LabelQuestionModel) -> "LabelQuestion":
+        instance = cls(
+            name=model.name,
+            labels=[option["value"] for option in model.settings.options],
+        )
+        instance._model = model
+        return instance
+
     ##############################
     # Public properties
     ##############################
@@ -59,7 +69,7 @@ class LabelQuestion(SettingsPropertyBase):
 
     @labels.setter
     def labels(self, labels: List[str]) -> None:
-        self._model.settings.options = self.__render_labels_as_options(labels)
+        self._model.settings.options = self._render_labels_as_options(labels)
 
     ##############################
     # Private methods
@@ -108,6 +118,13 @@ class TextQuestion(SettingsPropertyBase):
             settings=TextQuestionSettings(use_markdown=use_markdown, type="text"),
         )
 
+    @classmethod
+    def from_model(cls, model: TextQuestionModel) -> "TextQuestion":
+        instance = cls(name=model.name)
+        instance._model = model
+
+        return instance
+
     @property
     def use_markdown(self) -> bool:
         return self._model.settings.use_markdown
@@ -144,6 +161,13 @@ class MultiLabelQuestion(LabelQuestion):
             ),
         )
 
+    @classmethod
+    def from_model(cls, model: MultiLabelQuestionModel) -> "MultiLabelQuestion":
+        instance = cls(name=model.name, labels=[option["value"] for option in model.settings.options])
+        instance._model = model
+
+        return instance
+
     @property
     def visible_labels(self) -> Optional[int]:
         return self._model.visible_labels
@@ -158,7 +182,7 @@ class MultiLabelQuestion(LabelQuestion):
 
     @labels.setter
     def labels(self, labels: List[str]) -> None:
-        self._model.settings.options = self.__render_labels_as_options(labels)
+        self._model.settings.options = self._render_labels_as_options(labels)
 
 
 class RatingQuestion(SettingsPropertyBase):
@@ -188,6 +212,13 @@ class RatingQuestion(SettingsPropertyBase):
             values=values,
             settings=QuestionSettings(type="rating"),
         )
+
+    @classmethod
+    def from_model(cls, model: RatingQuestionModel) -> "RatingQuestion":
+        instance = cls(name=model.name)
+        instance._model = model
+
+        return instance
 
     @property
     def values(self) -> List[int]:
@@ -226,6 +257,13 @@ class RankingQuestion(SettingsPropertyBase):
             settings=QuestionSettings(type="ranking"),
         )
 
+    @classmethod
+    def from_model(cls, model: RankingQuestionModel) -> "RankingQuestion":
+        instance = cls(name=model.name, values=model.values)
+        instance._model = model
+
+        return instance
+
     @property
     def values(self) -> List[int]:
         return self._model.values
@@ -242,3 +280,19 @@ QuestionType = Union[
     TextQuestion,
     RatingQuestion,
 ]
+
+
+def question_from_model(model: QuestionModel) -> QuestionType:
+    """Convert a model to a question object"""
+    if isinstance(model, LabelQuestionModel):
+        return LabelQuestion.from_model(model)
+    elif isinstance(model, MultiLabelQuestionModel):
+        return MultiLabelQuestion.from_model(model)
+    elif isinstance(model, RankingQuestionModel):
+        return RankingQuestion.from_model(model)
+    elif isinstance(model, TextQuestionModel):
+        return TextQuestion.from_model(model)
+    elif isinstance(model, RatingQuestionModel):
+        return RatingQuestion.from_model(model)
+    else:
+        raise ValueError(f"Unsupported question model type: {type(model)}")

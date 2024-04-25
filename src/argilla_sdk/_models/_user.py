@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional
 from enum import Enum
+from typing import Optional
 
 from pydantic import field_validator
 
@@ -37,6 +37,7 @@ class UserModel(ResourceModel):
     password: Optional[str] = None
 
     @field_validator("first_name")
+    @classmethod
     def __validate_first_name(cls, v, values):
         """Set first_name to username if not provided"""
         if isinstance(v, str):
@@ -45,7 +46,8 @@ class UserModel(ResourceModel):
             return values["username"]
 
     @field_validator("username", mode="before")
-    def __validate_username(cls, username):
+    @classmethod
+    def __validate_username(cls, username: str):
         """Ensure that the username is not empty"""
         if not username:
             raise ValueError("Username cannot be empty")

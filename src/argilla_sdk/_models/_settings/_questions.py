@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union, ClassVar
 from uuid import UUID
 
 from pydantic import BaseModel, field_serializer, field_validator, Field
@@ -32,16 +32,18 @@ class LabelQuestionSettings(QuestionSettings):
 class SpanQuestionSettings(QuestionSettings):
     type: str = "span"
 
+    _MIN_VISIBLE_OPTIONS: ClassVar[int] = 3
+
     allow_overlapping: bool = False
     field: Optional[str] = None
     options: List[Dict[str, Optional[str]]] = Field(default_factory=list, validate_default=True)
-    visible_options: Optional[int] = Field(None, validate_default=True, ge=3)
+    visible_options: Optional[int] = Field(None, validate_default=True, ge=_MIN_VISIBLE_OPTIONS)
 
     @field_validator("visible_options", mode="before")
     @classmethod
     def __validate_visible_options(cls, visible_labels: Optional[int], info) -> int:
         data = info.data
-        if visible_labels is None and data["options"] and len(data["options"]) >= 3:
+        if visible_labels is None and data["options"] and len(data["options"]) >= cls._MIN_VISIBLE_OPTIONS:
             return len(data["options"])
         return visible_labels
 

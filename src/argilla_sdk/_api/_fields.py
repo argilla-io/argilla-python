@@ -75,7 +75,7 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
         return self._get_model_from_response(response_json=response_json)
 
-    def _model_from_jsons(self, response_jsons: List[FieldModel]) -> List[FieldModel]:
+    def _model_from_jsons(self, response_jsons: List[Dict]) -> List[FieldModel]:
         return list(map(self._model_from_json, response_jsons))
 
     def _get_model_from_response(self, response_json: Dict) -> FieldModel:
@@ -84,6 +84,7 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
         except Exception as e:
             raise ValueError("Invalid response type: missing 'settings.type' in response") from e
         if field_type == "text":
+            # TODO: Avoid apply validations here (check_fields=False?)
             return TextFieldModel(**response_json)
         else:
             # TODO: Add more field types

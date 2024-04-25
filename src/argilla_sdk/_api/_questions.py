@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Dict, Union
+from typing import List, Dict
 from uuid import UUID
 
 import httpx
+
 from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
 from argilla_sdk._models import (
@@ -24,6 +25,7 @@ from argilla_sdk._models import (
     MultiLabelQuestionModel,
     RankingQuestionModel,
     RatingQuestionModel,
+    SpanQuestionModel,
     QuestionBaseModel,
     QuestionModel,
 )
@@ -35,6 +37,15 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
     """Manage datasets via the API"""
 
     http_client: httpx.Client
+
+    _TYPE_TO_MODEL_CLASS = {
+        "text": TextQuestionModel,
+        "label_selection": LabelQuestionModel,
+        "multi_label_selection": MultiLabelQuestionModel,
+        "ranking": RankingQuestionModel,
+        "rating": RatingQuestionModel,
+        "span": SpanQuestionModel,
+    }
 
     ################
     # CRUD methods #
@@ -67,7 +78,7 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
     # Utility methods #
     ####################
 
-    def create_many(self, dataset_id: UUID, questions: List[Dict]) -> List[QuestionModel]:
+    def create_many(self, dataset_id: UUID, questions: List[QuestionModel]) -> List[QuestionModel]:
         response_models = []
         for question in questions:
             response_model = self.create(dataset_id=dataset_id, question=question)
@@ -98,16 +109,10 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
             question_type = response_json.get("settings", {}).get("type")
         except Exception as e:
             raise ValueError("Invalid field type: missing 'settings.type' in response") from e
-        if question_type == "text":
-            return TextQuestionModel(**response_json)
-        elif question_type == "label_selection":
-            return LabelQuestionModel(**response_json)
-        elif question_type == "multi_label_selection":
-            return MultiLabelQuestionModel(**response_json)
-        elif question_type == "ranking":
-            return RankingQuestionModel(**response_json)
-        elif question_type == "rating":
-            return RatingQuestionModel(**response_json)
-        else:
+
+        question_class = self._TYPE_TO_MODEL_CLASS.get(question_type)
+        if question_class is None:
             self.log(message=f"Unknown question type: {question_type}")
-            return QuestionBaseModel(**response_json)
+            question_class = QuestionBaseModel
+
+        return question_class(**response_json, check_fields=False)

@@ -310,17 +310,44 @@ class SpanQuestion(MultiLabelQuestion):
     def field(self):
         return self._model.settings.field
 
+    @field.setter
+    def field(self, field: str):
+        self._model.settings.field = field
+
     @property
     def allow_overlapping(self):
         return self._model.settings.allow_overlapping
+
+    @allow_overlapping.setter
+    def allow_overlapping(self, allow_overlapping: bool):
+        self._model.settings.allow_overlapping = allow_overlapping
 
     @property
     def visible_labels(self) -> Optional[int]:
         return self._model.settings.visible_options
 
+    @visible_labels.setter
+    def visible_labels(self, visible_labels: Optional[int]) -> None:
+        self._model.settings.visible_options = visible_labels
+
     @property
     def labels(self) -> List[str]:
         return [option["value"] for option in self._model.settings.options]
+
+    @labels.setter
+    def labels(self, labels: List[str]) -> None:
+        self._model.settings.options = self._render_labels_as_options(labels)
+
+    @classmethod
+    def from_model(cls, model: SpanQuestionModel) -> "MultiLabelQuestion":
+        instance = cls(
+            name=model.name,
+            field=model.settings.field,
+            labels=[option["value"] for option in model.settings.options],
+        )
+        instance._model = model
+
+        return instance
 
 
 QuestionType = Union[

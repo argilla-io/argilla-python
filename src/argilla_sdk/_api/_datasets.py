@@ -16,8 +16,8 @@ from typing import List, Optional, Dict
 from uuid import UUID
 
 import httpx
-from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
+from argilla_sdk._exceptions._api import api_error_handler
 from argilla_sdk._models import DatasetModel
 
 __all__ = ["DatasetsAPI"]
@@ -33,55 +33,60 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
     # CRUD methods #
     ################
 
+    @api_error_handler
     def create(self, dataset: "DatasetModel") -> "DatasetModel":
         json_body = dataset.model_dump()
-        response = self.http_client.post(
-            url=self.url_stub,
-            json=json_body,
+        response = (
+            self.http_client.post(
+                url=self.url_stub,
+                json=json_body,
+            )
+            .raise_for_status()
+            .json()
         )
-        response = self._handle_response(response=response, resource=dataset)
         dataset = self._model_from_json(json_dataset=response)
         self.log(message=f"Created dataset {dataset.name}")
         return dataset
 
+    @api_error_handler
     def update(self, dataset: "DatasetModel") -> "DatasetModel":
         json_body = dataset.model_dump()
         dataset_id = json_body["id"]  # type: ignore
-        response = self.http_client.patch(f"{self.url_stub}/{dataset_id}", json=json_body)
-        response = self._handle_response(response=response, resource=dataset)
+        response = self.http_client.patch(f"{self.url_stub}/{dataset_id}", json=json_body).raise_for_status().json()
         dataset = self._model_from_json(json_dataset=response)
         self.log(message=f"Updated dataset {dataset.url}")
         return dataset
 
+    @api_error_handler
     def get(self, dataset_id: UUID) -> "DatasetModel":
-        response = self.http_client.get(url=f"{self.url_stub}/{dataset_id}")
-        response = self._handle_response(response=response, resource=dataset_id)
+        response = self.http_client.get(url=f"{self.url_stub}/{dataset_id}").raise_for_status().json()
         dataset = self._model_from_json(json_dataset=response)
         self.log(message=f"Got dataset {dataset.url}")
         return dataset
 
+    @api_error_handler
     def delete(self, dataset_id: UUID) -> None:
-        response = self.http_client.delete(f"{self.url_stub}/{dataset_id}")
-        response = self._handle_response(response=response, resource=dataset_id)
+        self.http_client.delete(f"{self.url_stub}/{dataset_id}").raise_for_status().json()
         self.log(message=f"Deleted dataset {dataset_id}")
 
+    @api_error_handler
     def exists(self, dataset_id: UUID) -> bool:
-        response = self.http_client.get(f"{self.url_stub}/{dataset_id}")
+        response = self.http_client.get(f"{self.url_stub}/{dataset_id}").raise_for_status()
         return response.status_code == 200
 
     ####################
     # Utility methods #
     ####################
 
+    @api_error_handler
     def publish(self, dataset_id: UUID) -> "DatasetModel":
-        response = self.http_client.put(url=f"{self.url_stub}/{dataset_id}/publish")
-        _http.raise_for_status(response=response)
+        response = self.http_client.put(url=f"{self.url_stub}/{dataset_id}/publish").raise_for_status().json()
         self.log(message=f"Published dataset {dataset_id}")
-        return self._model_from_json(response.json())
+        return self._model_from_json(response)
 
+    @api_error_handler
     def list(self, workspace_id: Optional[UUID] = None) -> List["DatasetModel"]:
-        response = self.http_client.get("/api/v1/me/datasets")
-        response = self._handle_response(response=response, resource=None)
+        response = self.http_client.get("/api/v1/me/datasets").raise_for_status().json()
         json_datasets = response["items"]
         datasets = self._model_from_jsons(json_datasets=json_datasets)
         if workspace_id:

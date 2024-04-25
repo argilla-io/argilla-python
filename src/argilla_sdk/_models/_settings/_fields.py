@@ -42,6 +42,7 @@ class TextFieldModel(FieldBaseModel):
 
 class VectorFieldModel(FieldBaseModel):
     dimensions: int
+    settings: Optional[FieldSettings] = FieldSettings(type="vector")
 
     @validator("dimensions")
     def __dimension_gt_zero(cls, dimensions):

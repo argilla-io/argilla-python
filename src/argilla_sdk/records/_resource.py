@@ -14,16 +14,15 @@
 
 import warnings
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Tuple
-from uuid import uuid4, UUID
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from uuid import UUID, uuid4
 
-from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel, VectorModel
+from argilla_sdk._models import MetadataModel, RecordModel, ResponseModel, SuggestionModel, VectorModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.responses import Response
-from argilla_sdk.vectors import Vector
-from argilla_sdk.settings import FieldType, QuestionType, VectorField
+from argilla_sdk.settings import FieldType, MetadataType, QuestionType, VectorField
 from argilla_sdk.suggestions import Suggestion
-
+from argilla_sdk.vectors import Vector
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -204,6 +203,7 @@ class Record(Resource):
         responses: List[ResponseModel] = []
         record_id: Optional[str] = None
         vectors: List[VectorModel] = []
+        metadata: List[MetadataModel] = []
 
         for attribute, value in data.items():
             schema_item = schema.get(attribute)
@@ -238,6 +238,8 @@ class Record(Resource):
                 suggestions.append(SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute))
             elif isinstance(schema_item, VectorField):
                 vectors.append(VectorModel(name=attribute, vector_values=value))
+            elif isinstance(schema_item, MetadataType):
+                metadata.append(MetadataModel(name=attribute, value=value))
             else:
                 warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
                 continue
@@ -248,6 +250,7 @@ class Record(Resource):
             suggestions=suggestions,
             responses=responses,
             vectors=vectors,
+            metadata=metadata,
             external_id=data.get("external_id") or record_id,
         )
 

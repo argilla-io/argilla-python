@@ -1,12 +1,15 @@
 from typing import Optional, Union
 
-from argilla_sdk._models import TextFieldModel, FieldSettings, VectorFieldModel, FieldModel
+from argilla_sdk._models import FieldModel, FieldSettings, MetadataField, TextFieldModel, VectorFieldModel
 from argilla_sdk.settings._common import SettingsPropertyBase
+from argilla_sdk.settings._metadata import _MetadataField
 
 __all__ = ["TextField", "FieldType", "VectorField"]
 
 
 class TextField(SettingsPropertyBase):
+    """Text field for use in Argilla `Dataset` `Settings`"""
+
     _model: TextFieldModel
 
     def __init__(
@@ -17,7 +20,25 @@ class TextField(SettingsPropertyBase):
         required: Optional[bool] = True,
         description: Optional[str] = None,
     ) -> None:
-        """Text field for use in Argilla `Dataset` `Settings`"""
+        """Text field for use in Argilla `Dataset` `Settings`
+        Args:
+            name (str): The name of the field
+            title (Optional[str], optional): The title of the field. Defaults to None.
+            use_markdown (Optional[bool], optional): Whether to use markdown. Defaults to False.
+            required (Optional[bool], optional): Whether the field is required. Defaults to True.
+            description (Optional[str], optional): The description of the field. Defaults to None.
+
+        Examples:
+        ```python
+        import argilla_sdk as rg
+
+        settings = rg.Settings(
+            guidelines="This is a guideline",
+            fields=[rg.TextField(name="prompt", use_markdown=True)],
+            questions=[rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])],
+        )
+        ```
+        """
         self._model = TextFieldModel(
             name=name,
             title=title,
@@ -39,6 +60,8 @@ class TextField(SettingsPropertyBase):
 
 
 class VectorField(SettingsPropertyBase):
+    """Vector field for use in Argilla `Dataset` `Settings`"""
+
     _model: VectorFieldModel
 
     def __init__(
@@ -47,7 +70,27 @@ class VectorField(SettingsPropertyBase):
         dimensions: int,
         title: Optional[str] = None,
     ) -> None:
-        """Vector field for use in Argilla `Dataset` `Settings`"""
+        """Vector field for use in Argilla `Dataset` `Settings`
+        Args:
+            name (str): The name of the field
+            dimensions (int): The number of dimensions in the vector
+            title (Optional[str], optional): The title of the field. Defaults to None.
+        Examples:
+        ```python
+        import argilla_sdk as rg
+            settings = rg.Settings(
+        fields=[
+            rg.TextField(name="text"),
+        ],
+        questions=[
+            rg.LabelQuestion(name="label", labels=["positive", "negative"]),
+        ],
+        vectors=[
+            rg.VectorField(name="vector", dimensions=10),
+        ],
+        )
+        ```
+        """
         self._model = VectorFieldModel(
             name=name,
             title=title,
@@ -74,13 +117,16 @@ class VectorField(SettingsPropertyBase):
         return self._model.name
 
 
-FieldType = Union[TextField, VectorField]
+FieldType = Union[TextField, VectorField, _MetadataField]
 
 
 def field_from_model(model: FieldModel) -> FieldType:
+    """Create a field instance from a field model"""
     if isinstance(model, TextFieldModel):
         return TextField.from_model(model)
     elif isinstance(model, VectorFieldModel):
         return VectorField.from_model(model)
+    elif isinstance(model, MetadataField):
+        return _MetadataField.from_model(model)
     else:
         raise ValueError(f"Unsupported field model type: {type(model)}")

@@ -46,4 +46,14 @@ from argilla_sdk._models._settings._questions import (
     RatingQuestionModel,
     QuestionModel,
 )
+from argilla_sdk._models._settings._metadata import (
+    MetadataField,
+    MetadataPropertyType,
+    BaseMetadataPropertySettings,
+    TermsMetadataPropertySettings,
+    NumericMetadataPropertySettings,
+    FloatMetadataPropertySettings,
+    IntegerMetadataPropertySettings,
+)
 from argilla_sdk._models._vector import VectorModel
+from argilla_sdk._models._metadata import MetadataModel

@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._exceptions._settings import *
-from argilla_sdk._exceptions._api import *
-from argilla_sdk._exceptions._serialization import *
-from argilla_sdk._exceptions._metadata import *
+from argilla_sdk._exceptions._base import ArgillaErrorBase
+
+
+class MetadataError(ArgillaErrorBase):
+    message: str = "Error defining dataset metadata settings"

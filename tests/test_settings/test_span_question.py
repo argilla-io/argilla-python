@@ -33,4 +33,4 @@ class TestSpanQuestions:
         )
         question.labels = ["label1", "label2", "label3"]
         assert question.labels == ["label1", "label2", "label3"]
-        assert question.visible_labels is None
+        assert question.visible_labels == 2

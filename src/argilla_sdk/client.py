@@ -42,6 +42,8 @@ class Argilla(_api.APIClient):
 
     @property
     def me(self) -> "User":
+        from argilla_sdk import User
+
         return User(client=self, _model=self.api.users.get_me())
 
 

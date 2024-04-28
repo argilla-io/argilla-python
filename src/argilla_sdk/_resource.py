@@ -36,6 +36,17 @@ class Resource(LoggingMixin, UUIDMixin):
     def id(self, value: UUID) -> None:
         self._model.id = value
 
+    @property
+    def is_outdated(self) -> bool:
+        """Checks if the resource is outdated based on the last API call
+        Returns:
+            bool: True if the resource is outdated, False otherwise
+        """
+        seconds = self._seconds_from_last_api_call()
+        if seconds is None:
+            return True
+        return seconds > self._MAX_OUTDATED_RETENTION
+
     ############################
     # CRUD operations
     ############################
@@ -71,16 +82,6 @@ class Resource(LoggingMixin, UUIDMixin):
 
     def serialize_json(self) -> str:
         return self._model.model_dump_json()
-
-    def is_outdated(self) -> bool:
-        """Checks if the resource is outdated based on the last API call
-        Returns:
-            bool: True if the resource is outdated, False otherwise
-        """
-        seconds = self._seconds_from_last_api_call()
-        if seconds is None:
-            return True
-        return seconds > self._MAX_OUTDATED_RETENTION
 
     def _sync(self, model: "ResourceModel"):
         """Updates the resource with the ClientAPI that is used to interact with

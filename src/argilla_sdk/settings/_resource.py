@@ -16,7 +16,7 @@ from typing import List, Optional, TYPE_CHECKING, Dict, Union
 from uuid import UUID
 
 from argilla_sdk._models import TextFieldModel, TextQuestionModel
-from argilla_sdk.client import Argilla
+from argilla_sdk._resource import Resource
 from argilla_sdk.settings._field import FieldType, VectorField, TextField, field_from_model
 from argilla_sdk.settings._question import QuestionType, question_from_model
 
@@ -27,8 +27,12 @@ if TYPE_CHECKING:
 __all__ = ["Settings"]
 
 
-class Settings:
-    """Settings class for Argilla Datasets. This class is used to define the representation of a Dataset within the UI."""
+class Settings(Resource):
+    """
+    Settings class for Argilla Datasets.
+
+    This class is used to define the representation of a Dataset within the UI.
+    """
 
     def __init__(
         self,
@@ -43,21 +47,19 @@ class Settings:
         Args:
             guidelines (str): A string containing the guidelines for the Dataset.
             fields (List[TextField]): A list of TextField objects that represent the fields in the Dataset.
-            questions (List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion, RatingQuestion]]): A list of Question objects that represent the questions in the Dataset.
-            allow_extra_metadata (bool): A boolean that determines whether or not extra metadata is allowed in the Dataset. Defaults to False.
+            questions (List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion, RatingQuestion]]):
+                A list of Question objects that represent the questions in the Dataset.
+            allow_extra_metadata (bool): A boolean that determines whether or not extra metadata is
+                allowed in the Dataset. Defaults to False.
         """
-        if fields is None:
-            fields = []
-        if questions is None:
-            questions = []
-        if vectors is None:
-            vectors = []
+        super().__init__(client=_dataset._client if _dataset else None)
+
+        self.__questions = questions or []
+        self.__fields = fields or []
+        self.__vectors = vectors or []
 
         self.__guidelines = self.__process_guidelines(guidelines)
         self.__allow_extra_metadata = allow_extra_metadata
-        self.__questions = questions
-        self.__fields = fields
-        self.__vectors = vectors
 
         self._dataset = _dataset
 
@@ -116,12 +118,9 @@ class Settings:
     @dataset.setter
     def dataset(self, dataset: "Dataset"):
         self._dataset = dataset
+        self._client = dataset._client
         self._dataset._model.allow_extra_metadata = self.allow_extra_metadata
         self._dataset._model.guidelines = self.guidelines
-
-    @property
-    def _client(self) -> Argilla:
-        return self._dataset._client
 
     @cached_property
     def schema(self) -> dict:
@@ -151,7 +150,9 @@ class Settings:
         self.__fetch_fields()
         self.__fetch_questions()
         self.__fetch_vectors()
+        self.__get_dataset_related_attributes()
 
+        self._update_last_api_call()
         return self
 
     def create(self) -> "Settings":
@@ -159,6 +160,8 @@ class Settings:
         self.__upsert_questions()
         self.__upsert_vectors()
         self.__update_dataset_related_attributes()
+
+        self._update_last_api_call()
         return self
 
     def question_by_id(self, question_id: UUID) -> QuestionType:
@@ -185,6 +188,20 @@ class Settings:
 
         return self.__vectors
 
+    def __get_dataset_related_attributes(self):
+        # This flow may be a bit weird, but it's the only way to update the dataset related attributes
+        # Everything is point that we should have several settings-related endpoints in the API to handle this.
+        # POST /api/v1/datasets/{dataset_id}/settings
+        # {
+        #   "guidelines": ....,
+        #   "allow_extra_metadata": ....,
+        # }
+        # But this is not implemented yet, so we need to update the dataset model directly
+        self._dataset.get()
+
+        self.guidelines = self._dataset._model.guidelines
+        self.allow_extra_metadata = self._dataset._model.allow_extra_metadata
+
     def __update_dataset_related_attributes(self):
         # This flow may be a bit weird, but it's the only way to update the dataset related attributes
         # Everything is point that we should have several settings-related endpoints in the API to handle this.
@@ -198,6 +215,8 @@ class Settings:
 
         ds_model.guidelines = self.guidelines
         ds_model.allow_extra_metadata = self.allow_extra_metadata
+
+        self._dataset.update()
 
     def __upsert_questions(self) -> None:
         for question in self.__questions:

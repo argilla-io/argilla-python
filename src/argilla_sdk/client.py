@@ -139,7 +139,7 @@ class Datasets(Sequence, ResourceHTMLReprMixin):
 
         for model in dataset_models:
             if model.name == name:
-                return Dataset(_model=model, client=self._client).get()
+                return Dataset(_model=model, client=self._client)
 
         return Dataset(name=name, workspace_id=workspace_id, client=self._client, **kwargs)
 

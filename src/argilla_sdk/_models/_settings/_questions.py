@@ -4,7 +4,11 @@ from uuid import UUID
 
 from pydantic import BaseModel, field_serializer, field_validator, Field, model_validator
 from pydantic_core.core_schema import ValidationInfo
-from typing_extensions import Self
+
+try:
+    from typing import Self
+except ImportError:
+    from typing_extensions import Self
 
 
 class QuestionSettings(BaseModel, validate_assignment=True):

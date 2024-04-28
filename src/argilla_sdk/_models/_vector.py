@@ -26,6 +26,7 @@ class VectorModel(ResourceModel):
     vector_values: List[float]
 
     @field_validator("name")
+    @classmethod
     def validate_name(cls, value):
         """Validate the name of the vector is url safe"""
         if not re.match(r"^[a-zA-Z0-9_-]+$", value):

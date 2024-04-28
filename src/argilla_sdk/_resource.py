@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, TYPE_CHECKING, Optional
 from uuid import UUID
 
@@ -16,9 +17,13 @@ class Resource(LoggingMixin, UUIDMixin):
     _client: "Argilla"
     _api: "ResourceAPI"
 
-    def __init__(self, api: "ResourceAPI", client: "Argilla") -> None:
+    _MAX_OUTDATED_RETENTION = 30
+
+    def __init__(self, api: Optional["ResourceAPI"] = None, client: Optional["Argilla"] = None) -> None:
         self._client = client
         self._api = api
+
+        self._last_api_call = None
 
     def __repr__(self) -> str:
         return repr(f"{self.__class__.__name__}({self._model})")
@@ -30,6 +35,52 @@ class Resource(LoggingMixin, UUIDMixin):
     @id.setter
     def id(self, value: UUID) -> None:
         self._model.id = value
+
+    ############################
+    # CRUD operations
+    ############################
+
+    def create(self) -> "Resource":
+        response_model = self._api.create(self._model)
+        self._sync(response_model)
+        self._update_last_api_call()
+        return self
+
+    def get(self) -> "Resource":
+        response_model = self._api.get(self._model.id)
+        self._sync(response_model)
+        self._update_last_api_call()
+        return self
+
+    def update(self) -> "Resource":
+        response_model = self._api.update(self._model)
+        self._sync(response_model)
+        self._update_last_api_call()
+        return self
+
+    def delete(self) -> None:
+        self._api.delete(self._model.id)
+        self._update_last_api_call()
+
+    ############################
+    # Serialization
+    ############################
+
+    def serialize(self) -> dict[str, Any]:
+        return self._model.model_dump()
+
+    def serialize_json(self) -> str:
+        return self._model.model_dump_json()
+
+    def is_outdated(self) -> bool:
+        """Checks if the resource is outdated based on the last API call
+        Returns:
+            bool: True if the resource is outdated, False otherwise
+        """
+        seconds = self._seconds_from_last_api_call()
+        if seconds is None:
+            return True
+        return seconds > self._MAX_OUTDATED_RETENTION
 
     def _sync(self, model: "ResourceModel"):
         """Updates the resource with the ClientAPI that is used to interact with
@@ -45,34 +96,9 @@ class Resource(LoggingMixin, UUIDMixin):
             setattr(self, field, getattr(self._model, field))
         return self
 
-    ############################
-    # CRUD operations
-    ############################
+    def _update_last_api_call(self):
+        self._last_api_call = datetime.utcnow()
 
-    def create(self) -> "Resource":
-        response_model = self._api.create(self._model)
-        self._sync(response_model)
-        return self
-
-    def get(self) -> "Resource":
-        response_model = self._api.get(self._model.id)
-        self._sync(response_model)
-        return self
-
-    def update(self) -> "Resource":
-        response_model = self._api.update(self._model)
-        self._sync(response_model)
-        return self
-
-    def delete(self) -> None:
-        self._api.delete(self._model.id)
-
-    ############################
-    # Serialization
-    ############################
-
-    def serialize(self) -> dict[str, Any]:
-        return self._model.model_dump()
-
-    def serialize_json(self) -> str:
-        return self._model.model_dump_json()
+    def _seconds_from_last_api_call(self) -> Optional[float]:
+        if self._last_api_call:
+            return (datetime.utcnow() - self._last_api_call).total_seconds()

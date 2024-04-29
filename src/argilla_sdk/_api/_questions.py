@@ -12,12 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Dict, Union
+from typing import List, Dict
 from uuid import UUID
 
 import httpx
-from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
+from argilla_sdk._exceptions import api_error_handler
 from argilla_sdk._models import (
     TextQuestionModel,
     LabelQuestionModel,
@@ -40,6 +40,7 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
     # CRUD methods #
     ################
 
+    @api_error_handler
     def create(
         self,
         dataset_id: UUID,
@@ -47,11 +48,13 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
     ) -> QuestionModel:
         url = f"/api/v1/datasets/{dataset_id}/questions"
         response = self.http_client.post(url=url, json=question.model_dump())
-        _http.raise_for_status(response=response)
-        question_model = self._model_from_json(response_json=response.json())
+        response.raise_for_status()
+        response_json = response.json()
+        question_model = self._model_from_json(response_json=response_json)
         self.log(message=f"Created question {question_model.name} in dataset {dataset_id}")
         return question_model
 
+    @api_error_handler
     def update(
         self,
         question: QuestionModel,
@@ -59,6 +62,7 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
         # TODO: Implement update method for fields with server side ID
         raise NotImplementedError
 
+    @api_error_handler
     def delete(self, question_id: UUID) -> None:
         # TODO: Implement delete method for fields with server side ID
         raise NotImplementedError
@@ -67,17 +71,19 @@ class QuestionsAPI(ResourceAPI[QuestionBaseModel]):
     # Utility methods #
     ####################
 
-    def create_many(self, dataset_id: UUID, questions: List[Dict]) -> List[QuestionModel]:
+    def create_many(self, dataset_id: UUID, questions: List[QuestionModel]) -> List[QuestionModel]:
         response_models = []
         for question in questions:
             response_model = self.create(dataset_id=dataset_id, question=question)
             response_models.append(response_model)
         return response_models
 
+    @api_error_handler
     def list(self, dataset_id: UUID) -> List[QuestionModel]:
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/questions")
-        _http.raise_for_status(response=response)
-        response_models = self._model_from_jsons(response_jsons=response.json()["items"])
+        response.raise_for_status()
+        response_json = response.json()
+        response_models = self._model_from_jsons(response_jsons=response_json["items"])
         return response_models
 
     ####################

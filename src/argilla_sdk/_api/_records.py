@@ -18,8 +18,8 @@ from uuid import UUID
 import httpx
 from typing_extensions import deprecated
 
-from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
+from argilla_sdk._exceptions import api_error_handler
 from argilla_sdk._models import RecordModel, ResponseModel, SearchQueryModel
 
 __all__ = ["RecordsAPI"]
@@ -36,29 +36,33 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     ################
     # CRUD methods #
     ################
-
+    @api_error_handler
     def get(self, record_id: UUID) -> RecordModel:
         response = self.http_client.get(f"/api/v1/records/{record_id}")
-        _http.raise_for_status(response=response)
-        return self._model_from_json(response_json=response.json())
+        response.raise_for_status()
+        response_json = response.json()
+        return self._model_from_json(response_json=response_json)
 
+    @api_error_handler
     def update(self, record: RecordModel) -> RecordModel:
         response = self.http_client.patch(
             url=f"/api/v1/records/{record.id}",
             json=record.model_dump(),
         )
-        _http.raise_for_status(response=response)
-        return self._model_from_json(response_json=response.json())
+        response.raise_for_status()
+        response_json = response.json()
+        return self._model_from_json(response_json=response_json)
 
+    @api_error_handler
     def delete(self, record_id: UUID) -> None:
         response = self.http_client.delete(f"/api/v1/records/{record_id}")
-        _http.raise_for_status(response=response)
+        response.raise_for_status()
         self.log(message=f"Deleted record {record_id}")
 
     ####################
     # Utility methods #
     ####################
-
+    @api_error_handler
     def list(
         self,
         dataset_id: UUID,
@@ -92,11 +96,12 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         }
 
         response = self.http_client.get(f"/api/v1/datasets/{dataset_id}/records", params=params)
-        _http.raise_for_status(response=response)
-
-        json_records = response.json()["items"]
+        response.raise_for_status()
+        response_json = response.json()
+        json_records = response_json["items"]
         return self._model_from_jsons(json_records)
 
+    @api_error_handler
     def search(
         self,
         dataset_id: UUID,
@@ -107,30 +112,26 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         with_responses: bool = True,
         # TODO: Add support for `with_vectors`
     ) -> Tuple[List[Tuple[RecordModel, float]], int]:
-
         include = []
         if with_suggestions:
             include.append("suggestions")
         if with_responses:
             include.append("responses")
-
         params = {
             "offset": offset,
             "limit": limit,
             "include": include,
         }
-
         response = self.http_client.post(
-            f"/api/v1/datasets/{dataset_id}/records/search",
-            json=query.model_dump(by_alias=True),
-            params=params
+            f"/api/v1/datasets/{dataset_id}/records/search", json=query.model_dump(by_alias=True), params=params
         )
-        _http.raise_for_status(response=response)
-
-        json_items = response.json()["items"]
-        total = response.json()["total"]
+        response.raise_for_status()
+        response_json = response.json()
+        json_items = response_json["items"]
+        total = response_json["total"]
         return [(self._model_from_json(item["record"]), item["query_score"]) for item in json_items], total
 
+    @api_error_handler
     @deprecated("Use `bulk_create` or `bulk_upsert` instead")
     def create_many(self, dataset_id: UUID, records: List[RecordModel]) -> None:
         record_dicts = [record.model_dump() for record in records]
@@ -138,10 +139,11 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             url=f"/api/v1/datasets/{dataset_id}/records",
             json={"items": record_dicts},
         )
-        _http.raise_for_status(response=response)
+        response.raise_for_status()
         self.log(message=f"Created {len(records)} records in dataset {dataset_id}")
         # TODO: Once server returns the records, return them here
 
+    @api_error_handler
     @deprecated("Use `bulk_create` or `bulk_upsert` instead")
     def update_many(self, dataset_id: UUID, records: List[RecordModel]) -> None:
         record_dicts = [record.model_dump() for record in records]
@@ -149,58 +151,52 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             url=f"/api/v1/datasets/{dataset_id}/records",
             json={"items": record_dicts},
         )
-        _http.raise_for_status(response=response)
+        response.raise_for_status()
         self.log(message=f"Updated {len(records)} records in dataset {dataset_id}")
 
+    @api_error_handler
     def bulk_create(
         self, dataset_id: UUID, records: List[RecordModel]
     ) -> Union[List[RecordModel], Tuple[List[RecordModel], int]]:
         if len(records) > self.MAX_RECORDS_PER_CREATE_BULK:
             raise ValueError(f"Cannot create more than {self.MAX_RECORDS_PER_CREATE_BULK} records at once")
-
         record_dicts = [record.model_dump() for record in records]
-
         response = self.http_client.post(
             url=f"/api/v1/datasets/{dataset_id}/records/bulk",
             json={"items": record_dicts},
         )
-
-        _http.raise_for_status(response=response)
+        response.raise_for_status()
+        response_json = response.json()
         self.log(message=f"Created {len(records)} in dataset {dataset_id}")
+        return self._model_from_jsons(response_jsons=response_json["items"])
 
-        json_records = response.json()["items"]
-        return self._model_from_jsons(json_records)
-
+    @api_error_handler
     def bulk_upsert(self, dataset_id: UUID, records: List[RecordModel]) -> Tuple[List[RecordModel], int]:
         if len(records) > self.MAX_RECORDS_PER_UPSERT_BULK:
             raise ValueError(f"Cannot upsert more than {self.MAX_RECORDS_PER_UPSERT_BULK} records at once")
-
         record_dicts = [record.model_dump() for record in records]
         response = self.http_client.put(
             url=f"/api/v1/datasets/{dataset_id}/records/bulk",
             json={"items": record_dicts},
         )
-
-        _http.raise_for_status(response=response)
-        json_response = response.json()
-        updated = len(json_response.get("updated_item_ids", []))
+        response.raise_for_status()
+        response_json = response.json()
+        updated = len(response_json.get("updated_item_ids", []))
         self.log(
             message=f"Updated {updated} records and create {len(records) - updated} records in dataset {dataset_id}"
         )
-
-        json_records = json_response["items"]
-        return self._model_from_jsons(json_records), updated
+        return self._model_from_jsons(response_jsons=response_json["items"]), updated
 
     ####################
     # Response methods #
     ####################
 
+    @api_error_handler
     def create_record_response(self, record_id: UUID, record_response: ResponseModel) -> None:
-        response = self.http_client.post(
+        self.http_client.post(
             url=f"/api/v1/records/{record_id}/responses",
             json=record_response.model_dump(),
-        )
-        _http.raise_for_status(response=response)
+        ).raise_for_status()
 
     def create_record_responses(self, record: RecordModel) -> None:
         if not record.responses:
@@ -209,7 +205,6 @@ class RecordsAPI(ResourceAPI[RecordModel]):
             raise ValueError("Record must have an ID to create responses")
         for record_response in record.responses:
             self.create_record_response(record_id=record.id, record_response=record_response)
-
 
     ####################
     # Private methods #

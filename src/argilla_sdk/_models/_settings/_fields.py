@@ -45,6 +45,7 @@ class TextFieldModel(FieldBaseModel):
 
 class VectorFieldModel(FieldBaseModel):
     dimensions: int
+    settings: Optional[FieldSettings] = FieldSettings(type="vector")
 
     @field_validator("dimensions")
     @classmethod

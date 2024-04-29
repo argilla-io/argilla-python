@@ -1,6 +1,6 @@
 import warnings
 from enum import Enum
-from typing import Dict, Optional, Union
+from typing import Dict, Optional, Union, Any
 from uuid import UUID
 
 from pydantic import BaseModel, field_serializer, field_validator, Field
@@ -15,8 +15,8 @@ class ResponseStatus(str, Enum):
 class ResponseModel(BaseModel):
     """Schema for the `FeedbackRecord` response."""
 
-    values: Union[Dict[str, Dict[str, str]], None]
-    status: ResponseStatus = ResponseStatus.submitted
+    values: Union[Dict[str, Dict[str, Any]], None]
+    status: ResponseStatus
     user_id: Optional[UUID] = Field(None, validate_default=True)
 
     class Config:

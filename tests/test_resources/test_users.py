@@ -17,9 +17,18 @@ import uuid
 from datetime import datetime
 
 import httpx
+import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
+from argilla_sdk._exceptions import (
+    BadRequestError,
+    ConflictError,
+    ForbiddenError,
+    InternalServerError,
+    NotFoundError,
+    UnprocessableEntityError,
+)
 
 
 class TestUserSerialization:
@@ -61,7 +70,19 @@ class TestUserSerialization:
 
 
 class TestUsers:
-    def test_create_user(self, httpx_mock: HTTPXMock):
+    @pytest.mark.parametrize(
+        "status_code, expected_exception, expected_message",
+        [
+            (200, None, None),
+            (400, BadRequestError, "BadRequestError"),
+            (403, ForbiddenError, "ForbiddenError"),
+            (404, NotFoundError, "NotFoundError"),
+            (409, ConflictError, "ConflictError"),
+            (422, UnprocessableEntityError, "UnprocessableEntityError"),
+            (500, InternalServerError, "InternalServerError"),
+        ],
+    )
+    def test_create_user(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
         user_id = uuid.uuid4().hex
         mock_return_value = {
             "id": str(user_id),
@@ -75,16 +96,36 @@ class TestUsers:
         }
 
         api_url = "http://test_url"
-        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/users", method="POST")
+        httpx_mock.add_response(
+            json=mock_return_value, url=f"{api_url}/api/users", method="POST", status_code=status_code
+        )
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
             user = rg.User(
                 username="test-user",
                 client=client,
             )
-            created_user = user.create()
+            if expected_exception:
+                with pytest.raises(expected_exception, match=expected_message):
+                    user.create()
+            else:
+                created_user = user.create()
+                assert user.username == created_user.username
+                assert user.id == created_user.id
 
-    def test_get_user(self, httpx_mock: HTTPXMock):
+    @pytest.mark.parametrize(
+        "status_code, expected_exception, expected_message",
+        [
+            (200, None, None),
+            (400, BadRequestError, "BadRequestError"),
+            (403, ForbiddenError, "ForbiddenError"),
+            (404, NotFoundError, "NotFoundError"),
+            (409, ConflictError, "ConflictError"),
+            (422, UnprocessableEntityError, "UnprocessableEntityError"),
+            (500, InternalServerError, "InternalServerError"),
+        ],
+    )
+    def test_get_user(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
         user_id = uuid.uuid4()
         mock_return_value = {
             "id": str(user_id),
@@ -98,16 +139,22 @@ class TestUsers:
         }
 
         api_url = "http://test_url"
-        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/users", method="POST")
+        httpx_mock.add_response(
+            json=mock_return_value, url=f"{api_url}/api/users", method="POST", status_code=status_code
+        )
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
             user = rg.User(
                 username="test-user",
                 client=client,
             )
-            gotten_user = user.create()
-            assert user.username == gotten_user.username
-            assert user.id == gotten_user.id
+            if expected_exception:
+                with pytest.raises(expected_exception, match=expected_message):
+                    user.create()
+            else:
+                gotten_user = user.create()
+                assert user.username == gotten_user.username
+                assert user.id == gotten_user.id
 
     def test_list_users(self, httpx_mock: HTTPXMock):
         mock_return_value = [

@@ -17,8 +17,8 @@ from uuid import UUID
 
 import httpx
 
-from argilla_sdk._api import _http
 from argilla_sdk._api._base import ResourceAPI
+from argilla_sdk._exceptions._api import api_error_handler
 from argilla_sdk._models._workspace import WorkspaceModel
 
 __all__ = ["WorkspacesAPI"]
@@ -32,24 +32,28 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
     # CRUD methods #
     ################
 
+    @api_error_handler
     def create(self, workspace: WorkspaceModel) -> WorkspaceModel:
         # TODO: Unify API endpoint
         response = self.http_client.post(url="/api/workspaces", json={"name": workspace.name})
-        _http.raise_for_status(response=response)
-        workspace = self._model_from_json(json_workspace=response.json())
+        response.raise_for_status()
+        response_json = response.json()
+        workspace = self._model_from_json(json_workspace=response_json)
         self.log(message=f"Created workspace {workspace.name}")
         return workspace
 
+    @api_error_handler
     def get(self, workspace_id: UUID) -> WorkspaceModel:
         response = self.http_client.get(url=f"{self.url_stub}/{workspace_id}")
-        _http.raise_for_status(response=response)
+        response.raise_for_status()
         response_json = response.json()
         workspace = self._model_from_json(json_workspace=response_json)
         return workspace
 
+    @api_error_handler
     def delete(self, workspace_id: UUID) -> None:
         response = self.http_client.delete(url=f"{self.url_stub}/{workspace_id}")
-        _http.raise_for_status(response=response)
+        response.raise_for_status()
 
     def exists(self, workspace_id: UUID) -> bool:
         response = self.http_client.get(url=f"{self.url_stub}/{workspace_id}")
@@ -59,30 +63,34 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
     # Utility methods #
     ####################
 
+    @api_error_handler
     def list(self) -> List[WorkspaceModel]:
         response = self.http_client.get(url="/api/v1/me/workspaces")
-        _http.raise_for_status(response=response)
-        response_jsons = response.json()["items"]
-        workspaces = self._model_from_jsons(json_workspaces=response_jsons)
+        response.raise_for_status()
+        response_json = response.json()
+        workspaces = self._model_from_jsons(json_workspaces=response_json["items"])
         self.log(message=f"Got {len(workspaces)} workspaces")
         return workspaces
 
+    @api_error_handler
     def list_by_user_id(self, user_id: UUID) -> List[WorkspaceModel]:
         response = self.http_client.get(f"/api/v1/users/{user_id}/workspaces")
-        _http.raise_for_status(response=response)
-        response_jsons = response.json()["items"]
-        workspaces = self._model_from_jsons(json_workspaces=response_jsons)
+        response.raise_for_status()
+        response_json = response.json()
+        workspaces = self._model_from_jsons(json_workspaces=response_json["items"])
         self.log(message=f"Got {len(workspaces)} workspaces")
         return workspaces
 
+    @api_error_handler
     def list_current_user_workspaces(self) -> List[WorkspaceModel]:
         response = self.http_client.get(url="/api/v1/me/workspaces")
-        _http.raise_for_status(response=response)
-        response_jsons = response.json()["items"]
-        workspaces = self._model_from_jsons(json_workspaces=response_jsons)
+        response.raise_for_status()
+        response_json = response.json()
+        workspaces = self._model_from_jsons(json_workspaces=response_json["items"])
         self.log(message=f"Got {len(workspaces)} workspaces")
         return workspaces
 
+    @api_error_handler
     def get_by_name(self, name: str) -> Optional[WorkspaceModel]:
         for workspace in self.list():
             if workspace.name == name:
@@ -90,14 +98,16 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
                 return workspace
         return None
 
+    @api_error_handler
     def add_user(self, workspace_id: UUID, user_id: UUID) -> None:
         response = self.http_client.post(f"{self.url_stub}/{workspace_id}/users/{user_id}")
-        _http.raise_for_status(response=response)
+        response.raise_for_status()
         self.log(message=f"Added user {user_id} to workspace {workspace_id}")
 
+    @api_error_handler
     def remove_user(self, workspace_id: UUID, user_id: UUID) -> None:
         response = self.http_client.delete(f"{self.url_stub}/{workspace_id}/users/{user_id}")
-        _http.raise_for_status(response=response)
+        response.raise_for_status()
         self.log(message=f"Removed user {user_id} from workspace {workspace_id}")
 
     ####################

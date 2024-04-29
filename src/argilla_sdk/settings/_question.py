@@ -317,7 +317,7 @@ class SpanQuestion(MultiLabelQuestion):
         self._model.settings.options = _render_values_as_options(labels)
 
     @classmethod
-    def from_model(cls, model: SpanQuestionModel) -> "MultiLabelQuestion":
+    def from_model(cls, model: SpanQuestionModel) -> "SpanQuestion":
         instance = cls(
             name=model.name,
             field=model.settings.field,
@@ -326,6 +326,8 @@ class SpanQuestion(MultiLabelQuestion):
         instance._model = model
 
         return instance
+
+
 
 
 QuestionType = Union[

@@ -20,6 +20,14 @@ import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
+from argilla_sdk._exceptions import (
+    BadRequestError,
+    ConflictError,
+    ForbiddenError,
+    InternalServerError,
+    NotFoundError,
+    UnprocessableEntityError,
+)
 
 
 class TestWorkspacesSerialization:
@@ -42,7 +50,19 @@ class TestWorkspacesSerialization:
 
 
 class TestWorkspaces:
-    def test_create_workspace(self, httpx_mock: HTTPXMock):
+    @pytest.mark.parametrize(
+        "status_code, expected_exception, expected_message",
+        [
+            (200, None, None),
+            (400, BadRequestError, "BadRequestError"),
+            (403, ForbiddenError, "ForbiddenError"),
+            (404, NotFoundError, "NotFoundError"),
+            (409, ConflictError, "ConflictError"),
+            (422, UnprocessableEntityError, "UnprocessableEntityError"),
+            (500, InternalServerError, "InternalServerError"),
+        ],
+    )
+    def test_create_workspace(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
         mock_name = "test-workspace"
         mock_return_value = {
             "id": str(uuid.uuid4()),
@@ -51,15 +71,32 @@ class TestWorkspaces:
             "updated_at": datetime.utcnow().isoformat(),
         }
         api_url = "http://test_url"
-        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/workspaces")
+        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/workspaces", status_code=status_code)
         with httpx.Client():
             client = rg.Argilla(api_url=api_url, api_key="admin.apikey")
-            ws = rg.Workspace(name="test-workspace", id=uuid.uuid4(), client=client)
-            created_workspace = ws.create()
-            assert created_workspace.name == mock_name
-            assert created_workspace.id == uuid.UUID(mock_return_value["id"])
+            if expected_exception:
+                with pytest.raises(expected_exception, match=expected_message):
+                    ws = rg.Workspace(name="test-workspace", id=uuid.uuid4(), client=client)
+                    ws.create()
+            else:
+                ws = rg.Workspace(name="test-workspace", id=uuid.uuid4(), client=client)
+                created_workspace = ws.create()
+                assert created_workspace.name == mock_name
+                assert created_workspace.id == uuid.UUID(mock_return_value["id"])
 
-    def test_get_workspace(self, httpx_mock: HTTPXMock):
+    @pytest.mark.parametrize(
+        "status_code, expected_exception, expected_message",
+        [
+            (200, None, None),
+            (400, BadRequestError, "BadRequestError"),
+            (403, ForbiddenError, "ForbiddenError"),
+            (404, NotFoundError, "NotFoundError"),
+            (409, ConflictError, "ConflictError"),
+            (422, UnprocessableEntityError, "UnprocessableEntityError"),
+            (500, InternalServerError, "InternalServerError"),
+        ],
+    )
+    def test_get_workspace(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
         workspace_id = uuid.uuid4()
         mock_return_value = {
             "id": workspace_id.hex,
@@ -68,13 +105,21 @@ class TestWorkspaces:
             "updated_at": datetime.utcnow().isoformat(),
         }
         api_url = "http://test_url"
-        httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/v1/workspaces/{workspace_id}")
+        httpx_mock.add_response(
+            json=mock_return_value, url=f"{api_url}/api/v1/workspaces/{workspace_id}", status_code=status_code
+        )
         with httpx.Client():
             client = rg.Argilla(api_url="http://test_url", api_key="admin.apikey")
-            workspace = rg.Workspace(name="test-workspace", id=workspace_id, client=client)
-            workspace = workspace.get()
-            assert workspace.name == mock_return_value["name"]
-            assert workspace.id == workspace_id
+
+            if expected_exception:
+                with pytest.raises(expected_exception, match=expected_message):
+                    workspace = rg.Workspace(name="test-workspace", id=workspace_id, client=client)
+                    workspace = workspace.get()
+            else:
+                workspace = rg.Workspace(name="test-workspace", id=workspace_id, client=client)
+                workspace = workspace.get()
+                assert workspace.name == mock_return_value["name"]
+                assert workspace.id == workspace_id
 
     def test_list_workspaces(self, httpx_mock: HTTPXMock):
         mock_return_value = {
@@ -102,6 +147,7 @@ class TestWorkspaces:
         for i in range(len(workspaces)):
             assert workspaces[i].name == mock_return_value["items"][i]["name"]
             assert workspaces[i].id == uuid.UUID(mock_return_value["items"][i]["id"])
+
 
 class TestWorkspacesAPI:
     def test_get_workspace_by_name(self, httpx_mock: HTTPXMock):

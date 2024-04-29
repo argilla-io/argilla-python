@@ -12,11 +12,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 from datetime import datetime
-from typing import Generic, TYPE_CHECKING, TypeVar
+from requests.exceptions import HTTPError
+from requests.models import Response
+from typing import Generic, TYPE_CHECKING, TypeVar, Union
 from uuid import UUID
 
+from argilla_sdk._exceptions import (
+    BadRequestError,
+    ForbiddenError,
+    NotFoundError,
+    ConflictError,
+    UnprocessableEntityError,
+    InternalServerError,
+)
 from argilla_sdk._helpers._mixins import LoggingMixin
+from argilla_sdk._models import ResourceModel
 
 
 if TYPE_CHECKING:
@@ -36,8 +48,9 @@ class ResourceAPI(LoggingMixin, Generic[T]):
     def __init__(self, http_client: "Client") -> None:
         self.http_client = http_client
 
-    def _date_from_iso_format(self, date: str) -> datetime:
-        return datetime.fromisoformat(date)
+    ################
+    # CRUD methods #
+    ################
 
     def get(self, id: UUID) -> T:
         raise NotImplementedError
@@ -50,3 +63,11 @@ class ResourceAPI(LoggingMixin, Generic[T]):
 
     def update(self, resource: T) -> T:
         return resource
+
+    ####################
+    # Utility methods #
+    ####################
+
+    def _date_from_iso_format(self, date: str) -> datetime:
+        return datetime.fromisoformat(date)
+

@@ -35,6 +35,10 @@ class DatasetModel(ResourceModel):
     last_activity_at: Optional[datetime] = None
     url: Optional[str] = None
 
+    class Config:
+        validate_assignment = True
+        anystr_strip_whitespace = True
+
     @field_serializer("last_activity_at", when_used="unless-none")
     def serialize_last_activity_at(self, value: datetime) -> str:
         return value.isoformat()
@@ -42,3 +46,4 @@ class DatasetModel(ResourceModel):
     @field_serializer("workspace_id", when_used="unless-none")
     def serialize_workspace_id(self, value: UUID) -> str:
         return str(value)
+

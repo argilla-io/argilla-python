@@ -12,25 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk._models import ResourceModel
-
-import re
-from pydantic import field_validator
-
-__all__ = ["WorkspaceModel"]
-
-
-class WorkspaceModel(ResourceModel):
-    name: str
-
-    class Config:
-        validate_assignment = True
-        anystr_strip_whitespace = True
-
-    @field_validator("name")
-    @classmethod
-    def validate_name(cls, value):
-        """Validate the name of the workspace is url safe"""
-        if not re.match(r"^[a-zA-Z0-9_-]+$", value):
-            raise ValueError("Workspace name must be url safe")
-        return value
+from argilla_sdk._exceptions._settings import *
+from argilla_sdk._exceptions._api import *
+from argilla_sdk._exceptions._serialization import *

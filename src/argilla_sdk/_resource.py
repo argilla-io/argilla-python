@@ -1,6 +1,7 @@
 from typing import Any, TYPE_CHECKING, Optional
 from uuid import UUID
 
+from argilla_sdk._exceptions import ArgillaSerializeError
 from argilla_sdk._helpers._mixins import LoggingMixin, UUIDMixin
 
 if TYPE_CHECKING:
@@ -72,7 +73,13 @@ class Resource(LoggingMixin, UUIDMixin):
     ############################
 
     def serialize(self) -> dict[str, Any]:
-        return self._model.model_dump()
+        try:
+            return self._model.model_dump()
+        except Exception as e:
+            raise ArgillaSerializeError(f"Failed to serialize the resource. {e.__class__.__name__}") from e
 
     def serialize_json(self) -> str:
-        return self._model.model_dump_json()
+        try:
+            return self._model.model_dump_json()
+        except Exception as e:
+            raise ArgillaSerializeError(f"Failed to serialize the resource. {e.__class__.__name__}") from e

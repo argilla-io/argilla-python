@@ -60,7 +60,7 @@ class MetadataAPI(ResourceAPI[MetadataField]):
 
     @api_error_handler
     def get_metrics(self, metadata_field: MetadataField) -> MetadataField:
-        url = f"/api/v1/datasets/{metadata_field.id}/fields"
+        url = f"/api/v1/datasets/{metadata_field.id}/metadata-properties"
         response = self.http_client.get(url=url)
         response.raise_for_status()
         response_json = response.json()

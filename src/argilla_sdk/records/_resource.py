@@ -19,7 +19,7 @@ from uuid import uuid4, UUID
 
 from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel, VectorModel
 from argilla_sdk._resource import Resource
-from argilla_sdk.responses import Response
+from argilla_sdk.responses import Response, UserResponse
 from argilla_sdk.settings import QuestionType, VectorField, TextField
 from argilla_sdk.suggestions import Suggestion
 from argilla_sdk.vectors import Vector
@@ -130,16 +130,77 @@ class Record(Resource):
         return serialized_model
 
     @classmethod
-    def from_dict(cls, dataset: "Dataset", data: Dict) -> "Record":
+    def from_dict(
+        cls,
+        dataset: "Dataset",
+        data: dict,
+        mapping: Optional[Dict[str, str]] = None,
+        user_id: Optional[UUID] = None,
+    ) -> "Record":
         """Converts a record dictionary to a Record object.
         Args:
             dataset: The dataset object to which the record belongs.
             data: A dictionary representing the record.
+            mapping: A dictionary mapping source data keys to Argilla fields, questions, and ids.
+            user_id: The user id to associate with the record responses.
         Returns:
             A Record object.
         """
-        model = cls._dict_to_record_model(data=data, schema=dataset.schema)
-        return cls.from_model(model=model)
+
+        fields: Dict[str, str] = {}
+        responses: List[Response] = []
+        record_id: Optional[str] = None
+        suggestions: List[Suggestion] = []
+        vectors: List[Vector] = []
+
+        schema = dataset.schema
+
+        for attribute, value in data.items():
+            schema_item = schema.get(attribute)
+            attribute_type = None
+            # Map source data keys using the mapping
+            if mapping and attribute in mapping:
+                attribute_mapping = mapping.get(attribute)
+                attribute_mapping = attribute_mapping.split(".")
+                attribute = attribute_mapping[0]
+                schema_item = schema.get(attribute)
+                if len(attribute_mapping) > 1:
+                    attribute_type = attribute_mapping[1]
+            elif schema_item is mapping is None:
+                warnings.warn(
+                    message=f"""Record attribute {attribute} is not in the schema so skipping. 
+                        Define a mapping to map source data fields to Argilla Fields, Questions, and ids
+                        """
+                )
+                continue
+
+            # Skip if the attribute is an id or external_id
+            if attribute == "id":
+                record_id = value
+                continue
+
+            # Assign the value to question, field, or response based on schema item
+            if isinstance(schema_item, TextField):
+                fields[attribute] = value
+            elif isinstance(schema_item, QuestionType) and attribute_type == "response":
+                responses.append(Response(question_name=attribute, value=value, user_id=user_id))
+            elif isinstance(schema_item, QuestionType) and attribute_type != "response":
+                suggestions.append(Suggestion(question_name=attribute, value=value, question_id=schema_item.id))
+            elif isinstance(schema_item, VectorField):
+                vectors.append(Vector(name=attribute, values=value))
+            else:
+                warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
+                continue
+
+        return cls(
+            id=record_id,
+            fields=fields,
+            suggestions=suggestions,
+            responses=responses,
+            vectors=vectors,
+            external_id=data.get("external_id") or record_id,
+            dataset=dataset,
+        )
 
     def to_dict(self) -> Dict[str, Dict]:
         """Converts a Record object to a dictionary for export.
@@ -177,77 +238,14 @@ class Record(Resource):
             fields=model.fields,
             metadata=model.metadata,
             vectors=[Vector.from_model(model=vector) for vector in model.vectors],
-            responses=[Response.from_model(model=response) for response in model.responses],
+            # Responses and their models are not aligned 1-1.
+            responses=[
+                response
+                for response_model in model.responses
+                for response in Response.from_model_to_list(response_model)
+            ],
             suggestions=[Suggestion.from_model(model=suggestion) for suggestion in model.suggestions],
             dataset=dataset,
-        )
-
-    ############################
-    # Utility methods
-    ############################
-
-    @staticmethod
-    def _dict_to_record_model(
-        data: dict, schema: Dict[str, Any], mapping: Optional[Dict[str, str]] = None, user_id: Optional[UUID] = None
-    ) -> RecordModel:
-        """Converts a flat Record-like dictionary object to a RecordModel.
-        Args:
-            data: A dictionary representing the record with flat attributes.
-            schema: The schema of the dataset to which the record belongs.
-        Returns:
-            A RecordModel object.
-        """
-
-        fields: Dict[str, str] = {}
-        suggestions: List[SuggestionModel] = []
-        responses: List[ResponseModel] = []
-        record_id: Optional[str] = None
-        vectors: List[VectorModel] = []
-
-        for attribute, value in data.items():
-            schema_item = schema.get(attribute)
-            attribute_type = None
-            # Map source data keys using the mapping
-            if mapping and attribute in mapping:
-                attribute_mapping = mapping.get(attribute)
-                attribute_mapping = attribute_mapping.split(".")
-                attribute = attribute_mapping[0]
-                schema_item = schema.get(attribute)
-                if len(attribute_mapping) > 1:
-                    attribute_type = attribute_mapping[1]
-            elif schema_item is mapping is None:
-                warnings.warn(
-                    message=f"""Record attribute {attribute} is not in the schema so skipping. 
-                    Define a mapping to map source data fields to Argilla Fields, Questions, and ids
-                    """
-                )
-                continue
-
-            # Skip if the attribute is an id or external_id
-            if attribute == "id":
-                record_id = value
-                continue
-
-            # Assign the value to question, field, or response based on schema item
-            if isinstance(schema_item, TextField):
-                fields[attribute] = value
-            elif isinstance(schema_item, QuestionType) and attribute_type == "response":
-                responses.append(ResponseModel(values={attribute: {"value": value}}, user_id=user_id))
-            elif isinstance(schema_item, QuestionType) and attribute_type != "response":
-                suggestions.append(SuggestionModel(value=value, question_id=schema_item.id, question_name=attribute))
-            elif isinstance(schema_item, VectorField):
-                vectors.append(VectorModel(name=attribute, vector_values=value))
-            else:
-                warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
-                continue
-
-        return RecordModel(
-            id=record_id,
-            fields=fields,
-            suggestions=suggestions,
-            responses=responses,
-            vectors=vectors,
-            external_id=data.get("external_id") or record_id,
         )
 
 
@@ -286,16 +284,23 @@ class RecordResponses:
     def __init__(self, responses: List[Response], record: Record) -> None:
         self.__responses = responses or []
         self.record = record
-        dataset = record.dataset
         self.__question_map = defaultdict(list)
         for response in self.__responses:
-            if dataset is None:
-                continue
+            # TODO: Validate questions based on record.dataset settings
             self.__question_map[response.question_name].append(response)
 
     @property
     def models(self) -> List[ResponseModel]:
-        return [response._model for response in self.__responses]
+        """Returns a list of ResponseModel objects."""
+
+        responses_by_user_id = defaultdict(list)
+        for response in self.__responses:
+            responses_by_user_id[response.user_id].append(response)
+
+        return [
+            UserResponse(user_id=user_id, answers=responses)._model
+            for user_id, responses in responses_by_user_id.items()
+        ]
 
     def __iter__(self):
         return iter(self.__responses)
@@ -313,9 +318,7 @@ class RecordResponses:
         """
         response_dict = defaultdict(list)
         for response in self.__responses:
-            response_dict[response.question_name].append(
-                {"value": response.value, "user_id": response.user_id, "status": response.status}
-            )
+            response_dict[response.question_name].append({"value": response.value, "user_id": response.user_id})
         return response_dict
 
 
@@ -332,8 +335,11 @@ class RecordSuggestions:
             if suggestion.question_name is None and dataset is None:
                 continue
             if suggestion.question_name is None:
+                # TODO: Add question name validations
                 question_name = dataset.settings.question_by_id(suggestion.question_id).name
                 suggestion.question_name = question_name
+            else:
+                question_name = suggestion.question_name
             setattr(self, question_name, suggestion.value)
 
     @property
@@ -376,7 +382,7 @@ class RecordVectors:
     def models(self) -> List[VectorModel]:
         return [vector._model for vector in self.__vectors]
 
-    def to_dict(self) -> Dict[str, List[str]]:
+    def to_dict(self) -> Dict[str, List[float]]:
         """Converts the vectors to a dictionary.
         Returns:
             A dictionary of vectors.

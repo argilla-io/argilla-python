@@ -28,6 +28,7 @@ class WorkspaceModel(ResourceModel):
         anystr_strip_whitespace = True
 
     @field_validator("name")
+    @classmethod
     def validate_name(cls, value):
         """Validate the name of the workspace is url safe"""
         if not re.match(r"^[a-zA-Z0-9_-]+$", value):

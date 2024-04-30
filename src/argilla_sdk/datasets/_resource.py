@@ -28,7 +28,7 @@ class Dataset(Resource):
     """Class for interacting with Argilla Datasets"""
 
     name: str
-    id: UUID
+    id: Optional[UUID]
     status: Literal["draft", "ready"]
 
     _api: "DatasetsAPI"

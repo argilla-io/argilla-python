@@ -58,8 +58,7 @@ class UsersAPI(ResourceAPI[UserModel]):
 
     @api_error_handler
     def delete(self, user_id: UUID) -> None:
-        response = self.http_client.delete(url=f"/api/users/{user_id}")
-        response.raise_for_status()
+        self.http_client.delete(url=f"/api/users/{user_id}").raise_for_status()
         self.log(message=f"Deleted user {id}")
 
     ####################

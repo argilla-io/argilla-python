@@ -89,6 +89,7 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
         except Exception as e:
             raise ValueError("Invalid response type: missing 'settings.type' in response") from e
         if field_type == "text":
+            # TODO: Avoid apply validations here (check_fields=False?)
             return TextFieldModel(**response_json)
         else:
             # TODO: Add more field types

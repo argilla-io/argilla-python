@@ -18,6 +18,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, field_serializer, field_validator, model_validator
 
+from argilla_sdk._exceptions import MetadataError
 
 class MetadataPropertyType(str, Enum):
     terms = "terms"
@@ -37,11 +38,11 @@ class TermsMetadataPropertySettings(BaseMetadataPropertySettings):
     @classmethod
     def __validate_values(cls, values):
         if values is None:
-            raise ValueError("Values must be provided for a terms metadata field.")
+            raise MetadataError("Values must be provided for a terms metadata field.")
         elif not isinstance(values, list):
-            raise ValueError(f"Values must be a list, got {type(values)}")
+            raise MetadataError(f"Values must be a list, got {type(values)}")
         elif not all(isinstance(value, str) for value in values):
-            raise ValueError("All values must be strings.")
+            raise MetadataError("All values must be strings.")
         return values
 
 
@@ -57,7 +58,7 @@ class NumericMetadataPropertySettings(BaseMetadataPropertySettings):
 
         if min_value is not None and max_value is not None:
             if min_value >= max_value:
-                raise ValueError("min must be less than max.")
+                raise MetadataError("min must be less than max.")
         return values
 
 
@@ -71,7 +72,7 @@ class IntegerMetadataPropertySettings(NumericMetadataPropertySettings):
         max_value = values.get("max")
 
         if not all(isinstance(value, int) for value in [min_value, max_value]):
-            raise ValueError("min and max must be integers.")
+            raise MetadataError("min and max must be integers.")
         return values
 
 
@@ -89,7 +90,7 @@ MetadataPropertySettings = Annotated[
 ]
 
 
-class MetadataField(BaseModel):
+class MetadataFieldModel(BaseModel):
     """The schema definition of a metadata field in an Argilla dataset."""
 
     id: Optional[UUID] = None

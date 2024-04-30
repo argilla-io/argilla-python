@@ -13,7 +13,7 @@ class RecordModel(ResourceModel):
     """Schema for the records of a `Dataset`"""
 
     fields: Dict[str, Union[str, None]]
-    metadata: Optional[Union[List[MetadataModel], Dict[str, Union[str, float, int]]]] = Field(default_factory=dict)
+    metadata: Optional[Union[List[MetadataModel], Dict[str, Union[str, List[str], float, int]]]] = Field(default_factory=dict)
     vectors: Optional[List[VectorModel]] = Field(default_factory=list)
     responses: Optional[List[ResponseModel]] = Field(default_factory=list)
     suggestions: Optional[Union[Tuple[SuggestionModel], List[SuggestionModel]]] = Field(default_factory=tuple)
@@ -36,8 +36,8 @@ class RecordModel(ResourceModel):
 
     @field_validator("metadata", mode="before")
     @classmethod
-    def validate_metadata(cls, metadata: List[MetadataModel]) -> List[MetadataModel]:
-        """Ensure metadata is a list of MetadataModel instances when provided as a list of dictionaries."""
+    def validate_metadata(cls, metadata: Union[List[MetadataModel],dict]) -> List[MetadataModel]:
+        """Ensure metadata is a list of MetadataModel instances when provided as a dict."""
         if not metadata:
             return []
         if isinstance(metadata, dict):

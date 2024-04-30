@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Annotated, Union
+from typing import Annotated, Union, List
 
 from pydantic import BaseModel
 
@@ -21,4 +21,7 @@ class MetadataModel(BaseModel):
     """Schema for the metadata of a `Dataset`"""
 
     name: Annotated[str, "The name of the metadata field or key in the metadata dictionary"]
-    value: Annotated[Union[str, float, int], "The value of the metadata field dictionary"]
+    value: Annotated[Union[str, List[str], float, int], "The value of the metadata field dictionary"]
+
+
+MetadataValue = Annotated[Union[str, List[str], float, int, None], "The value of the metadata field dictionary"]

@@ -46,10 +46,10 @@ from argilla_sdk._models._settings._questions import (
     SpanQuestionModel,
     SpanQuestionSettings,
     TextQuestionModel,
-    TextQuestionSettings
+    TextQuestionSettings,
 )
 from argilla_sdk._models._settings._metadata import (
-    MetadataField,
+    MetadataFieldModel,
     MetadataPropertyType,
     BaseMetadataPropertySettings,
     TermsMetadataPropertySettings,
@@ -58,4 +58,4 @@ from argilla_sdk._models._settings._metadata import (
     IntegerMetadataPropertySettings,
 )
 from argilla_sdk._models._vector import VectorModel
-from argilla_sdk._models._metadata import MetadataModel
+from argilla_sdk._models._metadata import MetadataModel, MetadataValue

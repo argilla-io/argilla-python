@@ -17,7 +17,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
-from argilla_sdk._models import MetadataModel, RecordModel, ResponseModel, SuggestionModel, VectorModel, MetadataValue
+from argilla_sdk._models import MetadataModel, RecordModel, UserResponseModel, SuggestionModel, VectorModel, MetadataValue
 from argilla_sdk._resource import Resource
 from argilla_sdk.responses import Response, UserResponse
 from argilla_sdk.settings import QuestionType, VectorField, TextField, MetadataType
@@ -247,7 +247,7 @@ class Record(Resource):
             responses=[
                 response
                 for response_model in model.responses
-                for response in Response.from_model_to_list(response_model)
+                for response in Response.user_response_model_as_response_list(response_model)
             ],
             suggestions=[Suggestion.from_model(model=suggestion) for suggestion in model.suggestions],
             dataset=dataset,
@@ -295,7 +295,7 @@ class RecordResponses:
             self.__question_map[response.question_name].append(response)
 
     @property
-    def models(self) -> List[ResponseModel]:
+    def models(self) -> List[UserResponseModel]:
         """Returns a list of ResponseModel objects."""
 
         responses_by_user_id = defaultdict(list)

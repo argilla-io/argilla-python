@@ -15,7 +15,7 @@
 from typing import Any, TYPE_CHECKING, List, Dict, Optional
 from uuid import UUID
 
-from argilla_sdk._models import ResponseModel, ResponseStatus
+from argilla_sdk._models import UserResponseModel, ResponseStatus
 from argilla_sdk._resource import Resource
 
 if TYPE_CHECKING:
@@ -52,8 +52,8 @@ class Response:
     #####################
 
     @classmethod
-    def from_model_to_list(cls, model: ResponseModel) -> List["Response"]:
-        """Creates a list of Responses from a ResponseModel"""
+    def user_response_model_as_response_list(cls, model: UserResponseModel) -> List["Response"]:
+        """Creates a list of Responses from a UserResponseModel"""
         return [
             cls(question_name=question_name, value=value["value"], user_id=model.user_id)
             for question_name, value in model.values.items()
@@ -67,7 +67,7 @@ class UserResponse(Resource):
 
     """
 
-    _model: ResponseModel
+    _model: UserResponseModel
 
     def __init__(
         self,
@@ -80,7 +80,7 @@ class UserResponse(Resource):
 
         super().__init__(client=client)
 
-        self._model = ResponseModel(
+        self._model = UserResponseModel(
             values=self.__create_response_values(answers),
             status=status,
             user_id=user_id,
@@ -109,14 +109,14 @@ class UserResponse(Resource):
     @property
     def answers(self) -> List[Response]:
         """Returns the list of responses"""
-        return Response.from_model_to_list(self._model)
+        return Response.user_response_model_as_response_list(self._model)
 
     @classmethod
-    def from_model(cls, model: ResponseModel) -> "UserResponse":
+    def from_model(cls, model: UserResponseModel) -> "UserResponse":
         """Creates a UserResponse from a ResponseModel"""
         return cls(
             model.user_id,
-            answers=Response.from_model_to_list(model),
+            answers=Response.user_response_model_as_response_list(model),
             status=model.status,
         )
 

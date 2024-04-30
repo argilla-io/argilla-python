@@ -12,8 +12,8 @@ class ResponseStatus(str, Enum):
     discarded = "discarded"
 
 
-class ResponseModel(BaseModel):
-    """Schema for the `FeedbackRecord` response."""
+class UserResponseModel(BaseModel):
+    """Schema for the `FeedbackRecord` user response."""
 
     values: Union[Dict[str, Dict[str, Any]], None]
     status: ResponseStatus

@@ -13,7 +13,7 @@ class RecordModel(ResourceModel):
     """Schema for the records of a `Dataset`"""
 
     fields: Dict[str, Union[str, None]]
-    metadata: Optional[Union[List[MetadataModel], Dict[str, Union[str, List[str], float, int]]]] = Field(default_factory=dict)
+    metadata: Optional[Union[List[MetadataModel], Dict[str, MetadataValue]]] = Field(default_factory=dict)
     vectors: Optional[List[VectorModel]] = Field(default_factory=list)
     responses: Optional[List[ResponseModel]] = Field(default_factory=list)
     suggestions: Optional[Union[Tuple[SuggestionModel], List[SuggestionModel]]] = Field(default_factory=tuple)

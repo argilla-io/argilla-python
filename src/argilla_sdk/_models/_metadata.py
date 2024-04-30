@@ -12,7 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk.settings._question import *
-from argilla_sdk.settings._resource import *
-from argilla_sdk.settings._field import *
-from argilla_sdk.settings._metadata import *
+from typing import Annotated, Union, List
+
+from pydantic import BaseModel
+
+
+MetadataValue = Annotated[Union[str, List[str], float, int, None], "The value of the metadata field dictionary"]
+
+class MetadataModel(BaseModel):
+    """Schema for the metadata of a `Dataset`"""
+
+    name: Annotated[str, "The name of the metadata field or key in the metadata dictionary"]
+    value: MetadataValue
+

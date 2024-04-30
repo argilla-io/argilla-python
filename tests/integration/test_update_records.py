@@ -10,7 +10,7 @@ from argilla_sdk import Argilla
 
 @pytest.fixture
 def client() -> rg.Argilla:
-    client = rg.Argilla(api_url="http://localhost:6900", api_key="owner.apikey")
+    client = rg.Argilla(api_url="http://localhost:6900")
     return client
 
 

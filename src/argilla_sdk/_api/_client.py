@@ -21,6 +21,7 @@ import httpx
 from argilla_sdk._api import HTTPClientConfig, create_http_client
 from argilla_sdk._api._datasets import DatasetsAPI
 from argilla_sdk._api._fields import FieldsAPI
+from argilla_sdk._api._metadata import MetadataAPI
 from argilla_sdk._api._questions import QuestionsAPI
 from argilla_sdk._api._records import RecordsAPI
 from argilla_sdk._api._users import UsersAPI
@@ -49,6 +50,7 @@ class ArgillaAPI:
         self.__questions = QuestionsAPI(http_client=self.http_client)
         self.__records = RecordsAPI(http_client=self.http_client)
         self.__vectors = VectorsAPI(http_client=self.http_client)
+        self.__metadata = MetadataAPI(http_client=self.http_client)
 
     @property
     def workspaces(self) -> "WorkspacesAPI":
@@ -77,6 +79,10 @@ class ArgillaAPI:
     @property
     def vectors(self) -> "VectorsAPI":
         return self.__vectors
+
+    @property
+    def metadata(self) -> "MetadataAPI":
+        return self.__metadata
 
 
 class APIClient:

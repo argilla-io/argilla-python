@@ -16,7 +16,6 @@ from typing import List, Dict
 from uuid import UUID
 
 import httpx
-
 from argilla_sdk._api._base import ResourceAPI
 from argilla_sdk._exceptions import api_error_handler
 from argilla_sdk._models import (

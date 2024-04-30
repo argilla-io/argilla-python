@@ -17,7 +17,7 @@ from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
-from argilla_sdk._models import MetadataModel, RecordModel, ResponseModel, SuggestionModel, VectorModel
+from argilla_sdk._models import MetadataModel, RecordModel, ResponseModel, SuggestionModel, VectorModel, MetadataValue
 from argilla_sdk._resource import Resource
 from argilla_sdk.responses import Response
 from argilla_sdk.settings import QuestionType, VectorField, TextField, MetadataType
@@ -42,7 +42,7 @@ class Record(Resource):
     def __init__(
         self,
         fields: Dict[str, Union[str, None]] = None,
-        metadata: Optional[Dict[str, Union[str, float, int]]] = None,
+        metadata: Optional[Dict[str, MetadataValue]] = None,
         vectors: Optional[List[Vector]] = None,
         responses: Optional[List[Response]] = None,
         suggestions: Optional[Union[Tuple[Suggestion], List[Suggestion]]] = None,
@@ -392,10 +392,10 @@ class RecordVectors:
 class RecordMetadata:
     """This is a container class for the metadata of a Record."""
 
-    __metadata_map: Dict[str, Union[str, float, int]]
+    __metadata_map: Dict[str, MetadataValue]
     __metadata_models: List[MetadataModel]
 
-    def __init__(self, metadata: Optional[Dict[str, Union[str, float, int]]] = None) -> None:
+    def __init__(self, metadata: Optional[Dict[str, MetadataValue]] = None) -> None:
         self.__metadata_map = metadata or {}
         for key, value in self.__metadata_map.items():
             setattr(self, key, value)
@@ -411,5 +411,5 @@ class RecordMetadata:
     def __getitem__(self, key: str):
         return self.__metadata_map.get(key)
 
-    def to_dict(self) -> Dict[str, Union[str, float, int]]:
+    def to_dict(self) -> Dict[str, MetadataValue]:
         return {meta.name: meta.value for meta in self.__metadata}

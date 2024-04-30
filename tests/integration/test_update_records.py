@@ -1,11 +1,11 @@
 import random
 import uuid
 from datetime import datetime
+from string import ascii_lowercase
 
 import pytest
 
 import argilla_sdk as rg
-from argilla_sdk import Argilla
 
 
 @pytest.fixture
@@ -14,9 +14,29 @@ def client() -> rg.Argilla:
     return client
 
 
-def test_update_records_seperately(client):
+@pytest.fixture
+def dataset(client: rg.Argilla) -> rg.Dataset:
     workspace_id = client.workspaces[0].id
-    mock_dataset_name = f"test_add_records{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    mock_dataset_name = "".join(random.choices(ascii_lowercase, k=16))
+    settings = rg.Settings(
+        fields=[
+            rg.TextField(name="text"),
+        ],
+        questions=[
+            rg.TextQuestion(name="label", use_markdown=False),
+        ],
+    )
+    dataset = rg.Dataset(
+        name=mock_dataset_name,
+        workspace_id=workspace_id,
+        settings=settings,
+        client=client,
+    )
+    dataset.publish()
+    return dataset
+
+
+def test_update_records_separately(client: rg.Argilla, dataset: rg.Dataset):
     mock_data = [
         {
             "text": "Hello World, how are you?",
@@ -42,26 +62,11 @@ def test_update_records_seperately(client):
         }
         for r in mock_data
     ]
-    settings = rg.Settings(
-        fields=[
-            rg.TextField(name="text"),
-        ],
-        questions=[
-            rg.TextQuestion(name="label", use_markdown=False),
-        ],
-    )
-    dataset = rg.Dataset(
-        name=mock_dataset_name,
-        workspace_id=workspace_id,
-        settings=settings,
-        client=client,
-    )
-    dataset.publish()
+
     dataset.records.add(records=mock_data)
     dataset.records.update(records=updated_mock_data)
     dataset_records = list(dataset.records)
 
-    assert dataset.name == mock_dataset_name
     assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
     assert dataset_records[1].external_id == str(mock_data[1]["external_id"])
     assert dataset_records[2].external_id == str(mock_data[2]["external_id"])
@@ -69,9 +74,7 @@ def test_update_records_seperately(client):
         assert record.suggestions[0].value == "positive"
 
 
-def test_update_records_partially(client):
-    workspace_id = client.workspaces[0].id
-    mock_dataset_name = f"test_add_records{datetime.now().strftime('%Y%m%d%H%M%S')}"
+def test_update_records_partially(client: rg.Argilla, dataset: rg.Dataset):
     mock_data = [
         {
             "text": "Hello World, how are you?",
@@ -91,23 +94,7 @@ def test_update_records_partially(client):
     ]
     updated_mock_data = mock_data.copy()
     updated_mock_data[0]["label"] = "positive"
-    settings = rg.Settings(
-        fields=[
-            rg.TextField(name="text"),
-        ],
-        questions=[
-            rg.TextQuestion(name="label", use_markdown=False),
-        ],
-    )
-    dataset = rg.Dataset(
-        name=mock_dataset_name,
-        workspace_id=workspace_id,
-        settings=settings,
-        client=client,
-    )
-    dataset.publish()
     dataset.records.add(records=mock_data)
     dataset.records.update(records=updated_mock_data)
     for i, record in enumerate(dataset.records(with_suggestions=True)):
         assert record.suggestions[0].value == updated_mock_data[i]["label"]
-    

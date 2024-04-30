@@ -4,7 +4,7 @@ from pydantic import Field, field_serializer, field_validator
 
 from argilla_sdk._models._metadata import MetadataModel, MetadataValue
 from argilla_sdk._models._resource import ResourceModel
-from argilla_sdk._models._response import ResponseModel
+from argilla_sdk._models._response import UserResponseModel
 from argilla_sdk._models._suggestion import SuggestionModel
 from argilla_sdk._models._vector import VectorModel
 
@@ -15,7 +15,7 @@ class RecordModel(ResourceModel):
     fields: Dict[str, Union[str, None]]
     metadata: Optional[Union[List[MetadataModel], Dict[str, MetadataValue]]] = Field(default_factory=dict)
     vectors: Optional[List[VectorModel]] = Field(default_factory=list)
-    responses: Optional[List[ResponseModel]] = Field(default_factory=list)
+    responses: Optional[List[UserResponseModel]] = Field(default_factory=list)
     suggestions: Optional[Union[Tuple[SuggestionModel], List[SuggestionModel]]] = Field(default_factory=tuple)
 
     external_id: Optional[Any] = None

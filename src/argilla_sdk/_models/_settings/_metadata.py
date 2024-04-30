@@ -38,11 +38,11 @@ class TermsMetadataPropertySettings(BaseMetadataPropertySettings):
     @classmethod
     def __validate_values(cls, values):
         if values is None:
-            raise MetadataError("Values must be provided for a terms metadata field.")
+            raise ValueError("values must be provided for a terms metadata field.")
         elif not isinstance(values, list):
-            raise MetadataError(f"Values must be a list, got {type(values)}")
+            raise ValueError(f"values must be a list, got {type(values)}")
         elif not all(isinstance(value, str) for value in values):
-            raise MetadataError("All values must be strings.")
+            raise ValueError("All values must be strings for terms metadata.")
         return values
 
 

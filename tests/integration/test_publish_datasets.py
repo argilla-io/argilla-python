@@ -14,7 +14,17 @@
 
 import pytest
 
-from argilla_sdk import Argilla, Settings, TextField, TextQuestion, SpanQuestion
+from argilla_sdk import (
+    Argilla,
+    Settings,
+    TextField,
+    TextQuestion,
+    SpanQuestion,
+    LabelQuestion,
+    MultiLabelQuestion,
+    RatingQuestion,
+    RankingQuestion,
+)
 
 
 @pytest.fixture
@@ -36,9 +46,15 @@ def test_publish_dataset(client: "Argilla"):
     assert not ds.exists(), "The dataset was not deleted"
 
     ds.settings = Settings(
+        guidelines="This is a test dataset",
+        allow_extra_metadata=True,
         fields=[TextField(name="text-field")],
         questions=[
             TextQuestion(name="text-question"),
+            RatingQuestion(name="rating-question", values=[1, 2, 3, 4, 5]),
+            RankingQuestion(name="ranking-question", values=["rank1", "rank2", "rank3"]),
+            LabelQuestion(name="label-question", labels=["A", "B", "C"]),
+            MultiLabelQuestion(name="multi-label-question", labels=["A", "B", "C"]),
             SpanQuestion(name="span-question", field="text-field", labels=["label1", "label2"]),
         ],
     )

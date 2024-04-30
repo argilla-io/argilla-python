@@ -8,7 +8,7 @@ from argilla_sdk import Argilla, Dataset, Settings, TextField, TextQuestion, Wor
 
 @pytest.fixture
 def client() -> Argilla:
-    return Argilla(api_url="http://localhost:6900", api_key="owner.apikey")
+    return Argilla(api_url="http://localhost:6900")
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 from pydantic import Field, field_serializer, field_validator
 
-from argilla_sdk._models._metadata import MetadataModel
+from argilla_sdk._models._metadata import MetadataModel, MetadataValue
 from argilla_sdk._models._resource import ResourceModel
 from argilla_sdk._models._response import ResponseModel
 from argilla_sdk._models._suggestion import SuggestionModel

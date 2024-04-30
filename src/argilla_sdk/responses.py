@@ -51,14 +51,6 @@ class Response:
     # Private Interface #
     #####################
 
-    @classmethod
-    def user_response_model_as_response_list(cls, model: UserResponseModel) -> List["Response"]:
-        """Creates a list of Responses from a UserResponseModel"""
-        return [
-            cls(question_name=question_name, value=value["value"], user_id=model.user_id)
-            for question_name, value in model.values.items()
-        ]
-
 
 class UserResponse(Resource):
     """
@@ -109,14 +101,14 @@ class UserResponse(Resource):
     @property
     def answers(self) -> List[Response]:
         """Returns the list of responses"""
-        return Response.user_response_model_as_response_list(self._model)
+        return self.__model_as_response_list(self._model)
 
     @classmethod
     def from_model(cls, model: UserResponseModel) -> "UserResponse":
         """Creates a UserResponse from a ResponseModel"""
         return cls(
             model.user_id,
-            answers=Response.user_response_model_as_response_list(model),
+            answers=cls.__model_as_response_list(model),
             status=model.status,
         )
 
@@ -127,3 +119,11 @@ class UserResponse(Resource):
     @staticmethod
     def __create_response_values(answers: List[Response]) -> Dict[str, Dict[str, str]]:
         return {answer.question_name: {"value": answer.value} for answer in answers}
+
+    @staticmethod
+    def __model_as_response_list(model: UserResponseModel) -> List[Response]:
+        """Creates a list of Responses from a UserResponseModel"""
+        return [
+            Response(question_name=question_name, value=value["value"], user_id=model.user_id)
+            for question_name, value in model.values.items()
+        ]

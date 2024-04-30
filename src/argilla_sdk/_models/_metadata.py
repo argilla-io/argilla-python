@@ -17,11 +17,11 @@ from typing import Annotated, Union, List
 from pydantic import BaseModel
 
 
+MetadataValue = Annotated[Union[str, List[str], float, int, None], "The value of the metadata field dictionary"]
+
 class MetadataModel(BaseModel):
     """Schema for the metadata of a `Dataset`"""
 
     name: Annotated[str, "The name of the metadata field or key in the metadata dictionary"]
-    value: Annotated[Union[str, List[str], float, int], "The value of the metadata field dictionary"]
+    value: MetadataValue
 
-
-MetadataValue = Annotated[Union[str, List[str], float, int, None], "The value of the metadata field dictionary"]

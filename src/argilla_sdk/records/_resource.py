@@ -14,13 +14,13 @@
 
 import warnings
 from collections import defaultdict
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Tuple
-from uuid import uuid4, UUID
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from uuid import UUID, uuid4
 
-from argilla_sdk._models import RecordModel, SuggestionModel, ResponseModel, VectorModel
+from argilla_sdk._models import MetadataModel, RecordModel, ResponseModel, SuggestionModel, VectorModel, MetadataValue
 from argilla_sdk._resource import Resource
 from argilla_sdk.responses import Response, UserResponse
-from argilla_sdk.settings import QuestionType, VectorField, TextField
+from argilla_sdk.settings import QuestionType, VectorField, TextField, MetadataType
 from argilla_sdk.suggestions import Suggestion
 from argilla_sdk.vectors import Vector
 
@@ -42,7 +42,7 @@ class Record(Resource):
     def __init__(
         self,
         fields: Dict[str, Union[str, None]] = None,
-        metadata: Optional[Dict[str, Any]] = None,
+        metadata: Optional[Dict[str, MetadataValue]] = None,
         vectors: Optional[List[Vector]] = None,
         responses: Optional[List[Response]] = None,
         suggestions: Optional[Union[Tuple[Suggestion], List[Suggestion]]] = None,
@@ -67,16 +67,17 @@ class Record(Resource):
         self.dataset = dataset
         self._model = RecordModel(
             fields=fields,
-            metadata=metadata,
             external_id=external_id or uuid4(),
             id=id or uuid4(),
         )
         self.__vectors = RecordVectors(vectors=vectors, record=self)
         self.__responses = RecordResponses(responses=responses, record=self)
         self.__suggestions = RecordSuggestions(suggestions=suggestions, record=self)
+        self.__metadata = RecordMetadata(metadata=metadata)
         self._model.responses = self.__responses.models
         self._model.suggestions = self.__suggestions.models
         self._model.vectors = self.__vectors.models
+        self._model.metadata = self.__metadata.models
         # TODO: This should be done in the RecordModel class as above
         self.__fields = RecordFields(fields=self._model.fields)
 
@@ -109,8 +110,8 @@ class Record(Resource):
         return self.__suggestions
 
     @property
-    def metadata(self) -> Dict[str, Any]:
-        return self._model.metadata or {}
+    def metadata(self) -> "RecordMetadata":
+        return self.__metadata
 
     @property
     def vectors(self) -> "RecordVectors":
@@ -152,6 +153,7 @@ class Record(Resource):
         record_id: Optional[str] = None
         suggestions: List[Suggestion] = []
         vectors: List[Vector] = []
+        metadata: Dict[str, MetadataValue] = {}
 
         schema = dataset.schema
 
@@ -188,6 +190,8 @@ class Record(Resource):
                 suggestions.append(Suggestion(question_name=attribute, value=value, question_id=schema_item.id))
             elif isinstance(schema_item, VectorField):
                 vectors.append(Vector(name=attribute, values=value))
+            elif isinstance(schema_item, MetadataType):
+                metadata[attribute] = value
             else:
                 warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
                 continue
@@ -198,6 +202,7 @@ class Record(Resource):
             suggestions=suggestions,
             responses=responses,
             vectors=vectors,
+            metadata=metadata,
             external_id=data.get("external_id") or record_id,
             dataset=dataset,
         )
@@ -236,7 +241,7 @@ class Record(Resource):
             id=model.id,
             external_id=model.external_id,
             fields=model.fields,
-            metadata=model.metadata,
+            metadata={meta.name: meta.value for meta in model.metadata},
             vectors=[Vector.from_model(model=vector) for vector in model.vectors],
             # Responses and their models are not aligned 1-1.
             responses=[
@@ -388,3 +393,29 @@ class RecordVectors:
             A dictionary of vectors.
         """
         return {vector.name: vector.values for vector in self.__vectors}
+
+
+class RecordMetadata:
+    """This is a container class for the metadata of a Record."""
+
+    __metadata_map: Dict[str, MetadataValue]
+    __metadata_models: List[MetadataModel]
+
+    def __init__(self, metadata: Optional[Dict[str, MetadataValue]] = None) -> None:
+        self.__metadata_map = metadata or {}
+        for key, value in self.__metadata_map.items():
+            setattr(self, key, value)
+        self.__metadata_models = [MetadataModel(name=key, value=value) for key, value in self.__metadata_map.items()]
+
+    @property
+    def models(self) -> List[MetadataModel]:
+        return self.__metadata_models
+
+    def __iter__(self):
+        return iter(self.__metadata_models)
+
+    def __getitem__(self, key: str):
+        return self.__metadata_map.get(key)
+
+    def to_dict(self) -> Dict[str, MetadataValue]:
+        return {meta.name: meta.value for meta in self.__metadata_models}

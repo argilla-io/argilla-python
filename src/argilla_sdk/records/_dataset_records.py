@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Iterable
 from uuid import UUID
 
 from argilla_sdk._api import RecordsAPI
@@ -119,7 +119,7 @@ class DatasetRecordsIteratorWithExportSupport(DatasetRecordsIterator, GenericExp
         return self._export_to_list(records=records, flatten=flatten)
 
 
-class DatasetRecords(Resource):
+class DatasetRecords(Resource, Iterable[Record]):
     """
     This class is used to work with records from a dataset.
 

@@ -6,7 +6,7 @@ from argilla_sdk._models import (
     TermsMetadataPropertySettings,
     FloatMetadataPropertySettings,
     IntegerMetadataPropertySettings,
-    MetadataField,
+    MetadataFieldModel,
 )
 from argilla_sdk.settings._common import SettingsPropertyBase
 
@@ -20,7 +20,7 @@ __all__ = [
 
 
 class MetadataPropertyBase(SettingsPropertyBase):
-    _model: MetadataField
+    _model: MetadataFieldModel
 
 
 class TermsMetadataProperty(MetadataPropertyBase):
@@ -49,11 +49,19 @@ class TermsMetadataProperty(MetadataPropertyBase):
         except ValueError as e:
             raise MetadataError(f"Error defining metadata settings for {name}") from e
 
-        self._model = MetadataField(
+        self._model = MetadataFieldModel(
             name=name,
             type=MetadataPropertyType.terms,
             title=title,
             settings=settings,
+        )
+
+    @classmethod
+    def from_model(cls, model: MetadataFieldModel) -> "TermsMetadataProperty":
+        return TermsMetadataProperty(
+            name=model.name,
+            options=model.settings.values,
+            title=model.title,
         )
 
 
@@ -86,11 +94,20 @@ class FloatMetadataProperty(MetadataPropertyBase):
         except ValueError as e:
             raise MetadataError(f"Error defining metadata settings for {name}") from e
 
-        self._model = MetadataField(
+        self._model = MetadataFieldModel(
             name=name,
             type=MetadataPropertyType.float,
             title=title,
             settings=settings,
+        )
+
+    @classmethod
+    def from_model(cls, model: MetadataFieldModel) -> "FloatMetadataProperty":
+        return FloatMetadataProperty(
+            name=model.name,
+            min=model.settings.min,
+            max=model.settings.max,
+            title=model.title,
         )
 
 
@@ -123,50 +140,46 @@ class IntegerMetadataProperty(MetadataPropertyBase):
         except ValueError as e:
             raise MetadataError(f"Error defining metadata settings for {name}") from e
 
-        self._model = MetadataField(
+        self._model = MetadataFieldModel(
             name=name,
             type=MetadataPropertyType.integer,
             title=title,
             settings=settings,
         )
 
+    @classmethod
+    def from_model(cls, model: MetadataFieldModel) -> "IntegerMetadataProperty":
+        return IntegerMetadataProperty(
+            name=model.name,
+            min=model.settings.min,
+            max=model.settings.max,
+            title=model.title,
+        )
+
 
 MetadataType = Union[TermsMetadataProperty, FloatMetadataProperty, IntegerMetadataProperty]
 
 
-class _MetadataField:
+class MetadataField:
     """Internal utility class for creating metadata fields from metadata models
     returned by the API.
     """
 
     @classmethod
-    def from_model(cls, model: MetadataField) -> MetadataType:
+    def from_model(cls, model: MetadataFieldModel) -> MetadataType:
         """Create a metadata field from a metadata model. Switch class based on the metadata type.
         Args:
             model (MetadataField): The metadata model
         Returns:
             MetadataType: The metadata field of a given type.
         """
-        metadata_type = model.settings.type
-        if metadata_type == MetadataPropertyType.terms:
-            return TermsMetadataProperty(
-                name=model.name,
-                options=model.settings.values,
-                title=model.title,
-            )
-        elif metadata_type == MetadataPropertyType.float:
-            return FloatMetadataProperty(
-                name=model.name,
-                min=model.settings.min,
-                max=model.settings.max,
-                title=model.title,
-            )
-        elif metadata_type == MetadataPropertyType.integer:
-            return IntegerMetadataProperty(
-                name=model.name,
-                min=model.settings.min,
-                max=model.settings.max,
-                title=model.title,
-            )
-        else:
-            raise MetadataError(f"Unknown metadata property type: {metadata_type}")
+        switch = {
+            MetadataPropertyType.terms: TermsMetadataProperty,
+            MetadataPropertyType.float: FloatMetadataProperty,
+            MetadataPropertyType.integer: IntegerMetadataProperty,
+        }
+        metadata_type = model.type
+        try:
+            return switch[metadata_type].from_model(model)
+        except KeyError as e:
+            raise MetadataError(f"Unknown metadata property type: {metadata_type}") from e

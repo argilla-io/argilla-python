@@ -1,8 +1,8 @@
 from typing import Optional, Union
 
-from argilla_sdk._models import FieldModel, FieldSettings, MetadataField, TextFieldModel, VectorFieldModel
+from argilla_sdk._models import FieldModel, FieldSettings, MetadataFieldModel, TextFieldModel, VectorFieldModel
 from argilla_sdk.settings._common import SettingsPropertyBase
-from argilla_sdk.settings._metadata import _MetadataField
+from argilla_sdk.settings._metadata import MetadataField
 
 __all__ = ["TextField", "FieldType", "VectorField"]
 
@@ -117,7 +117,7 @@ class VectorField(SettingsPropertyBase):
         return self._model.name
 
 
-FieldType = Union[TextField, VectorField, _MetadataField]
+FieldType = Union[TextField, VectorField, MetadataField]
 
 
 def field_from_model(model: FieldModel) -> FieldType:
@@ -126,7 +126,7 @@ def field_from_model(model: FieldModel) -> FieldType:
         return TextField.from_model(model)
     elif isinstance(model, VectorFieldModel):
         return VectorField.from_model(model)
-    elif isinstance(model, MetadataField):
-        return _MetadataField.from_model(model)
+    elif isinstance(model, MetadataFieldModel):
+        return MetadataField.from_model(model)
     else:
         raise ValueError(f"Unsupported field model type: {type(model)}")

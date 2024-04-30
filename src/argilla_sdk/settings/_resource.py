@@ -19,8 +19,9 @@ from uuid import UUID
 from argilla_sdk._exceptions import SettingsError, ArgillaAPIError, ArgillaSerializeError
 from argilla_sdk._models import TextFieldModel, TextQuestionModel
 from argilla_sdk.client import Argilla
-from argilla_sdk.settings._field import FieldType, VectorField, TextField, field_from_model
+from argilla_sdk.settings._field import FieldType, VectorField, field_from_model
 from argilla_sdk.settings._question import QuestionType, question_from_model
+from argilla_sdk.settings._metadata import MetadataType
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -37,15 +38,18 @@ class Settings:
         fields: Optional[List[FieldType]] = None,
         questions: Optional[List[QuestionType]] = None,
         vectors: Optional[List[VectorField]] = None,
+        metadata: Optional[List[MetadataType]] = None,
         guidelines: Optional[str] = None,
         allow_extra_metadata: bool = False,
         _dataset: Optional["Dataset"] = None,
     ) -> None:
         """
         Args:
-            guidelines (str): A string containing the guidelines for the Dataset.
             fields (List[TextField]): A list of TextField objects that represent the fields in the Dataset.
             questions (List[Union[LabelQuestion, MultiLabelQuestion, RankingQuestion, TextQuestion, RatingQuestion]]): A list of Question objects that represent the questions in the Dataset.
+            vectors (List[VectorField]): A list of VectorField objects that represent the vectors in the Dataset.
+            metadata (List[MetadataField]): A list of MetadataField objects that represent the metadata in the Dataset.
+            guidelines (str): A string containing the guidelines for the Dataset.
             allow_extra_metadata (bool): A boolean that determines whether or not extra metadata is allowed in the Dataset. Defaults to False.
         """
         if fields is None:
@@ -54,12 +58,15 @@ class Settings:
             questions = []
         if vectors is None:
             vectors = []
+        if metadata is None:
+            metadata = []
 
         self.__guidelines = self.__process_guidelines(guidelines)
         self.__allow_extra_metadata = allow_extra_metadata
         self.__questions = questions
         self.__fields = fields
         self.__vectors = vectors
+        self.__metadata = metadata
 
         self._dataset = _dataset
 
@@ -102,6 +109,14 @@ class Settings:
         self.__vectors = vectors
 
     @property
+    def metadata(self) -> List[MetadataType]:
+        return self.__metadata
+
+    @metadata.setter
+    def metadata(self, metadata: List[MetadataType]):
+        self.__metadata = metadata
+
+    @property
     def allow_extra_metadata(self) -> bool:
         return self.__allow_extra_metadata
 
@@ -138,6 +153,9 @@ class Settings:
         for vector in self.vectors:
             schema_dict[vector.name] = vector
 
+        for metadata in self.metadata:
+            schema_dict[metadata.name] = metadata
+
         return schema_dict
 
     @cached_property
@@ -149,10 +167,10 @@ class Settings:
     #####################
 
     def get(self) -> "Settings":
-
         self.__fetch_fields()
         self.__fetch_questions()
         self.__fetch_vectors()
+        self.__fetch_metadata()
 
         return self
 
@@ -160,6 +178,7 @@ class Settings:
         self.__upsert_fields()
         self.__upsert_questions()
         self.__upsert_vectors()
+        self.__upsert_metadata()
         self.__update_dataset_related_attributes()
         return self
 
@@ -186,6 +205,12 @@ class Settings:
         self.__vectors = [field_from_model(model) for model in models]
 
         return self.__vectors
+
+    def __fetch_metadata(self) -> List[MetadataType]:
+        models = self._client.api.metadata.list(dataset_id=self._dataset.id)
+        self.__metadata = [field_from_model(model) for model in models]
+
+        return self.__metadata
 
     def __update_dataset_related_attributes(self):
         # This flow may be a bit weird, but it's the only way to update the dataset related attributes
@@ -226,6 +251,13 @@ class Settings:
                 vector._model = vector_model
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create vector {vector.name}") from e
+
+    def __upsert_metadata(self) -> None:
+        for metadata in self.__metadata:
+            metadata_model = self._client.api.metadata.create(
+                dataset_id=self._dataset.id, metadata_field=metadata._model
+            )
+            metadata._model = metadata_model
 
     def serialize(self):
         try:

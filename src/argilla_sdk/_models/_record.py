@@ -40,6 +40,6 @@ class RecordModel(ResourceModel):
         """Ensure metadata is a list of MetadataModel instances when provided as a list of dictionaries."""
         if not metadata:
             return []
-        if all(isinstance(m, dict) for m in metadata):
+        if isinstance(metadata, dict):
             return [MetadataModel(name=key, value=value) for key, value in metadata.items()]
         return metadata

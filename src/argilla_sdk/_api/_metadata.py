@@ -18,12 +18,12 @@ from uuid import UUID
 import httpx
 from argilla_sdk._api._base import ResourceAPI
 from argilla_sdk._exceptions import api_error_handler
-from argilla_sdk._models import MetadataField
+from argilla_sdk._models import MetadataFieldModel
 
 __all__ = ["MetadataAPI"]
 
 
-class MetadataAPI(ResourceAPI[MetadataField]):
+class MetadataAPI(ResourceAPI[MetadataFieldModel]):
     """Manage metadata via the API"""
 
     http_client: httpx.Client
@@ -33,7 +33,7 @@ class MetadataAPI(ResourceAPI[MetadataField]):
     ################
 
     @api_error_handler
-    def create(self, dataset_id: UUID, metadata_field: MetadataField) -> MetadataField:
+    def create(self, dataset_id: UUID, metadata_field: MetadataFieldModel) -> MetadataFieldModel:
         url = f"/api/v1/datasets/{dataset_id}/metadata-properties"
         response = self.http_client.post(url=url, json=metadata_field.model_dump())
         response.raise_for_status()
@@ -43,9 +43,9 @@ class MetadataAPI(ResourceAPI[MetadataField]):
         return metadata_field_model
 
     @api_error_handler
-    def update(self, metadata_field: MetadataField) -> MetadataField:
+    def update(self, metadata_field: MetadataFieldModel) -> MetadataFieldModel:
         url = f"/api/v1/metadata-properties/{metadata_field.id}"
-        response = self.http_client.put(url=url, json=metadata_field.model_dump())
+        response = self.http_client.patch(url=url, json=metadata_field.model_dump())
         response.raise_for_status()
         response_json = response.json()
         metadata_field_model = self._model_from_json(response_json=response_json)
@@ -53,26 +53,20 @@ class MetadataAPI(ResourceAPI[MetadataField]):
         return metadata_field_model
 
     @api_error_handler
-    def delete(self, metadata_field: MetadataField) -> None:
-        url = f"/api/v1/metadata-properties/{metadata_field.id}"
+    def delete(self, id: UUID) -> None:
+        url = f"/api/v1/metadata-properties/{id}"
         self.http_client.delete(url=url).raise_for_status()
-        self.log(message=f"Deleted field {metadata_field.name}")
+        self.log(message=f"Deleted field {id}")
 
     @api_error_handler
-    def get_metrics(self, metadata_field: MetadataField) -> MetadataField:
-        url = f"/api/v1/datasets/{metadata_field.id}/metadata-properties"
-        response = self.http_client.get(url=url)
-        response.raise_for_status()
-        response_json = response.json()
-        metadata_field_model = self._model_from_json(response_json=response_json)
-        self.log(message=f"Got field {metadata_field_model.name}")
-        return metadata_field_model
+    def get(self, id: UUID) -> MetadataFieldModel:
+        raise NotImplementedError()
 
     ####################
     # Utility methods #
     ####################
 
-    def create_many(self, dataset_id: UUID, metadata_fields: List[MetadataField]) -> List[MetadataField]:
+    def create_many(self, dataset_id: UUID, metadata_fields: List[MetadataFieldModel]) -> List[MetadataFieldModel]:
         metadata_field_models = []
         for metadata_field in metadata_fields:
             metadata_field_model = self.create(dataset_id=dataset_id, metadata_field=metadata_field)
@@ -80,7 +74,7 @@ class MetadataAPI(ResourceAPI[MetadataField]):
         return metadata_field_models
 
     @api_error_handler
-    def list(self, dataset_id: UUID) -> List[MetadataField]:
+    def list(self, dataset_id: UUID) -> List[MetadataFieldModel]:
         response = self.http_client.get(f"/api/v1/me/datasets/{dataset_id}/metadata-properties")
         response.raise_for_status()
         response_json = response.json()
@@ -91,10 +85,10 @@ class MetadataAPI(ResourceAPI[MetadataField]):
     # Private methods #
     ####################
 
-    def _model_from_json(self, response_json: Dict) -> MetadataField:
+    def _model_from_json(self, response_json: Dict) -> MetadataFieldModel:
         response_json["inserted_at"] = self._date_from_iso_format(date=response_json["inserted_at"])
         response_json["updated_at"] = self._date_from_iso_format(date=response_json["updated_at"])
-        return MetadataField(**response_json)
+        return MetadataFieldModel(**response_json)
 
-    def _model_from_jsons(self, response_jsons: List[Dict]) -> List[MetadataField]:
+    def _model_from_jsons(self, response_jsons: List[Dict]) -> List[MetadataFieldModel]:
         return list(map(self._model_from_json, response_jsons))

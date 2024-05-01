@@ -28,6 +28,6 @@ jobs:
     - name: Install dependencies
       run: |
         pdm install
-    - name: Run pdm script with all package steps
+    - name: Run tests
       run: |
-        pdm run all
+        pdm run test

@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
 from typing import Optional, Literal, Union
 from uuid import UUID, uuid4
 
@@ -25,7 +26,27 @@ __all__ = ["Dataset"]
 
 
 class Dataset(Resource):
-    """Class for interacting with Argilla Datasets"""
+    """Class for defining and interacting with Argilla Datasets
+
+    Attributes:
+        name (str): Name of the dataset.
+        id (UUID): Unique identifier of the dataset.
+        status (Literal["draft", "ready"]): Status of the dataset.
+        records (DatasetRecords): Records of the dataset.
+        settings (Settings): Settings of the dataset.
+        fields (list): Fields of the dataset.
+        questions (list): Questions of the dataset.
+        guidelines (str): Guidelines of the dataset.
+        allow_extra_metadata (bool): Allow extra metadata for the dataset.
+
+    Examples:
+    ```python
+    import argilla_sdk as rg
+
+    dataset = rg.Dataset(name="My Dataset")
+
+    ```
+    """
 
     name: str
     id: Optional[UUID]
@@ -44,8 +65,9 @@ class Dataset(Resource):
         id: Optional[Union[UUID, str]] = uuid4(),
         _model: Optional[DatasetModel] = None,
     ) -> None:
-        """Initalizes a Dataset with a client and model
-        Args:
+        """Initalizes a Dataset object with the given parameters.
+
+        Attributes:
             name (str): Name of the dataset. Replaced by random UUID if not assigned.
             status ["draft", "ready"]: Status of the dataset
             workspace_id (UUID): Workspace_id of the dataset
@@ -58,6 +80,8 @@ class Dataset(Resource):
         if name is None:
             name = str(id)
             self.log(f"Settings dataset name to unique UUID: {id}")
+        if workspace_id is None:
+            workspace_id = client.workspaces[0].id
         _model = _model or DatasetModel(
             name=name,
             status=status,
@@ -71,14 +95,17 @@ class Dataset(Resource):
 
     @property
     def records(self) -> "DatasetRecords":
+        """Returns the records of the dataset as a `DatasetRecords` object."""
         return self.__records
 
     @property
     def is_published(self) -> bool:
+        """Returns True if the dataset is published on the server, False otherwise."""
         return self._model.status == "ready"
 
     @property
     def settings(self) -> Settings:
+        """Returns the settings of the dataset as a `Settings` object."""
         return self._settings
 
     @settings.setter
@@ -87,14 +114,17 @@ class Dataset(Resource):
 
     @property
     def fields(self) -> list:
+        """Returns the fields of the dataset as a list."""
         return self._settings.fields
 
     @property
     def questions(self) -> list:
+        """Returns the questions of the dataset as a list of `Question` objects."""
         return self._settings.questions
 
     @property
     def guidelines(self) -> str:
+        """Returns the guidelines of the dataset as a string."""
         return self._settings.guidelines
 
     @guidelines.setter
@@ -103,6 +133,7 @@ class Dataset(Resource):
 
     @property
     def allow_extra_metadata(self) -> bool:
+        """Returns True if the dataset allows extra metadata, False otherwise."""
         return self._settings.allow_extra_metadata
 
     @allow_extra_metadata.setter
@@ -114,6 +145,15 @@ class Dataset(Resource):
         return self._settings.schema
 
     def get(self) -> "Dataset":
+        """Fetches the dataset from the server and returns the updated `Dataset` object.
+        Example:
+
+        ```python
+        dataset = rg.Dataset(name="My Dataset").get()
+        ```
+
+
+        """
         super().get()
         # I've included the settings here to make sure that the settings are always in sync
         # We can decide later if we want a lazy loading approach
@@ -148,7 +188,6 @@ class Dataset(Resource):
         self,
         settings: Optional[Settings] = None,
     ) -> Settings:
-        """Populate the dataset object with settings"""
         settings = settings or Settings()
         settings.dataset = self
         return settings

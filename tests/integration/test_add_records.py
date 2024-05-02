@@ -501,3 +501,117 @@ def test_add_record_resources(client):
     assert dataset_records[0].external_id == str(mock_resources[0].external_id)
     assert dataset_records[1].external_id == str(mock_resources[1].external_id)
     assert dataset_records[2].external_id == str(mock_resources[2].external_id)
+
+
+def test_add_records_with_responses_and_same_schema_name(client: Argilla):
+    workspace_id = client.workspaces[0].id
+    mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
+    mock_data = [
+        {
+            "text": "Hello World, how are you?",
+            "label": "negative",
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "negative",
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "negative",
+        },
+    ]
+    settings = rg.Settings(
+        fields=[
+            rg.TextField(name="text"),
+        ],
+        questions=[
+            rg.LabelQuestion(name="label", labels=["positive", "negative"]),
+        ],
+    )
+    dataset = rg.Dataset(
+        name=mock_dataset_name,
+        workspace_id=workspace_id,
+        settings=settings,
+        client=client,
+    )
+    user = rg.User(
+        username=f"test_{random.randint(0, 1000)}",
+        first_name="test",
+        password="testtesttest",
+        client=client,
+    )
+    user.create()
+    dataset.publish()
+    dataset.records.add(
+        records=mock_data,
+        user_id=user.id,
+        mapping={"label": "label.response", "text": "text"},
+    )
+    assert dataset.name == mock_dataset_name
+
+    dataset_records = list(dataset.records(with_responses=True))
+
+    assert dataset_records[0].fields.text == mock_data[1]["text"]
+    assert dataset_records[1].responses.label[0].value == "negative"
+    assert dataset_records[1].responses.label[0].user_id == user.id
+
+
+def test_add_records_objects_with_responses(client: Argilla):
+    workspace_id = client.workspaces[0].id
+    mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
+
+    settings = rg.Settings(
+        fields=[
+            rg.TextField(name="text"),
+        ],
+        questions=[
+            rg.TextQuestion(name="comment", use_markdown=False),
+            rg.LabelQuestion(name="label", labels=["positive", "negative"]),
+        ],
+    )
+    dataset = rg.Dataset(
+        name=mock_dataset_name,
+        workspace_id=workspace_id,
+        settings=settings,
+        client=client,
+    )
+    user = rg.User(
+        username=f"test_{random.randint(0, 1000)}",
+        first_name="test",
+        password="testtesttest",
+        client=client,
+    )
+    user.create()
+    dataset.publish()
+
+    records = [
+        rg.Record(
+            fields={"text": "Hello World, how are you?"},
+            responses=[rg.Response("label", "negative", user_id=user.id)],
+            external_id=str(uuid.uuid4()),
+        ),
+        rg.Record(
+            fields={"text": "Hello World, how are you?"},
+            responses=[rg.Response("label", "positive", user_id=user.id)],
+            external_id=str(uuid.uuid4()),
+        ),
+        rg.Record(
+            fields={"text": "Hello World, how are you?"},
+            responses=[rg.Response("comment", "The comment", user_id=user.id)],
+            external_id=str(uuid.uuid4()),
+        ),
+    ]
+
+    dataset.records.add(records)
+
+    dataset_records = list(dataset.records())
+
+    assert dataset.name == mock_dataset_name
+    assert dataset_records[0].external_id == str(records[0].external_id)
+    assert dataset_records[0].responses.label[0].value == "negative"
+
+    assert dataset_records[1].external_id == str(records[1].external_id)
+    assert dataset_records[1].responses.label[0].value == "positive"
+
+    assert dataset_records[2].external_id == str(records[2].external_id)
+    assert dataset_records[2].responses.comment[0].value == "The comment"

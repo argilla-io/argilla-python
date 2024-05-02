@@ -12,84 +12,118 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any
-from argilla_sdk._models import ResponseModel, ResponseStatus
+from typing import Any, TYPE_CHECKING, List, Dict, Optional
+from uuid import UUID
+
+from argilla_sdk._models import UserResponseModel, ResponseStatus
 from argilla_sdk._resource import Resource
 
-__all__ = ["Response"]
+if TYPE_CHECKING:
+    from argilla_sdk import Argilla
+
+__all__ = ["Response", "UserResponse"]
 
 
-class Response(Resource):
+class Response:
     """Class for interacting with Argilla Responses of records"""
-
-    _model: ResponseModel
 
     def __init__(
         self,
         question_name: str,
-        value: str,
-        user_id: str,
-        status: ResponseStatus = "draft",
+        value: Any,
+        user_id: UUID,
     ) -> None:
         """Initializes a Response with a user_id and value"""
-        self._model = ResponseModel(
-            values=self.__create_response_values(question_name, value),
-            status=status,
-            user_id=user_id,
-        )
 
-    ####################
-    # Public Interface #
-    ####################
-
-    @property
-    def question_name(self) -> str:
-        """Returns the question name of the Response"""
-        return list(self._model.values.keys())[0]
-
-    @property
-    def value(self) -> str:
-        """Returns the value of the Response"""
-        return self._model.values[self.question_name]["value"]
-
-    @property
-    def user_id(self) -> str:
-        """Returns the user_id of the Response"""
-        return self._model.user_id
-
-    @property
-    def status(self) -> ResponseStatus:
-        """Returns the status of the Response"""
-        return self._model.status
-
-    @classmethod
-    def from_model(cls, model: ResponseModel) -> "Response":
-        """Creates a Response from a ResponseModel"""
-        question_name = list(model.values.keys())[0]
-        value = model.values[question_name]["value"]
-        user_id = str(model.user_id)
-        status = model.status
-        return cls(question_name, value, user_id, status)
+        self.question_name = question_name
+        self.value = value
+        self.user_id = user_id
 
     def serialize(self) -> dict[str, Any]:
         """Serializes the Response to a dictionary"""
-        model_dict = self._model.model_dump()
-        model_dict["question_name"] = self.question_name
-        model_dict["value"] = self.value
-        return model_dict
+        return {
+            "question_name": self.question_name,
+            "value": self.value,
+            "user_id": self.user_id,
+        }
 
     #####################
     # Private Interface #
     #####################
 
-    def __create_response_values(self, question_name, value):
-        return {question_name: {"value": value}}
+
+class UserResponse(Resource):
+    """
+    Class for interacting with Argilla User Responses of records.  The UserResponse class is a collection
+    of responses to questions for a given user.
+
+    """
+
+    _model: UserResponseModel
+
+    def __init__(
+        self,
+        user_id: UUID,
+        answers: List[Response],
+        status: ResponseStatus = "draft",
+        client: Optional["Argilla"] = None,
+    ) -> None:
+        """Initializes a UserResponse with a user and a set of question answers"""
+
+        super().__init__(client=client)
+
+        self._model = UserResponseModel(
+            values=self.__create_response_values(answers),
+            status=status,
+            user_id=user_id,
+        )
+
+    @property
+    def status(self) -> ResponseStatus:
+        """Returns the status of the UserResponse"""
+        return self._model.status
+
+    @status.setter
+    def status(self, status: ResponseStatus) -> None:
+        """Sets the status of the UserResponse"""
+        self._model.status = status
+
+    @property
+    def user_id(self) -> UUID:
+        """Returns the user_id of the UserResponse"""
+        return self._model.user_id
+
+    @user_id.setter
+    def user_id(self, user_id: UUID) -> None:
+        """Sets the user_id of the UserResponse"""
+        self._model.user_id = user_id
+
+    @property
+    def answers(self) -> List[Response]:
+        """Returns the list of responses"""
+        return self.__model_as_response_list(self._model)
 
     @classmethod
-    def from_model(cls, model: ResponseModel) -> "Response":
-        """Creates a Response from a ResponseModel"""
-        question_name = list(model.values.keys())[0]
-        value = model.values[question_name]["value"]
-        user_id = str(model.user_id)
-        status = model.status
-        return cls(question_name, value, user_id, status)
+    def from_model(cls, model: UserResponseModel) -> "UserResponse":
+        """Creates a UserResponse from a ResponseModel"""
+        return cls(
+            model.user_id,
+            answers=cls.__model_as_response_list(model),
+            status=model.status,
+        )
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Returns the UserResponse as a dictionary"""
+        return self._model.dict()
+
+    @staticmethod
+    def __create_response_values(answers: List[Response]) -> Dict[str, Dict[str, str]]:
+        return {answer.question_name: {"value": answer.value} for answer in answers}
+
+    @staticmethod
+    def __model_as_response_list(model: UserResponseModel) -> List[Response]:
+        """Creates a list of Responses from a UserResponseModel"""
+        return [
+            Response(question_name=question_name, value=value["value"], user_id=model.user_id)
+            for question_name, value in model.values.items()
+        ]

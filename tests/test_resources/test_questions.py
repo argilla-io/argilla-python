@@ -100,7 +100,7 @@ class TestQuestionsAPI:
                 "type": "span",
                 "allow_overlapping": True,
                 "field": "text",
-                "visible_options": 2,
+                "visible_options": 3,
                 "options": [
                     {"value": "value 1", "text": "Value 1"},
                     {"value": "value 2", "text": "Value 2"},
@@ -128,7 +128,7 @@ class TestQuestionsAPI:
                     "type": "span",
                     "allow_overlapping": True,
                     "field": "text",
-                    "visible_options": 2,
+                    "visible_options": 3,
                     "options": [
                         {"value": "value 1", "text": "Value 1"},
                         {"value": "value 2", "text": "Value 2"},

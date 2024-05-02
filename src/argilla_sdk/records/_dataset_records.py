@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence
+from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Iterable
 from uuid import UUID
 
 from argilla_sdk._api import RecordsAPI
@@ -106,7 +106,6 @@ class DatasetRecordsIterator:
 
 
 class DatasetRecordsIteratorWithExportSupport(DatasetRecordsIterator, GenericExportMixin):
-
     """This class is used to iterate over records in a dataset with export support: .to_list() and .to_dict())."""
 
     def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
@@ -120,7 +119,7 @@ class DatasetRecordsIteratorWithExportSupport(DatasetRecordsIterator, GenericExp
         return self._export_to_list(records=records, flatten=flatten)
 
 
-class DatasetRecords(Resource):
+class DatasetRecords(Resource, Iterable[Record]):
     """
     This class is used to work with records from a dataset.
 
@@ -130,6 +129,8 @@ class DatasetRecords(Resource):
     """
 
     _api: RecordsAPI
+
+    DEFAULT_BATCH_SIZE = 256
 
     def __init__(self, client: "Argilla", dataset: "Dataset"):
         """Initializes a DatasetRecords object with a client and a dataset.
@@ -147,7 +148,7 @@ class DatasetRecords(Resource):
     def __call__(
         self,
         query: Optional[Union[str, Query]] = None,
-        batch_size: Optional[int] = 100,
+        batch_size: Optional[int] = DEFAULT_BATCH_SIZE,
         start_offset: int = 0,
         with_suggestions: bool = True,
         with_responses: bool = True,
@@ -155,7 +156,7 @@ class DatasetRecords(Resource):
     ):
         if query and isinstance(query, str):
             query = Query(query=query)
-            
+
         if with_vectors:
             self.__validate_vector_names(vector_names=with_vectors)
 
@@ -176,10 +177,10 @@ class DatasetRecords(Resource):
 
     def add(
         self,
-        records: Union[dict, List[dict]],
+        records: Union[dict, List[dict], Record, List[Record]],
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
-        batch_size: int = 256,
+        batch_size: int = DEFAULT_BATCH_SIZE,
     ) -> List[Record]:
         """
         Add new records to a dataset on the server.
@@ -187,8 +188,11 @@ class DatasetRecords(Resource):
             records: A dictionary or a list of dictionaries representing the records
                      to be added to the dataset. Records are defined as dictionaries
                      with keys corresponding to the fields in the dataset schema.
+            mapping: A dictionary that maps the keys in the records to the fields in the dataset schema.
+            user_id: The user id to be associated with the records. If not provided, the current user id is used.
+            batch_size: The number of records to send in each batch. The default is 256.
         """
-        record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id)
+        record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
 
         batch_size = self._normalize_batch_size(
             batch_size=batch_size,
@@ -212,10 +216,10 @@ class DatasetRecords(Resource):
 
     def update(
         self,
-        records: Union[dict, List[dict]],
+        records: Union[dict, List[dict], Record, List[Record]],
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
-        batch_size: int = 256,
+        batch_size: int = DEFAULT_BATCH_SIZE,
     ) -> List[Record]:
         """Update records in a dataset on the server using the provided records
             and matching based on the external_id or id.
@@ -225,8 +229,11 @@ class DatasetRecords(Resource):
                      to be updated in the dataset. Records are defined as dictionaries
                      with keys corresponding to the fields in the dataset schema. Ids or
                      external_ids should be provided to identify the records to be updated.
+            mapping: A dictionary that maps the keys in the records to the fields in the dataset schema.
+            user_id: The user id to be associated with the records. If not provided, the current user id is used.
+            batch_size: The number of records to send in each batch. The default is 256.
         """
-        record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id)
+        record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
         batch_size = self._normalize_batch_size(
             batch_size=batch_size,
             records_length=len(record_models),
@@ -247,6 +254,8 @@ class DatasetRecords(Resource):
             message=f"Updated {records_updated} records and added {records_created} records to dataset {self.__dataset.name}",
             level="info",
         )
+
+        return created_or_updated
 
     def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
         """
@@ -276,7 +285,7 @@ class DatasetRecords(Resource):
         if all(map(lambda r: isinstance(r, dict), records)):
             # Records as flat dicts of values to be matched to questions as suggestion or response
             record_models = [
-                Record._dict_to_record_model(data=r, schema=self.__dataset.schema, mapping=mapping, user_id=user_id)
+                Record.from_dict(dataset=self.__dataset, data=r, mapping=mapping, user_id=user_id)._model  # noqa
                 for r in records
             ]  # type: ignore
         elif all(map(lambda r: isinstance(r, Record), records)):

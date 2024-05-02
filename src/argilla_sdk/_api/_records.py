@@ -20,7 +20,7 @@ from typing_extensions import deprecated
 
 from argilla_sdk._api._base import ResourceAPI
 from argilla_sdk._exceptions import api_error_handler
-from argilla_sdk._models import RecordModel, ResponseModel, SearchQueryModel
+from argilla_sdk._models import RecordModel, UserResponseModel, SearchQueryModel
 
 __all__ = ["RecordsAPI"]
 
@@ -192,10 +192,10 @@ class RecordsAPI(ResourceAPI[RecordModel]):
     ####################
 
     @api_error_handler
-    def create_record_response(self, record_id: UUID, record_response: ResponseModel) -> None:
+    def create_record_response(self, record_id: UUID, user_response: UserResponseModel) -> None:
         self.http_client.post(
             url=f"/api/v1/records/{record_id}/responses",
-            json=record_response.model_dump(),
+            json=user_response.model_dump(),
         ).raise_for_status()
 
     def create_record_responses(self, record: RecordModel) -> None:
@@ -204,7 +204,7 @@ class RecordsAPI(ResourceAPI[RecordModel]):
         if not record.id:
             raise ValueError("Record must have an ID to create responses")
         for record_response in record.responses:
-            self.create_record_response(record_id=record.id, record_response=record_response)
+            self.create_record_response(record_id=record.id, user_response=record_response)
 
     ####################
     # Private methods #

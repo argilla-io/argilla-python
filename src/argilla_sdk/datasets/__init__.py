@@ -13,3 +13,5 @@
 # limitations under the License.
 
 from argilla_sdk.datasets._resource import Dataset  # noqa
+
+__all__ = ["Dataset"]

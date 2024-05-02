@@ -13,7 +13,9 @@
 # limitations under the License.
 
 from typing import Optional
+from uuid import UUID
 
+from argilla_sdk._api import UsersAPI
 from argilla_sdk.client import Argilla
 from argilla_sdk._resource import Resource
 from argilla_sdk._models import UserModel, Role
@@ -24,6 +26,9 @@ __all__ = ["User"]
 class User(Resource):
     """Class for interacting with Argilla users"""
 
+    _model: UserModel
+    _api: UsersAPI
+
     def __init__(
         self,
         username: Optional[str] = None,
@@ -32,7 +37,7 @@ class User(Resource):
         role: Optional[str] = None,
         password: Optional[str] = None,
         client: Optional["Argilla"] = Argilla(),
-        id: Optional[str] = None,
+        id: Optional[UUID] = None,
         _model: Optional[UserModel] = None,
     ) -> None:
         """Initializes a User object with a client and a username

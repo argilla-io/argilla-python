@@ -105,7 +105,8 @@ class Dataset(Resource):
 
     @property
     def settings(self) -> Settings:
-        """Returns the settings of the dataset as a `Settings` object."""
+        if self.is_published and self._settings.is_outdated:
+            self._settings.get()
         return self._settings
 
     @settings.setter
@@ -143,23 +144,6 @@ class Dataset(Resource):
     @property
     def schema(self):
         return self._settings.schema
-
-    def get(self) -> "Dataset":
-        """Fetches the dataset from the server and returns the updated `Dataset` object.
-        Example:
-
-        ```python
-        dataset = rg.Dataset(name="My Dataset").get()
-        ```
-
-
-        """
-        super().get()
-        # I've included the settings here to make sure that the settings are always in sync
-        # We can decide later if we want a lazy loading approach
-        self._settings.get()
-
-        return self
 
     def exists(self) -> bool:
         return self._api.exists(self.id)

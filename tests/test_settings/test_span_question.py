@@ -29,8 +29,8 @@ class TestSpanQuestions:
 
     def test_change_labels_value(self):
         question = rg.SpanQuestion(
-            name="span_question", field="field", allow_overlapping=True, labels=["label1", "label2"]
+            name="span_question", field="field", allow_overlapping=True, labels=["label1", "label2", "label3"]
         )
-        question.labels = ["label1", "label2", "label3"]
-        assert question.labels == ["label1", "label2", "label3"]
-        assert question.visible_labels is None
+        question.labels = ["label1", "label2"]
+        assert question.labels == ["label1", "label2"]
+        assert question.visible_labels == 3

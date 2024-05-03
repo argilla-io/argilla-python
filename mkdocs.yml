@@ -88,13 +88,27 @@ markdown_extensions:
 
 plugins:
   - search
-  - gen-files:
-      scripts:
-        - docs/scripts/gen_ref_pages.py
+  # - gen-files:
+  #     scripts:
+  #       - docs/scripts/gen_ref_pages.py
   - literate-nav:
       nav_file: SUMMARY.md
   - section-index
-  - mkdocstrings
+  - mkdocstrings:
+      handlers:
+        python:
+          selection:
+            inherited_members: true # Allow looking up inherited methods
+          rendering:
+            show_root_heading: true # actually display anything at all...
+            # show_root_full_path: true  # display "diffrax.asdf" not just "asdf"
+            show_if_no_docstring: true
+            show_signature_annotations: true
+            show_source: false # don't include source code
+            members_order: source # order methods according to their order of definition in the source code, not alphabetical order
+            heading_level: 4
+            # hide private members
+            private: true
   - social
   - mknotebooks
   - tags:
@@ -150,5 +164,4 @@ nav:
   - Integrations:
     - integrations/index.md
   - API Reference:
-    - Python SDK: reference/
-    - FastAPI Server: reference/
+    - Python SDK: reference/argilla_sdk/

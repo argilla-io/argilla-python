@@ -21,23 +21,13 @@ class TextField(SettingsPropertyBase):
         description: Optional[str] = None,
     ) -> None:
         """Text field for use in Argilla `Dataset` `Settings`
-        Args:
+        Parameters:
             name (str): The name of the field
             title (Optional[str], optional): The title of the field. Defaults to None.
             use_markdown (Optional[bool], optional): Whether to use markdown. Defaults to False.
             required (Optional[bool], optional): Whether the field is required. Defaults to True.
             description (Optional[str], optional): The description of the field. Defaults to None.
 
-        Examples:
-        ```python
-        import argilla_sdk as rg
-
-        settings = rg.Settings(
-            guidelines="This is a guideline",
-            fields=[rg.TextField(name="prompt", use_markdown=True)],
-            questions=[rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])],
-        )
-        ```
         """
         self._model = TextFieldModel(
             name=name,
@@ -71,25 +61,11 @@ class VectorField(SettingsPropertyBase):
         title: Optional[str] = None,
     ) -> None:
         """Vector field for use in Argilla `Dataset` `Settings`
-        Args:
+
+        Parameters:
             name (str): The name of the field
             dimensions (int): The number of dimensions in the vector
             title (Optional[str], optional): The title of the field. Defaults to None.
-        Examples:
-        ```python
-        import argilla_sdk as rg
-            settings = rg.Settings(
-        fields=[
-            rg.TextField(name="text"),
-        ],
-        questions=[
-            rg.LabelQuestion(name="label", labels=["positive", "negative"]),
-        ],
-        vectors=[
-            rg.VectorField(name="vector", dimensions=10),
-        ],
-        )
-        ```
         """
         self._model = VectorFieldModel(
             name=name,

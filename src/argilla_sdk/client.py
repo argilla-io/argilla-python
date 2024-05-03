@@ -28,6 +28,7 @@ __all__ = ["Argilla"]
 
 
 class Argilla(_api.APIClient):
+        
     @property
     def workspaces(self) -> "Workspaces":
         return Workspaces(client=self)

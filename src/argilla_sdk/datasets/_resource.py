@@ -36,7 +36,6 @@ class Dataset(Resource):
         guidelines (str): The guidelines of the dataset
         allow_extra_metadata (bool): True if extra metadata is allowed, False otherwise
         schema: The schema of the dataset
-
     """
 
     name: str
@@ -68,45 +67,6 @@ class Dataset(Resource):
             id (str): The id of the dataset
             _model (DatasetModel): The model object
 
-        Examples:
-
-        To create a new dataset, use the following code:
-
-        ```python
-        dataset = rg.Dataset(
-            name="my_dataset",
-            settings=rg.Settings(
-                fields=[
-                    rg.TextField(name="text"),
-                ],
-                questions=[
-                    rg.TextQuestion(name="response"),
-                ],
-            ),
-        )
-        dataset.publish()
-        ```
-
-        To retrieve an existing dataset, use `client.datasets("my_dataset")` instead.
-
-        ```python
-        dataset = client.datasets("my_dataset")
-        ```
-
-        To connect to an existing workspace refer to the workspace by id or object. For example:
-
-        ```python
-        # Get an existing workspace
-        workspace = client.workspaces("my_workspace")
-        dataset = rg.Dataset(name="my_dataset", workspace=workspace)
-
-        # Use the workspace id
-        dataset = rg.Dataset(name="my_dataset", workspace_id="workspace_id")
-
-        # Use the first workspace
-        dataset = rg.Dataset(name="my_dataset")
-
-        ```
 
         """
         super().__init__(client=client, api=client.api.datasets)
@@ -182,13 +142,6 @@ class Dataset(Resource):
         """Checks if the dataset exists on the server
         Returns:
             bool: True if the dataset exists, False otherwise
-        Examples:
-        ```python
-        dataset = rg.Dataset(name="my_dataset")
-        assert dataset.exists() == False
-        dataset.create()
-        assert dataset.exists() == True
-        ```
         """
         return self._api.exists(self.id)
 
@@ -196,14 +149,6 @@ class Dataset(Resource):
         """Publishes the dataset on the server with the `Settings` conffiguration
         Returns:
             None
-        Examples:
-        ```python
-        dataset = rg.Dataset(name="my_dataset")
-        dataset.settings = rg.Settings(...)
-        dataset.publish()
-        ```
-
-
         """
         self._configure(settings=self._settings, publish=True)
 
@@ -212,14 +157,10 @@ class Dataset(Resource):
     #####################
 
     def create(self) -> "Dataset":
-        """Creates a new dataset on the server
+        """Creates a new dataset on the server without `Settings` configuration and without publishing
         Returns:
             Dataset: The created dataset object
         Examples:
-        ```python
-        dataset = rg.Dataset(name="my_dataset")
-        dataset.create()
-        ```
         """
         return super().create()
 
@@ -227,13 +168,6 @@ class Dataset(Resource):
         """Retrieves the dataset from the server
         Returns:
             Dataset: The retrieved dataset object
-        Examples:
-        ```python
-        dataset = rg.Dataset(name="my_dataset")
-        dataset.create()
-        # do something to the dataset on the server
-        dataset.get() # a dataset object with the latest changes
-        ```
         """
         return super().get()
 
@@ -252,14 +186,7 @@ class Dataset(Resource):
         return super().update()
 
     def delete(self) -> None:
-        """Deletes the dataset from the server
-        Examples:
-        ```python
-        dataset = rg.Dataset(name="my_dataset")
-        dataset.create()
-        dataset.delete()
-        ```
-        """
+        """Deletes the dataset from the server"""
         return super().delete()
 
     #####################

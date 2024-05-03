@@ -39,8 +39,11 @@ class LabelQuestion(SettingsPropertyBase):
         description: Optional[str] = None,
         required: bool = True,
     ) -> None:
-        """Create a new label question for `Settings` of a `Dataset`
-        Args:
+        """ Define a new label question for `Settings` of a `Dataset`. A label \
+            question is a question where the user can select one label from \
+            a list of available labels.
+        
+        Parameters:
             name: str: The name of the question to be used as a reference.
             labels: List[str]: The list of available labels for the question.
             title: Optional[str]: The title of the question to be shown in the UI.
@@ -90,8 +93,11 @@ class MultiLabelQuestion(LabelQuestion):
         description: Optional[str] = None,
         required: bool = True,
     ) -> None:
-        """Create a new multilabel question for `Settings` of a `Dataset`
-        Args:
+        """Create a new multilabel question for `Settings` of a `Dataset`. A \
+            multilabel question is a question where the user can select multiple \
+            labels from a list of available labels.
+            
+        Parameters:
             name: str: The name of the question to be used as a reference.
             labels: List[str]: The list of available labels for the question.
             title: Optional[str]: The title of the question to be shown in the UI.
@@ -134,8 +140,10 @@ class TextQuestion(SettingsPropertyBase):
         required: bool = True,
         use_markdown: bool = False,
     ) -> None:
-        """Create a new text question for `Settings` of a `Dataset`
-        Args:
+        """Create a new text question for `Settings` of a `Dataset`. A text question \
+            is a question where the user can input text.
+            
+        Parameters:
             name: str: The name of the question to be used as a reference.
             title: Optional[str]: The title of the question to be shown in the UI.
             description: Optional[str]: The description of the question to be shown in the UI.
@@ -177,8 +185,10 @@ class RatingQuestion(SettingsPropertyBase):
         description: Optional[str] = None,
         required: bool = True,
     ) -> None:
-        """Create a new rating question for `Settings` of a `Dataset`
-        Args:
+        """Create a new rating question for `Settings` of a `Dataset`. A rating question \
+            is a question where the user can select a value from a sequential list of options.
+            
+        Parameters:
             name: str: The name of the question to be used as a reference.
             values: List[int]: The list of available values for the question.
             title: Optional[str]: The title of the question to be shown in the UI.
@@ -221,8 +231,10 @@ class RankingQuestion(SettingsPropertyBase):
         description: Optional[str] = None,
         required: bool = True,
     ) -> None:
-        """Create a new ranking question for `Settings` of a `Dataset`
-        Args:
+        """Create a new ranking question for `Settings` of a `Dataset`. A ranking question \
+            is a question where the user can rank a list of options.
+        
+        Parameters:
             name: str: The name of the question to be used as a reference.
             values: List[str]: The list of available values for the question.
             title: Optional[str]: The title of the question to be shown in the UI.
@@ -267,6 +279,20 @@ class SpanQuestion(MultiLabelQuestion):
         description: Optional[str] = None,
         required: bool = True,
     ):
+        """ Create a new span question for `Settings` of a `Dataset`. A span question \
+            is a question where the user can select a section of text within a text field \
+            and assign it a label.
+            
+            Parameters:
+                name: str: The name of the question to be used as a reference.
+                field: str: The name of the text field to apply the span question to.
+                labels: List[str]: The list of available labels for the question.
+                allow_overlapping: bool: If the user can select overlapping spans.
+                visible_labels: Optional[int]: The number of labels to show at once.
+                title: Optional[str]: The title of the question to be shown in the UI.
+                description: Optional[str]: The description of the question to be shown in the UI.
+                required: bool: If the question is required for a record to be valid.
+            """
         self._model = SpanQuestionModel(
             name=name,
             title=title,
@@ -326,8 +352,6 @@ class SpanQuestion(MultiLabelQuestion):
         instance._model = model
 
         return instance
-
-
 
 
 QuestionType = Union[

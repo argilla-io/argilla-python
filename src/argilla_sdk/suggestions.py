@@ -22,6 +22,19 @@ __all__ = ["Suggestion"]
 
 
 class Suggestion(Resource):
+    """Class for interacting with Argilla Suggestions. Suggestions are typically model predictions for records.
+    Suggestions are rendered in the user interfaces as 'hints' or 'suggestions' for the user to review and accept or reject.
+
+    Attributes:
+        value (str): The value of the suggestion.add()
+        question_name (str): The name of the question that the suggestion is for.
+        type (str): The type of suggestion, either 'model' or 'human'.
+        score (float): The score of the suggestion. For example, the probability of the model prediction.
+        agent (str): The agent that created the suggestion. For example, the model name.
+        question_id (UUID): The ID of the question that the suggestion is for.
+
+    """
+
     _model: SuggestionModel
 
     def __init__(
@@ -47,32 +60,42 @@ class Suggestion(Resource):
     def __repr__(self) -> str:
         return repr(f"{self.__class__.__name__}({self._model})")
 
+    ##############################
+    # Properties
+    ##############################
+
     @property
     def value(self) -> Any:
+        """The value of the suggestion."""
         return self._model.value
 
     @property
     def question_name(self) -> Optional[str]:
+        """The name of the question that the suggestion is for."""
         return self._model.question_name
-    
+
     @question_name.setter
     def question_name(self, value: str) -> None:
         self._model.question_name = value
 
     @property
     def type(self) -> Optional[Literal["model", "human"]]:
+        """The type of suggestion, either 'model' or 'human'."""
         return self._model.type
 
     @property
     def score(self) -> Optional[float]:
+        """The score of the suggestion."""
         return self._model.score
 
     @property
     def agent(self) -> Optional[str]:
+        """The agent that created the suggestion."""
         return self._model.agent
 
     @property
     def question_id(self) -> Optional[UUID]:
+        """The ID of the question that the suggestion is for."""
         return self._model.question_id
 
     @classmethod

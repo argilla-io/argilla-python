@@ -25,7 +25,12 @@ __all__ = ["Response", "UserResponse"]
 
 
 class Response:
-    """Class for interacting with Argilla Responses of records"""
+    """Class for interacting with Argilla Responses of records. Responses are answers to questions by a user.
+    Therefore, a recod question can have multiple responses, one for each user that has answered the question.
+    A `Response` is typically created by a user in the UI or consumed from a data source as a label,
+    unlike a `Suggestion` which is typically created by a model prediction.
+
+    """
 
     def __init__(
         self,
@@ -33,14 +38,26 @@ class Response:
         value: Any,
         user_id: UUID,
     ) -> None:
-        """Initializes a Response with a user_id and value"""
+        """Initializes a `Response` for a `Record` with a user_id and value"""
 
         self.question_name = question_name
         self.value = value
         self.user_id = user_id
 
     def serialize(self) -> dict[str, Any]:
-        """Serializes the Response to a dictionary"""
+        """Serializes the Response to a dictionary. This is principally used for sending the response to the API, \
+            but can be used for data wrangling or manual export.
+        
+        Returns:
+            dict[str, Any]: The serialized response as a dictionary with keys `question_name`, `value`, and `user_id`.
+            
+        Examples:
+        
+        ```python
+        response = rg.Response("label", "negative", user_id=user.id)
+        response.serialize()
+        ```
+        """
         return {
             "question_name": self.question_name,
             "value": self.value,
@@ -55,7 +72,16 @@ class Response:
 class UserResponse(Resource):
     """
     Class for interacting with Argilla User Responses of records.  The UserResponse class is a collection
-    of responses to questions for a given user.
+    of responses to questions for a given user. UserResponses are typically created by a user in the UI and
+    are defined by ingesting a list of responses from a third-party data source.
+
+    In most cases users will interact with the `UserResponse` class through the `Record` class when
+    collected from the server or when creating new records.
+
+    Attributes:
+        status (ResponseStatus): The status of the UserResponse (draft, submitted, etc.)
+        user_id (UUID): The user_id of the UserResponse (the user who answered the questions)
+        answers (List[Response]): A list of responses to questions for the user
 
     """
 

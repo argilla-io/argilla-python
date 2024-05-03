@@ -25,11 +25,14 @@ if TYPE_CHECKING:
     from argilla_sdk._api._workspaces import WorkspacesAPI
 
 
-__all__ = ["Workspace"]
-
-
 class Workspace(Resource):
-    """Class for interacting with Argilla workspaces"""
+    """Class for interacting with Argilla workspaces. Workspaces are used to organize datasets in the Argilla server.
+
+    Attributes:
+        name (str): The name of the workspace.
+        id (UUID): The ID of the workspace.
+        datasets (List[DatasetModel]): A list of all datasets in the workspace.
+    """
 
     name: Optional[str]
     id: Optional[UUID]
@@ -44,7 +47,8 @@ class Workspace(Resource):
         _model: Optional[WorkspaceModel] = None,
     ) -> None:
         """Initializes a Workspace object with a client and a name or id
-        Args:
+        
+        Parameters:
             client (Argilla): The client used to interact with Argilla
             name (str): The name of the workspace
             id (UUID): The id of the workspace
@@ -72,4 +76,9 @@ class Workspace(Resource):
 
     @property
     def datasets(self) -> List["DatasetModel"]:
+        """List all datasets in the workspace
+
+        Returns:
+            List[DatasetModel]: A list of all datasets in the workspace
+        """
         return self.list_datasets()

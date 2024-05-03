@@ -26,22 +26,13 @@ class MetadataPropertyBase(SettingsPropertyBase):
 class TermsMetadataProperty(MetadataPropertyBase):
     def __init__(self, name: str, options: list[str], title: Optional[str] = None) -> None:
         """Create a metadata field with terms settings.
-        Args:
+
+        Parameters:
             name (str): The name of the metadata field
             options (list[str]): The list of terms
             title (Optional[str]): The title of the metadata field
         Raises:
             MetadataError: If an error occurs while defining metadata settings
-
-        Example:
-        ```python
-        import argilla_sdk as rg
-        metadata_field = rg.TermsMetadataProperty(
-            name="color",
-            options=["red", "blue", "green"],
-            title="Color",
-        )
-        ```
         """
 
         try:
@@ -70,7 +61,8 @@ class FloatMetadataProperty(MetadataPropertyBase):
         self, name: str, min: Optional[float] = None, max: Optional[float] = None, title: Optional[str] = None
     ) -> None:
         """Create a metadata field with float settings.
-        Args:
+
+        Parameters:
             name (str): The name of the metadata field
             min (Optional[float]): The minimum value
             max (Optional[float]): The maximum value
@@ -78,16 +70,7 @@ class FloatMetadataProperty(MetadataPropertyBase):
         Raises:
             MetadataError: If an error occurs while defining metadata settings
 
-        Example:
-        ```python
-        import argilla_sdk as rg
-        metadata_field = rg.FloatMetadataProperty(
-            name="price",
-            min=0.0,
-            max=100.0,
-            title="Price",
-        )
-        ```
+
         """
         try:
             settings = FloatMetadataPropertySettings(min=min, max=max, type=MetadataPropertyType.float)
@@ -116,23 +99,14 @@ class IntegerMetadataProperty(MetadataPropertyBase):
         self, name: str, min: Optional[int] = None, max: Optional[int] = None, title: Optional[str] = None
     ) -> None:
         """Create a metadata field with integer settings.
-        Args:
+
+        Parameters:
             name (str): The name of the metadata field
             min (Optional[int]): The minimum value
             max (Optional[int]): The maximum value
             title (Optional[str]): The title of the metadata field
         Raises:
             MetadataError: If an error occurs while defining metadata settings
-        Example:
-        ```python
-        import argilla_sdk as rg
-        metadata_field = rg.IntegerMetadataProperty(
-            name="quantity",
-            min=0,
-            max=100,
-            title="Quantity",
-        )
-        ```
         """
 
         try:
@@ -161,18 +135,8 @@ MetadataType = Union[TermsMetadataProperty, FloatMetadataProperty, IntegerMetada
 
 
 class MetadataField:
-    """Internal utility class for creating metadata fields from metadata models
-    returned by the API.
-    """
-
     @classmethod
     def from_model(cls, model: MetadataFieldModel) -> MetadataType:
-        """Create a metadata field from a metadata model. Switch class based on the metadata type.
-        Args:
-            model (MetadataField): The metadata model
-        Returns:
-            MetadataType: The metadata field of a given type.
-        """
         switch = {
             MetadataPropertyType.terms: TermsMetadataProperty,
             MetadataPropertyType.float: FloatMetadataProperty,

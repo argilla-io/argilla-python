@@ -63,6 +63,16 @@ class Filter:
     """This class is used to map user filters to the internal filter models"""
 
     def __init__(self, conditions: Union[List[Tuple[str, str, Any]], Tuple[str, str, Any], None] = None):
+        """ Create a filter object for use in Argilla search requests.
+        
+        Parameters:
+            conditions (Union[List[Tuple[str, str, Any]], Tuple[str, str, Any], None], optional): \
+                The conditions that will be used to filter the search results. \
+                The conditions should be a list of tuples where each tuple contains \
+                the field, operator, and value. For example `("label", "in", ["positive","happy"])`.\
+        
+        """
+
         if isinstance(conditions, tuple):
             conditions = [conditions]
         self.conditions = [Condition(condition) for condition in conditions]
@@ -78,6 +88,13 @@ class Query:
     query: Optional[str] = None
 
     def __init__(self, *, query: Union[str, None] = None, filter: Union[Filter, None] = None):
+        """Create a query object for use in Argilla search requests.add()
+
+        Parameters:
+            query (Union[str, None], optional): The query string that will be used to search.
+            filter (Union[Filter, None], optional): The filter object that will be used to filter the search results.
+        """
+
         self.query = query
         self.filter = filter
 

@@ -17,7 +17,6 @@ def client() -> rg.Argilla:
 
 @pytest.fixture
 def dataset(client) -> rg.Dataset:
-    workspace_id = client.workspaces[0].id
     mock_dataset_name = "".join(random.choices(ascii_lowercase, k=16))
     settings = rg.Settings(
         fields=[
@@ -29,7 +28,6 @@ def dataset(client) -> rg.Dataset:
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )
@@ -39,7 +37,6 @@ def dataset(client) -> rg.Dataset:
 
 
 def test_export_records_dict_defaults(client: Argilla, dataset: rg.Dataset):
-
     mock_data = [
         {
             "text": "Hello World, how are you?",

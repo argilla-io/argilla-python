@@ -43,7 +43,7 @@ class Dataset(Resource):
         self,
         name: Optional[str] = None,
         status: Literal["draft", "ready"] = "draft",
-        workspace: Optional[Union[UUID, str]] = None,
+        workspace: Optional[Union["Workspace", str]] = None,
         settings: Optional[Settings] = None,
         client: Optional["Argilla"] = Argilla(),
         id: Optional[Union[UUID, str]] = uuid4(),

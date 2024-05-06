@@ -157,22 +157,22 @@ class Dataset(Resource):
         available_workspaces = self._client.workspaces
         available_workspace_names = [ws.name for ws in available_workspaces]
         if workspace is None:
-            workspace_model = available_workspaces[0]._model  # type: ignore
+            ws = available_workspaces[0] # type: ignore
             warnings.warn(
-                f"Workspace not provided. Using default workspace: {workspace_model.name} id: {workspace_model.id}"
+                f"Workspace not provided. Using default workspace: {ws.name} id: {ws.id}"
             )
         elif isinstance(workspace, str):
-            workspace_model = self._client.api.workspaces.get_by_name(name=workspace)
-            if workspace_model is None:
+            ws = self._client.workspaces(workspace)
+            if not ws.exists():
                 self.log(
                     message=f"Workspace with name {workspace} not found. \
                         Available workspaces: {available_workspace_names}",
                     level="error",
                 )
                 raise NotFoundError()
-        elif isinstance(workspace, Workspace):
-            workspace_model = workspace._model
-        return workspace_model.id
+        else:
+            ws = workspace
+        return ws.id
 
     def __create(self) -> None:
         response_model = self._api.create(self._model)

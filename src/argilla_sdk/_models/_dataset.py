@@ -37,7 +37,7 @@ class DatasetModel(ResourceModel):
 
     class Config:
         validate_assignment = True
-        anystr_strip_whitespace = True
+        str_strip_whitespace = True
 
     @field_serializer("last_activity_at", when_used="unless-none")
     def serialize_last_activity_at(self, value: datetime) -> str:

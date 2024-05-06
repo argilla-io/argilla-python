@@ -143,7 +143,7 @@ class Datasets(Sequence, ResourceHTMLReprMixin):
             if model.name == name:
                 return Dataset(_model=model, client=self._client)
 
-        return Dataset(name=name, workspace_id=workspace_id, client=self._client, **kwargs)
+        return Dataset(name=name, workspace=workspace_id, client=self._client, **kwargs)
 
     @overload
     @abstractmethod

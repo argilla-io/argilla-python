@@ -63,6 +63,8 @@ workspace_to_create = rg.Workspace(
 created_workspace = workspace_to_create.create()
 created_workspace
 ```
+!!! tip "Accessing attributes"
+    Access the attributes of a workspace by calling them directly on the `Workspace` object. For example, `workspace.id` or `workspace.name`.
 
 ### List workspaces
 
@@ -93,8 +95,6 @@ client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 retrieved_workspace = client.workspaces("my_workspace")
 retrieved_workspace
 ```
-!!! tip "Accessing attributes"
-    Access the attributes of a workspace by calling them directly on the `Workspace` object. For example, `workspace.id` or `workspace.name`.
 
 ### Check workspace existence
 
@@ -115,7 +115,7 @@ workspace_existed
 
 To delete a workspace, **no dataset can be associated with it**. If the workspace contains any dataset, deletion will fail. You can delete a workspace by calling the `delete` method on the `Workspace` class.
 
-> To clear a workspace and delete all their datasets, refer to this [guide](../dataset/dataset.md).
+> To clear a workspace and delete all their datasets, refer to this [how-to guide](../dataset/dataset.md).
 
 ```python
 import argilla_sdk as rg

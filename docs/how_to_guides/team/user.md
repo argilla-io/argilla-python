@@ -46,8 +46,8 @@ A **user** is defined in the `User` class that has the following arguments:
 
 * `id`: The unique identifier of the user.
 * `username`: The username used as login for Argilla's UI. It has to be unique.
-* `first_name` (optional): The user's first name. Defaults to the same as the`username`.
-* `last_name` (optional): The user's last name. Defaults to the same as the `username`.
+* `first_name` (optional): The user's first name. Defaults to the `username` value.
+* `last_name` (optional): The user's last name. Defaults to the `username` value.
 * `role` (optional): The user's role (`owner`, `admin` or `annotator`) in Argilla. Defaults to `annotator`.
 * `password`: The user's password.
 * `client`: The client used to interact with Argilla.
@@ -114,6 +114,8 @@ user_to_create = rg.User(
 created_user = user_to_create.create()
 created_user
 ```
+!!! tip "Accessing attributes"
+    Access the attributes of a user by calling them directly on the `User` object. For example, `user.id` or `user.username`.
 
 ### List users
 
@@ -144,8 +146,6 @@ client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 retrieved_user = client.users('my_username')
 retrieved_user
 ```
-!!! tip "Accessing attributes"
-    Access the attributes of a user by calling them directly on the `User` object. For example, `user.id` or `user.username`.
 
 ### Delete a user
 

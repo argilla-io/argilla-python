@@ -12,11 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional, Literal, Union, TYPE_CHECKING
+import warnings
+from typing import Optional, Literal, Union
 from uuid import UUID, uuid4
 
 from argilla_sdk._api import DatasetsAPI
-from argilla_sdk._exceptions import ArgillaAPIError
+from argilla_sdk._exceptions import NotFoundError
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
@@ -24,9 +25,6 @@ from argilla_sdk.records import DatasetRecords
 from argilla_sdk.settings import Settings
 
 __all__ = ["Dataset"]
-
-if TYPE_CHECKING:
-    from argilla_sdk import Workspace
 
 
 class Dataset(Resource):
@@ -43,8 +41,7 @@ class Dataset(Resource):
         self,
         name: Optional[str] = None,
         status: Literal["draft", "ready"] = "draft",
-        workspace_id: Optional[Union[UUID, str]] = None,
-        workspace: Optional["Workspace"] = None,
+        workspace: Optional[Union[UUID, str]] = None,
         settings: Optional[Settings] = None,
         client: Optional["Argilla"] = Argilla(),
         id: Optional[Union[UUID, str]] = uuid4(),
@@ -64,7 +61,7 @@ class Dataset(Resource):
         if name is None:
             name = str(id)
             self.log(f"Settings dataset name to unique UUID: {id}")
-        self.workspace_id = self.__configure_workspace_for_dataset(workspace_id=workspace_id, workspace=workspace)
+        self.workspace_id = self.__workspace_id_from_name_or_id(workspace=workspace)
         _model = _model or DatasetModel(
             name=name,
             status=status,
@@ -154,20 +151,22 @@ class Dataset(Resource):
         settings.dataset = self
         return settings
 
-    def __configure_workspace_for_dataset(
-        self, workspace_id: Optional[Union[UUID, str]], workspace: Optional["Workspace"]
-    ) -> UUID:
-        if workspace_id is not None or workspace is not None:
-            workspace_id = workspace_id or workspace.id
-            try:
-                workspace = self._client.api.workspaces.get(workspace_id=workspace_id)  # type: ignore
-            except ArgillaAPIError as e:
-                raise ValueError(f"Workspace with id {workspace_id} not found") from e
+    def __workspace_id_from_name_or_id(self, workspace: Optional[Union[UUID, str]]) -> UUID:
+        available_workspaces = self._client.workspaces
+        if workspace is None:
+            workspace_model = available_workspaces[0]._model  # type: ignore
+            warnings.warn(
+                f"Workspace not provided. Using default workspace: {workspace_model.name} id: {workspace_model.id}"
+            )
         else:
-            self.log("Setting workspace to first workspace on server")
-            workspace = self._client.workspaces[0]
-        self.log(f"Using workspace: {workspace.name} id: {workspace.id}")
-        return workspace.id
+            try:
+                workspace_model = self._client.api.workspaces.get_by_name_or_id(name_or_id=workspace)  # type: ignore
+                assert workspace_model is not None
+            except (NotFoundError, AssertionError) as e:
+                available_workspace_names = [ws.name for ws in available_workspaces]
+                raise ValueError(f"Workspace with name or ID {workspace} not found \
+                                     Available workspaces: {available_workspace_names}") from e
+        return workspace_model.id
 
     def __create(self) -> None:
         response_model = self._api.create(self._model)

@@ -1,4 +1,4 @@
-# rg.Record
+# `rg.Record`
 
 The `Record` object is used to represent a single record in Argilla. It contains fields, suggestions, responses, metadata, and vectors.
 
@@ -7,7 +7,19 @@ The `Record` object is used to represent a single record in Argilla. It contains
 ### Creating a Record
 
 In most cases the user can add records as dictionaries via the `Dataset.records.add` method. 
-Argilla will instantiate the `Record` class. However, the user can also create `Record` objects directly.
+Argilla will instantiate the `Record` class based on the input data and `mapping` property. 
+
+```python
+dataset.records.add(
+    records=[
+    {
+        "question": "What is the capital of France?", 
+        "answer": "Paris"
+    },
+])
+```
+
+However, you can also create `Record` objects directly and pass them to the same method.
 
 ```python
 records = [
@@ -16,7 +28,6 @@ records = [
             responses=[rg.Response("label", "positive", user_id=user_id)],
         ),
     ]
-
 dataset.records.add(records=records)
 ```
 
@@ -49,6 +60,8 @@ For changes to take effect, the user must call the `update` method on the `Datas
 
 ---
 
-## `Record` class attributes
+## Class Reference
 
 ::: argilla_sdk.records.Record
+    options: 
+        heading_level: 3

@@ -32,10 +32,12 @@ settings = rg.Settings(
 
 ---
 
-::: argilla_sdk.settings
-    options:
-        heading: Fields
-        members:
-            - TextField
-            - VectorField
-        show_root_heading: False
+## Class References
+
+::: argilla_sdk.settings.TextField
+    options: 
+        heading_level: 3
+
+::: argilla_sdk.settings.VectorField
+    options: 
+        heading_level: 3

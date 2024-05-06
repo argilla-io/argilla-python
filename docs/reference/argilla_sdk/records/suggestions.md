@@ -35,4 +35,8 @@ dataset.records.add(
 
 ---
 
-::: argilla_sdk.suggestions
+## Class Reference
+
+::: argilla_sdk.suggestions.Suggestion
+    options: 
+        heading_level: 3

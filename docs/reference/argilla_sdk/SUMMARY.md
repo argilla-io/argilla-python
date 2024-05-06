@@ -1,3 +1,4 @@
+* [rg.Argilla](client.md)
 * [rg.Workspace](workspaces.md)
 * [rg.User](users.md)
 * [rg.Dataset](datasets/datasets.md)

@@ -1,4 +1,4 @@
-# Metadata Property
+# Metadata Properties   
 
 Metadata properties are used to define metadata fields in a dataset. Metadata fields are used to store additional information about the records in the dataset. For example, the category of a record, the price of a product, or any other information that is relevant to the record.
 
@@ -12,6 +12,8 @@ We define metadata properties via type specific classes. The following example d
 
 
 ```python
+import argilla_sdk as rg
+
 # Define metadata properties as terms
 metadata_field = rg.TermsMetadataProperty(
     name="color",
@@ -55,9 +57,18 @@ dataset = rg.Dataset(
 )
 ```
 
-::: argilla_sdk.settings._metadata
-    options:
-        members:
-            - FloatMetadataProperty
-            - IntegerMetadataProperty
-            - TermsMetadataProperty
+---
+
+## Class References
+
+::: argilla_sdk.settings.FloatMetadataProperty
+    options: 
+        heading_level: 3
+
+::: argilla_sdk.settings.IntegerMetadataProperty
+    options: 
+        heading_level: 3
+
+::: argilla_sdk.settings.TermsMetadataProperty
+    options: 
+        heading_level: 3

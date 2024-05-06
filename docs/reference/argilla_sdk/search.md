@@ -37,9 +37,14 @@ for record in dataset.records(query=query):
 ```
 
 
-::: argilla_sdk.records._search
-    options:
-        members:
-            - Query
-            - Filter
-        
+---
+
+## Class Reference
+
+::: argilla_sdk.records._search.Query
+    options: 
+        heading_level: 3
+
+::: argilla_sdk.records._search.Filter        
+    options: 
+        heading_level: 3

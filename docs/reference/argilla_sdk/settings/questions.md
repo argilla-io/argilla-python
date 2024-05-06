@@ -37,14 +37,30 @@ settings = rg.Settings(
 )
 ```
 
-::: argilla_sdk.settings
-    options:
-        heading: Questions
-        members:
-            - LabelQuestion
-            - TextQuestion
-            - MultipleChoiceQuestion
-            - RatingQuestion
-            - RankingQuestion
-            - SpanQuestion
-        show_root_heading: False
+---
+
+## Class References
+
+::: argilla_sdk.settings.LabelQuestion
+    options: 
+        heading_level: 3
+
+::: argilla_sdk.settings.MultiLabelQuestion
+    options: 
+        heading_level: 3
+
+::: argilla_sdk.settings.RankingQuestion
+    options: 
+        heading_level: 3
+
+::: argilla_sdk.settings.TextQuestion
+    options: 
+        heading_level: 3
+
+::: argilla_sdk.settings.RatingQuestion
+    options: 
+        heading_level: 3
+
+::: argilla_sdk.settings.SpanQuestion
+    options: 
+        heading_level: 3

@@ -44,4 +44,11 @@ for record in dataset.records:
 
 ```
 
-::: argilla_sdk.responses
+---
+
+## Class Reference
+
+
+::: argilla_sdk.responses.Response
+    options: 
+        heading_level: 3

@@ -19,8 +19,10 @@ To retrieve an existing workspace, use the `client.workspaces` attribute:
 workspace = client.workspaces("my_workspace")
 ```
 
-::: argilla_sdk.workspaces
+---
+
+## Class Reference
+
+::: argilla_sdk.workspaces.Workspace
     options:
-        heading: Workspaces
-        members:
-            - Workspace
+        heading_level: 4

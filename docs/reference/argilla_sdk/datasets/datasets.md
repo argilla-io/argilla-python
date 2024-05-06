@@ -1,4 +1,4 @@
-# rg.Dataset
+# `rg.Dataset`
 
 `Dataset` is a class that represents a collection of records. It is used to store and manage records in Argilla.
 
@@ -56,4 +56,8 @@ dataset = rg.Dataset(name="my_dataset")
 
 ---
 
+## Class Reference
+
 ::: argilla_sdk.datasets.Dataset
+    options: 
+        heading_level: 3

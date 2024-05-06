@@ -23,8 +23,10 @@ The current user of the `rg.Argilla` client can be accessed using the `me` attri
 client.me
 ```
 
-::: argilla_sdk.users
-    options:
-        heading: Users
-        members:
-            - User
+---
+
+## Class Reference
+
+::: argilla_sdk.users.User
+    options: 
+        heading_level: 3

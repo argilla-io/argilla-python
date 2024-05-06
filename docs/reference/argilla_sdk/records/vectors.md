@@ -1,10 +1,29 @@
 # `rg.Vector`
 
-A vector is a numerical representation of a `Record` field or attribute, usually its text. They can be used to search for similar records via the UI or SDK. Vectors can be added to a record directly or as a dictionary with the key as the vector name and the value as the vector values.
+A vector is a numerical representation of a `Record` field or attribute, usually the record's text. Vectors can be used to search for similar records via the UI or SDK. Vectors can be added to a record directly or as a dictionary with a key that the matches `rg.VectorField` name.
 
 ## Usage Examples
 
-Vectors can be passed to a record directly or as a dictionary with the key as the vector name and the value as the vector values:
+To use vectors within a dataset, you must define a vector field in the dataset settings. The vector field is a list of vector fields that can be attached to a record. The following example demonstrates how to add vectors to a dataset and how to access vectors from a record object:
+
+
+```python
+import argilla_sdk as rg
+
+dataset = Dataset(
+    name="dataset_with_metadata",
+    settings=Settings(
+        fields=[TextField(name="text")],
+        questions=[LabelQuestion(name="label", labels=["positive", "negative"])],
+        vectors=[
+            VectorField(name="vector_name"),
+        ],
+    ),
+)
+dataset.publish()
+```
+
+Then, you can add records to the dataset with vectors that correspond to the vector field defined in the dataset settings:
 
 ```python
 dataset.records.add(
@@ -17,10 +36,7 @@ dataset.records.add(
 )
 ```
 
-Vectors can be passed using a mapping of the vector name to the vector values,
-where the key is the vector name and the value is the vector values. The mapping \
-is passed as a dictionary to the `mapping` parameter, where the key is the \
-key in the data source and the value is the vector_name in the Argilla server:
+Vectors can be passed using a mapping, where the key is the key in the data source and the value is the name in the dataset's setting's `rg.VectorField` object. For example, the following code adds a record with a vector using a mapping:
 
 ```python
 dataset.records.add(
@@ -34,7 +50,7 @@ dataset.records.add(
 )
 ```
 
-Or, vectors can be instantiated and added to a record:
+Or, vectors can be instantiated and added to a record directly, like this:
 
 ```python
 dataset.records.add(
@@ -47,4 +63,10 @@ dataset.records.add(
 )
 ```
 
-::: argilla_sdk.vectors
+---
+
+## Class Reference
+
+::: argilla_sdk.vectors.Vector
+    options: 
+        heading_level: 3

@@ -172,7 +172,7 @@ class Datasets(Sequence["Dataset"], ResourceHTMLReprMixin):
             if model.name == name:
                 return Dataset(_model=model, client=self._client)
 
-        return Dataset(name=name, workspace_id=workspace_id, client=self._client, **kwargs)
+        return Dataset(name=name, workspace=workspace, client=self._client, **kwargs)
 
     def __iter__(self):
         return self._Iterator(self.list())

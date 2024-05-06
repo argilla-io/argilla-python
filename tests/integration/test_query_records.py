@@ -34,7 +34,7 @@ def dataset(client: Argilla, workspace: Workspace) -> Dataset:
     )
     dataset = Dataset(
         name=name,
-        workspace_id=workspace.id,
+        workspace=workspace.name,
         settings=settings,
         client=client,
     )

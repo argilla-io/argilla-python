@@ -11,15 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import warnings
 from typing import Optional, Literal, Union
 from uuid import UUID, uuid4
 
 from argilla_sdk._api import DatasetsAPI
+from argilla_sdk._exceptions import NotFoundError
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
 from argilla_sdk.records import DatasetRecords
 from argilla_sdk.settings import Settings
+from argilla_sdk.workspaces._resource import Workspace
+
 
 __all__ = ["Dataset"]
 
@@ -38,7 +43,7 @@ class Dataset(Resource):
         self,
         name: Optional[str] = None,
         status: Literal["draft", "ready"] = "draft",
-        workspace_id: Optional[Union[UUID, str]] = None,
+        workspace: Optional[Union["Workspace", str]] = None,
         settings: Optional[Settings] = None,
         client: Optional["Argilla"] = Argilla(),
         id: Optional[Union[UUID, str]] = uuid4(),
@@ -58,10 +63,11 @@ class Dataset(Resource):
         if name is None:
             name = str(id)
             self.log(f"Settings dataset name to unique UUID: {id}")
+        self.workspace_id = self.__workspace_id_from_name(workspace=workspace)
         _model = _model or DatasetModel(
             name=name,
             status=status,
-            workspace_id=self._convert_optional_uuid(uuid=workspace_id),
+            workspace_id=self._convert_optional_uuid(uuid=self.workspace_id),
             id=self._convert_optional_uuid(uuid=id),
         )
         self._model = _model
@@ -146,6 +152,27 @@ class Dataset(Resource):
         settings = settings or Settings()
         settings.dataset = self
         return settings
+
+    def __workspace_id_from_name(self, workspace: Optional[Union["Workspace", str]]) -> UUID:
+        available_workspaces = self._client.workspaces
+        available_workspace_names = [ws.name for ws in available_workspaces]
+        if workspace is None:
+            ws = available_workspaces[0] # type: ignore
+            warnings.warn(
+                f"Workspace not provided. Using default workspace: {ws.name} id: {ws.id}"
+            )
+        elif isinstance(workspace, str):
+            ws = self._client.workspaces(workspace)
+            if not ws.exists():
+                self.log(
+                    message=f"Workspace with name {workspace} not found. \
+                        Available workspaces: {available_workspace_names}",
+                    level="error",
+                )
+                raise NotFoundError()
+        else:
+            ws = workspace
+        return ws.id
 
     def __create(self) -> None:
         response_model = self._api.create(self._model)

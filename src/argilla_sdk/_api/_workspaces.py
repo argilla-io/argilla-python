@@ -18,7 +18,7 @@ from uuid import UUID
 import httpx
 
 from argilla_sdk._api._base import ResourceAPI
-from argilla_sdk._exceptions._api import api_error_handler
+from argilla_sdk._exceptions._api import api_error_handler, NotFoundError, UnprocessableEntityError
 from argilla_sdk._models._workspace import WorkspaceModel
 
 __all__ = ["WorkspacesAPI"]
@@ -96,7 +96,6 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
             if workspace.name == name:
                 self.log(message=f"Got workspace {workspace.name}")
                 return workspace
-        return None
 
     @api_error_handler
     def add_user(self, workspace_id: UUID, user_id: UUID) -> None:

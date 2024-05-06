@@ -129,7 +129,7 @@ nav:
       - Datasets: how_to_guides/dataset/dataset.md
       - Dataset settings: how_to_guides/dataset/settings.md
     - Add, update, and delete records: how_to_guides/record.md
-    - Query, filter and export records: how_to_guides/query_export.md
+    - Query, filter, and export records: how_to_guides/query_export.md
     # - Distribute annotation work: how_to_guides/distribute.md
     # - Compute metrics and KPIs:
     #   - how_to_guides/metrics/index.md

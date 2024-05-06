@@ -98,13 +98,6 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
                 return workspace
 
     @api_error_handler
-    def get_by_name_or_id(self, name_or_id: str) -> Optional[WorkspaceModel]:
-        try:
-            return self.get(workspace_id=name_or_id)
-        except (NotFoundError, UnprocessableEntityError):
-            return self.get_by_name(name=name_or_id)
-
-    @api_error_handler
     def add_user(self, workspace_id: UUID, user_id: UUID) -> None:
         response = self.http_client.post(f"{self.url_stub}/{workspace_id}/users/{user_id}")
         response.raise_for_status()

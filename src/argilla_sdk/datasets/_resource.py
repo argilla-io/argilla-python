@@ -23,6 +23,8 @@ from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
 from argilla_sdk.records import DatasetRecords
 from argilla_sdk.settings import Settings
+from argilla_sdk.workspaces._resource import Workspace
+
 
 __all__ = ["Dataset"]
 
@@ -61,7 +63,7 @@ class Dataset(Resource):
         if name is None:
             name = str(id)
             self.log(f"Settings dataset name to unique UUID: {id}")
-        self.workspace_id = self.__workspace_id_from_name_or_id(workspace=workspace)
+        self.workspace_id = self.__workspace_id_from_name(workspace=workspace)
         _model = _model or DatasetModel(
             name=name,
             status=status,
@@ -151,21 +153,25 @@ class Dataset(Resource):
         settings.dataset = self
         return settings
 
-    def __workspace_id_from_name_or_id(self, workspace: Optional[Union[UUID, str]]) -> UUID:
+    def __workspace_id_from_name(self, workspace: Optional[Union["Workspace", str]]) -> UUID:
         available_workspaces = self._client.workspaces
+        available_workspace_names = [ws.name for ws in available_workspaces]
         if workspace is None:
             workspace_model = available_workspaces[0]._model  # type: ignore
             warnings.warn(
                 f"Workspace not provided. Using default workspace: {workspace_model.name} id: {workspace_model.id}"
             )
-        else:
-            try:
-                workspace_model = self._client.api.workspaces.get_by_name_or_id(name_or_id=workspace)  # type: ignore
-                assert workspace_model is not None
-            except (NotFoundError, AssertionError) as e:
-                available_workspace_names = [ws.name for ws in available_workspaces]
-                raise ValueError(f"Workspace with name or ID {workspace} not found \
-                                     Available workspaces: {available_workspace_names}") from e
+        elif isinstance(workspace, str):
+            workspace_model = self._client.api.workspaces.get_by_name(name=workspace)
+            if workspace_model is None:
+                self.log(
+                    message=f"Workspace with name {workspace} not found. \
+                        Available workspaces: {available_workspace_names}",
+                    level="error",
+                )
+                raise NotFoundError()
+        elif isinstance(workspace, Workspace):
+            workspace_model = workspace._model
         return workspace_model.id
 
     def __create(self) -> None:

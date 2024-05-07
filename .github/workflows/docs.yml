@@ -21,8 +21,7 @@ on:
       - synchronize
       - ready_for_review
     branches:
-      - docs/**
-      - ci/**
+      - main
 
 jobs:
   publish:
@@ -49,6 +48,10 @@ jobs:
       - name: Install dependencies
         run: |
           pdm install
+
+      - name: Print github head ref name
+        run: |
+          echo "${{ github.head_ref }}
 
       - name: Set git credentials
         run: |

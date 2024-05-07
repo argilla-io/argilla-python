@@ -14,7 +14,7 @@
 
 import warnings
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union, Iterable
 from uuid import UUID, uuid4
 
 from argilla_sdk._models import (
@@ -71,22 +71,25 @@ class Record(Resource):
             id: An id for the record.
             dataset: The dataset object to which the record belongs.
         """
-        self.dataset = dataset
+        self._dataset = dataset
+
         self._model = RecordModel(
             fields=fields,
             external_id=external_id or uuid4(),
-            id=id or uuid4(),
+            id=id,
         )
-        self.__vectors = RecordVectors(vectors=vectors, record=self)
-        self.__responses = RecordResponses(responses=responses, record=self)
-        self.__suggestions = RecordSuggestions(suggestions=suggestions, record=self)
-        self.__metadata = RecordMetadata(metadata=metadata)
-        self._model.responses = self.__responses.models
-        self._model.suggestions = self.__suggestions.models
-        self._model.vectors = self.__vectors.models
-        self._model.metadata = self.__metadata.models
-        # TODO: This should be done in the RecordModel class as above
+        # TODO: All this code blocks could be define as property setters
+        # Initialize the fields
         self.__fields = RecordFields(fields=self._model.fields)
+        # Initialize the vectors
+        self.__vectors = RecordVectors(vectors=vectors, record=self)
+        self._model.vectors = self.__vectors.models
+        # Initialize the metadata
+        self.__metadata = RecordMetadata(metadata=metadata)
+        self._model.metadata = self.__metadata.models
+        # Initialize the responses and suggestions
+        self._set_responses(responses or [])
+        self._set_suggestions(suggestions or [])
 
     def __repr__(self):
         record_body = ",".join([f"{k}={v}" for k, v in self.__dict__.items()])
@@ -95,6 +98,17 @@ class Record(Resource):
     ############################
     # Properties
     ############################
+
+    @property
+    def dataset(self) -> "Dataset":
+        return self._dataset
+
+    @dataset.setter
+    def dataset(self, value: "Dataset") -> None:
+        self._dataset = value
+        # Update the dataset for the responses and suggestions
+        self._set_responses(self.responses)
+        self._set_suggestions(self.suggestions)
 
     @property
     def external_id(self) -> str:
@@ -260,6 +274,14 @@ class Record(Resource):
             dataset=dataset,
         )
 
+    def _set_responses(self, responses: Iterable[Response]):
+        self.__responses = RecordResponses(responses=[responses for responses in responses], record=self)
+        self._model.responses = self.__responses.models
+
+    def _set_suggestions(self, suggestions: Iterable[Suggestion]) -> None:
+        self.__suggestions = RecordSuggestions(suggestions=[suggestion for suggestion in suggestions], record=self)
+        self._model.suggestions = self.__suggestions.models
+
 
 class RecordFields:
     """This is a container class for the fields of a Record.
@@ -284,7 +306,7 @@ class RecordFields:
         return self.__fields
 
 
-class RecordResponses:
+class RecordResponses(Iterable[Response]):
     """This is a container class for the responses of a Record.
     It allows for accessing responses by attribute and iterating over them.
     A record can have multiple responses per question so we set the response
@@ -334,7 +356,7 @@ class RecordResponses:
         return response_dict
 
 
-class RecordSuggestions:
+class RecordSuggestions(Iterable[Suggestion]):
     """This is a container class for the suggestions of a Record.
     It allows for accessing suggestions by attribute and iterating over them.
     """
@@ -342,17 +364,22 @@ class RecordSuggestions:
     def __init__(self, suggestions: List[Suggestion], record: Record) -> None:
         self.__suggestions = suggestions or []
         self.record = record
-        dataset = record.dataset
+
         for suggestion in self.__suggestions:
-            if suggestion.question_name is None and dataset is None:
-                continue
-            if suggestion.question_name is None:
-                # TODO: Add question name validations
-                question_name = dataset.settings.question_by_id(suggestion.question_id).name
-                suggestion.question_name = question_name
-            else:
-                question_name = suggestion.question_name
-            setattr(self, question_name, suggestion)
+            self._normalize_suggestion_question_or_raises(suggestion)
+            setattr(self, suggestion.question_name, suggestion)
+
+    def _normalize_suggestion_question_or_raises(self, suggestion: Suggestion) -> None:
+        dataset_settings = self.record.dataset.settings if self.record.dataset else None
+
+        if suggestion.question_id and dataset_settings:
+            question = dataset_settings.question_by_id(suggestion.question_id)
+            suggestion.question_name = question.name
+        elif suggestion.question_name and dataset_settings:
+            question = dataset_settings.question_by_name(suggestion.question_name)
+            suggestion.question_id = question.id
+        elif suggestion.question_name is None:
+            raise ValueError("Suggestion question_name is required.")
 
     @property
     def models(self) -> List[SuggestionModel]:

@@ -157,6 +157,10 @@ class Settings(Resource):
     def schema_by_id(self) -> Dict[UUID, Union[FieldType, QuestionType]]:
         return {v.id: v for v in self.schema.values()}
 
+    @property
+    def defined(self) -> bool:
+        return all([self.fields, self.questions])
+
     #####################
     #  Public methods   #
     #####################

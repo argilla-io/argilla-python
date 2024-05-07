@@ -67,4 +67,4 @@ jobs:
         id: extract_branch_name
 
       - run: pdm run mike deploy ${{ steps.extract_branch_name.outputs.branch_name }} --push
-        if: startsWith(github.head_ref, 'ci/')
+        if: startsWith(github.head_ref, 'docs/')

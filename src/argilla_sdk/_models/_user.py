@@ -38,7 +38,7 @@ class UserModel(ResourceModel):
 
     class Config:
         validate_assignment = True
-        anystr_strip_whitespace = True
+        str_strip_whitespace = True
 
     @field_validator("first_name")
     @classmethod

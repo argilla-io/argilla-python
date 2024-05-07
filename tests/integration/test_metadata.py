@@ -37,7 +37,7 @@ def dataset_with_metadata(client: Argilla, workspace: Workspace) -> Dataset:
     )
     dataset = Dataset(
         name=name,
-        workspace_id=workspace.id,
+        workspace=workspace.name,
         settings=settings,
         client=client,
     )
@@ -57,7 +57,7 @@ def test_create_dataset_with_metadata(client: Argilla, workspace: Workspace) -> 
     )
     dataset = Dataset(
         name=name,
-        workspace_id=workspace.id,
+        workspace=workspace.name,
         settings=settings,
         client=client,
     )

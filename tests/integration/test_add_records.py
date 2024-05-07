@@ -16,11 +16,11 @@ def client() -> rg.Argilla:
 
 
 def test_create_dataset(client):
-    workspace_id = client.workspaces[0].id
+    workspace = client.workspaces[0]
     mock_dataset_name = f"test_create_dataset{datetime.now().strftime('%Y%m%d%H%M%S')}"
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
+        workspace=workspace,
         settings=rg.Settings(
             fields=[
                 rg.TextField(name="text"),
@@ -38,7 +38,6 @@ def test_create_dataset(client):
 
 
 def test_add_records(client):
-    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_add_records{datetime.now().strftime('%Y%m%d%H%M%S')}"
     mock_data = [
         {
@@ -67,7 +66,6 @@ def test_add_records(client):
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )
@@ -164,7 +162,6 @@ def test_add_single_record(client: Argilla):
 
 
 def test_add_records_with_suggestions(client) -> None:
-    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_add_record_with_suggestions {datetime.now().strftime('%Y%m%d%H%M%S')}"
     mock_data = [
         {
@@ -196,7 +193,6 @@ def test_add_records_with_suggestions(client) -> None:
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )
@@ -212,7 +208,6 @@ def test_add_records_with_suggestions(client) -> None:
 
 
 def test_add_records_with_responses(client) -> None:
-    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
     mock_data = [
         {
@@ -241,7 +236,6 @@ def test_add_records_with_responses(client) -> None:
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )
@@ -272,7 +266,6 @@ def test_add_records_with_responses(client) -> None:
 
 
 def test_add_records_with_responses_and_suggestions(client) -> None:
-    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
     mock_data = [
         {
@@ -304,7 +297,6 @@ def test_add_records_with_responses_and_suggestions(client) -> None:
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )
@@ -336,7 +328,6 @@ def test_add_records_with_responses_and_suggestions(client) -> None:
 
 
 def test_add_records_with_fields_mapped(client) -> None:
-    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
     mock_data = [
         {
@@ -368,7 +359,6 @@ def test_add_records_with_fields_mapped(client) -> None:
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )
@@ -397,7 +387,6 @@ def test_add_records_with_fields_mapped(client) -> None:
 
 
 def test_add_records_with_id_mapped(client) -> None:
-    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
     mock_data = [
         {
@@ -429,7 +418,6 @@ def test_add_records_with_id_mapped(client) -> None:
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )
@@ -458,7 +446,6 @@ def test_add_records_with_id_mapped(client) -> None:
 
 
 def test_add_record_resources(client):
-    workspace_id = client.workspaces[0].id
     user_id = client.users[0].id
     mock_dataset_name = f"test_add_records{datetime.now().strftime('%Y%m%d%H%M%S')}"
     mock_resources = [
@@ -488,7 +475,6 @@ def test_add_record_resources(client):
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )
@@ -504,7 +490,6 @@ def test_add_record_resources(client):
 
 
 def test_add_records_with_responses_and_same_schema_name(client: Argilla):
-    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
     mock_data = [
         {
@@ -530,7 +515,6 @@ def test_add_records_with_responses_and_same_schema_name(client: Argilla):
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )
@@ -557,7 +541,6 @@ def test_add_records_with_responses_and_same_schema_name(client: Argilla):
 
 
 def test_add_records_objects_with_responses(client: Argilla):
-    workspace_id = client.workspaces[0].id
     mock_dataset_name = f"test_modify_record_responses_locally {uuid.uuid4()}"
 
     settings = rg.Settings(
@@ -571,7 +554,6 @@ def test_add_records_objects_with_responses(client: Argilla):
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
         settings=settings,
         client=client,
     )

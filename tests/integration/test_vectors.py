@@ -16,7 +16,7 @@ def client() -> rg.Argilla:
 
 @pytest.fixture
 def dataset(client: rg.Argilla) -> rg.Dataset:
-    workspace_id = client.workspaces[0].id
+    workspace = client.workspaces[0]
     mock_dataset_name = f"test_add_records{datetime.now().strftime('%Y%m%d%H%M%S')}"
     settings = rg.Settings(
         fields=[
@@ -31,7 +31,7 @@ def dataset(client: rg.Argilla) -> rg.Dataset:
     )
     dataset = rg.Dataset(
         name=mock_dataset_name,
-        workspace_id=workspace_id,
+        workspace=workspace,
         settings=settings,
         client=client,
     )

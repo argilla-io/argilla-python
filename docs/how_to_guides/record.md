@@ -26,6 +26,14 @@ You can add records to a dataset as dictionaries or instances of the `Record` cl
 
 > Check the [Record - Python Reference](../../reference/argilla_sdk/records/records.md) to see the attributes, arguments, and methods of the `Record` class in detail.
 
+=== "As a dictionary"
+
+```python
+
+```
+
+=== "As a `Record` object"
+
 ```python
 rg.Record(
     id="1234",

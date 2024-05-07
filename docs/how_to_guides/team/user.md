@@ -6,8 +6,6 @@ description: In this section, we will provide a step-by-step guide to show how t
 
 This guide provides an overview of user roles and credentials, explaining how to set up and manage users in Argilla.
 
-## User
-
 A **user** in Argilla is an authorized person, who depending on their role, can use the Python SDK and access the UI in a running Argilla instance.
 
 We differentiate between three types of users depending on their role, permissions and needs: `owner`, `admin` and `annotator`. 
@@ -40,17 +38,11 @@ We differentiate between three types of users depending on their role, permissio
     - **Annotation**: It can annotate the assigned datasets in the Argilla UI.
     - **Feedback**: It can provide feedback with the Argilla UI.
 
-### User model
+!!! Question "Question: Who can manage users?"
 
-A **user** is defined in the `User` class that has the following arguments:
+    Only users with the `owner` role can manage (create, retrieve, delete) other users.
 
-* `id`: The unique identifier of the user.
-* `username`: The username used as login for Argilla's UI. It has to be unique.
-* `first_name` (optional): The user's first name. Defaults to the `username` value.
-* `last_name` (optional): The user's last name. Defaults to the `username` value.
-* `role` (optional): The user's role (`owner`, `admin` or `annotator`) in Argilla. Defaults to `annotator`.
-* `password`: The user's password.
-* `client`: The client used to interact with Argilla.
+## rg.User
 
 > Check the [User - Python Reference](../../reference/argilla_sdk/users.md) to see the attributes, arguments, and methods of the `User` class in detail.
 
@@ -65,11 +57,7 @@ rg.User(
 )
 ```
 
-### Who can manage users
-
-Only users with the `owner` role can manage (create, retrieve, delete) other users.
-
-### Default users and credentials
+## Default users and credentials
 
 Argilla provides a default user with the `owner` role to help you get started in Python and the UI. The credentials for this user vary depending on the server configuration.
 
@@ -77,6 +65,7 @@ Argilla provides a default user with the `owner` role to help you get started in
 |-------------------------------|----------|-------------|----------------|
 | Quickstart Docker and HF Space | owner    | 12345678    | owner.apikey   |
 | Server image                  | argilla  | 1234        | argilla.apikey |
+
 
 ## How-to guide
 

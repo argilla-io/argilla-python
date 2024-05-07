@@ -6,17 +6,15 @@ description: In this section, we will provide a step-by-step guide to show how t
 
 This guide provides an overview of datasets, explaining the basics of how to set them up and manage them in Argilla.
 
-## Dataset
-
 A **dataset** is a collection of records that you can configure for labelers to provide feedback using the UI. Depending on the specific requirements of your task, you may need various types of feedback. You can customize the dataset to include different kinds of questions, so the first step will be to define the aim of your project and the kind of data and feedback you will need. With this information, you can start configuring a dataset by defining fields, questions, metadata, vectors, and guidelines through settings.
 
-### Who can manage datasets
+!!! Question "Question: Who can manage datasets?"
 
-Only users with the `owner` role can manage (create, retrieve, update and delete) all the datasets.
+    Only users with the `owner` role can manage (create, retrieve, update and delete) all the datasets.
 
-The users with the `admin` role can manage (create, retrieve, update and delete) the datasets in the workspaces they have access to.
+    The users with the `admin` role can manage (create, retrieve, update and delete) the datasets in the workspaces they have access to.
 
-### Dataset model
+## rg.Dataset
 
 A dataset is defined in the `Dataset` class that has the following arguments:
 
@@ -39,7 +37,7 @@ rg.Dataset(
 )
 ```
 
-### Dataset settings model
+## rg.Settings
 
 Dataset settings are defined in the `Settings` class that has the following arguments:
 
@@ -118,9 +116,9 @@ dataset.publish()
 !!! tip "Accessing attributes"
     Access the attributes of a dataset by calling them directly on the `dataset` object. For example, `dataset.id`, `dataset.name` or `dataset.settings`. You can similarly access the fields, questions, metadata, vectors and guidelines. For instance, `dataset.fields` or `dataset.questions`.
 
-#### Define dataset settings
+### Define dataset settings
 
-##### Fields
+#### Fields
 
 The fields in a dataset consist of one or more data items requiring annotation. Currently, Argilla only supports the ``TextField`` type—a plain text field—though there are plans to introduce additional field types in future updates.
 
@@ -154,7 +152,7 @@ rg.TextField(
 ```
 ![TextField](../assets/images/how_to_guides/dataset/fields.png)
 
-##### Questions
+#### Questions
 
 To collect feedback for your dataset, you need to formulate questions that annotators will be asked to answer. Currently, Argilla supports the following types of questions: `LabelQuestion`, `MultiLabelQuestion`, `RankingQuestion`, `RatingQuestion`, `SpanQuestion`, and `TextQuestion`.
 
@@ -308,7 +306,7 @@ To collect feedback for your dataset, you need to formulate questions that annot
 
     ![TextQuestion](../assets/images/how_to_guides/dataset/text_question.png)
 
-##### Metadata
+#### Metadata
 
 Metadata properties allow you to configure the use of metadata information for the filtering and sorting features available in the UI and Python SDK. There exist three types of metadata you can add: `TermsMetadataProperty`, `IntegerMetadataProperty` and `FloatMetadataProperty`.
 
@@ -364,7 +362,7 @@ Metadata properties allow you to configure the use of metadata information for t
     ```
     ![FloatMetadataProperty](../assets/images/how_to_guides/dataset/float_metadata.png)
 
-##### Vectors
+#### Vectors
 
 To use the similarity search in the UI and the Python SDK, you will need to configure vectors using the `VectorField` class. It has the following configuration:
 
@@ -381,7 +379,7 @@ rg.VectorField(
 ```
 ![VectorField](../assets/images/how_to_guides/dataset/vectors.png)
 
-##### Guidelines
+#### Guidelines
 
 Once you have decided on the data to show and the questions to ask, it's important to provide clear guidelines to the annotators. These guidelines help them understand the task and answer the questions consistently. You can provide guidelines in two ways:
 
@@ -458,38 +456,6 @@ You can update a dataset by calling the `update` method on the `Dataset` class a
 
 !!! note
     Keep in mind that once your dataset is published, only the guidelines can be updated.
-
-```python
-import argilla_sdk as rg
-
-client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
-
-dataset_to_update = client.datasets(name="my_dataset")
-
-settings_to_update = rg.Settings(
-    guidelines="These are some updated guidelines.",
-    fields=[
-        rg.TextField(
-            name="text",
-        ),
-    ],
-    questions=[
-        rg.LabelQuestion(name="label", labels=["label_4", "label_5", "label_6"]),
-    ],
-)
-
-dataset_to_update.settings = settings_to_update
-
-dataset_updated = dataset_to_update.update()
-dataset_updated
-```
-
-### Update dataset settings
-
-To update the dataset settings, you can use the `update` method of the `Settings` class. This method is inherited from the `Resource` base class and operates without modifications.
-
-!!! note
-    Keep in mind that once your dataset contains records, only the guidelines can be updated.
 
 ```python
 import argilla_sdk as rg

@@ -1,5 +1,10 @@
 [
   {
+    "version": "ci_deploy-docs-version-per-pr",
+    "title": "ci_deploy-docs-version-per-pr",
+    "aliases": []
+  },
+  {
     "version": "dev",
     "title": "dev",
     "aliases": []

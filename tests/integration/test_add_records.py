@@ -451,16 +451,28 @@ def test_add_record_resources(client):
     mock_resources = [
         rg.Record(
             fields={"text": "Hello World, how are you?"},
+            suggestions=[
+                rg.Suggestion("label", "positive", score=0.9),
+                rg.Suggestion("topics", ["topic1", "topic2"], score=[0.9, 0.8]),
+            ],
             responses=[rg.Response("label", "positive", user_id=user_id)],
             external_id=str(uuid.uuid4()),
         ),
         rg.Record(
             fields={"text": "Hello World, how are you?"},
+            suggestions=[
+                rg.Suggestion("label", "positive", score=0.9),
+                rg.Suggestion("topics", ["topic1", "topic2"], score=[0.9, 0.8]),
+            ],
             responses=[rg.Response("label", "positive", user_id=user_id)],
             external_id=str(uuid.uuid4()),
         ),
         rg.Record(
             fields={"text": "Hello World, how are you?"},
+            suggestions=[
+                rg.Suggestion("label", "positive", score=0.9),
+                rg.Suggestion("topics", ["topic1", "topic2"], score=[0.9, 0.8]),
+            ],
             responses=[rg.Response("label", "positive", user_id=user_id)],
             external_id=str(uuid.uuid4()),
         ),
@@ -471,6 +483,7 @@ def test_add_record_resources(client):
         ],
         questions=[
             rg.LabelQuestion(name="label", labels=["positive", "negative"]),
+            rg.MultiLabelQuestion(name="topics", labels=["topic1", "topic2", "topic3"]),
         ],
     )
     dataset = rg.Dataset(
@@ -481,12 +494,27 @@ def test_add_record_resources(client):
     dataset.publish()
     dataset.records.add(records=mock_resources)
 
-    dataset_records = list(dataset.records)
+    dataset_records = list(dataset.records(with_suggestions=True))
 
     assert dataset.name == mock_dataset_name
+
     assert dataset_records[0].external_id == str(mock_resources[0].external_id)
+    assert dataset_records[0].suggestions.label.value == "positive"
+    assert dataset_records[0].suggestions.label.score == 0.9
+    assert dataset_records[0].suggestions.topics.value == ["topic1", "topic2"]
+    assert dataset_records[0].suggestions.topics.score == [0.9, 0.8]
+
     assert dataset_records[1].external_id == str(mock_resources[1].external_id)
+    assert dataset_records[1].suggestions.label.value == "positive"
+    assert dataset_records[1].suggestions.label.score == 0.9
+    assert dataset_records[1].suggestions.topics.value == ["topic1", "topic2"]
+    assert dataset_records[1].suggestions.topics.score == [0.9, 0.8]
+
     assert dataset_records[2].external_id == str(mock_resources[2].external_id)
+    assert dataset_records[2].suggestions.label.value == "positive"
+    assert dataset_records[2].suggestions.label.score == 0.9
+    assert dataset_records[2].suggestions.topics.value == ["topic1", "topic2"]
+    assert dataset_records[2].suggestions.topics.score == [0.9, 0.8]
 
 
 def test_add_records_with_responses_and_same_schema_name(client: Argilla):

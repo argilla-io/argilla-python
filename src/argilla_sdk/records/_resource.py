@@ -352,7 +352,7 @@ class RecordSuggestions:
                 suggestion.question_name = question_name
             else:
                 question_name = suggestion.question_name
-            setattr(self, question_name, suggestion.value)
+            setattr(self, question_name, suggestion)
 
     @property
     def models(self) -> List[SuggestionModel]:

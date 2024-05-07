@@ -72,6 +72,8 @@ class Dataset(Resource):
         )
         self._model = _model
         self._settings = self.__configure_settings_for_dataset(settings=settings)
+        if self.is_published:
+            self._settings.get()
         self.__records = DatasetRecords(client=self._client, dataset=self)
         self._sync(model=self._model)
 
@@ -157,10 +159,8 @@ class Dataset(Resource):
         available_workspaces = self._client.workspaces
         available_workspace_names = [ws.name for ws in available_workspaces]
         if workspace is None:
-            ws = available_workspaces[0] # type: ignore
-            warnings.warn(
-                f"Workspace not provided. Using default workspace: {ws.name} id: {ws.id}"
-            )
+            ws = available_workspaces[0]  # type: ignore
+            warnings.warn(f"Workspace not provided. Using default workspace: {ws.name} id: {ws.id}")
         elif isinstance(workspace, str):
             ws = self._client.workspaces(workspace)
             if not ws.exists():

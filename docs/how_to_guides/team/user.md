@@ -51,6 +51,8 @@ Argilla provides a default user with the `owner` role to help you get started in
 
 ## rg.User
 
+A `User` object in Argilla represents a user with a specific role and credentials.
+
 > Check the [User - Python Reference](../../reference/argilla_sdk/users.md) to see the attributes, arguments, and methods of the `User` class in detail.
 
 ```python

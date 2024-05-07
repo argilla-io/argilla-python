@@ -25,6 +25,8 @@ Argilla provides a default workspace to help you get started in Python and the U
 
 ## rg.Workspace
 
+A workspace in Argilla is represented by a `Workspace`.
+
 > Check the [Workspace - Python Reference](../../reference/argilla_sdk/workspaces.md) to see the attributes, arguments, and methods of the `Workspace` class in detail.
 
 ```python

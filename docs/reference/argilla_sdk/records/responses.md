@@ -34,13 +34,24 @@ dataset.records.add(
 )
 ```
 
-Responses can be accessed from a `Record` via their question name as an attribute:
+Responses can be accessed from a `Record` via their question name as an attribute of the record. So if a question is named `label`, the response can be accessed as `record.label`. The following example demonstrates how to access responses from a record object:
 
 ```python
 
+# iterate over the records and responses
+
 for record in dataset.records:
-    for response in record.responses:
-        print(record.label.value) # `label` here is the question name defined in the dataset's `Settings`
+    for response in record.responses.label:
+        print(response.value)
+        print(response.user_id)
+
+# validate that the record has a response
+
+for record in dataset.records:
+    if record.responses.label:
+        for response in record.responses.label:
+            print(response.value)
+            print(response.user_id)
 
 ```
 

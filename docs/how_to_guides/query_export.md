@@ -19,7 +19,7 @@ A query is defined in the `Query` class that you can use to search for terms or 
 | `<=`     | The `field` value is less than or equal to the `value` |
 | `in`     | TThe `field` value is included in a list of values |
 
-> Check the [Query and Filter - Python Reference](../../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Query` and `Filter` classes in detail.
+> Check the [Query and Filter - Python Reference](../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Query` and `Filter` classes in detail.
 
 ```python
 rg.Query(

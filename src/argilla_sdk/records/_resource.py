@@ -14,7 +14,7 @@
 
 import warnings
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple, Union
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Tuple, Union
 from uuid import UUID, uuid4
 
 from argilla_sdk._models import (
@@ -88,9 +88,12 @@ class Record(Resource):
         # TODO: This should be done in the RecordModel class as above
         self.__fields = RecordFields(fields=self._model.fields)
 
-    def __repr__(self):
-        record_body = ",".join([f"{k}={v}" for k, v in self.__dict__.items()])
-        return f"<Record {record_body}>"
+    def __repr__(self) -> Generator:
+        yield self.fields
+        yield self.responses
+        yield self.suggestions
+        yield self.metadata
+        yield self.vectors
 
     ############################
     # Properties
@@ -277,11 +280,12 @@ class RecordFields:
     def __iter__(self):
         return iter(self.__fields)
 
-    def __repr__(self):
-        return f"<RecordFields {self.__fields}>"
-
     def to_dict(self) -> Dict[str, Union[str, None]]:
         return self.__fields
+
+    def __repr__(self) -> Generator:
+        for key, value in self.__fields.items():
+            yield key, value
 
 
 class RecordResponses:
@@ -333,6 +337,11 @@ class RecordResponses:
             response_dict[response.question_name].append({"value": response.value, "user_id": response.user_id})
         return response_dict
 
+    def __repr__(self) -> Generator:
+        for question_name, responses in self.__question_map.items():
+            for response in responses:
+                yield question_name, response.value, response.user_id
+
 
 class RecordSuggestions:
     """This is a container class for the suggestions of a Record.
@@ -378,6 +387,10 @@ class RecordSuggestions:
             }
         return suggestion_dict
 
+    def __repr__(self) -> Generator:
+        for suggestion in self.__suggestions:
+            yield suggestion.question_name, suggestion.value, suggestion.score, suggestion.agent
+
 
 class RecordVectors:
     """This is a container class for the vectors of a Record.
@@ -400,6 +413,11 @@ class RecordVectors:
             A dictionary of vectors.
         """
         return {vector.name: vector.values for vector in self.__vectors}
+
+    def __repr__(self) -> Generator:
+        for vector in self.__vectors:
+            yield vector.name
+            yield f"dimenstions: {len(vector.values)}"
 
 
 class RecordMetadata:
@@ -426,3 +444,7 @@ class RecordMetadata:
 
     def to_dict(self) -> Dict[str, MetadataValue]:
         return {meta.name: meta.value for meta in self.__metadata_models}
+
+    def __repr__(self) -> Generator:
+        for key, value in self.__metadata_map.items():
+            yield key, value

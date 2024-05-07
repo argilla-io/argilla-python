@@ -51,7 +51,7 @@ jobs:
 
       - name: Print github head ref name
         run: |
-          echo "${{ github.head_ref }}
+          echo "${{ github.head_ref }}"
 
       - name: Set git credentials
         run: |

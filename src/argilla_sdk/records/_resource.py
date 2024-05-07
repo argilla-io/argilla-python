@@ -158,7 +158,8 @@ class Record(Resource):
         fields: Dict[str, str] = {}
         responses: List[Response] = []
         record_id: Optional[str] = None
-        suggestions: List[Suggestion] = []
+        suggestions: Dict[str, SuggestionModel] = {}
+        suggestion_values = defaultdict(dict)
         vectors: List[Vector] = []
         metadata: Dict[str, MetadataValue] = {}
 
@@ -167,6 +168,8 @@ class Record(Resource):
         for attribute, value in data.items():
             schema_item = schema.get(attribute)
             attribute_type = None
+            sub_attribute = None
+
             # Map source data keys using the mapping
             if mapping and attribute in mapping:
                 attribute_mapping = mapping.get(attribute)
@@ -175,6 +178,8 @@ class Record(Resource):
                 schema_item = schema.get(attribute)
                 if len(attribute_mapping) > 1:
                     attribute_type = attribute_mapping[1]
+                if len(attribute_mapping) > 2:
+                    sub_attribute = attribute_mapping[2]
             elif schema_item is mapping is None:
                 warnings.warn(
                     message=f"""Record attribute {attribute} is not in the schema so skipping. 
@@ -188,13 +193,22 @@ class Record(Resource):
                 record_id = value
                 continue
 
+            if attribute_type == "suggestion" and sub_attribute in ["score", "agent"]:
+                suggestion_values[attribute][sub_attribute] = value
+                continue
+            elif attribute_type == "suggestion" and sub_attribute:
+                warnings.warn(
+                    message=f"""Record attribute {sub_attribute} is not a valid suggestion sub_attribute so skipping."""
+                )
+                continue
+
             # Assign the value to question, field, or response based on schema item
             if isinstance(schema_item, TextField):
                 fields[attribute] = value
             elif isinstance(schema_item, QuestionType) and attribute_type == "response":
                 responses.append(Response(question_name=attribute, value=value, user_id=user_id))
             elif isinstance(schema_item, QuestionType) and attribute_type != "response":
-                suggestions.append(Suggestion(question_name=attribute, value=value, question_id=schema_item.id))
+                suggestions[attribute] = Suggestion(question_name=attribute, value=value, question_id=schema_item.id)
             elif isinstance(schema_item, VectorField):
                 vectors.append(Vector(name=attribute, values=value))
             elif isinstance(schema_item, MetadataType):
@@ -203,10 +217,17 @@ class Record(Resource):
                 warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
                 continue
 
+        # Add suggestion values to the suggestions
+        updated_suggestions = []
+        for question_name, suggestion in suggestions.items():
+            suggestion.score = suggestion_values[question_name].get("score")
+            suggestion.agent = suggestion_values[question_name].get("agent")
+            updated_suggestions.append(suggestion)
+
         return cls(
             id=record_id,
             fields=fields,
-            suggestions=suggestions,
+            suggestions=updated_suggestions,
             responses=responses,
             vectors=vectors,
             metadata=metadata,
@@ -352,7 +373,7 @@ class RecordSuggestions:
                 suggestion.question_name = question_name
             else:
                 question_name = suggestion.question_name
-            setattr(self, question_name, suggestion.value)
+            setattr(self, question_name, suggestion)
 
     @property
     def models(self) -> List[SuggestionModel]:

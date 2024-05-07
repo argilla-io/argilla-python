@@ -16,7 +16,7 @@ A dataset is defined in the `Dataset` class that has the following arguments:
 
 * `id`: The unique identifier of the dataset.
 * `name`: The name of the dataset. It has to be unique.
-* `workspace_id`: The unique identifier of the workspace where the dataset will be created.
+* `workspace` (optional): The workspace object or its name where the dataset will be stored. Defaults to the first workspace.
 * `settings`: The settings of the dataset to customize it for your task. They include the guidelines, fields, questions, metadata and vectors.
 * `status` (optional): The status of the dataset. It can be `draft` or `ready`. Defaults to `ready`.
 * `client`: The client used to interact with Argilla.
@@ -26,7 +26,7 @@ A dataset is defined in the `Dataset` class that has the following arguments:
 ```python
 rg.Dataset(
     name="name",
-    workspace_id=workspace.id,
+    workspace=workspace,
     settings=settings,
     status="ready",
     client=client,
@@ -68,13 +68,11 @@ settings = rg.Settings(
     ],
 )
 
-workspace = client.workspaces("my_workspace")
-
 dataset = rg.Dataset(
     name="my_dataset",
-    workspace_id=workspace.id,
+    workspace="my_workspace",
     settings=settings,
-    client=client_owner,
+    client=client,
 )
 
 dataset.publish()
@@ -116,8 +114,6 @@ retrieved_dataset = client.datasets(name="my_dataset")
 # Retrieve the dataset from the specified workspace
 retrieved_dataset = client.datasets(name="my_dataset", workspace=workspace)
 
-# Retrieve the dataset from the specified workspace by id
-retrieved_dataset = client.datasets(name="my_dataset", workspace_id=workspace.id)
 ```
 
 ### Check dataset existence
@@ -128,8 +124,6 @@ You can check if a dataset exists by calling the `exists` method on the `Dataset
 import argilla_sdk as rg
 
 client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
-
-workspace = client.workspaces("my_workspace")
 
 dataset = client.datasets(name="my_dataset")
 

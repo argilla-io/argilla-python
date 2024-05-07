@@ -61,5 +61,5 @@ jobs:
       - run: pdm run mike deploy ${{ github.ref_name }} latest --update-aliases --push
         if: startsWith(github.ref, 'refs/tags/')
 
-      - run: pdm run mike deploy $GITHUB_REF_NAME --push
+      - run: pdm run mike deploy $${{ github.head_ref }} --push
         if: startsWith(github.head_ref, 'ci/')

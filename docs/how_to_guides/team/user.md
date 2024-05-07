@@ -73,8 +73,10 @@ Only users with the `owner` role can manage (create, retrieve, delete) other use
 
 Argilla provides a default user with the `owner` role to help you get started in Python and the UI. The credentials for this user vary depending on the server configuration.
 
-- **For the Quickstart Docker and HF Space**: The username is `owner`, the password is `12345678`, and the API key is `owner.apikey`.
-- **For the Server image**: The username is `argilla`, the password is `1234`, and the API key is `argilla.apikey`.
+| Environment                   | Username | Password    | API Key        |
+|-------------------------------|----------|-------------|----------------|
+| Quickstart Docker and HF Space | owner    | 12345678    | owner.apikey   |
+| Server image                  | argilla  | 1234        | argilla.apikey |
 
 ## How-to guide
 

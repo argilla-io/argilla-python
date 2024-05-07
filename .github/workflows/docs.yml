@@ -48,10 +48,6 @@ jobs:
         run: |
           pdm install
 
-      - name: Print github head ref name
-        run: |
-          echo "${{ github.head_ref }}"
-
       - name: Set git credentials
         run: |
           git config --global user.name "${{ github.actor }}"
@@ -61,7 +57,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
 
       - run: pdm run mike deploy ${{ github.ref_name }} latest --update-aliases --push
-        if: startsWith(github.head_ref, 'refs/tags/')
+        if: startsWith(github.ref, 'refs/tags/')
 
       - run: pdm run mike deploy $GITHUB_REF_NAME --push
-        if: startsWith(github.head_ref, 'refs/head/docs/')
+        if: startsWith(github.head_ref, 'ci/')

@@ -6,25 +6,18 @@ description: In this section, we will provide a step-by-step guide to show how t
 
 This guide provides an overview of how to query and filter a dataset in Argilla and export records.
 
-You can search for records in your dataset by querying or filtering. The query focuses on the content of the text field, while the filter is used to filter the records based on conditions. You can use them independently or combine multiple filters to create complex search queries. You can also export records from a dataset either as a single dictionary or a list of dictionaries.
+You can search for records in your dataset by **querying** or **filtering**. The query focuses on the content of the text field, while the filter is used to filter the records based on conditions. You can use them independently or combine multiple filters to create complex search queries. You can also export records from a dataset either as a single dictionary or a list of dictionaries.
 
 ## rg.Query and rg.Filter
 
-A query is defined in the `Query` class that has the following arguments:
-
-* `query` (optional): The search query string.
-* `filter` (optional): The filter object to filter records based on conditions.
-    * `conditions`: The filter conditions to filter the dataset records. It can be a tuple or a list of tuples with the following structure: `(field, operator, value)`.
-        * `field`: The field or attribute name to be filtered on.
-        * `operator`: The operator to be used for comparison. The included operators are "==", ">=", "<=", or "in".
-        * `value`: The value to be compared with the field. Depending on the comparison, it can be a number or a string.
+A query is defined in the `Query` class that you can use to search for terms or filter records based on conditions. To specify a condition, you should use a tuple or a list of tuples with the following structure: `(field, operator, value)`. Below, you can see the operators you can use to filter records.
 
 | operator | description |
 |----------|-------------|
-| `==`     | Equal to    |
-| `>=`     | Greater than or equal to |
-| `<=`     | Less than or equal to |
-| `in`     | In a list of values |
+| `==`     | The `field` value is equal to the `value` |
+| `>=`     | The `field` value is greater than or equal to the `value` |
+| `<=`     | The `field` value is less than or equal to the `value` |
+| `in`     | TThe `field` value is included in a list of values |
 
 > Check the [Query and Filter - Python Reference](../../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Query` and `Filter` classes in detail.
 
@@ -184,7 +177,7 @@ exported_records = dataset.records.to_dict()
 exported_records
 # {"text": ["Hello", "World"], "label.suggestion": ["greeting", "greeting"]}
 
-# Export records as a dictionary with orient=indez
+# Export records as a dictionary with orient=index
 exported_records = dataset.records.to_dict(orient="index")
 exported_records
 # {"uuid": {"text": "Hello", "label": "greeting"}}

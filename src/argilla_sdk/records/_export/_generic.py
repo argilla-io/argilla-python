@@ -24,7 +24,7 @@ class GenericExportMixin:
     It handles methods for exporting records to generic python formats."""
 
     def _export_to_dict(
-        self, records: List["Record"], flatten=True, orient="names"
+        self, records: List["Record"], flatten=False, orient="names"
     ) -> Dict[str, Union[str, float, int, list]]:
         """Export records to a dictionary with either names or record index as keys.
         Args:
@@ -51,7 +51,7 @@ class GenericExportMixin:
             raise ValueError(f"Invalid value for orient parameter: {orient}")
         return dataset_records
 
-    def _export_to_list(self, records: List["Record"], flatten=True) -> List[Dict[str, Union[str, float, int, list]]]:
+    def _export_to_list(self, records: List["Record"], flatten=False) -> List[Dict[str, Union[str, float, int, list]]]:
         """Export records to a list of dictionaries with either names or record index as keys.
         Args:
             records (List[Record]): List of Record objects to export.
@@ -66,7 +66,7 @@ class GenericExportMixin:
             dataset_records.append(self.__record_to_dict(record=record, flatten=flatten))
         return dataset_records
 
-    def __record_to_dict(self, record: "Record", flatten=True) -> Dict[str, Any]:
+    def __record_to_dict(self, record: "Record", flatten=False) -> Dict[str, Any]:
         """Converts a Record object to a dictionary for export.
         Args:
             record (Record): The Record object to convert.

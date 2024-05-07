@@ -8,17 +8,6 @@ This guide provides an overview of workspaces, explaining how to set up and mana
 
 A **workspace** is a *space* inside your Argilla instance where authorized users can collaborate on datasets. It is accessible through the Python SDK and the UI.
 
-## rg.Workspace
-
-> Check the [Workspace - Python Reference](../../reference/argilla_sdk/workspaces.md) to see the attributes, arguments, and methods of the `Workspace` class in detail.
-
-```python
-rg.Workspace(
-    name = "name",
-    client=client
-)
-```
-
 !!! Question "Question: Who can manage workspaces?"
 
     Only users with the `owner` role can manage (create, read and delete) workspaces.
@@ -33,6 +22,17 @@ Argilla provides a default workspace to help you get started in Python and the U
 |-------------------------------|----------|
 | Quickstart Docker and HF Space | admin    | 
 | Server image                  | argilla  |
+
+## rg.Workspace
+
+> Check the [Workspace - Python Reference](../../reference/argilla_sdk/workspaces.md) to see the attributes, arguments, and methods of the `Workspace` class in detail.
+
+```python
+rg.Workspace(
+    name = "name",
+    client=client
+)
+```
 
 ## How-to guide
 

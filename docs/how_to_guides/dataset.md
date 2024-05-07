@@ -16,14 +16,7 @@ A **dataset** is a collection of records that you can configure for labelers to 
 
 ## rg.Dataset
 
-A dataset is defined in the `Dataset` class that has the following arguments:
-
-* `id`: The unique identifier of the dataset.
-* `name`: The name of the dataset. It has to be unique.
-* `workspace` (optional): The workspace object or its name where the dataset will be stored. Defaults to the first workspace.
-* `settings`: The settings of the dataset to customize it for your task. They include the guidelines, fields, questions, metadata and vectors.
-* `status` (optional): The status of the dataset. It can be `draft` or `ready`. Defaults to `ready`.
-* `client`: The client used to interact with Argilla.
+A dataset in Argilla is represented by the `Dataset` class. You can indicate the `workspace` where you want to store your dataset by providing the object or their name. If not, the dataset will be stored in the first workspace. To customize it, you should pass the `settings` with the fields, questions, metadata, vectors, and guidelines.
 
 > Check the [Dataset - Python Reference](../reference/argilla_sdk/datasets/dataset.md) to see the attributes, arguments, and methods of the `Dataset` class in detail.
 
@@ -39,14 +32,7 @@ rg.Dataset(
 
 ## rg.Settings
 
-Dataset settings are defined in the `Settings` class that has the following arguments:
-
-* `fields`: A list of fields that contain the data to be annotated.
-* `questions`: A list of questions that annotators will need to answer to provide feedback.
-* `metadata` (optional): A list of metadata properties that will help to add extra information to assist annotators.
-* `vectors` (optional): A list of vectors that will allow the similarity search.
-* `guidelines` (optional): Provides a set of instructions for annotators.
-* `allow_extra_metadata` (optional): Indicates whether additional metadata can be included in the dataset. Defaults to False.
+The settings of a Dataset are represented in the `Settings` class where you can indicate the `fields` and the `questions` that annotators will need to answer to provide feedback. Optionally, you can add `metadata`, `vectors` and `guidelines`. We will cover each of these settings in detail in the following [section](#define-dataset-settings).
 
 > Check the [Settings - Python Reference](../reference/argilla_sdk/settings/settings.md) to see the attributes, arguments, and methods of the `Settings` class in detail.
 
@@ -77,15 +63,13 @@ rg.Settings(
 
 ## How-to guide
 
-This section starts by showing how to create a basic dataset in Argilla, and then how to list all the datasets available in each workspace and retrieve a specific one. Finally, the guide covers the steps to update and delete a dataset.
+This section starts by showing how to create a basic dataset in Argilla and define its settings, and then how to list all the datasets available in each workspace and retrieve a specific one. Finally, the guide covers the steps to update and delete a dataset.
 
 ### Create a dataset
 
-To create a dataset, you can define it in the `Dataset` class and then call the `publish` method that will send the dataset to the server so that it can be visualized in the UI. If the dataset does not appear in the UI, you may need to click the refresh button to update the view.
+To create a dataset, you can define it in the `Dataset` class and then call the `publish` method that will send the dataset to the server so that it can be visualized in the UI. If the dataset does not appear in the UI, you may need to click the refresh button to update the view. For further configuration of the dataset, you can refer to the [settings section](#define-dataset-settings).
 
-> For further customization of the dataset settings (fields, questions, metadata, vectors and guidelines), check this [how-to guide](settings.md). 
-
-> The created dataset will be empty, to add the records refer to this [how-to guide]().
+> The created dataset will be empty, to add the records refer to this [how-to guide](record.md).
 
 ```python
 import argilla_sdk as rg
@@ -120,17 +104,9 @@ dataset.publish()
 
 #### Fields
 
-The fields in a dataset consist of one or more data items requiring annotation. Currently, Argilla only supports the ``TextField`` type—a plain text field—though there are plans to introduce additional field types in future updates.
+The fields in a dataset consist of one or more data items requiring annotation. Currently, Argilla only supports the `TextField` type—a plain text field—though there are plans to introduce additional field types in future updates.
 
 A **field** is defined in the `TextField` class that has the following arguments:
-
-      self._model = TextFieldModel(
-            name=name,
-            title=title,
-            required=required or True,
-            description=description,
-            settings=FieldSettings(type="text", use_markdown=use_markdown),
-        )
 
 * `name`: The name of the field.
 * `title` (optional): The name of the field, as it will be displayed in the UI. Defaults to the `name` value.

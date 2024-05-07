@@ -12,8 +12,8 @@ To connect to an Argilla server, instantiate the `Argilla` class and pass the `a
 import argilla_sdk as rg
 
 client = rg.Argilla(
-    url="https://argilla.example.com",
-    token="my_token",
+    api_url="https://argilla.example.com",
+    api_key="my_token",
 )
 ```
 

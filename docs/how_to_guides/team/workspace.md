@@ -50,7 +50,7 @@ This section shows how to create a new workspace in Argilla, the process of list
 
 To create a new workspace in Argilla, you can define it in the `Workspace` class and then call the `create` method. This method is inherited from the `Resource` base class and operates without modifications.
 
-> When you create a new workspace, it will be empty. To create and add a new dataset, check these [guides](../dataset/index.md).
+> When you create a new workspace, it will be empty. To create and add a new dataset, check these [guides](../dataset.md).
 
 ```python
 import argilla_sdk as rg
@@ -117,7 +117,7 @@ workspace_existed
 
 To delete a workspace, **no dataset can be associated with it**. If the workspace contains any dataset, deletion will fail. You can delete a workspace by calling the `delete` method on the `Workspace` class.
 
-> To clear a workspace and delete all their datasets, refer to this [how-to guide](../dataset/dataset.md).
+> To clear a workspace and delete all their datasets, refer to this [how-to guide](../dataset.md).
 
 ```python
 import argilla_sdk as rg

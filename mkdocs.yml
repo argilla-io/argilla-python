@@ -124,10 +124,7 @@ nav:
       - how_to_guides/team/index.md
       - Users: how_to_guides/team/user.md
       - Workspaces: how_to_guides/team/workspace.md
-    - Manage and create datasets:
-      - how_to_guides/dataset/index.md
-      - Datasets: how_to_guides/dataset/dataset.md
-      - Dataset settings: how_to_guides/dataset/settings.md
+    - Manage and create datasets: how_to_guides/dataset.md
     - Add, update, and delete records: how_to_guides/record.md
     - Query, filter, and export records: how_to_guides/query_export.md
     # - Distribute annotation work: how_to_guides/distribute.md

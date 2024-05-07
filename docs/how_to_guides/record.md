@@ -10,7 +10,7 @@ This guide provides an overview of records, explaining the basics of how to defi
 
 A record in Argilla is a data item that requires annotation, consisting of one or more fields. These are the pieces of information displayed to the user in the UI to facilitate the completion of the annotation task. Each record also includes questions that annotators are required to answer, with the option of adding suggestions and responses to assist them. Guidelines are also provided to help annotators effectively complete their tasks.
 
-> A record is part of a dataset, so you will need to create a dataset before adding records. Check these guides to learn how to [create a dataset](dataset/index.md).
+> A record is part of a dataset, so you will need to create a dataset before adding records. Check these guides to learn how to [create a dataset](dataset.md).
 
 ### Record model
 
@@ -18,7 +18,7 @@ You can add records to a dataset as dictionaries or instances of the `Record` cl
 
 * `id`: The ID of the record.
 * `external_id` (optional): An ID of the record defined by the user.
-* `fields`: A dictionary with the name (key) and content (value) of each of the fields in the record. These will need to match the fields set up in the dataset configuration (see this [how-to guide](dataset/settings.md) for more information).
+* `fields`: A dictionary with the name (key) and content (value) of each of the fields in the record. These will need to match the fields set up in the dataset configuration (see this [how-to guide](dataset.md) for more information).
 * `metadata` (optional): A dictionary with the metadata of the record.
 * `vectors` (optional): A dictionary with the vectors associated to the record.
 * `suggestions`(optional): A list of all suggested responses for a record e.g., model predictions or other helpful hints for the annotators.
@@ -197,7 +197,7 @@ You can add records to a dataset in two different ways: either by using a dictio
 Record metadata can include any information about the record that is not part of the fields in the form of a dictionary. To use metadata for filtering and sorting records, make sure that the key of the dictionary corresponds with the metadata property `name`. When the key doesn't correspond, this will be considered extra metadata that will get stored with the record (as long as `allow_extra_metadata` is set to `True` for the dataset), but will not be usable for filtering and sorting.
 
 !!! note
-    Remember that to use metadata within a dataset, you must define a metadata property in the [dataset settings](dataset/settings.md).
+    Remember that to use metadata within a dataset, you must define a metadata property in the [dataset settings](dataset.md).
 
 === "As part of a dictionary"
     You can add metadata to a record directly as a dictionary, where the keys correspond to the names of metadata properties in the dataset and the values are the metadata to be added. Remember that you can also use the `mapping` parameter to specify the data structure.
@@ -248,7 +248,7 @@ Record metadata can include any information about the record that is not part of
 You can associate vectors, like text embeddings, to your records. They can be used for semantic search in the UI and the Python SDK. Make sure that the length of the list corresponds to the dimensions set in the vector settings.
 
 !!! note
-    Remember that to use vectors within a dataset, you must define them in the [dataset settings](dataset/settings.md).
+    Remember that to use vectors within a dataset, you must define them in the [dataset settings](dataset.md).
 
 === "As part of a dictionary"
     You can add vectors as a dictionary, where the keys correspond to the `name`s of the vector settings that were configured for your dataset and the value is a list of floats. Remember that you can also use the `mapping` parameter to specify the data structure.

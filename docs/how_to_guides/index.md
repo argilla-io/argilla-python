@@ -20,9 +20,9 @@ These are the how-to guides for the *Argilla-python SDK*. They provide step-by-s
 
     ---
 
-    Learn what they are and how to manage (create, read and delete) [`Datasets`](dataset/dataset.md) and customize them using the [`Settings`](dataset/settings.md) for `Fields`, `Questions`,  `Metadata` and `Vectors`.
+    Learn what they are and how to manage (create, read and delete) [`Datasets`](dataset.md) and customize them using the `Settings` for `Fields`, `Questions`,  `Metadata` and `Vectors`.
 
-    [:octicons-arrow-right-24: How-to guide](dataset/index.md)
+    [:octicons-arrow-right-24: How-to guide](dataset.md)
 
 -   :material-format-font:{ .lg .middle } __Add, update, and delete records__
 

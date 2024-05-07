@@ -57,6 +57,8 @@ dataset = rg.Dataset(
 )
 ```
 
+> To add records with metadata, refer to the [`rg.Metadata`](../records/metadata.md) class documentation.
+
 ---
 
 ## Class References

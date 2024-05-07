@@ -6,6 +6,7 @@
 * [rg.Settings](settings/settings.md)
     * [Metadata](settings/metadata_property.md)
     * [Fields](settings/fields.md)
+    * [Vectors](settings/vectors.md)
     * [Questions](settings/questions.md)
 * [rg.Record](records/records.md)
     * [rg.Response](records/responses.md)

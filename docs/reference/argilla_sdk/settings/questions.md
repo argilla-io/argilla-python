@@ -35,7 +35,17 @@ settings = rg.Settings(
         text_question,
     ],
 )
+
+dataset = rg.Dataset(
+    name="my_dataset",
+    settings=settings,
+)
+
+
 ```
+
+> To add records with responses to questions, refer to the [`rg.Response`](../records/responses.md) class documentation.
+
 
 ---
 

@@ -1,6 +1,6 @@
 # Fields
 
-Fields in Argilla are define the content of a record that will be reviewed by a user. Fields can be either text or vector form.
+Fields in Argilla are define the content of a record that will be reviewed by a user.
 
 ## Usage Examples
 
@@ -11,12 +11,6 @@ text_field = rg.TextField(name="text")
 markdown_field = rg.TextField(name="text", use_markdown=True)
 ```
 
-To define a vector field, instantiate the `VectorField` class and pass it to the `fields` parameter of the `Settings` class.
-
-```python
-vector_field = rg.VectorField(name="embedding")
-```
-
 The `fields` parameter of the `Settings` class can accept a list of fields, like this:
 
 ```python
@@ -24,11 +18,16 @@ settings = rg.Settings(
     fields=[
         rg.TextField(name="text"),
     ],
-    vectors=[
-        rg.VectorField(name="embedding"),
-    ],
 )
+
+data = rg.Dataset(
+    name="my_dataset",
+    settings=settings,
+)
+
 ```
+
+> To add records with values for fields, refer to the [`rg.Dataset.records`](../records/records.md) documentation.
 
 ---
 

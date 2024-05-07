@@ -137,7 +137,11 @@ You can use the `Filter` class to define the conditions and pass them to the `Da
         ]
     )
 
-    filtered_records = list(dataset.records(query=rg.Query(filter=filters)))
+    filtered_records = list(dataset.records(
+        query=rg.Query(filter=filters)),
+        with_metadata=True,
+        with_suggestions=True
+    )
     filtered_records
     ```
 
@@ -164,7 +168,12 @@ query_filter = rg.Query(
     )
 )
 
-queried_filtered_records = list(dataset.records(query=query_filter))
+queried_filtered_records = list(dataset.records(
+    query=query_filter,
+    with_metadata=True,
+    with_suggestions=True
+    )
+)
 queried_filtered_records
 ```
 

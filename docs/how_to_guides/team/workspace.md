@@ -8,7 +8,7 @@ This guide provides an overview of workspaces, explaining how to set up and mana
 
 ## Workspace
 
-A workspace is a *space* inside your Argilla instance where authorized users can collaborate to organize the work. It is accessible through the Python SDK and the UI.
+A workspace is a *space* inside your Argilla instance where authorized users can collaborate on datasets. It is accessible through the Python SDK and the UI.
 
 ### Workspace model
 

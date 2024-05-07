@@ -37,8 +37,10 @@ A user with the `admin` role can only read the workspace to which it belongs.
 
 Argilla provides a default workspace to help you get started in Python and the UI. The name of this workspace varies depending on the server configuration.
 
-- **For the Quickstart Docker and HF Space**: Name is `admin`.
-- **For the Server image**: Name is `argilla`.
+| Environment                   | Name | 
+|-------------------------------|----------|
+| Quickstart Docker and HF Space | admin    | 
+| Server image                  | argilla  |
 
 ## How-to guide
 

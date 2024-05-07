@@ -67,9 +67,17 @@ class Suggestion(Resource):
     def score(self) -> Optional[float]:
         return self._model.score
 
+    @score.setter
+    def score(self, value: float) -> None:
+        self._model.score = value
+
     @property
     def agent(self) -> Optional[str]:
         return self._model.agent
+
+    @agent.setter
+    def agent(self, value: str) -> None:
+        self._model.agent = value
 
     @property
     def question_id(self) -> Optional[UUID]:

@@ -171,6 +171,9 @@ class DatasetRecords(Resource, Iterable[Record]):
             with_vectors=with_vectors,
         )
 
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}({self.__dataset})"
+
     ############################
     # Public methods
     ############################

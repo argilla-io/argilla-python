@@ -292,12 +292,6 @@ class Settings(Resource):
     def __eq__(self, other: "Settings") -> bool:
         return self.serialize() == other.serialize()  # TODO: Create proper __eq__ methods for fields and questions
 
-    def __repr__(self) -> str:
-        return (
-            f"Settings(guidelines={self.guidelines}, allow_extra_metadata={self.allow_extra_metadata}, "
-            f"fields={self.fields}, questions={self.questions}, vectors={self.vectors})"
-        )
-
     def __process_fields(self, fields: List[FieldType]) -> List["TextFieldModel"]:
         processed_fields = []
         for field in fields:
@@ -338,3 +332,15 @@ class Settings(Resource):
 
     def __serialize_questions(self, questions):
         return [question.serialize() for question in questions]
+
+    #####################
+    #  Repr Methods     #
+    #####################
+
+    def __repr__(self) -> str:
+        yield "guidelines", self.guidelines
+        yield "allow_extra_metadata", self.allow_extra_metadata
+        yield "fields", self.fields
+        yield "questions", self.questions
+        yield "vectors", self.vectors
+        yield "metadata", self.metadata

@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from email import message
 import os
 from functools import cached_property
 from typing import List, Optional, TYPE_CHECKING, Dict, Union
@@ -157,6 +158,11 @@ class Settings(Resource):
     def schema_by_id(self) -> Dict[UUID, Union[FieldType, QuestionType]]:
         return {v.id: v for v in self.schema.values()}
 
+    def validate(self) -> None:
+        if not all([self.fields, self.questions]):
+            message = "Fields and questions are required"
+            raise SettingsError(message=message)
+
     #####################
     #  Public methods   #
     #####################
@@ -298,12 +304,6 @@ class Settings(Resource):
     def __eq__(self, other: "Settings") -> bool:
         return self.serialize() == other.serialize()  # TODO: Create proper __eq__ methods for fields and questions
 
-    def __repr__(self) -> str:
-        return (
-            f"Settings(guidelines={self.guidelines}, allow_extra_metadata={self.allow_extra_metadata}, "
-            f"fields={self.fields}, questions={self.questions}, vectors={self.vectors})"
-        )
-
     def __process_fields(self, fields: List[FieldType]) -> List["TextFieldModel"]:
         processed_fields = []
         for field in fields:
@@ -344,3 +344,15 @@ class Settings(Resource):
 
     def __serialize_questions(self, questions):
         return [question.serialize() for question in questions]
+
+    #####################
+    #  Repr Methods     #
+    #####################
+
+    def __repr__(self) -> str:
+        yield "guidelines", self.guidelines
+        yield "allow_extra_metadata", self.allow_extra_metadata
+        yield "fields", self.fields
+        yield "questions", self.questions
+        yield "vectors", self.vectors
+        yield "metadata", self.metadata

@@ -14,7 +14,8 @@
 
 from abc import abstractmethod
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, overload, List
+from typing import TYPE_CHECKING, overload, List, Optional, Union
+import warnings
 
 from argilla_sdk import _api
 from argilla_sdk._helpers import GenericIterator
@@ -66,7 +67,7 @@ class Users(Sequence["User"], ResourceHTMLReprMixin):
         for model in user_models:
             if model.username == username:
                 return User(_model=model, client=self._client)
-
+        warnings.warn(f"User {username} not found. Creating a new user. Do `user.create()` to create the user.")
         return User(username=username, client=self._client, **kwargs)
 
     def __iter__(self):
@@ -81,7 +82,6 @@ class Users(Sequence["User"], ResourceHTMLReprMixin):
     def __getitem__(self, index: slice) -> Sequence["User"]: ...
 
     def __getitem__(self, index):
-
         model = self._api.list()[index]
         return self._from_model(model)
 
@@ -119,7 +119,9 @@ class Workspaces(Sequence["Workspace"], ResourceHTMLReprMixin):
         for model in workspace_models:
             if model.name == name:
                 return Workspace(_model=model, client=self._client)
-
+        warnings.warn(
+            f"Workspace {name} not found. Creating a new workspace. Do `workspace.create()` to create the workspace."
+        )
         return Workspace(name=name, client=self._client, **kwargs)
 
     def __iter__(self):
@@ -162,16 +164,18 @@ class Datasets(Sequence["Dataset"], ResourceHTMLReprMixin):
         self._client = client
         self._api = client.api.datasets
 
-    def __call__(self, name: str, workspace: "Workspace", **kwargs) -> "Dataset":
+    def __call__(self, name: str, workspace: Optional[Union["Workspace", str]] = None, **kwargs) -> "Dataset":
         from argilla_sdk.datasets._resource import Dataset
 
-        workspace_id = workspace.id
-        dataset_models = self._api.list(workspace_id=workspace_id)
+        if isinstance(workspace, str):
+            workspace = self._client.workspaces(workspace)
+        elif workspace is None:
+            workspace = self._client.workspaces[0]
 
-        for model in dataset_models:
-            if model.name == name:
-                return Dataset(_model=model, client=self._client)
-
+        for dataset in workspace.datasets:
+            if dataset.name == name:
+                return Dataset(_model=dataset, client=self._client)
+        warnings.warn(f"Dataset {name} not found. Creating a new dataset. Do `dataset.create()` to create the dataset.")
         return Dataset(name=name, workspace=workspace, client=self._client, **kwargs)
 
     def __iter__(self):

@@ -29,6 +29,13 @@ class Resource(LoggingMixin, UUIDMixin):
     def __repr__(self) -> str:
         return repr(f"{self.__class__.__name__}({self._model})")
 
+    def __eq__(self, other) -> bool:
+        if not isinstance(other, Resource):
+            return False
+        if not hasattr(other, "_model"):
+            return super().__eq__(other)
+        return self._model == other._model
+
     @property
     def id(self) -> Optional[UUID]:
         return self._model.id

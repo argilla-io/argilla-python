@@ -73,7 +73,7 @@ class IntegerMetadataPropertySettings(NumericMetadataPropertySettings):
         min_value = values.get("min")
         max_value = values.get("max")
 
-        if not all(isinstance(value, int) for value in [min_value, max_value]):
+        if not all(isinstance(value, int) or value is None for value in [min_value, max_value]):
             raise MetadataError("min and max must be integers.")
         return values
 

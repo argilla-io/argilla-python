@@ -47,7 +47,7 @@ class LabelQuestion(SettingsPropertyBase):
             title: Optional[str]: The title of the question to be shown in the UI.
             description: Optional[str]: The description of the question to be shown in the UI.
             required: bool: If the question is required for a record to be valid.
-            visible_labels: Optional[int]: The number of visible options for the question.
+            visible_labels: Optional[int]: The number of visible labels for the question.
         """
         self._model = LabelQuestionModel(
             name=name,

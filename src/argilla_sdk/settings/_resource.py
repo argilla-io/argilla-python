@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from email import message
 import os
 from functools import cached_property
 from typing import List, Optional, TYPE_CHECKING, Dict, Union
@@ -156,6 +157,11 @@ class Settings(Resource):
     @cached_property
     def schema_by_id(self) -> Dict[UUID, Union[FieldType, QuestionType]]:
         return {v.id: v for v in self.schema.values()}
+
+    def validate(self) -> None:
+        if not all([self.fields, self.questions]):
+            message = "Fields and questions are required"
+            raise SettingsError(message=message)
 
     #####################
     #  Public methods   #

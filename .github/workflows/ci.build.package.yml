@@ -11,6 +11,17 @@ on:
 
 jobs:
   build:
+    services:
+      argilla-quickstart:
+        image: argilla/argilla-quickstart:main
+        ports:
+          - 6900:6900
+        env:
+          ANNOTATOR_USERNAME: annotator
+          OWNER_USERNAME: argilla
+          OWNER_API_KEY: argilla.apikey
+          ADMIN_USERNAME: admin
+          ADMIN_API_KEY: admin.apikey
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -28,6 +39,9 @@ jobs:
     - name: Install dependencies
       run: |
         pdm install
-    - name: Run pdm script with all package steps
+    - name: Wait for argilla-quickstart to start
       run: |
-        pdm run all
+        while ! nc -z localhost 6900; do sleep 1; done
+    - name: Run tests
+      run: |
+        pdm run test

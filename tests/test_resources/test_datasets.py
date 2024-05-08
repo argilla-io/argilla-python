@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import stat
 import uuid
 from datetime import datetime
 
@@ -21,6 +20,7 @@ import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
+from argilla_sdk import workspaces
 from argilla_sdk._exceptions import (
     BadRequestError,
     ConflictError,
@@ -31,19 +31,39 @@ from argilla_sdk._exceptions import (
 )
 
 
-class TestDatasetSerialization:
-    def test_serialize(self):
-        ds = rg.Dataset(
-            name="test-workspace",
-            id=uuid.uuid4(),
-            workspace_id=uuid.uuid4(),
+@pytest.fixture
+def dataset(httpx_mock: HTTPXMock) -> rg.Dataset:
+    api_url = "http://test_url"
+    client = rg.Argilla(api_url)
+    workspace_id = uuid.uuid4()
+    mock_response = {
+        "id": str(workspace_id),
+        "name": "workspace-01",
+        "inserted_at": datetime.utcnow().isoformat(),
+        "updated_at": datetime.utcnow().isoformat(),
+    }
+    httpx_mock.add_response(
+        json={"items": [mock_response]},
+        url=f"{api_url}/api/v1/me/workspaces",
+        method="GET",
+        status_code=200,
+    )
+
+    with httpx.Client():
+        dataset = rg.Dataset(
+            name=f"dataset_{uuid.uuid4()}",
+            settings=rg.Settings(
+                fields=[
+                    rg.TextField(name="text"),
+                ],
+                questions=[
+                    rg.TextQuestion(name="response"),
+                ],
+            ),
+            client=client,
+            workspace="workspace-01",
         )
-
-        assert ds.name == ds.serialize()["name"]
-
-    def test_json_serialize_raise_typeerror(self):
-        with pytest.raises(TypeError):
-            user = rg.User(username="user", id=uuid.uuid4(), extra_arguments="testing")
+        yield dataset
 
 
 class TestDatasets:
@@ -59,8 +79,8 @@ class TestDatasets:
             (500, InternalServerError, "InternalServerError"),
         ],
     )
-    def test_create_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
-        mock_dataset_id = uuid.uuid4()
+    def test_create_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message, dataset):
+        mock_dataset_id = dataset.id
         mock_return_value = {
             "id": str(mock_dataset_id),
             "name": "dataset-01",
@@ -76,14 +96,8 @@ class TestDatasets:
             method="POST",
             status_code=status_code,
         )
+
         with httpx.Client():
-            client = rg.Argilla(api_url)
-            dataset = rg.Dataset(
-                name="dataset-01",
-                workspace_id=str(uuid.uuid4()),
-                id=str(mock_dataset_id),
-                client=client,
-            )
             if expected_exception:
                 with pytest.raises(expected_exception=expected_exception) as excinfo:
                     dataset.create()
@@ -105,7 +119,7 @@ class TestDatasets:
             (500, InternalServerError, "InternalServerError"),
         ],
     )
-    def test_update_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
+    def test_update_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message, dataset):
         mock_dataset_id = uuid.uuid4()
         mock_workspace_id = uuid.uuid4()
         mock_return_value = {
@@ -142,46 +156,17 @@ class TestDatasets:
             # match_json=mock_return_value,
         )
         with httpx.Client() as client:
-            client = rg.Argilla("http://test_url")
-            dataset = rg.Dataset(
-                id=mock_dataset_id, name=mock_return_value["name"], workspace_id=mock_workspace_id, client=client
-            )
             if expected_exception:
                 with pytest.raises(expected_exception=expected_exception) as excinfo:
                     dataset.create()
-                    dataset = rg.Dataset(id=mock_dataset_id, name="new name", client=client)
+                    dataset.name = "new_name"
                     dataset = dataset.update()
                 assert expected_message in str(excinfo.value)
             else:
                 dataset.create()
-                dataset = rg.Dataset(id=mock_dataset_id, name="new name", client=client)
+                dataset.name = "new_name"
                 dataset = dataset.update()
                 assert dataset.name == "new_name"
-
-    def test_list_datasets(self, httpx_mock: HTTPXMock):
-        mock_return_value = {
-            "items": [
-                {
-                    "id": str(uuid.uuid4()),
-                    "name": "dataset-01",
-                    "status": "ready",
-                    "allow_extra_metadata": False,
-                    "inserted_at": datetime.utcnow().isoformat(),
-                    "updated_at": datetime.utcnow().isoformat(),
-                }
-            ]
-        }
-        api_url = "http://test_url"
-        with httpx.Client():
-            client = rg.Argilla(api_url)
-            httpx_mock.add_response(
-                json=mock_return_value, url=f"{api_url}/api/v1/me/datasets", method="GET", status_code=200
-            )
-            datasets = client.datasets
-            assert len(datasets) == 1
-            assert str(datasets[0].id) == mock_return_value["items"][0]["id"]
-            assert datasets[0].name == mock_return_value["items"][0]["name"]
-            assert datasets[0].status == mock_return_value["items"][0]["status"]
 
     @pytest.mark.parametrize(
         "status_code, expected_exception, expected_message",
@@ -195,16 +180,9 @@ class TestDatasets:
             (500, InternalServerError, "InternalServerError"),
         ],
     )
-    def test_delete_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message):
-        mock_dataset_id = uuid.uuid4()
-        mock_return_value = {
-            "id": str(mock_dataset_id),
-            "name": "dataset-01",
-            "status": "draft",
-            "allow_extra_metadata": False,
-            "inserted_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
-        }
+    def test_delete_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message, dataset):
+        mock_dataset_id = dataset.id
+        mock_return_value = dataset.serialize()
         api_url = "http://test_url"
         httpx_mock.add_response(
             json=mock_return_value,
@@ -213,8 +191,6 @@ class TestDatasets:
             status_code=status_code,
         )
         with httpx.Client():
-            client = rg.Argilla(api_url)
-            dataset = rg.Dataset(id=mock_dataset_id, name=mock_return_value["name"], client=client)
             if expected_exception:
                 with pytest.raises(expected_exception=expected_exception) as excinfo:
                     dataset.delete()

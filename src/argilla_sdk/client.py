@@ -14,10 +14,12 @@
 
 from abc import abstractmethod
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, overload
+from typing import TYPE_CHECKING, overload, List
 
 from argilla_sdk import _api
+from argilla_sdk._helpers import GenericIterator
 from argilla_sdk._helpers._resource_repr import ResourceHTMLReprMixin
+from argilla_sdk._models import UserModel, WorkspaceModel, DatasetModel
 
 if TYPE_CHECKING:
     from argilla_sdk import Workspace
@@ -61,8 +63,11 @@ class Argilla(_api.APIClient):
         return User(client=self, _model=self.api.users.get_me())
 
 
-class Users(Sequence, ResourceHTMLReprMixin):
+class Users(Sequence["User"], ResourceHTMLReprMixin):
     """A collection of users. It can be used to create a new user or to get an existing one."""
+
+    class _Iterator(GenericIterator["User"]):
+        pass
 
     def __init__(self, client: "Argilla") -> None:
         self._client = client
@@ -78,6 +83,9 @@ class Users(Sequence, ResourceHTMLReprMixin):
 
         return User(username=username, client=self._client, **kwargs)
 
+    def __iter__(self):
+        return self._Iterator(self.list())
+
     @overload
     @abstractmethod
     def __getitem__(self, index: int) -> "User": ...
@@ -87,21 +95,31 @@ class Users(Sequence, ResourceHTMLReprMixin):
     def __getitem__(self, index: slice) -> Sequence["User"]: ...
 
     def __getitem__(self, index):
-        from argilla_sdk.users._resource import User
 
         model = self._api.list()[index]
-        return User(client=self._client, _model=model)
+        return self._from_model(model)
 
     def __len__(self) -> int:
         return len(self._api.list())
 
+    def list(self) -> List["User"]:
+        """List all users."""
+        return [self._from_model(model) for model in self._api.list()]
+
     def _repr_html_(self) -> "HTML":
-        resources = [self[i] for i in range(len(self))]
-        return self._represent_as_html(resources=resources)
+        return self._represent_as_html(resources=self.list())
+
+    def _from_model(self, model: UserModel) -> "User":
+        from argilla_sdk.users._resource import User
+
+        return User(client=self._client, _model=model)
 
 
-class Workspaces(Sequence, ResourceHTMLReprMixin):
+class Workspaces(Sequence["Workspace"], ResourceHTMLReprMixin):
     """A collection of workspaces. It can be used to create a new workspace or to get an existing one."""
+
+    class _Iterator(GenericIterator["Workspace"]):
+        pass
 
     def __init__(self, client: "Argilla") -> None:
         self._client = client
@@ -118,6 +136,9 @@ class Workspaces(Sequence, ResourceHTMLReprMixin):
 
         return Workspace(name=name, client=self._client, **kwargs)
 
+    def __iter__(self):
+        return self._Iterator(self.list())
+
     @overload
     @abstractmethod
     def __getitem__(self, index: int) -> "Workspace": ...
@@ -126,22 +147,30 @@ class Workspaces(Sequence, ResourceHTMLReprMixin):
     @abstractmethod
     def __getitem__(self, index: slice) -> Sequence["Workspace"]: ...
 
-    def __getitem__(self, index: int) -> "Workspace":
-        from argilla_sdk.workspaces._resource import Workspace
-
+    def __getitem__(self, index) -> "Workspace":
         model = self._api.list()[index]
-        return Workspace(client=self._client, _model=model)
+        return self._from_model(model)
 
     def __len__(self) -> int:
         return len(self._api.list())
 
+    def list(self) -> List["Workspace"]:
+        return [self._from_model(model) for model in self._api.list()]
+
     def _repr_html_(self) -> "HTML":
-        resources = [self[i] for i in range(len(self))]
-        return self._represent_as_html(resources=resources)
+        return self._represent_as_html(resources=self.list())
+
+    def _from_model(self, model: WorkspaceModel) -> "Workspace":
+        from argilla_sdk.workspaces._resource import Workspace
+
+        return Workspace(client=self._client, _model=model)
 
 
-class Datasets(Sequence, ResourceHTMLReprMixin):
+class Datasets(Sequence["Dataset"], ResourceHTMLReprMixin):
     """A collection of datasets. It can be used to create a new dataset or to get an existing one."""
+
+    class _Iterator(GenericIterator["Dataset"]):
+        pass
 
     def __init__(self, client: "Argilla") -> None:
         self._client = client
@@ -157,7 +186,10 @@ class Datasets(Sequence, ResourceHTMLReprMixin):
             if model.name == name:
                 return Dataset(_model=model, client=self._client)
 
-        return Dataset(name=name, workspace_id=workspace_id, client=self._client, **kwargs)
+        return Dataset(name=name, workspace=workspace, client=self._client, **kwargs)
+
+    def __iter__(self):
+        return self._Iterator(self.list())
 
     @overload
     @abstractmethod
@@ -168,14 +200,19 @@ class Datasets(Sequence, ResourceHTMLReprMixin):
     def __getitem__(self, index: slice) -> Sequence["Dataset"]: ...
 
     def __getitem__(self, index) -> "Dataset":
-        from argilla_sdk.datasets._resource import Dataset
-
         model = self._api.list()[index]
-        return Dataset(client=self._client, _model=model)
+        return self._from_model(model)
 
     def __len__(self) -> int:
         return len(self._api.list())
 
+    def list(self) -> List["Dataset"]:
+        return [self._from_model(model) for model in self._api.list()]
+
     def _repr_html_(self) -> "HTML":
-        resources = [self[i] for i in range(len(self))]
-        return self._represent_as_html(resources=resources)
+        return self._represent_as_html(resources=self.list())
+
+    def _from_model(self, model: DatasetModel) -> "Dataset":
+        from argilla_sdk.datasets._resource import Dataset
+
+        return Dataset(client=self._client, _model=model)

@@ -1,10 +1,7 @@
 from typing import Optional, Union
 
-from rich.repr import auto as rich_auto
-
-from argilla_sdk._resource import Resource
 from argilla_sdk._models import FieldBaseModel, QuestionBaseModel
-
+from argilla_sdk._resource import Resource
 
 __all__ = ["SettingsPropertyBase"]
 

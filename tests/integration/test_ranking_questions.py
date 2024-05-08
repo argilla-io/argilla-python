@@ -40,7 +40,7 @@ def test_ranking_question_with_suggestions(dataset: rg.Dataset):
             {"text": "This is a test text", "label": "positive", "ranking": ["2"]},
         ],
     )
-    assert next(iter(dataset.records)).suggestions.ranking.value[0] == "2"
+    assert next(iter(dataset.records(with_suggestions=True))).suggestions.ranking.value[0] == "2"
 
 
 def test_ranking_question_with_responses(dataset: rg.Dataset):
@@ -50,4 +50,4 @@ def test_ranking_question_with_responses(dataset: rg.Dataset):
         ],
         mapping={"ranking_": "ranking.response"},
     )
-    assert next(iter(dataset.records)).responses.ranking.value[0] == "2"
+    assert next(iter(dataset.records(with_suggestions=True))).responses.ranking.value[0] == "2"

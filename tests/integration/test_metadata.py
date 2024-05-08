@@ -94,9 +94,9 @@ def test_create_dataset_with_numerical_metadata(client: Argilla, workspace: Work
     dataset.publish()
     gotten_dataset = dataset.get()
 
-    assert gotten_dataset.settings.metadata[0]._model.name == "price"
-    assert gotten_dataset.settings.metadata[0]._model.settings.min == min
-    assert gotten_dataset.settings.metadata[0]._model.settings.max == max
+    assert gotten_dataset.settings.metadata[0].name == "price"
+    assert gotten_dataset.settings.metadata[0].min == min
+    assert gotten_dataset.settings.metadata[0].max == max
 
 
 def test_add_record_with_metadata(dataset_with_metadata: Dataset):

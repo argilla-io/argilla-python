@@ -141,7 +141,12 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/SUMMARY/</loc>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/INDEX/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/SUMMARY/</loc>
          <lastmod>2024-05-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
@@ -151,17 +156,77 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/responses/</loc>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/search/</loc>
          <lastmod>2024-05-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/suggestions/</loc>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/users/</loc>
          <lastmod>2024-05-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/vectors/</loc>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/workspaces/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/datasets/dataset_records/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/datasets/datasets/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/records/metadata/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/records/records/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/records/responses/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/records/suggestions/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/records/vectors/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/settings/fields/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/settings/metadata_property/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/settings/questions/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/settings/settings/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/reference/argilla_sdk/settings/vectors/</loc>
          <lastmod>2024-05-08</lastmod>
          <changefreq>daily</changefreq>
     </url>

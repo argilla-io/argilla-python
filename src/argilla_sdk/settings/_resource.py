@@ -181,6 +181,12 @@ class Settings(Resource):
         self._update_last_api_call()
         return self
 
+    def question_by_name(self, question_name: str) -> QuestionType:
+        for question in self.questions:
+            if question.name == question_name:
+                return question
+        raise ValueError(f"Question with name {question_name} not found")
+
     def question_by_id(self, question_id: UUID) -> QuestionType:
         property = self.schema_by_id.get(question_id)
         if isinstance(property, QuestionType):

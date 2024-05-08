@@ -283,23 +283,23 @@ class DatasetRecords(Resource, Iterable[Record]):
         user_id: Optional[UUID] = None,
     ) -> List[RecordModel]:
         """Ingest records as dictionaries and return a list of RecordModel instances."""
-        if isinstance(records, dict) or isinstance(records, Record):
+        if isinstance(records, (Record, dict)):
             records = [records]
+
         if all(map(lambda r: isinstance(r, dict), records)):
             # Records as flat dicts of values to be matched to questions as suggestion or response
-            record_models = [
-                Record.from_dict(dataset=self.__dataset, data=r, mapping=mapping, user_id=user_id)._model  # noqa
-                for r in records
+            records = [
+                Record.from_dict(data=r, mapping=mapping, dataset=self.__dataset, user_id=user_id) for r in records
             ]  # type: ignore
         elif all(map(lambda r: isinstance(r, Record), records)):
-            # Pre-constructed Record instances with suggestions and responses declared
-            record_models = [r._model for r in records]  # type: ignore
+            for record in records:
+                record.dataset = self.__dataset
         else:
             raise ValueError(
                 "Records should be a dictionary, a list of dictionaries, a Record instance, "
                 "or a list of Record instances."
             )
-        return record_models
+        return [r._model for r in records]
 
     def _normalize_batch_size(self, batch_size: int, records_length, max_value: int):
         norm_batch_size = min(batch_size, records_length, max_value)

@@ -28,12 +28,14 @@ class Suggestion(Resource):
         self,
         question_name: str,
         value: Any,
-        type: Optional[Literal["model", "human"]] = None,
         score: Union[float, List[float], None] = None,
         agent: Optional[str] = None,
+        type: Optional[Literal["model", "human"]] = None,
         id: Optional[UUID] = None,
         question_id: Optional[UUID] = None,
     ) -> None:
+        super().__init__()
+
         self._model = SuggestionModel(
             value=value,
             question_name=question_name,

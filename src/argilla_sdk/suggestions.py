@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Optional, Literal
+from typing import Any, Optional, Literal, Union, List
 from uuid import UUID
 
 from argilla_sdk._models import SuggestionModel
@@ -39,14 +39,16 @@ class Suggestion(Resource):
 
     def __init__(
         self,
-        value: Any,
         question_name: str,
-        type: Optional[Literal["model", "human"]] = None,
-        score: Optional[float] = None,
+        value: Any,
+        score: Union[float, List[float], None] = None,
         agent: Optional[str] = None,
+        type: Optional[Literal["model", "human"]] = None,
         id: Optional[UUID] = None,
         question_id: Optional[UUID] = None,
     ) -> None:
+        super().__init__()
+
         self._model = SuggestionModel(
             value=value,
             question_name=question_name,
@@ -57,8 +59,6 @@ class Suggestion(Resource):
             question_id=question_id,
         )
 
-    def __repr__(self) -> str:
-        return repr(f"{self.__class__.__name__}({self._model})")
 
     ##############################
     # Properties
@@ -68,6 +68,15 @@ class Suggestion(Resource):
     def value(self) -> Any:
         """The value of the suggestion."""
         return self._model.value
+
+    # TODO: Add getter and setter at question type level
+    #  @property
+    #  def question(self) -> Optional["QuestionType"]:
+    #      pass
+    #  @question.setter
+    #  def question(self, value: "QuestionType") -> None:
+    #      self._model.question_name = value.name
+    #      self._model.question_id = value.id
 
     @property
     def question_name(self) -> Optional[str]:
@@ -79,24 +88,36 @@ class Suggestion(Resource):
         self._model.question_name = value
 
     @property
+    def question_id(self) -> Optional[UUID]:
+        """The ID of the question that the suggestion is for."""
+        return self._model.question_id
+
+    @question_id.setter
+    def question_id(self, value: UUID) -> None:
+        self._model.question_id = value
+
+    @property
     def type(self) -> Optional[Literal["model", "human"]]:
         """The type of suggestion, either 'model' or 'human'."""
         return self._model.type
 
     @property
-    def score(self) -> Optional[float]:
+    def score(self) -> Optional[Union[float, List[float]]]:
         """The score of the suggestion."""
         return self._model.score
+
+    @score.setter
+    def score(self, value: float) -> None:
+        self._model.score = value
 
     @property
     def agent(self) -> Optional[str]:
         """The agent that created the suggestion."""
         return self._model.agent
 
-    @property
-    def question_id(self) -> Optional[UUID]:
-        """The ID of the question that the suggestion is for."""
-        return self._model.question_id
+    @agent.setter
+    def agent(self, value: str) -> None:
+        self._model.agent = value
 
     @classmethod
     def from_model(cls, model: SuggestionModel) -> "Suggestion":

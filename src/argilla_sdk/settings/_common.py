@@ -1,8 +1,9 @@
 from typing import Optional, Union
 
+
 from argilla_sdk._resource import Resource
 from argilla_sdk._models import FieldBaseModel, QuestionBaseModel
-
+from argilla_sdk._resource import Resource
 
 __all__ = ["SettingsPropertyBase"]
 
@@ -27,3 +28,12 @@ class SettingsPropertyBase(Resource):
     @property
     def description(self) -> Optional[str]:
         return self._model.description
+
+    def __repr__(self) -> str:
+        yield self.name
+        if self.title:
+            yield f"Title: {self.title}"
+        if self.description:
+            yield f"Description: {self.description}"
+        yield f"Required: {self.required}"
+        yield f"Type: {self._model.settings.type}"

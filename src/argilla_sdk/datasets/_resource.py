@@ -72,8 +72,6 @@ class Dataset(Resource):
         )
         self._model = _model
         self._settings = self.__configure_settings_for_dataset(settings=settings)
-        if self.is_published:
-            self._settings.get()
         self.__records = DatasetRecords(client=self._client, dataset=self)
         self._sync(model=self._model)
 
@@ -83,7 +81,7 @@ class Dataset(Resource):
 
     @property
     def is_published(self) -> bool:
-        return self._model.status == "ready"
+        return self.exists() and self._model.status == "ready"
 
     @property
     def settings(self) -> Settings:
@@ -97,31 +95,31 @@ class Dataset(Resource):
 
     @property
     def fields(self) -> list:
-        return self._settings.fields
+        return self.settings.fields
 
     @property
     def questions(self) -> list:
-        return self._settings.questions
+        return self.settings.questions
 
     @property
     def guidelines(self) -> str:
-        return self._settings.guidelines
+        return self.settings.guidelines
 
     @guidelines.setter
     def guidelines(self, value: str) -> None:
-        self._settings.guidelines = value
+        self.settings.guidelines = value
 
     @property
     def allow_extra_metadata(self) -> bool:
-        return self._settings.allow_extra_metadata
+        return self.settings.allow_extra_metadata
 
     @allow_extra_metadata.setter
     def allow_extra_metadata(self, value: bool) -> None:
-        self._settings.allow_extra_metadata = value
+        self.settings.allow_extra_metadata = value
 
     @property
     def schema(self):
-        return self._settings.schema
+        return self.settings.schema
 
     def exists(self) -> bool:
         return self._api.exists(self.id)
@@ -151,7 +149,8 @@ class Dataset(Resource):
         settings: Optional[Settings] = None,
     ) -> Settings:
         """Populate the dataset object with settings"""
-        settings = settings or Settings()
+        if settings is None:
+            return Settings(_dataset=self)
         settings.dataset = self
         return settings
 

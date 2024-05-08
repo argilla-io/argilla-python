@@ -24,6 +24,7 @@ class ArgillaErrorBase(Exception):
             status_code (int): The status code of the response that caused the exception
         """
         super().__init__(message)
+        self.status_code = status_code
 
     def __str__(self):
         return f"{self.message_stub}: {self.__class__.__name__}: {super().__str__()}"

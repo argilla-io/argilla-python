@@ -17,7 +17,7 @@ from typing import Optional, Literal, Union
 from uuid import UUID, uuid4
 
 from argilla_sdk._api import DatasetsAPI
-from argilla_sdk._exceptions import NotFoundError
+from argilla_sdk._exceptions import NotFoundError, SettingsError
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
@@ -81,7 +81,7 @@ class Dataset(Resource):
 
     @property
     def is_published(self) -> bool:
-        return self._model.status == "ready"
+        return self.exists() and self._model.status == "ready"
 
     @property
     def settings(self) -> Settings:
@@ -95,31 +95,31 @@ class Dataset(Resource):
 
     @property
     def fields(self) -> list:
-        return self._settings.fields
+        return self.settings.fields
 
     @property
     def questions(self) -> list:
-        return self._settings.questions
+        return self.settings.questions
 
     @property
     def guidelines(self) -> str:
-        return self._settings.guidelines
+        return self.settings.guidelines
 
     @guidelines.setter
     def guidelines(self, value: str) -> None:
-        self._settings.guidelines = value
+        self.settings.guidelines = value
 
     @property
     def allow_extra_metadata(self) -> bool:
-        return self._settings.allow_extra_metadata
+        return self.settings.allow_extra_metadata
 
     @allow_extra_metadata.setter
     def allow_extra_metadata(self, value: bool) -> None:
-        self._settings.allow_extra_metadata = value
+        self.settings.allow_extra_metadata = value
 
     @property
     def schema(self):
-        return self._settings.schema
+        return self.settings.schema
 
     def exists(self) -> bool:
         return self._api.exists(self.id)
@@ -149,18 +149,23 @@ class Dataset(Resource):
         settings: Optional[Settings] = None,
     ) -> Settings:
         """Populate the dataset object with settings"""
-        settings = settings or Settings()
-        settings.dataset = self
+        if settings is None:
+            settings = Settings(_dataset=self)
+            warnings.warn(
+                message="Settings not provided. Using empty settings for the dataset. \
+                    Define the settings before publishing the dataset.",
+                stacklevel=2,
+            )
+        else:
+            settings.dataset = self
         return settings
 
     def __workspace_id_from_name(self, workspace: Optional[Union["Workspace", str]]) -> UUID:
         available_workspaces = self._client.workspaces
         available_workspace_names = [ws.name for ws in available_workspaces]
         if workspace is None:
-            ws = available_workspaces[0] # type: ignore
-            warnings.warn(
-                f"Workspace not provided. Using default workspace: {ws.name} id: {ws.id}"
-            )
+            ws = available_workspaces[0]  # type: ignore
+            warnings.warn(f"Workspace not provided. Using default workspace: {ws.name} id: {ws.id}")
         elif isinstance(workspace, str):
             ws = self._client.workspaces(workspace)
             if not ws.exists():
@@ -179,6 +184,7 @@ class Dataset(Resource):
         self._sync(response_model)
 
     def __publish(self) -> None:
+        self.settings.validate()
         if not self.is_published:
             response_model = self._api.publish(dataset_id=self._model.id)
             self._sync(response_model)

@@ -20,7 +20,7 @@ import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
-from argilla_sdk import workspaces
+
 from argilla_sdk._exceptions import (
     BadRequestError,
     ConflictError,
@@ -36,21 +36,30 @@ def dataset(httpx_mock: HTTPXMock) -> rg.Dataset:
     api_url = "http://test_url"
     client = rg.Argilla(api_url)
     workspace_id = uuid.uuid4()
-    mock_response = {
+    workspace_name = "workspace-01"
+    mock_workspace = {
         "id": str(workspace_id),
-        "name": "workspace-01",
+        "name": workspace_name,
         "inserted_at": datetime.utcnow().isoformat(),
         "updated_at": datetime.utcnow().isoformat(),
     }
     httpx_mock.add_response(
-        json={"items": [mock_response]},
+        json={"items": [mock_workspace]},
         url=f"{api_url}/api/v1/me/workspaces",
         method="GET",
         status_code=200,
     )
 
+    httpx_mock.add_response(
+        url=f"{api_url}/api/v1/workspaces/{workspace_id}",
+        method="GET",
+        status_code=200,
+        json=mock_workspace,
+    )
+
     with httpx.Client():
         dataset = rg.Dataset(
+            client=client,
             name=f"dataset_{uuid.uuid4()}",
             settings=rg.Settings(
                 fields=[
@@ -60,7 +69,6 @@ def dataset(httpx_mock: HTTPXMock) -> rg.Dataset:
                     rg.TextQuestion(name="response"),
                 ],
             ),
-            client=client,
             workspace="workspace-01",
         )
         yield dataset

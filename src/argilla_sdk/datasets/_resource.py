@@ -185,8 +185,7 @@ class Dataset(Resource):
         self._sync(response_model)
 
     def __publish(self) -> None:
-        if not self.settings.defined:
-            raise SettingsError("Settings not defined. Define the settings before publishing the dataset.")
+        self.settings.validate()
         if not self.is_published:
             response_model = self._api.publish(dataset_id=self._model.id)
             self._sync(response_model)

@@ -81,7 +81,7 @@ class Dataset(Resource):
 
     @property
     def is_published(self) -> bool:
-        return self._model.status == "ready"
+        return self.exists() and self._model.status == "ready"
 
     @property
     def settings(self) -> Settings:
@@ -95,31 +95,31 @@ class Dataset(Resource):
 
     @property
     def fields(self) -> list:
-        return self._settings.fields
+        return self.settings.fields
 
     @property
     def questions(self) -> list:
-        return self._settings.questions
+        return self.settings.questions
 
     @property
     def guidelines(self) -> str:
-        return self._settings.guidelines
+        return self.settings.guidelines
 
     @guidelines.setter
     def guidelines(self, value: str) -> None:
-        self._settings.guidelines = value
+        self.settings.guidelines = value
 
     @property
     def allow_extra_metadata(self) -> bool:
-        return self._settings.allow_extra_metadata
+        return self.settings.allow_extra_metadata
 
     @allow_extra_metadata.setter
     def allow_extra_metadata(self, value: bool) -> None:
-        self._settings.allow_extra_metadata = value
+        self.settings.allow_extra_metadata = value
 
     @property
     def schema(self):
-        return self._settings.schema
+        return self.settings.schema
 
     def exists(self) -> bool:
         return self._api.exists(self.id)
@@ -150,23 +150,22 @@ class Dataset(Resource):
     ) -> Settings:
         """Populate the dataset object with settings"""
         if settings is None:
-            settings = Settings()
+            settings = Settings(_dataset=self)
             warnings.warn(
                 message="Settings not provided. Using empty settings for the dataset. \
                     Define the settings before publishing the dataset.",
                 stacklevel=2,
             )
-        settings.dataset = self
+        else:
+            settings.dataset = self
         return settings
 
     def __workspace_id_from_name(self, workspace: Optional[Union["Workspace", str]]) -> UUID:
         available_workspaces = self._client.workspaces
         available_workspace_names = [ws.name for ws in available_workspaces]
         if workspace is None:
-            ws = available_workspaces[0] # type: ignore
-            warnings.warn(
-                f"Workspace not provided. Using default workspace: {ws.name} id: {ws.id}"
-            )
+            ws = available_workspaces[0]  # type: ignore
+            warnings.warn(f"Workspace not provided. Using default workspace: {ws.name} id: {ws.id}")
         elif isinstance(workspace, str):
             ws = self._client.workspaces(workspace)
             if not ws.exists():

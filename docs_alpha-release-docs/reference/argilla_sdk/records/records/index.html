@@ -1827,8 +1827,7 @@
 <p>The <code>Record</code> object is used to represent a single record in Argilla. It contains fields, suggestions, responses, metadata, and vectors.</p>
 <h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h2>
 <h3 id="creating-a-record">Creating a Record<a class="headerlink" href="#creating-a-record" title="Permanent link">&para;</a></h3>
-<p>In most cases the user can add records as dictionaries via the <code>Dataset.records.add</code> method. 
-Argilla will instantiate the <code>Record</code> class based on the input data and <code>mapping</code> property. </p>
+<p>To add records, you can pass dictionaries to the <code>Dataset.records.add</code> method. Argilla will instantiate the <code>Record</code> class based on the input data and <code>mapping</code> property. The input data keys must match the names in <code>rg.Settings</code> object, or be mapped via the dictionary passed to the <code>mapping</code> parameter. </p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">add</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">records</span><span class="o">=</span><span class="p">[</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="p">{</span>
@@ -1837,7 +1836,7 @@ Argilla will instantiate the <code>Record</code> class based on the input data a
 </span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="p">},</span>
 </span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">])</span>
 </span></code></pre></div>
-<p>However, you can also create <code>Record</code> objects directly and pass them to the same method.</p>
+<p>You can also create <code>Record</code> objects directly and pass them to the same method.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">records</span> <span class="o">=</span> <span class="p">[</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>        <span class="n">rg</span><span class="o">.</span><span class="n">Record</span><span class="p">(</span>
 </span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>            <span class="n">fields</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello World, how are you?&quot;</span><span class="p">},</span>

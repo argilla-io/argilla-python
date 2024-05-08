@@ -20,7 +20,6 @@ import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
-
 from argilla_sdk._exceptions import (
     BadRequestError,
     ConflictError,
@@ -69,12 +68,16 @@ def dataset(httpx_mock: HTTPXMock) -> rg.Dataset:
                     rg.TextQuestion(name="response"),
                 ],
             ),
-            workspace="workspace-01",
+            workspace=workspace_name,
         )
         yield dataset
 
 
 class TestDatasets:
+
+    def url(self, path: str) -> str:
+        return f"http://test_url{path}"
+
     @pytest.mark.parametrize(
         "status_code, expected_exception, expected_message",
         [
@@ -88,7 +91,7 @@ class TestDatasets:
         ],
     )
     def test_create_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message, dataset):
-        mock_dataset_id = dataset.id
+        mock_dataset_id = uuid.uuid4()
         mock_return_value = {
             "id": str(mock_dataset_id),
             "name": "dataset-01",
@@ -97,13 +100,21 @@ class TestDatasets:
             "inserted_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
         }
-        api_url = "http://test_url"
+
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"{api_url}/api/v1/datasets",
+            url=self.url("/api/v1/datasets"),
             method="POST",
             status_code=status_code,
         )
+
+        if status_code == 200:
+            httpx_mock.add_response(
+                json=mock_return_value,
+                url=self.url(f"/api/v1/datasets/{mock_dataset_id}"),
+                method="GET",
+                status_code=200,
+            )
 
         with httpx.Client():
             if expected_exception:
@@ -152,18 +163,23 @@ class TestDatasets:
         }
         httpx_mock.add_response(
             json=mock_patch_return_value,
-            url=f"http://test_url/api/v1/datasets/{mock_dataset_id}",
+            url=self.url(f"/api/v1/datasets/{mock_dataset_id}"),
             method="PATCH",
             status_code=status_code,
         )
         httpx_mock.add_response(
             json=mock_return_value,
-            url=f"http://test_url/api/v1/datasets",
+            url=self.url("/api/v1/datasets"),
             method="POST",
             status_code=200,
-            # match_json=mock_return_value,
         )
-        with httpx.Client() as client:
+        httpx_mock.add_response(
+            json=mock_return_value,
+            url=self.url(f"/api/v1/datasets/{mock_dataset_id}"),
+            method="GET",
+            status_code=200,
+        )
+        with httpx.Client():
             if expected_exception:
                 with pytest.raises(expected_exception=expected_exception) as excinfo:
                     dataset.create()

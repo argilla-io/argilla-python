@@ -46,7 +46,7 @@ class Dataset(Resource):
         workspace: Optional[Union["Workspace", str]] = None,
         settings: Optional[Settings] = None,
         client: Optional["Argilla"] = Argilla(),
-        id: Optional[Union[UUID, str]] = uuid4(),
+        id: Optional[Union[UUID, str]] = None,
         _model: Optional[DatasetModel] = None,
     ) -> None:
         """Initalizes a Dataset with a client and model
@@ -122,7 +122,7 @@ class Dataset(Resource):
         return self.settings.schema
 
     def exists(self) -> bool:
-        return self._api.exists(self.id)
+        return self.id and self._api.exists(self.id)
 
     def publish(self) -> None:
         self._configure(settings=self._settings, publish=True)

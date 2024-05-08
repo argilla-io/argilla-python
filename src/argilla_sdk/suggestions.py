@@ -26,8 +26,8 @@ class Suggestion(Resource):
 
     def __init__(
         self,
-        value: Union[str, int, float, bool, List[str], List[int]],
         question_name: str,
+        value: Union[str, int, float, bool, List[str], List[int]],
         score: Union[float, List[float], None] = None,
         agent: Optional[str] = None,
         type: Optional[Literal["model", "human"]] = None,

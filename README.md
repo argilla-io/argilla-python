@@ -2,6 +2,9 @@
 
 The argilla-sdk is an experimental project to rebuild Argilla's python client in a simpler and friendlier way. The goal is to have a minimal set of core features that are easy to use and understand, but also contribute to feedback task that build quality data.
 
+!!! warning
+    This project is still in development and is not yet ready for production use.
+
 ### Installation
 
 Since this package is not yet published on PyPi, you can install it directly from the repository:

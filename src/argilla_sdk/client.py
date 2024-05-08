@@ -14,7 +14,7 @@
 
 from abc import abstractmethod
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, overload, List
+from typing import TYPE_CHECKING, overload, List, Optional, Union
 
 from argilla_sdk import _api
 from argilla_sdk._helpers import GenericIterator
@@ -81,7 +81,6 @@ class Users(Sequence["User"], ResourceHTMLReprMixin):
     def __getitem__(self, index: slice) -> Sequence["User"]: ...
 
     def __getitem__(self, index):
-
         model = self._api.list()[index]
         return self._from_model(model)
 
@@ -162,15 +161,17 @@ class Datasets(Sequence["Dataset"], ResourceHTMLReprMixin):
         self._client = client
         self._api = client.api.datasets
 
-    def __call__(self, name: str, workspace: "Workspace", **kwargs) -> "Dataset":
+    def __call__(self, name: str, workspace: Optional[Union["Workspace", str]] = None, **kwargs) -> "Dataset":
         from argilla_sdk.datasets._resource import Dataset
 
-        workspace_id = workspace.id
-        dataset_models = self._api.list(workspace_id=workspace_id)
+        if isinstance(workspace, str):
+            workspace = self._client.workspaces(workspace)
+        elif workspace is None:
+            workspace = self._client.workspaces[0]
 
-        for model in dataset_models:
-            if model.name == name:
-                return Dataset(_model=model, client=self._client)
+        for dataset in workspace.datasets:
+            if dataset.name == name:
+                return dataset
 
         return Dataset(name=name, workspace=workspace, client=self._client, **kwargs)
 

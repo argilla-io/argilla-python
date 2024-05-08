@@ -20,6 +20,7 @@ from pydantic import BaseModel, Field, field_serializer, field_validator, model_
 
 from argilla_sdk._exceptions import MetadataError
 
+
 class MetadataPropertyType(str, Enum):
     terms = "terms"
     integer = "integer"
@@ -28,6 +29,7 @@ class MetadataPropertyType(str, Enum):
 
 class BaseMetadataPropertySettings(BaseModel):
     type: MetadataPropertyType
+    visible_for_annotators: Optional[bool] = True
 
 
 class TermsMetadataPropertySettings(BaseMetadataPropertySettings):

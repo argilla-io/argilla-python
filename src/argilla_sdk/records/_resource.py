@@ -386,7 +386,7 @@ class RecordResponses(Iterable[Response]):
         for question_name, responses in self.__question_map.items():
             for response in responses:
                 yield question_name, response.value, response.user_id
-
+                
 
 class RecordSuggestions(Iterable[Suggestion]):
     """This is a container class for the suggestions of a Record.

@@ -65,3 +65,9 @@ def test_publish_dataset(client: "Argilla"):
     published_ds = client.datasets(name=ds.name, workspace=new_ws)
     assert published_ds.exists(), "The dataset was not found"
     assert published_ds.settings == ds.settings, "The settings were not saved"
+
+    assert published_ds.guidelines == ds.guidelines
+    assert published_ds.allow_extra_metadata == ds.allow_extra_metadata
+    assert published_ds.fields == ds.fields
+    assert published_ds.questions == ds.questions
+    assert published_ds.schema == ds.schema

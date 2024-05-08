@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Optional, Literal, Union, List
+from typing import Any, Optional, Literal, Union, List, Dict
 from uuid import UUID
 
 from argilla_sdk._models import SuggestionModel
@@ -26,8 +26,8 @@ class Suggestion(Resource):
 
     def __init__(
         self,
+        value: Union[str, int, float, bool, List[str], List[int]],
         question_name: str,
-        value: Any,
         score: Union[float, List[float], None] = None,
         agent: Optional[str] = None,
         type: Optional[Literal["model", "human"]] = None,
@@ -36,6 +36,8 @@ class Suggestion(Resource):
     ) -> None:
         super().__init__()
 
+        if isinstance(value, list):
+            value = self._represent_list_values(value) # type: ignore
         self._model = SuggestionModel(
             value=value,
             question_name=question_name,
@@ -98,3 +100,6 @@ class Suggestion(Resource):
     @classmethod
     def from_model(cls, model: SuggestionModel) -> "Suggestion":
         return cls(**model.model_dump())
+
+    def _represent_list_values(self, value: List[str]) -> List[Dict[str, str]]:
+        return [{"value": str(v)} for v in value]

@@ -326,7 +326,6 @@ class DatasetRecords(Resource, Iterable[Record]):
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
     ) -> List[RecordModel]:
-        """Ingest records as dictionaries and return a list of RecordModel instances."""
         if isinstance(records, (Record, dict)):
             records = [records]
 

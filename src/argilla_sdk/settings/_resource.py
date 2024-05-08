@@ -320,7 +320,6 @@ class Settings(Resource):
         return processed_questions
 
     def __process_guidelines(self, guidelines):
-        """Process the guidelines, either by reading them from a file or returning the string"""
 
         if guidelines is None:
             return guidelines

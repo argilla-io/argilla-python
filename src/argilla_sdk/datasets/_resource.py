@@ -216,7 +216,6 @@ class Dataset(Resource):
         self,
         settings: Optional[Settings] = None,
     ) -> Settings:
-        """Populate the dataset object with settings"""
         if settings is None:
             settings = Settings(_dataset=self)
             warnings.warn(

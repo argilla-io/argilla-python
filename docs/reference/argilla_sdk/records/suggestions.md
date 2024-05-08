@@ -4,6 +4,8 @@ Class for interacting with Argilla Suggestions of records. Suggestions are typic
 
 ## Usage Examples
 
+### Adding records with suggestions
+
 Suggestions can be added to a record directly or via a dictionary structure. The following examples demonstrate how to add suggestions to a record object and how to access suggestions from a record object:
 
 Add a response from a dictionary where key is the question name and value is the response:
@@ -31,6 +33,15 @@ dataset.records.add(
         )
     ]
 )
+```
+
+### Iterating over records with suggestions
+
+Just like responses, suggestions can be accessed from a `Record` via their question name as an attribute of the record. So if a question is named `label`, the suggestion can be accessed as `record.label`. The following example demonstrates how to access suggestions from a record object:
+
+```python
+for record in dataset.records(with_suggestions=True):
+    print(record.suggestions.label)
 ```
 
 ---

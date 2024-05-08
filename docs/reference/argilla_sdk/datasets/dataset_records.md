@@ -15,7 +15,7 @@ import argilla_sdk as rg
 
 # Create a dataset
 dataset = rg.Dataset(
-    name="my_dataset"
+    name="my_dataset",
     settings=rg.Settings(
         fields=[
             rg.TextField(name="question"), 

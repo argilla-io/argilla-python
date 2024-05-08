@@ -108,12 +108,12 @@ class DatasetRecordsIterator:
 class DatasetRecordsIteratorWithExportSupport(DatasetRecordsIterator, GenericExportMixin):
     """This class is used to iterate over records in a dataset with export support: .to_list() and .to_dict())."""
 
-    def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
+    def to_dict(self, flatten: bool = False, orient: str = "names") -> Dict[str, Any]:
         """Return the records as a dictionary."""
         records = [r for r in self]
         return self._export_to_dict(records=records, flatten=flatten, orient=orient)
 
-    def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
+    def to_list(self, flatten: bool = False) -> List[Dict[str, Any]]:
         """Return the records as a list of dictionaries."""
         records = [r for r in self]
         return self._export_to_list(records=records, flatten=flatten)
@@ -287,7 +287,7 @@ class DatasetRecords(Resource, Iterable[Record]):
 
         return created_or_updated
 
-    def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
+    def to_dict(self, flatten: bool = False, orient: str = "names") -> Dict[str, Any]:
         """
         Return the records as a dictionary. This is a convenient shortcut for dataset.records(...).to_dict().
 
@@ -301,7 +301,7 @@ class DatasetRecords(Resource, Iterable[Record]):
         """
         return self(with_suggestions=True, with_responses=True).to_dict(flatten=flatten, orient=orient)
 
-    def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
+    def to_list(self, flatten: bool = False) -> List[Dict[str, Any]]:
         """
         Return the records as a list of dictionaries. This is a convenient shortcut for dataset.records(...).to_list().
 

@@ -117,6 +117,7 @@ def test_dataset_with_default_workspace(client: rg.Argilla):
 def test_retrieving_dataset(client: rg.Argilla, dataset: rg.Dataset):
     ws = client.workspaces[0]
     dataset = client.datasets(dataset.name, workspace=ws)
+    assert dataset.exists()
 
 
 def test_retrieving_dataset_on_name(client: rg.Argilla, dataset: rg.Dataset):

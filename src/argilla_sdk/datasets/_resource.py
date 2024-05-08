@@ -17,7 +17,7 @@ from typing import Optional, Literal, Union
 from uuid import UUID, uuid4
 
 from argilla_sdk._api import DatasetsAPI
-from argilla_sdk._exceptions import NotFoundError
+from argilla_sdk._exceptions import NotFoundError, SettingsError
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
@@ -150,8 +150,14 @@ class Dataset(Resource):
     ) -> Settings:
         """Populate the dataset object with settings"""
         if settings is None:
-            return Settings(_dataset=self)
-        settings.dataset = self
+            settings = Settings(_dataset=self)
+            warnings.warn(
+                message="Settings not provided. Using empty settings for the dataset. \
+                    Define the settings before publishing the dataset.",
+                stacklevel=2,
+            )
+        else:
+            settings.dataset = self
         return settings
 
     def __workspace_id_from_name(self, workspace: Optional[Union["Workspace", str]]) -> UUID:
@@ -178,6 +184,7 @@ class Dataset(Resource):
         self._sync(response_model)
 
     def __publish(self) -> None:
+        self.settings.validate()
         if not self.is_published:
             response_model = self._api.publish(dataset_id=self._model.id)
             self._sync(response_model)

@@ -36,7 +36,7 @@ def dataset(client) -> rg.Dataset:
     dataset.delete()
 
 
-def test_export_records_dict_defaults(client: Argilla, dataset: rg.Dataset):
+def test_export_records_dict_flattened(client: Argilla, dataset: rg.Dataset):
     mock_data = [
         {
             "text": "Hello World, how are you?",
@@ -55,7 +55,7 @@ def test_export_records_dict_defaults(client: Argilla, dataset: rg.Dataset):
         },
     ]
     dataset.records.add(records=mock_data)
-    exported_records = dataset.records.to_dict()
+    exported_records = dataset.records.to_dict(flatten=True)
     assert len(exported_records) == 5
     assert isinstance(exported_records, dict)
     assert isinstance(exported_records["external_id"], list)
@@ -64,7 +64,7 @@ def test_export_records_dict_defaults(client: Argilla, dataset: rg.Dataset):
     assert exported_records["text"] == ["Hello World, how are you?"] * 3
 
 
-def test_export_records_list_defaults(client: Argilla, dataset: rg.Dataset):
+def test_export_records_list_flattened(client: Argilla, dataset: rg.Dataset):
     mock_data = [
         {
             "text": "Hello World, how are you?",
@@ -83,7 +83,7 @@ def test_export_records_list_defaults(client: Argilla, dataset: rg.Dataset):
         },
     ]
     dataset.records.add(records=mock_data)
-    exported_records = dataset.records.to_list()
+    exported_records = dataset.records.to_list(flatten=True)
     assert len(exported_records) == len(mock_data)
     assert isinstance(exported_records, list)
     assert isinstance(exported_records[0], dict)

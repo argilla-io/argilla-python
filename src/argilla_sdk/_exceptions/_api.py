@@ -63,7 +63,7 @@ def api_error_handler(func):
     ```
     """
 
-    def _error_switch(status_code: int):
+    def _error_switch(status_code: int, error_detail: str):
         switch = {
             400: BadRequestError,
             401: UnauthorizedError,
@@ -73,12 +73,13 @@ def api_error_handler(func):
             422: UnprocessableEntityError,
             500: InternalServerError,
         }
-        raise switch.get(status_code, ArgillaAPIError)
+        exception_class = switch.get(status_code, ArgillaAPIError)
+        raise exception_class(f"{exception_class.message}. Details: {error_detail}")
 
     def _handler_wrapper(*args, **kwargs):
         try:
             return func(*args, **kwargs)
         except HTTPStatusError as e:
-            _error_switch(e.response.status_code)
+            _error_switch(status_code=e.response.status_code, error_detail=e.response.text)
 
     return _handler_wrapper

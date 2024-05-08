@@ -1,16 +1,10 @@
-# Fields
+# Vectors
 
 Vector fields in Argilla are used to define the vector form of a record that will be reviewed by a user. 
 
 ## Usage Examples
 
-To define a vector field, instantiate the `VectorField` class and pass it to the `fields` parameter of the `Settings` class.
-
-```python
-vector_field = rg.VectorField(name="embedding", dimension=768)
-```
-
-The `fields` parameter of the `Settings` class can accept a list of fields, like this:
+To define a vector field, instantiate the `VectorField` class with a name and dimenstions, then pass it to the `vectors` parameter of the `Settings` class.
 
 ```python
 settings = rg.Settings(

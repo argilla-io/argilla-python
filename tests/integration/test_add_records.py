@@ -335,18 +335,21 @@ def test_add_records_with_fields_mapped(client) -> None:
             "my_label": "negative",
             "my_guess": "positive",
             "external_id": uuid.uuid4(),
+            "score": 0.5,
         },
         {
             "x": "Hello World, how are you?",
             "my_label": "negative",
             "my_guess": "positive",
             "external_id": uuid.uuid4(),
+            "score": 0.5,
         },
         {
             "x": "Hello World, how are you?",
             "my_label": "negative",
             "my_guess": "positive",
             "external_id": uuid.uuid4(),
+            "score": 0.5,
         },
     ]
     settings = rg.Settings(
@@ -373,7 +376,12 @@ def test_add_records_with_fields_mapped(client) -> None:
     dataset.records.add(
         records=mock_data,
         user_id=user.id,
-        mapping={"my_label": "label.response", "my_guess": "label.suggestion", "x": "text"},
+        mapping={
+            "my_label": "label.response",
+            "my_guess": "label.suggestion",
+            "x": "text",
+            "score": "label.suggestion.score",
+        },
     )
     assert dataset.name == mock_dataset_name
 
@@ -382,6 +390,8 @@ def test_add_records_with_fields_mapped(client) -> None:
     assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
     assert dataset_records[1].fields.text == mock_data[1]["x"]
     assert dataset_records[2].suggestions.label.value == "positive"
+    assert dataset_records[2].suggestions.label.score == 0.5
+    assert dataset_records[2].responses.label[0].value == "negative"
     assert dataset_records[2].responses.label[0].value == "negative"
     assert dataset_records[2].responses.label[0].user_id == user.id
 

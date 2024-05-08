@@ -27,7 +27,7 @@ class Resource(LoggingMixin, UUIDMixin):
         self._last_api_call = None
 
     def __repr__(self) -> str:
-        return repr(f"{self.__class__.__name__}({self._model})")
+        return f"{self.__class__.__name__}({self._model})"
 
     @property
     def id(self) -> Optional[UUID]:
@@ -56,23 +56,27 @@ class Resource(LoggingMixin, UUIDMixin):
         response_model = self._api.create(self._model)
         self._sync(response_model)
         self._update_last_api_call()
+        self.log(f"Resource created: {self}")
         return self
 
     def get(self) -> "Resource":
         response_model = self._api.get(self._model.id)
         self._sync(response_model)
         self._update_last_api_call()
+        self.log(f"Resource fetched: {self}")
         return self
 
     def update(self) -> "Resource":
         response_model = self._api.update(self._model)
         self._sync(response_model)
         self._update_last_api_call()
+        self.log(f"Resource updated: {self}")
         return self
 
     def delete(self) -> None:
         self._api.delete(self._model.id)
         self._update_last_api_call()
+        self.log(f"Resource deleted: {self}")
 
     ############################
     # Serialization

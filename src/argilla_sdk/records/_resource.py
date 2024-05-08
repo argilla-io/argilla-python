@@ -212,7 +212,7 @@ class Record(Resource):
                 fields[attribute] = value
             elif isinstance(schema_item, QuestionType) and attribute_type == "response":
                 responses.append(Response(question_name=attribute, value=value, user_id=user_id))
-            elif isinstance(schema_item, QuestionType) and attribute_type != "response":
+            elif isinstance(schema_item, QuestionType) and attribute_type is None:
                 suggestion_values[attribute].update(
                     {"value": value, "question_name": attribute, "question_id": schema_item.id}
                 )

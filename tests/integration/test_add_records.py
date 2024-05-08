@@ -124,7 +124,7 @@ def test_add_dict_records(client: Argilla):
 
     for record, data in zip(ds.records(batch_size=1, with_suggestions=True), mock_data):
         assert record.external_id == data["external_id"]
-        assert record.suggestions.label == data["label"]
+        assert record.suggestions.label.value == data["label"]
 
 
 def test_add_single_record(client: Argilla):

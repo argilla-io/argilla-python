@@ -24,12 +24,15 @@ class MetadataPropertyBase(SettingsPropertyBase):
 
 
 class TermsMetadataProperty(MetadataPropertyBase):
-    def __init__(self, name: str, options: list[str], title: Optional[str] = None) -> None:
+    def __init__(
+        self, name: str, options: list[str], title: Optional[str] = None, visible_for_annotators: Optional[bool] = True
+    ) -> None:
         """Create a metadata field with terms settings.
         Args:
             name (str): The name of the metadata field
             options (list[str]): The list of terms
             title (Optional[str]): The title of the metadata field
+            visible_for_annotators (Optional[bool]): Whether the metadata field is visible for annotators
         Raises:
             MetadataError: If an error occurs while defining metadata settings
 
@@ -54,6 +57,7 @@ class TermsMetadataProperty(MetadataPropertyBase):
             type=MetadataPropertyType.terms,
             title=title,
             settings=settings,
+            visible_for_annotators=visible_for_annotators,
         )
 
     @classmethod

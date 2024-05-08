@@ -30,7 +30,18 @@ __all__ = ["Dataset"]
 
 
 class Dataset(Resource):
-    """Class for interacting with Argilla Datasets"""
+    """Class for interacting with Argilla Datasets
+
+    Attributes:
+        records (DatasetRecords): The records object
+        is_published (bool): True if the dataset is published, False otherwise
+        settings (Settings): The settings object
+        fields (list): The fields of the dataset
+        questions (list): The questions of the dataset
+        guidelines (str): The guidelines of the dataset
+        allow_extra_metadata (bool): True if extra metadata is allowed, False otherwise
+        schema: The schema of the dataset
+    """
 
     name: str
     id: Optional[UUID]
@@ -49,15 +60,19 @@ class Dataset(Resource):
         id: Optional[Union[UUID, str]] = uuid4(),
         _model: Optional[DatasetModel] = None,
     ) -> None:
-        """Initalizes a Dataset with a client and model
-        Args:
-            name (str): Name of the dataset. Replaced by random UUID if not assigned.
-            status ["draft", "ready"]: Status of the dataset
-            workspace_id (UUID): Workspace_id of the dataset
-            settings (Settings): Settings class to be used to configure the dataset.
-            client (Argilla): Instance of Argilla to connect with the server.
-            id: (UUID): To predefine dataset_id or to reference existing datasets.
-                Random UUID is used if not assigned.
+        """Initalizes a new Argilla Dataset object with the given parameters.
+
+        Parameters:
+            name (str): The name of the dataset
+            status (str): The status of the dataset
+            workspace_id (str): The id of the workspace
+            workspace (Workspace): The workspace object
+            settings (Settings): The settings object
+            client (Argilla): The client object
+            id (str): The id of the dataset
+            _model (DatasetModel): The model object
+
+
         """
         super().__init__(client=client, api=client.api.datasets)
         if name is None:
@@ -74,6 +89,10 @@ class Dataset(Resource):
         self._settings = self.__configure_settings_for_dataset(settings=settings)
         self.__records = DatasetRecords(client=self._client, dataset=self)
         self._sync(model=self._model)
+
+    #####################
+    #  Properties       #
+    #####################
 
     @property
     def records(self) -> "DatasetRecords":
@@ -121,11 +140,60 @@ class Dataset(Resource):
     def schema(self):
         return self._settings.schema
 
+    #####################
+    #  Core methods     #
+    #####################
+
     def exists(self) -> bool:
+        """Checks if the dataset exists on the server
+        Returns:
+            bool: True if the dataset exists, False otherwise
+        """
         return self._api.exists(self.id)
 
     def publish(self) -> None:
+        """Publishes the dataset on the server with the `Settings` conffiguration
+        Returns:
+            None
+        """
         self._configure(settings=self._settings, publish=True)
+
+    #####################
+    #  CRUD operations  #
+    #####################
+
+    def create(self) -> "Dataset":
+        """Creates a new dataset on the server without `Settings` configuration and without publishing
+        Returns:
+            Dataset: The created dataset object
+        Examples:
+        """
+        return super().create()
+
+    def get(self) -> "Dataset":
+        """Retrieves the dataset from the server
+        Returns:
+            Dataset: The retrieved dataset object
+        """
+        return super().get()
+
+    def update(self) -> "Dataset":
+        """Updates the dataset on the server
+        Returns:
+            Dataset: The updated dataset object
+        Examples:
+        ```python
+        dataset = rg.Dataset(name="my_dataset")
+        dataset.create()
+        # do something to the dataset configuration locally
+        dataset.update()
+        ```
+        """
+        return super().update()
+
+    def delete(self) -> None:
+        """Deletes the dataset from the server"""
+        return super().delete()
 
     #####################
     #  Utility methods  #
@@ -148,7 +216,6 @@ class Dataset(Resource):
         self,
         settings: Optional[Settings] = None,
     ) -> Settings:
-        """Populate the dataset object with settings"""
         settings = settings or Settings()
         settings.dataset = self
         return settings

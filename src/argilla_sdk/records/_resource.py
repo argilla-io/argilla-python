@@ -36,7 +36,20 @@ if TYPE_CHECKING:
 
 
 class Record(Resource):
-    """This is the class for interacting with Argilla Records."""
+    """The class for interacting with Argilla Records. A `Record` is a single sample
+    in a dataset. Records receives feedback in the form of responses and suggestions.
+    Records contain fields, metadata, and vectors.
+
+    Attributes:
+        fields (RecordFields): The fields of the record.
+        metadata (RecordMetadata): The metadata of the record.
+        vectors (RecordVectors): The vectors of the record.
+        responses (RecordResponses): The responses of the record.
+        suggestions (RecordSuggestions): The suggestions of the record.
+        external_id (str): The external id of the record.
+        id (str): The id of the record.
+        dataset (Dataset): The dataset to which the record belongs.
+    """
 
     _model: RecordModel
 

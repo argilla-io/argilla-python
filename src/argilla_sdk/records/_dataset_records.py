@@ -120,11 +120,12 @@ class DatasetRecordsIteratorWithExportSupport(DatasetRecordsIterator, GenericExp
 
 
 class DatasetRecords(Resource, Iterable[Record]):
-    """
-    This class is used to work with records from a dataset.
-
-    The responsibility of this class is to provide an interface to interact with records in a dataset,
-    by adding, updating, fetching, querying, and deleting records.
+    """This class is used to work with records from a dataset and is accessed via `Dataset.records`. The responsibility of this class is to provide an interface to interact with records in a dataset, by adding, updating, fetching, querying, deleting, and exporting records.
+    
+    Attributes:
+        client (Argilla): The Argilla client object.
+        dataset (Dataset): The dataset object.
+    
 
     """
 
@@ -154,6 +155,22 @@ class DatasetRecords(Resource, Iterable[Record]):
         with_responses: bool = True,
         with_vectors: Optional[Union[List, bool, str]] = None,
     ):
+        """Returns an iterator over the records in the dataset on the server.
+
+        Parameters:
+            query: A string or a Query object to filter the records.
+            batch_size: The number of records to fetch in each batch. The default is 256.
+            start_offset: The offset from which to start fetching records. The default is 0.
+            with_suggestions: Whether to include suggestions in the records. The default is True.
+            with_responses: Whether to include responses in the records. The default is True.
+            with_vectors: A list of vector names to include in the records. The default is None.
+                If a list is provided, only the specified vectors will be included.
+                If True is provided, all vectors will be included.
+
+        Returns:
+            An iterator over the records in the dataset on the server.
+
+        """
         if query and isinstance(query, str):
             query = Query(query=query)
 
@@ -184,13 +201,22 @@ class DatasetRecords(Resource, Iterable[Record]):
     ) -> List[Record]:
         """
         Add new records to a dataset on the server.
-        Args:
+
+        Parameters:
             records: A dictionary or a list of dictionaries representing the records
                      to be added to the dataset. Records are defined as dictionaries
                      with keys corresponding to the fields in the dataset schema.
             mapping: A dictionary that maps the keys in the records to the fields in the dataset schema.
             user_id: The user id to be associated with the records. If not provided, the current user id is used.
             batch_size: The number of records to send in each batch. The default is 256.
+
+        Returns:
+            A list of Record objects representing the added records.
+
+        Examples:
+
+        Add generic records to a dataset as dictionaries:
+
         """
         record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
 
@@ -224,7 +250,7 @@ class DatasetRecords(Resource, Iterable[Record]):
         """Update records in a dataset on the server using the provided records
             and matching based on the external_id or id.
 
-        Args:
+        Parameters:
             records: A dictionary or a list of dictionaries representing the records
                      to be updated in the dataset. Records are defined as dictionaries
                      with keys corresponding to the fields in the dataset schema. Ids or
@@ -232,6 +258,10 @@ class DatasetRecords(Resource, Iterable[Record]):
             mapping: A dictionary that maps the keys in the records to the fields in the dataset schema.
             user_id: The user id to be associated with the records. If not provided, the current user id is used.
             batch_size: The number of records to send in each batch. The default is 256.
+
+        Returns:
+            A list of Record objects representing the updated records.
+
         """
         record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
         batch_size = self._normalize_batch_size(
@@ -260,12 +290,26 @@ class DatasetRecords(Resource, Iterable[Record]):
     def to_dict(self, flatten: bool = True, orient: str = "names") -> Dict[str, Any]:
         """
         Return the records as a dictionary. This is a convenient shortcut for dataset.records(...).to_dict().
+
+        Parameters:
+            flatten (bool): Whether to flatten the dictionary and use dot notation for nested keys like suggestions and responses.
+            orient (str): The structure of the exported dictionary.
+
+        Returns:
+            A dictionary of records.
+
         """
         return self(with_suggestions=True, with_responses=True).to_dict(flatten=flatten, orient=orient)
 
     def to_list(self, flatten: bool = True) -> List[Dict[str, Any]]:
         """
         Return the records as a list of dictionaries. This is a convenient shortcut for dataset.records(...).to_list().
+
+        Parameters:
+            flatten (bool): Whether to flatten the dictionary and use dot notation for nested keys like suggestions and responses.
+
+        Returns:
+            A list of dictionaries of records.
         """
         return self(with_suggestions=True, with_responses=True).to_list(flatten=flatten)
 
@@ -279,7 +323,6 @@ class DatasetRecords(Resource, Iterable[Record]):
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
     ) -> List[RecordModel]:
-        """Ingest records as dictionaries and return a list of RecordModel instances."""
         if isinstance(records, dict) or isinstance(records, Record):
             records = [records]
         if all(map(lambda r: isinstance(r, dict), records)):

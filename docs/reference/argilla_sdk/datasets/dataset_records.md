@@ -18,9 +18,12 @@ dataset = rg.Dataset(
     name="my_dataset",
     settings=rg.Settings(
         fields=[
-            rg.TextField(name="question"), 
-            rg.TextField(name="answer")],
-    ),    
+            rg.TextField(name="question"),
+        ],
+        questions=[
+            rg.TextQuestion(name="answer"),
+        ],
+    ),
 )
 
 # Publish the dataset to the server
@@ -30,8 +33,8 @@ dataset.publish()
 dataset.records.add(
     records=[
     {
-        "question": "What is the capital of France?", 
-        "answer": "Paris"
+        "question": "What is the capital of France?",  # 'question' matches the `rg.TextField` name
+        "answer": "Paris" # 'answer' matches the `rg.TextQuestion` name
     },
     {
         "question": "What is the capital of Germany?", 
@@ -48,7 +51,7 @@ dataset.records.add(
         {"input": "What is the capital of France?", "output": "Paris"},
         {"input": "What is the capital of Germany?", "output": "Berlin"},
     ],
-    mapping={"input": "question", "output": "answer"},
+    mapping={"input": "question", "output": "answer"}, # Maps 'input' to 'question' and 'output' to 'answer'
 )
 ```
 
@@ -75,19 +78,32 @@ for record in dataset.records(query="question:capital", with_vectors=True):
 Records can also be updated using the `id` or `external_id` to identify the records to be updated:
 
 ```python
+# Add records to a dataset
+dataset.records.add(
+    records=[
+        {
+            "id": "1",
+            "question": "What is the capital of France?",
+            "answer": "F",
+        },
+        {
+            "id": "2",
+            "question": "What is the capital of Germany?",
+            "answer": "Berlin"
+        },
+    ]
+)
+
+# Update records in a dataset
 dataset.records.update(
     records=[
-    {
-        "id": "1", 
-        "question": "What is the capital of France?", 
-        "answer": "Paris"
-    },
-    {
-        "id": "2",
-        "question": "What is the capital of Germany?",
-        "answer": "Berlin"
-    },
-])
+        {
+            "id": "1",  # matches id used in `Dataset.records.add`
+            "question": "What is the capital of France?",
+            "answer": "Paris",
+        }
+    ]
+)
 ```
 
 

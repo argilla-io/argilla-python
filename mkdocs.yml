@@ -138,10 +138,8 @@ nav:
     - FAQ: overview/faq.md
   - How-to guides:
     - how_to_guides/index.md
-    - Manage users, credentials, and workspaces:
-      - how_to_guides/team/index.md
-      - Users: how_to_guides/team/user.md
-      - Workspaces: how_to_guides/team/workspace.md
+    - Manage users and credentials: how_to_guides/user.md
+    - Manage workspaces: how_to_guides/workspace.md
     - Manage and create datasets: how_to_guides/dataset.md
     - Add, update, and delete records: how_to_guides/record.md
     - Query, filter, and export records: how_to_guides/query_export.md

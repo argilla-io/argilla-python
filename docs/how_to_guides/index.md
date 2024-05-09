@@ -8,13 +8,21 @@ These are the how-to guides for the *Argilla-python SDK*. They provide step-by-s
 
 <div class="grid cards" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Manage users, credentials, and workspaces__
+-   :material-clock-fast:{ .lg .middle } __Manage users and credentials__
 
     ---
 
-    Learn what they are and how to manage (create, read and delete) [`Users`](team/user.md) and [`Workspaces`](team/workspace.md) in Argilla.
+    Learn what they are and how to manage (create, read and delete) [`Users`](team/user.md) in Argilla.
 
-    [:octicons-arrow-right-24: How-to guide](team/index.md)
+    [:octicons-arrow-right-24: How-to guide](user.md)
+
+-   :material-clock-fast:{ .lg .middle } __Manage workspaces__
+
+    ---
+
+    Learn what they are and how to manage (create, read and delete) [`Workspaces`](workspace.md) in Argilla.
+
+    [:octicons-arrow-right-24: How-to guide](workspace.md)
 
 -   :material-clipboard-flow-outline:{ .lg .middle } __Manage and create datasets__
 

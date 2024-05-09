@@ -1,4 +1,7 @@
+import uuid
+
 import argilla_sdk as rg
+from argilla_sdk._models import MetadataFieldModel, TermsMetadataPropertySettings
 
 
 class TestTermsMetadata:
@@ -40,3 +43,21 @@ class TestTermsMetadata:
             "type": "terms",
             "visible_for_annotators": True,
         }
+
+    def test_create_from_model(self):
+        model = MetadataFieldModel(
+            id=uuid.uuid4(),
+            name="metadata",
+            title="A metadata property",
+            type="terms",
+            settings=TermsMetadataPropertySettings(values=["option1", "option2"], type="terms"),
+            visible_for_annotators=True,
+        )
+
+        property = rg.TermsMetadataProperty.from_model(model)
+
+        assert property.id == model.id
+        assert property.title == "A metadata property"
+        assert property.name == "metadata"
+        assert property.visible_for_annotators is True
+        assert property.options == ["option1", "option2"]

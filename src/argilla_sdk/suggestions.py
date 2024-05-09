@@ -11,14 +11,25 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from typing import Any, Optional, Literal, Union, List, Dict
+from typing import Any, Optional, Literal, Union, List, TYPE_CHECKING, Dict
 from uuid import UUID
 
 from argilla_sdk._models import SuggestionModel
 from argilla_sdk._resource import Resource
+from argilla_sdk.settings import RankingQuestion
+
+if TYPE_CHECKING:
+    from argilla_sdk import QuestionType, Record, Dataset
 
 __all__ = ["Suggestion"]
+
+
+def ranking_from_model_value(value: List[Dict[str, Any]]) -> List[str]:
+    return [v["value"] for v in value]
+
+
+def ranking_to_model_value(value: List[str]) -> List[Dict[str, str]]:
+    return [{"value": str(v)} for v in value]
 
 
 class Suggestion(Resource):
@@ -27,17 +38,22 @@ class Suggestion(Resource):
     def __init__(
         self,
         question_name: str,
-        value: Union[str, int, float, bool, List[str], List[int]],
+        value: Any,
         score: Union[float, List[float], None] = None,
         agent: Optional[str] = None,
         type: Optional[Literal["model", "human"]] = None,
         id: Optional[UUID] = None,
         question_id: Optional[UUID] = None,
+        _record: Optional["Record"] = None,
     ) -> None:
         super().__init__()
 
-        if isinstance(value, list):
-            value = self._represent_list_values(value) # type: ignore
+        if question_name is None:
+            raise ValueError("question_name is required")
+        if value is None:
+            raise ValueError("value is required")
+
+        self._record = _record
         self._model = SuggestionModel(
             value=value,
             question_name=question_name,
@@ -98,8 +114,36 @@ class Suggestion(Resource):
         self._model.agent = value
 
     @classmethod
-    def from_model(cls, model: SuggestionModel) -> "Suggestion":
-        return cls(**model.model_dump())
+    def from_model(cls, model: SuggestionModel, dataset: "Dataset") -> "Suggestion":
+        question = dataset.settings.question_by_id(model.question_id)
+        model.question_name = question.name
+        model.value = cls.__from_model_value(model.value, question)
 
-    def _represent_list_values(self, value: List[str]) -> List[Dict[str, str]]:
-        return [{"value": str(v)} for v in value]
+        return cls(**model.dict())
+
+    def api_model(self) -> SuggestionModel:
+        if self._record is None or self._record.dataset is None:
+            return self._model
+
+        question = self._record.dataset.settings.question_by_name(self.question_name)
+        return SuggestionModel(
+            value=self.__to_model_value(self.value, question),
+            question_name=self.question_name,
+            question_id=self.question_id or question.id,
+            type=self._model.type,
+            score=self._model.score,
+            agent=self._model.agent,
+            id=self._model.id,
+        )
+
+    @staticmethod
+    def __to_model_value(value: Any, question: "QuestionType") -> Any:
+        if isinstance(question, RankingQuestion):
+            return ranking_to_model_value(value)
+        return value
+
+    @staticmethod
+    def __from_model_value(value: Any, question: "QuestionType") -> Any:
+        if isinstance(question, RankingQuestion):
+            return ranking_from_model_value(value)
+        return value

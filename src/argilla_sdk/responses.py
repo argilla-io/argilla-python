@@ -12,16 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, TYPE_CHECKING, List, Dict, Optional
+from typing import Any, TYPE_CHECKING, List, Dict, Optional, Iterable
 from uuid import UUID
 
 from argilla_sdk._models import UserResponseModel, ResponseStatus
 from argilla_sdk._resource import Resource
+from argilla_sdk.settings import RankingQuestion
 
 if TYPE_CHECKING:
-    from argilla_sdk import Argilla
+    from argilla_sdk import Argilla, Dataset, Record
 
 __all__ = ["Response", "UserResponse"]
+
+
+def ranking_from_model_value(value: List[Dict[str, Any]]) -> List[str]:
+    return [v["value"] for v in value]
+
+
+def ranking_to_model_value(value: List[str]) -> List[Dict[str, str]]:
+    return [{"value": v} for v in value]
 
 
 class Response:
@@ -32,9 +41,18 @@ class Response:
         question_name: str,
         value: Any,
         user_id: UUID,
+        _record: Optional["Record"] = None,
     ) -> None:
         """Initializes a Response with a user_id and value"""
 
+        if question_name is None:
+            raise ValueError("question_name is required")
+        if value is None:
+            raise ValueError("value is required")
+        if user_id is None:
+            raise ValueError("user_id is required")
+
+        self._record = _record
         self.question_name = question_name
         self.value = value
         self.user_id = user_id
@@ -67,16 +85,21 @@ class UserResponse(Resource):
         answers: List[Response],
         status: ResponseStatus = "draft",
         client: Optional["Argilla"] = None,
+        _record: Optional["Record"] = None,
     ) -> None:
         """Initializes a UserResponse with a user and a set of question answers"""
 
         super().__init__(client=client)
 
+        self._record = _record
         self._model = UserResponseModel(
-            values=self.__create_response_values(answers),
+            values=self.__responses_as_model_values(answers),
             status=status,
             user_id=user_id,
         )
+
+    def __iter__(self) -> Iterable[Response]:
+        return iter(self.answers)
 
     @property
     def status(self) -> ResponseStatus:
@@ -104,20 +127,35 @@ class UserResponse(Resource):
         return self.__model_as_response_list(self._model)
 
     @classmethod
-    def from_model(cls, model: UserResponseModel) -> "UserResponse":
+    def from_model(cls, model: UserResponseModel, dataset: "Dataset") -> "UserResponse":
         """Creates a UserResponse from a ResponseModel"""
-        return cls(
-            model.user_id,
-            answers=cls.__model_as_response_list(model),
-            status=model.status,
-        )
+        answers = cls.__model_as_response_list(model)
+
+        for answer in answers:
+            question = dataset.settings.question_by_name(answer.question_name)
+            if isinstance(question, RankingQuestion):
+                answer.value = ranking_from_model_value(answer.value)  # type: ignore
+
+        return cls(user_id=model.user_id, answers=answers, status=model.status)
+
+    def api_model(self):
+        """Returns the model that is used to interact with the API"""
+
+        values = self.__responses_as_model_values(self.answers)
+        for question_name, value in values.items():
+            question = self._record.dataset.settings.question_by_name(question_name)
+            if isinstance(question, RankingQuestion):
+                value["value"] = ranking_to_model_value(value["value"])
+
+        return UserResponseModel(values=values, status=self._model.status, user_id=self._model.user_id)
 
     def to_dict(self) -> Dict[str, Any]:
         """Returns the UserResponse as a dictionary"""
         return self._model.dict()
 
     @staticmethod
-    def __create_response_values(answers: List[Response]) -> Dict[str, Dict[str, str]]:
+    def __responses_as_model_values(answers: List[Response]) -> Dict[str, Dict[str, Any]]:
+        """Creates a dictionary of response values from a list of Responses"""
         return {answer.question_name: {"value": answer.value} for answer in answers}
 
     @staticmethod

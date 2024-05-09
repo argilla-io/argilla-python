@@ -24,14 +24,6 @@ if TYPE_CHECKING:
 __all__ = ["Suggestion"]
 
 
-def ranking_from_model_value(value: List[Dict[str, Any]]) -> List[str]:
-    return [v["value"] for v in value]
-
-
-def ranking_to_model_value(value: List[str]) -> List[Dict[str, str]]:
-    return [{"value": str(v)} for v in value]
-
-
 class Suggestion(Resource):
     _model: SuggestionModel
 
@@ -127,14 +119,22 @@ class Suggestion(Resource):
             id=self._model.id,
         )
 
-    @staticmethod
-    def __to_model_value(value: Any, question: "QuestionType") -> Any:
+    @classmethod
+    def __to_model_value(cls, value: Any, question: "QuestionType") -> Any:
         if isinstance(question, RankingQuestion):
-            return ranking_to_model_value(value)
+            return cls.__ranking_to_model_value(value)
         return value
 
-    @staticmethod
-    def __from_model_value(value: Any, question: "QuestionType") -> Any:
+    @classmethod
+    def __from_model_value(cls, value: Any, question: "QuestionType") -> Any:
         if isinstance(question, RankingQuestion):
-            return ranking_from_model_value(value)
+            return cls.__ranking_from_model_value(value)
         return value
+
+    @classmethod
+    def __ranking_from_model_value(cls, value: List[Dict[str, Any]]) -> List[str]:
+        return [v["value"] for v in value]
+
+    @classmethod
+    def __ranking_to_model_value(cls, value: List[str]) -> List[Dict[str, str]]:
+        return [{"value": str(v)} for v in value]

@@ -25,14 +25,6 @@ if TYPE_CHECKING:
 __all__ = ["Response", "UserResponse"]
 
 
-def ranking_from_model_value(value: List[Dict[str, Any]]) -> List[str]:
-    return [v["value"] for v in value]
-
-
-def ranking_to_model_value(value: List[str]) -> List[Dict[str, str]]:
-    return [{"value": v} for v in value]
-
-
 class Response:
     """Class for interacting with Argilla Responses of records"""
 
@@ -134,7 +126,7 @@ class UserResponse(Resource):
         for answer in answers:
             question = dataset.settings.question_by_name(answer.question_name)
             if isinstance(question, RankingQuestion):
-                answer.value = ranking_from_model_value(answer.value)  # type: ignore
+                answer.value = cls.__ranking_from_model_value(answer.value)  # type: ignore
 
         return cls(user_id=model.user_id, answers=answers, status=model.status)
 
@@ -145,7 +137,7 @@ class UserResponse(Resource):
         for question_name, value in values.items():
             question = self._record.dataset.settings.question_by_name(question_name)
             if isinstance(question, RankingQuestion):
-                value["value"] = ranking_to_model_value(value["value"])
+                value["value"] = self.__ranking_to_model_value(value["value"])
 
         return UserResponseModel(values=values, status=self._model.status, user_id=self._model.user_id)
 
@@ -165,3 +157,11 @@ class UserResponse(Resource):
             Response(question_name=question_name, value=value["value"], user_id=model.user_id)
             for question_name, value in model.values.items()
         ]
+
+    @classmethod
+    def __ranking_from_model_value(cls, value: List[Dict[str, Any]]) -> List[str]:
+        return [v["value"] for v in value]
+
+    @classmethod
+    def __ranking_to_model_value(cls, value: List[str]) -> List[Dict[str, str]]:
+        return [{"value": v} for v in value]

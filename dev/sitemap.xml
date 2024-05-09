@@ -2,217 +2,217 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/_source/tutorials/add-suggestions-and-responses-005/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/_source/tutorials/assign-records-002/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/_source/tutorials/configure-users-and-workspaces-000/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/_source/tutorials/create-dataset-001/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/_source/tutorials/quickstart-tutorial/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/fine_tune/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/dataset/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/dataset/fields/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/dataset/metadata/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/dataset/questions/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/dataset/vectors/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/metrics/annotator/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/metrics/dataset/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/metrics/model/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/record/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/record/fields/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/record/metadata/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/record/questions/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/record/vectors/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/team/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/team/user/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/how_to_guides/team/workspace/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/integrations/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/overview/changelog/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/overview/community/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/overview/faq/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/overview/quickstart/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/overview/community/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/overview/community/contributor/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/overview/community/developer/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/overview/concepts/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/overview/installation/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/overview/installation/telemetry/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/reference/SUMMARY/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/reference/argilla_sdk/client/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/reference/argilla_sdk/responses/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/reference/argilla_sdk/suggestions/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/reference/argilla_sdk/vectors/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/tutorials/rag_llm/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/tutorials/rag_rankers_and_retrievers/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://argilla-io.github.io/argilla-python/dev/tutorials/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-09</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

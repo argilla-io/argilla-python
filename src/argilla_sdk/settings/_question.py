@@ -75,6 +75,14 @@ class LabelQuestion(SettingsPropertyBase):
     def labels(self, labels: List[str]) -> None:
         self._model.settings.options = _render_values_as_options(labels)
 
+    @property
+    def visible_labels(self) -> Optional[int]:
+        return self._model.settings.visible_options
+
+    @visible_labels.setter
+    def visible_labels(self, visible_labels: Optional[int]) -> None:
+        self._model.settings.visible_options = visible_labels
+
     ##############################
     # Private methods
     ##############################
@@ -117,14 +125,6 @@ class MultiLabelQuestion(LabelQuestion):
         instance._model = model
 
         return instance
-
-    @property
-    def visible_labels(self) -> Optional[int]:
-        return self._model.settings.visible_options
-
-    @visible_labels.setter
-    def visible_labels(self, visible_labels: Optional[int]) -> None:
-        self._model.settings.visible_options = visible_labels
 
 
 class TextQuestion(SettingsPropertyBase):
@@ -257,7 +257,7 @@ class RankingQuestion(SettingsPropertyBase):
         self._model.settings.options = _render_values_as_options(values)
 
 
-class SpanQuestion(MultiLabelQuestion):
+class SpanQuestion(SettingsPropertyBase):
     _model: SpanQuestionModel
 
     def __init__(

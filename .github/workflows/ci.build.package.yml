@@ -1,7 +1,10 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-
 name: Test and build the `argilla-sdk` python package
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 on:
   push:
@@ -28,20 +31,20 @@ jobs:
       matrix:
         python-version: [ "3.8", "3.9", "3.10", "3.11" ]
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup PDM
-      uses: pdm-project/setup-pdm@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-        cache: true
-        cache-dependency-path: |
-          pyproject.toml
-    - name: Install dependencies
-      run: |
-        pdm install
-    - name: Wait for argilla-quickstart to start
-      run: |
-        while ! nc -z localhost 6900; do sleep 1; done
-    - name: Run tests
-      run: |
-        pdm run test
+      - uses: actions/checkout@v3
+      - name: Setup PDM
+        uses: pdm-project/setup-pdm@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: true
+          cache-dependency-path: |
+            pyproject.toml
+      - name: Install dependencies
+        run: |
+          pdm install
+      - name: Wait for argilla-quickstart to start
+        run: |
+          while ! nc -z localhost 6900; do sleep 1; done
+      - name: Run tests
+        run: |
+          pdm run test

@@ -11,8 +11,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import Optional
 from dataclasses import dataclass
+from typing import Optional
 
 import httpx
 
@@ -33,11 +33,11 @@ class HTTPClientConfig:
         self.timeout = self.timeout or 60
 
 
-def create_http_client(api_url: str, api_key: str, timeout: int, **client_args) -> httpx.Client:
+def create_http_client(api_url: str, api_key: str, **client_args) -> httpx.Client:
     """Initialize the SDK with the given API URL and API key."""
     # This piece of code is needed to make old sdk works in combination with new one
 
     headers = client_args.pop("headers", {})
     headers["X-Argilla-Api-Key"] = api_key
 
-    return httpx.Client(base_url=api_url, timeout=timeout, headers=headers, **client_args)
+    return httpx.Client(base_url=api_url, headers=headers, **client_args)

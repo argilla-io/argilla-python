@@ -22,6 +22,14 @@ __all__ = [
 class MetadataPropertyBase(SettingsPropertyBase):
     _model: MetadataFieldModel
 
+    @property
+    def visible_for_annotators(self) -> Optional[bool]:
+        return self._model.visible_for_annotators
+
+    @visible_for_annotators.setter
+    def visible_for_annotators(self, value: Optional[bool]) -> None:
+        self._model.visible_for_annotators = value
+
 
 class TermsMetadataProperty(MetadataPropertyBase):
     def __init__(
@@ -59,6 +67,14 @@ class TermsMetadataProperty(MetadataPropertyBase):
             settings=settings,
             visible_for_annotators=visible_for_annotators,
         )
+
+    @property
+    def options(self) -> list[str]:
+        return self._model.settings.values
+
+    @options.setter
+    def options(self, value: list[str]) -> None:
+        self._model.settings.values = value
 
     @classmethod
     def from_model(cls, model: MetadataFieldModel) -> "TermsMetadataProperty":

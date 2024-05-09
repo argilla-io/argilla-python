@@ -49,10 +49,12 @@ def test_dataset_with_workspace(client: rg.Argilla):
         client=client,
     )
     dataset.publish()
+    assert isinstance(dataset, rg.Dataset)
     assert dataset.id is not None
     assert dataset.exists()
     assert dataset.is_published
     assert dataset.workspace_id == ws.id
+    
 
 
 def test_dataset_with_workspace_name(client: rg.Argilla):
@@ -71,6 +73,7 @@ def test_dataset_with_workspace_name(client: rg.Argilla):
         client=client,
     )
     dataset.publish()
+    assert isinstance(dataset, rg.Dataset)
     assert dataset.id is not None
     assert dataset.exists()
     assert dataset.is_published
@@ -108,6 +111,7 @@ def test_dataset_with_default_workspace(client: rg.Argilla):
         client=client,
     )
     dataset.publish()
+    assert isinstance(dataset, rg.Dataset)
     assert dataset.id is not None
     assert dataset.exists()
     assert dataset.is_published
@@ -117,16 +121,19 @@ def test_dataset_with_default_workspace(client: rg.Argilla):
 def test_retrieving_dataset(client: rg.Argilla, dataset: rg.Dataset):
     ws = client.workspaces[0]
     dataset = client.datasets(dataset.name, workspace=ws)
+    assert isinstance(dataset, rg.Dataset)
     assert dataset.exists()
 
 
 def test_retrieving_dataset_on_name(client: rg.Argilla, dataset: rg.Dataset):
     ws = client.workspaces[0]
     dataset = client.datasets(dataset.name, workspace=ws.name)
+    assert isinstance(dataset, rg.Dataset)
     assert dataset.exists()
 
 
 def test_retrieving_dataset_on_default(client: rg.Argilla, dataset: rg.Dataset):
     ws = client.workspaces[0]
     dataset = client.datasets(dataset.name)
+    assert isinstance(dataset, rg.Dataset)
     assert dataset.exists()    

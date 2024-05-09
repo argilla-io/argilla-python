@@ -88,24 +88,38 @@ class ArgillaAPI:
 class APIClient:
     """Initialize the SDK with the given API URL and API key.
     This class is used to create an instance of the Argilla API client.
+
+    Args:
+        api_url (str, optional): The URL of the Argilla API. Defaults to the value of
+            the `ARGILLA_API_URL` environment variable.
+        api_key (str, optional): The API key to authenticate with the Argilla API. Defaults to
+            the value of the `ARGILLA_API_KEY` environment variable.
+        timeout (int, optional): The timeout in seconds for the HTTP requests. Defaults to 60.
+        **http_client_args: Additional keyword arguments to pass to the httpx.Client instance.
+            See https://www.python-httpx.org/api/#client for more information.
     """
 
     def __init__(
         self,
         api_url: Optional[str] = DEFAULT_HTTP_CONFIG.api_url,
         api_key: Optional[str] = DEFAULT_HTTP_CONFIG.api_key,
-        timeout: int = 60,
+        timeout: int = DEFAULT_HTTP_CONFIG.timeout,
+        **http_client_args,
     ):
+
+        http_client_args = http_client_args or {}
+        http_client_args["timeout"] = timeout
+
         self.api_url = api_url
         self.api_key = api_key
-        self.timeout = timeout
+        self._http_client_args = http_client_args
 
     @property
     def http_client(self) -> httpx.Client:
         return create_http_client(
             api_url=self.api_url,  # type: ignore
             api_key=self.api_key,  # type: ignore
-            timeout=self.timeout,
+            **self._http_client_args,
         )
 
     @property

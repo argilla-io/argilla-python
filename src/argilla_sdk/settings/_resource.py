@@ -18,7 +18,7 @@ from typing import List, Optional, TYPE_CHECKING, Dict, Union
 from uuid import UUID
 
 from argilla_sdk._exceptions import SettingsError, ArgillaAPIError, ArgillaSerializeError
-from argilla_sdk._models import TextFieldModel, TextQuestionModel
+from argilla_sdk._models import TextFieldModel, TextQuestionModel, DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.settings._field import FieldType, TextField, VectorField, field_from_model
 from argilla_sdk.settings._metadata import MetadataType
@@ -96,8 +96,6 @@ class Settings(Resource):
     @guidelines.setter
     def guidelines(self, guidelines: str):
         self.__guidelines = self.__process_guidelines(guidelines)
-        if self._dataset:
-            self._dataset._model.guidelines = guidelines
 
     @property
     def vectors(self) -> List[VectorField]:
@@ -122,8 +120,6 @@ class Settings(Resource):
     @allow_extra_metadata.setter
     def allow_extra_metadata(self, value: bool):
         self.__allow_extra_metadata = value
-        if self._dataset:
-            self._dataset._model.allow_extra_metadata = value
 
     @property
     def dataset(self) -> "Dataset":
@@ -133,8 +129,6 @@ class Settings(Resource):
     def dataset(self, dataset: "Dataset"):
         self._dataset = dataset
         self._client = dataset._client
-        self._dataset._model.allow_extra_metadata = self.allow_extra_metadata
-        self._dataset._model.guidelines = self.guidelines
 
     @cached_property
     def schema(self) -> dict:
@@ -187,6 +181,12 @@ class Settings(Resource):
         self._update_last_api_call()
         return self
 
+    def question_by_name(self, question_name: str) -> QuestionType:
+        for question in self.questions:
+            if question.name == question_name:
+                return question
+        raise ValueError(f"Question with name {question_name} not found")
+
     def question_by_id(self, question_id: UUID) -> QuestionType:
         property = self.schema_by_id.get(question_id)
         if isinstance(property, QuestionType):
@@ -226,10 +226,10 @@ class Settings(Resource):
         #   "allow_extra_metadata": ....,
         # }
         # But this is not implemented yet, so we need to update the dataset model directly
-        self._dataset.get()
+        dataset_model = self._client.api.datasets.get(self._dataset.id)
 
-        self.guidelines = self._dataset._model.guidelines
-        self.allow_extra_metadata = self._dataset._model.allow_extra_metadata
+        self.guidelines = dataset_model.guidelines
+        self.allow_extra_metadata = dataset_model.allow_extra_metadata
 
     def __update_dataset_related_attributes(self):
         # This flow may be a bit weird, but it's the only way to update the dataset related attributes
@@ -240,12 +240,13 @@ class Settings(Resource):
         #   "allow_extra_metadata": ....,
         # }
         # But this is not implemented yet, so we need to update the dataset model directly
-        ds_model = self._dataset._model
-
-        ds_model.guidelines = self.guidelines
-        ds_model.allow_extra_metadata = self.allow_extra_metadata
-
-        self._dataset.update()
+        dataset_model = DatasetModel(
+            id=self._dataset.id,
+            name=self._dataset.name,
+            guidelines=self.guidelines,
+            allow_extra_metadata=self.allow_extra_metadata,
+        )
+        self._client.api.datasets.update(dataset_model)
 
     def __upsert_questions(self) -> None:
         for question in self.__questions:
@@ -298,12 +299,6 @@ class Settings(Resource):
     def __eq__(self, other: "Settings") -> bool:
         return self.serialize() == other.serialize()  # TODO: Create proper __eq__ methods for fields and questions
 
-    def __repr__(self) -> str:
-        return (
-            f"Settings(guidelines={self.guidelines}, allow_extra_metadata={self.allow_extra_metadata}, "
-            f"fields={self.fields}, questions={self.questions}, vectors={self.vectors})"
-        )
-
     def __process_fields(self, fields: List[FieldType]) -> List["TextFieldModel"]:
         processed_fields = []
         for field in fields:
@@ -344,3 +339,15 @@ class Settings(Resource):
 
     def __serialize_questions(self, questions):
         return [question.serialize() for question in questions]
+
+    #####################
+    #  Repr Methods     #
+    #####################
+
+    def __repr__(self) -> str:
+        yield "guidelines", self.guidelines
+        yield "allow_extra_metadata", self.allow_extra_metadata
+        yield "fields", self.fields
+        yield "questions", self.questions
+        yield "vectors", self.vectors
+        yield "metadata", self.metadata

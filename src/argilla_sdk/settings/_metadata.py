@@ -23,6 +23,16 @@ class MetadataPropertyBase(SettingsPropertyBase):
     _model: MetadataFieldModel
 
     @property
+    def required(self) -> bool:
+        # This attribute is not present in the MetadataFieldModel
+        return False
+
+    @property
+    def description(self) -> Optional[str]:
+        # This attribute is not present in the MetadataFieldModel
+        return None
+
+    @property
     def visible_for_annotators(self) -> Optional[bool]:
         return self._model.visible_for_annotators
 
@@ -83,11 +93,10 @@ class TermsMetadataProperty(MetadataPropertyBase):
 
     @classmethod
     def from_model(cls, model: MetadataFieldModel) -> "TermsMetadataProperty":
-        return TermsMetadataProperty(
-            name=model.name,
-            options=model.settings.values,
-            title=model.title,
-        )
+        instance = TermsMetadataProperty(name=model.name)
+        instance._model = model
+
+        return instance
 
 
 class FloatMetadataProperty(MetadataPropertyBase):
@@ -144,12 +153,10 @@ class FloatMetadataProperty(MetadataPropertyBase):
 
     @classmethod
     def from_model(cls, model: MetadataFieldModel) -> "FloatMetadataProperty":
-        return FloatMetadataProperty(
-            name=model.name,
-            min=model.settings.min,
-            max=model.settings.max,
-            title=model.title,
-        )
+        instance = FloatMetadataProperty(name=model.name)
+        instance._model = model
+
+        return instance
 
 
 class IntegerMetadataProperty(MetadataPropertyBase):
@@ -206,12 +213,10 @@ class IntegerMetadataProperty(MetadataPropertyBase):
 
     @classmethod
     def from_model(cls, model: MetadataFieldModel) -> "IntegerMetadataProperty":
-        return IntegerMetadataProperty(
-            name=model.name,
-            min=model.settings.min,
-            max=model.settings.max,
-            title=model.title,
-        )
+        instance = IntegerMetadataProperty(name=model.name)
+        instance._model = model
+
+        return instance
 
 
 MetadataType = Union[TermsMetadataProperty, FloatMetadataProperty, IntegerMetadataProperty]

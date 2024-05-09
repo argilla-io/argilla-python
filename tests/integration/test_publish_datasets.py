@@ -24,6 +24,9 @@ from argilla_sdk import (
     MultiLabelQuestion,
     RatingQuestion,
     RankingQuestion,
+    TermsMetadataProperty,
+    IntegerMetadataProperty,
+    FloatMetadataProperty,
 )
 
 
@@ -56,6 +59,12 @@ def test_publish_dataset(client: "Argilla"):
             LabelQuestion(name="label-question", labels=["A", "B", "C"]),
             MultiLabelQuestion(name="multi-label-question", labels=["A", "B", "C"]),
             SpanQuestion(name="span-question", field="text-field", labels=["label1", "label2"]),
+        ],
+        metadata=[
+            TermsMetadataProperty(name="metadata-property", options=["term1", "term2"]),
+            TermsMetadataProperty(name="term-property"),
+            IntegerMetadataProperty(name="metadata-property-2", min=0, max=10),
+            FloatMetadataProperty(name="metadata-property-3", min=0, max=10),
         ],
     )
 

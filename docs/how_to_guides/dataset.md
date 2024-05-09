@@ -19,46 +19,37 @@ A **dataset** is a collection of records that you can configure for labelers to 
 This section starts by showing how to create a basic dataset in Argilla and define its settings, and then how to list all the datasets available in each workspace and retrieve a specific one. Finally, the guide covers the steps to update and delete a dataset.
 
 !!! info "Class"
-    === `rg.Dataset`
+    === "`rg.Dataset`"
 
-    ```python
-    rg.Dataset(
-        name="name",
-        workspace="workspace",
-        settings=settings,
-        client=client
-    )
-    ```
-    > Check the [Dataset - Python Reference](../reference/argilla_sdk/datasets.md) to see the attributes, arguments, and methods of the `Dataset` class in detail.
+        ```python
+        rg.Dataset(
+            name="name",
+            workspace="workspace",
+            settings=settings,
+            client=client
+        )
+        ```
+        > Check the [Dataset - Python Reference](../reference/argilla_sdk/datasets.md) to see the attributes, arguments, and methods of the `Dataset` class in detail.
 
-=== `rg.Settings`
+    === "`rg.Settings`"
 
-    ```python
-    rg.Settings(
-        fields = [
-            rg.TextField(name="text")
-            ],
-        questions = [
-            rg.LabelQuestion(
-                name="label",
-                labels=["label_1", "label_2", "label_3"]
+        ```python
+        rg.settings(
+            fields=[rg.text_field(name="text")],
+            questions=[
+                rg.label_question(
+                    name="label",
+                    labels=["label_1", "label_2", "label_3"]
                 )
             ],
-        metadata = [
-            rg.TermsMetadataProperty(
-                name="metadata",
-                options=["option_1", "option_2", "option_3"]
-                )
-            ],
-        vectors = [
-            rg.VectorField(name="vector", dimensions=10)
-            ],
-        guidelines = "guidelines",
-        allow_extra_metadata = True,
-    )
-    ```
+            metadata=[rg.terms_metadata_property(name="metadata")],
+            vectors=[rg.vector_field(name="vector", dimensions=10)],
+            guidelines="guidelines",
+            allow_extra_metadata=True,
+        )
+        ```
 
-    > Check the [Settings - Python Reference](../reference/argilla_sdk/settings/settings.md) to see the attributes, arguments, and methods of the `Settings` class in detail.
+        > Check the [Settings - Python Reference](../reference/argilla_sdk/settings/settings.md) to see the attributes, arguments, and methods of the `Settings` class in detail.
 
 ### Create a dataset
 
@@ -105,7 +96,6 @@ A **field** is defined in the `TextField` class that has the following arguments
 
 * `name`: The name of the field.
 * `title` (optional): The name of the field, as it will be displayed in the UI. Defaults to the `name` value.
-* `description` (optional): The description of the field, as it will be displayed in the UI. Defaults to `None`.
 * `required` (optional): Whether the field is required or not. Defaults to `True`. At least one field must be required.
 * `use_markdown` (optional): Specify whether you want markdown rendered in the UI. Defaults to `False`. If you set it to True, you will be able to use all the Markdown features for text formatting, as well as embed multimedia content and PDFs.
 
@@ -116,7 +106,6 @@ A **field** is defined in the `TextField` class that has the following arguments
 rg.TextField(
     name="text",
     title="Text",
-    description="The text to be annotated",
     required=True,
     use_markdown=False
 )
@@ -286,7 +275,7 @@ Metadata properties allow you to configure the use of metadata information for t
 
     - `name`: The name of the metadata property.
     - `title` (optional): The name of the metadata property, as it will be displayed in the UI. Defaults to the `name` value, but capitalized.
-    -  `options`: You can pass a list of valid values for this metadata property, in case you want to run any validation.
+    - `options` (optional): You can pass a list of valid values for this metadata property, in case you want to run any validation.
 
     ```python
     rg.TermsMetadataProperty(
@@ -302,8 +291,8 @@ Metadata properties allow you to configure the use of metadata information for t
 
     - `name`: The name of the metadata property.
     - `title` (optional): The name of the metadata property, as it will be displayed in the UI. Defaults to the `name` value, but capitalized.
-    - `min`: You can pass a minimum valid value. If none is provided, the minimum value will be computed from the values provided in the records.
-    - `max`: You can pass a maximum valid value. If none is provided, the maximum value will be computed from the values provided in the records.
+    - `min` (optional): You can pass a minimum valid value. If none is provided, the minimum value will be computed from the values provided in the records.
+    - `max` (optional): You can pass a maximum valid value. If none is provided, the maximum value will be computed from the values provided in the records.
 
     ```python
     rg.IntegerMetadataProperty(
@@ -320,8 +309,8 @@ Metadata properties allow you to configure the use of metadata information for t
 
     - `name`: The name of the metadata property.
     - `title` (optional): The name of the metadata property, as it will be displayed in the UI. Defaults to the `name` value, but capitalized.
-    - `min`: You can pass a minimum valid value. If none is provided, the minimum value will be computed from the values provided in the records.
-    - `max`: You can pass a maximum valid value. If none is provided, the maximum value will be computed from the values provided in the records.
+    - `min` (optional): You can pass a minimum valid value. If none is provided, the minimum value will be computed from the values provided in the records.
+    - `max` (optional): You can pass a maximum valid value. If none is provided, the maximum value will be computed from the values provided in the records.
 
     ```python
     rg.FloatMetadataProperty(

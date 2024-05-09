@@ -12,7 +12,7 @@ These are the how-to guides for the *Argilla-python SDK*. They provide step-by-s
 
     ---
 
-    Learn what they are and how to manage (create, read and delete) [`Users`](team/user.md) in Argilla.
+    Learn what they are and how to manage (create, read and delete) [`Users`](user.md) in Argilla.
 
     [:octicons-arrow-right-24: How-to guide](user.md)
 

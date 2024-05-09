@@ -9,7 +9,7 @@ This guide provides an overview of user roles and credentials, explaining how to
 A **user** in Argilla is an authorized person, who depending on their role, can use the Python SDK and access the UI in a running Argilla instance. We differentiate between three types of users depending on their role, permissions and needs: `owner`, `admin` and `annotator`. 
 
 === "Overview"
-    ![User roles overview](../../assets/images/how_to_guides/team/user_roles.png)
+    ![User roles overview](../assets/images/how_to_guides/team/user_roles.png)
 
 === "Owner"
 
@@ -91,9 +91,6 @@ client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 
 user_to_create = rg.User(
     username="my_username",
-    first_name="my_first_name",
-    last_name="my_last_name",
-    role="owner",
     password="12345678",
     client=client
 )

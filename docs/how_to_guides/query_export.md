@@ -14,26 +14,26 @@ This section shows how to query a dataset in Argilla using specific terms or fil
 
 !!! info "Class"
 
-    === `rg.query`
+    === "`rg.query`"
 
-    ```python
-    rg.Query(
-    query="query",
-    filter=filter_used
-    )
-    ```
-    > Check the [Query - Python Reference](../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Query` class in detail.
+        ```python
+        rg.Query(
+        query="query",
+        filter=filter
+        )
+        ```
+        > Check the [Query - Python Reference](../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Query` class in detail.
 
-    === `rg.Filter`
+    === "`rg.Filter`"
 
-    ```python
-    rg.Filter(
-        [
-            ("field", "==", "value"),
-        ]
-    )
-    ```
-    > Check the [Filter - Python Reference](../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Filter` class in detail.
+        ```python
+        rg.Filter(
+            [
+                ("field", "==", "value"),
+            ]
+        )
+        ```
+        > Check the [Filter - Python Reference](../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Filter` class in detail.
 
 ### Query with search terms
 

@@ -17,24 +17,24 @@ This section shows how to add records in Argilla with metadata, vectors, suggest
 !!! info "Class"
 
     ```python
-    rg.Record(
+    rg.record(
         external_id="1234",
         fields={
             "question": "Do you need oxygen to breathe?",
             "answer": "Yes"
-            },
+        },
         metadata={
             "category": "A"
-            },
+        },
         vectors={
             "my_vector": [0.1, 0.2, 0.3],
-            },
+        },
         suggestions=[
-            rg.Suggestion("my_label", "positive", score=0.9, agent="model_name")
-            ],
+            rg.suggestion("my_label", "positive", score=0.9, agent="model_name")
+        ],
         responses=[
-            rg.Response("label", "positive", user_id=user_id)
-            ],
+            rg.response("label", "positive", user_id=user_id)
+        ],
     )
     ```
     > Check the [Record - Python Reference](../reference/argilla_sdk/records/records.md) to see the attributes, arguments, and methods of the `Record` class in detail.

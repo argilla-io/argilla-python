@@ -1,7 +1,7 @@
 import argilla_sdk as rg
 
 
-class TestMetadataSettings:
+class TestTermsMetadata:
 
     def test_create_metadata_terms(self):
         property = rg.TermsMetadataProperty(
@@ -19,6 +19,24 @@ class TestMetadataSettings:
             "name": "metadata",
             "settings": {"type": "terms", "values": ["option1", "option2"], "visible_for_annotators": True},
             "title": "A metadata property",
+            "type": "terms",
+            "visible_for_annotators": True,
+        }
+
+    def test_create_terms_metadata_without_options(self):
+        property = rg.TermsMetadataProperty(name="metadata")
+
+        assert property._model.type == "terms"
+        assert property.title == "metadata"
+        assert property.name == "metadata"
+        assert property.visible_for_annotators is True
+        assert property.options == []
+
+        assert property._model.dict() == {
+            "id": None,
+            "name": "metadata",
+            "title": "metadata",
+            "settings": {"type": "terms", "values": [], "visible_for_annotators": True},
             "type": "terms",
             "visible_for_annotators": True,
         }

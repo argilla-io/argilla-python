@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from argilla_sdk._exceptions import MetadataError
 from argilla_sdk._models import (
@@ -33,12 +33,16 @@ class MetadataPropertyBase(SettingsPropertyBase):
 
 class TermsMetadataProperty(MetadataPropertyBase):
     def __init__(
-        self, name: str, options: list[str], title: Optional[str] = None, visible_for_annotators: Optional[bool] = True
+        self,
+        name: str,
+        options: Optional[List[str]] = None,
+        title: Optional[str] = None,
+        visible_for_annotators: Optional[bool] = True,
     ) -> None:
         """Create a metadata field with terms settings.
         Args:
             name (str): The name of the metadata field
-            options (list[str]): The list of terms
+            options (Optional[List[str]]): The list of options
             title (Optional[str]): The title of the metadata field
             visible_for_annotators (Optional[bool]): Whether the metadata field is visible for annotators
         Raises:
@@ -54,6 +58,7 @@ class TermsMetadataProperty(MetadataPropertyBase):
         )
         ```
         """
+        super().__init__()
 
         try:
             settings = TermsMetadataPropertySettings(values=options, type=MetadataPropertyType.terms)
@@ -69,7 +74,7 @@ class TermsMetadataProperty(MetadataPropertyBase):
         )
 
     @property
-    def options(self) -> list[str]:
+    def options(self) -> Optional[List[str]]:
         return self._model.settings.values
 
     @options.setter

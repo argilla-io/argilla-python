@@ -36,12 +36,14 @@ class TermsMetadataPropertySettings(BaseMetadataPropertySettings):
     type: Literal[MetadataPropertyType.terms]
     values: Optional[List[str]] = None
 
-    @field_validator("values")
+    @field_validator(
+        "values",
+    )
     @classmethod
     def __validate_values(cls, values):
         if values is None:
-            raise ValueError("values must be provided for a terms metadata field.")
-        elif not isinstance(values, list):
+            return None
+        if not isinstance(values, list):
             raise ValueError(f"values must be a list, got {type(values)}")
         elif not all(isinstance(value, str) for value in values):
             raise ValueError("All values must be strings for terms metadata.")
@@ -99,7 +101,7 @@ class MetadataFieldModel(BaseModel):
     name: str
     settings: MetadataPropertySettings
 
-    type: Optional[MetadataPropertyType] = None
+    type: Optional[MetadataPropertyType] = Field(None, validate_default=True)
     title: Optional[str] = None
     visible_for_annotators: Optional[bool] = True
 
@@ -120,6 +122,7 @@ class MetadataFieldModel(BaseModel):
         return str(value)
 
     @field_validator("type", mode="plain")
+    @classmethod
     def __validate_type(cls, type, values):
         if type is None:
             return values.data["settings"].type

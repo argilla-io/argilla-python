@@ -55,6 +55,10 @@ class Resource(LoggingMixin, UUIDMixin):
             return True
         return seconds > self._MAX_OUTDATED_RETENTION
 
+    def api_model(self):
+        """Returns the model that is used to interact with the API"""
+        return self._model
+
     ############################
     # CRUD operations
     ############################

@@ -121,6 +121,22 @@ class FloatMetadataProperty(MetadataPropertyBase):
             settings=settings,
         )
 
+    @property
+    def min(self) -> Optional[int]:
+        return self._model.settings.min
+
+    @min.setter
+    def min(self, value: Optional[int]) -> None:
+        self._model.settings.min = value
+
+    @property
+    def max(self) -> Optional[int]:
+        return self._model.settings.max
+
+    @max.setter
+    def max(self, value: Optional[int]) -> None:
+        self._model.settings.max = value
+
     @classmethod
     def from_model(cls, model: MetadataFieldModel) -> "FloatMetadataProperty":
         return FloatMetadataProperty(
@@ -166,6 +182,22 @@ class IntegerMetadataProperty(MetadataPropertyBase):
             title=title,
             settings=settings,
         )
+
+    @property
+    def min(self) -> Optional[int]:
+        return self._model.settings.min
+
+    @min.setter
+    def min(self, value: Optional[int]) -> None:
+        self._model.settings.min = value
+
+    @property
+    def max(self) -> Optional[int]:
+        return self._model.settings.max
+
+    @max.setter
+    def max(self, value: Optional[int]) -> None:
+        self._model.settings.max = value
 
     @classmethod
     def from_model(cls, model: MetadataFieldModel) -> "IntegerMetadataProperty":

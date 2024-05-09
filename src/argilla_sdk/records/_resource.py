@@ -337,7 +337,7 @@ class RecordResponses(Iterable[Response]):
 
         self.__responses = responses or []
         for response in self.__responses:
-            response._record = self.record
+            response.record = self.record
             self.__responses_by_question_name[response.question_name].append(response)
 
     def api_models(self) -> List[UserResponseModel]:
@@ -387,7 +387,7 @@ class RecordSuggestions(Iterable[Suggestion]):
 
         self.__suggestions = suggestions or []
         for suggestion in self.__suggestions:
-            suggestion._record = self.record
+            suggestion.record = self.record
             setattr(self, suggestion.question_name, suggestion)
 
     def api_models(self) -> List[SuggestionModel]:

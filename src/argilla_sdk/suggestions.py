@@ -53,29 +53,20 @@ class Suggestion(Resource):
         if value is None:
             raise ValueError("value is required")
 
-        self._record = _record
+        self.record = _record
         self._model = SuggestionModel(
-            value=value,
+            id=id,
             question_name=question_name,
+            question_id=question_id,
+            value=value,
             type=type,
             score=score,
             agent=agent,
-            id=id,
-            question_id=question_id,
         )
 
     @property
     def value(self) -> Any:
         return self._model.value
-
-    # TODO: Add getter and setter at question type level
-    #  @property
-    #  def question(self) -> Optional["QuestionType"]:
-    #      pass
-    #  @question.setter
-    #  def question(self, value: "QuestionType") -> None:
-    #      self._model.question_name = value.name
-    #      self._model.question_id = value.id
 
     @property
     def question_name(self) -> str:
@@ -122,10 +113,10 @@ class Suggestion(Resource):
         return cls(**model.dict())
 
     def api_model(self) -> SuggestionModel:
-        if self._record is None or self._record.dataset is None:
+        if self.record is None or self.record.dataset is None:
             return self._model
 
-        question = self._record.dataset.settings.question_by_name(self.question_name)
+        question = self.record.dataset.settings.question_by_name(self.question_name)
         return SuggestionModel(
             value=self.__to_model_value(self.value, question),
             question_name=self.question_name,

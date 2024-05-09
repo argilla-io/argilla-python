@@ -52,7 +52,7 @@ class Response:
         if user_id is None:
             raise ValueError("user_id is required")
 
-        self._record = _record
+        self.record = _record
         self.question_name = question_name
         self.value = value
         self.user_id = user_id

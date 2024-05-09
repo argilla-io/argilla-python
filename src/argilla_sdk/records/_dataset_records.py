@@ -282,7 +282,7 @@ class DatasetRecords(Resource, Iterable[Record]):
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
     ) -> List[RecordModel]:
-        """Ingest records as dictionaries and return a list of RecordModel instances."""
+        """Ingest records as dictionaries and return a list of RecordModel instances to send to the server."""
         if isinstance(records, (Record, dict)):
             records = [records]
 
@@ -299,7 +299,7 @@ class DatasetRecords(Resource, Iterable[Record]):
                 "Records should be a dictionary, a list of dictionaries, a Record instance, "
                 "or a list of Record instances."
             )
-        return [r._model for r in records]
+        return [record.api_model() for record in records]
 
     def _normalize_batch_size(self, batch_size: int, records_length, max_value: int):
         norm_batch_size = min(batch_size, records_length, max_value)

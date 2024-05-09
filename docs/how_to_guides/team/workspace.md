@@ -23,22 +23,19 @@ Argilla provides a default workspace to help you get started in Python and the U
 | Quickstart Docker and HF Space | admin    | 
 | Server image                  | argilla  |
 
-## rg.Workspace
-
-A workspace in Argilla is represented by a `Workspace`.
-
-> Check the [Workspace - Python Reference](../../reference/argilla_sdk/workspaces.md) to see the attributes, arguments, and methods of the `Workspace` class in detail.
-
-```python
-rg.Workspace(
-    name = "name",
-    client=client
-)
-```
-
 ## How-to guide
 
 This section shows how to create a new workspace in Argilla, the process of listing all the workspaces and retrieving a specific one or checking if it exists. Finally, the guide covers the steps to delete a user.
+
+!!! info "Class"
+
+    ```python
+    rg.Workspace(
+        name = "name",
+        client=client
+    )
+    ```
+    > Check the [Workspace - Python Reference](../../reference/argilla_sdk/workspaces.md) to see the attributes, arguments, and methods of the `Workspace` class in detail.
 
 ### Create a new workspace
 

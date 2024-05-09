@@ -10,28 +10,11 @@ A **record** in Argilla is a data item that requires annotation, consisting of o
 
 > A record is part of a dataset, so you will need to create a dataset before adding records. Check these guides to learn how to [create a dataset](dataset.md).
 
-## rg.Record
+## How-to guide
 
-You can add records to a dataset as dictionaries or instances of the `Record` class. A record will match the fields, metadata and vectors defined in the dataset settings. You can also add suggestions and responses to the records to help the annotators complete their tasks.
+This section shows how to add records in Argilla with metadata, vectors, suggestions and responses. It also explains how to list and update them.
 
-> Check the [Record - Python Reference](../reference/argilla_sdk/records/records.md) to see the attributes, arguments, and methods of the `Record` class in detail.
-
-=== "As a dictionary"
-
-    ```python
-    record = {
-        "question": "Do you need oxygen to breathe?",
-        "answer": "Yes",
-        "category": "A",
-        "my_vector": [0.1, 0.2, 0.3],
-        "my_label": "negative",
-        "my_label.score": 0.9,
-        "my_label.agent": "model_name",
-        "my_label.response": "positive"
-        },
-    ```
-
-=== "As a `Record` object"
+!!! info "Class"
 
     ```python
     rg.Record(
@@ -54,10 +37,7 @@ You can add records to a dataset as dictionaries or instances of the `Record` cl
             ],
     )
     ```
-
-## How-to guide
-
-This section shows how to add records in Argilla with metadata, vectors, suggestions and responses. It also explains how to list and update them.
+    > Check the [Record - Python Reference](../reference/argilla_sdk/records/records.md) to see the attributes, arguments, and methods of the `Record` class in detail.
 
 ### Add records
 

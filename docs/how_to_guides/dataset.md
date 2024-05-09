@@ -14,56 +14,51 @@ A **dataset** is a collection of records that you can configure for labelers to 
 
     The users with the `admin` role can manage (create, retrieve, update and delete) the datasets in the workspaces they have access to.
 
-## rg.Dataset
-
-A dataset in Argilla is represented by the `Dataset` class. You can indicate the `workspace` where you want to store your dataset by providing the object or their name. If not, the dataset will be stored in the first workspace. To customize it, you should pass the `settings` with the fields, questions, metadata, vectors, and guidelines.
-
-> Check the [Dataset - Python Reference](../reference/argilla_sdk/datasets/dataset.md) to see the attributes, arguments, and methods of the `Dataset` class in detail.
-
-```python
-rg.Dataset(
-    name="name",
-    workspace=workspace,
-    settings=settings,
-    status="ready",
-    client=client,
-)
-```
-
-## rg.Settings
-
-The settings of a Dataset are represented in the `Settings` class where you can indicate the `fields` and the `questions` that annotators will need to answer to provide feedback. Optionally, you can add `metadata`, `vectors` and `guidelines`. We will cover each of these settings in detail in the following [section](#define-dataset-settings).
-
-> Check the [Settings - Python Reference](../reference/argilla_sdk/settings/settings.md) to see the attributes, arguments, and methods of the `Settings` class in detail.
-
-```python
-rg.Settings(
-    fields = [
-        rg.TextField(name="text")
-        ],
-    questions = [
-        rg.LabelQuestion(
-            name="label",
-            labels=["label_1", "label_2", "label_3"]
-            )
-        ],
-    metadata = [
-        rg.TermsMetadataProperty(
-            name="metadata",
-            options=["option_1", "option_2", "option_3"]
-            )
-        ],
-    vectors = [
-        rg.VectorField(name="vector", dimensions=10)
-        ],
-    guidelines = "guidelines",
-    allow_extra_metadata = True,
-)
-```
-
 ## How-to guide
 
 This section starts by showing how to create a basic dataset in Argilla and define its settings, and then how to list all the datasets available in each workspace and retrieve a specific one. Finally, the guide covers the steps to update and delete a dataset.
+
+!!! info "Class"
+    === `rg.Dataset`
+
+    ```python
+    rg.Dataset(
+        name="name",
+        workspace="workspace",
+        settings=settings,
+        client=client
+    )
+    ```
+    > Check the [Dataset - Python Reference](../reference/argilla_sdk/datasets.md) to see the attributes, arguments, and methods of the `Dataset` class in detail.
+
+=== `rg.Settings`
+
+    ```python
+    rg.Settings(
+        fields = [
+            rg.TextField(name="text")
+            ],
+        questions = [
+            rg.LabelQuestion(
+                name="label",
+                labels=["label_1", "label_2", "label_3"]
+                )
+            ],
+        metadata = [
+            rg.TermsMetadataProperty(
+                name="metadata",
+                options=["option_1", "option_2", "option_3"]
+                )
+            ],
+        vectors = [
+            rg.VectorField(name="vector", dimensions=10)
+            ],
+        guidelines = "guidelines",
+        allow_extra_metadata = True,
+    )
+    ```
+
+    > Check the [Settings - Python Reference](../reference/argilla_sdk/settings/settings.md) to see the attributes, arguments, and methods of the `Settings` class in detail.
 
 ### Create a dataset
 

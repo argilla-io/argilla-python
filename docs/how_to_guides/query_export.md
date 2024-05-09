@@ -8,36 +8,32 @@ This guide provides an overview of how to query and filter a dataset in Argilla 
 
 You can search for records in your dataset by **querying** or **filtering**. The query focuses on the content of the text field, while the filter is used to filter the records based on conditions. You can use them independently or combine multiple filters to create complex search queries. You can also export records from a dataset either as a single dictionary or a list of dictionaries.
 
-## rg.Query and rg.Filter
-
-A query is defined in the `Query` class that you can use to search for terms or filter records based on conditions. To specify a condition, you should use a tuple or a list of tuples with the following structure: `(field, operator, value)`. Below, you can see the operators you can use to filter records.
-
-| operator | description |
-|----------|-------------|
-| `==`     | The `field` value is equal to the `value` |
-| `>=`     | The `field` value is greater than or equal to the `value` |
-| `<=`     | The `field` value is less than or equal to the `value` |
-| `in`     | TThe `field` value is included in a list of values |
-
-> Check the [Query and Filter - Python Reference](../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Query` and `Filter` classes in detail.
-
-```python
-rg.Query(
-    query="query",
-    filter=rg.Filter(
-        [
-            ("field", "==", "value"),
-            ("field", ">=", 10),
-            ("field", "<=", 20),
-            ("field", "in", ["value1", "value2"])
-        ]
-    )
-)
-```
-
 ## How-to guide
 
 This section shows how to query a dataset in Argilla using specific terms or filters, and export records.
+
+!!! info "Class"
+
+    === `rg.query`
+
+    ```python
+    rg.Query(
+    query="query",
+    filter=filter_used
+    )
+    ```
+    > Check the [Query - Python Reference](../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Query` class in detail.
+
+    === `rg.Filter`
+
+    ```python
+    rg.Filter(
+        [
+            ("field", "==", "value"),
+        ]
+    )
+    ```
+    > Check the [Filter - Python Reference](../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Filter` class in detail.
 
 ### Query with search terms
 
@@ -80,6 +76,13 @@ To search for records with terms, you can use the `Dataset.records` attribute wi
 ### Filter by conditions
 
 You can use the `Filter` class to define the conditions and pass them to the `Dataset.records` attribute to fetch records based on the conditions. Conditions include "==", ">=", "<=", or "in". Conditions can be combined with dot notation to filter records based on metadata, suggestions, or responses. You can use a single condition or multiple conditions to filter records.
+
+| operator | description |
+|----------|-------------|
+| `==`     | The `field` value is equal to the `value` |
+| `>=`     | The `field` value is greater than or equal to the `value` |
+| `<=`     | The `field` value is less than or equal to the `value` |
+| `in`     | TThe `field` value is included in a list of values |
 
 === "Single condition"
 

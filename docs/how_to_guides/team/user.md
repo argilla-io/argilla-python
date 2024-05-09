@@ -49,27 +49,23 @@ Argilla provides a default user with the `owner` role to help you get started in
 | Quickstart Docker and HF Space | owner    | 12345678    | owner.apikey   |
 | Server image                  | argilla  | 1234        | argilla.apikey |
 
-## rg.User
-
-A `User` object in Argilla represents a user with a specific role and credentials.
-
-> Check the [User - Python Reference](../../reference/argilla_sdk/users.md) to see the attributes, arguments, and methods of the `User` class in detail.
-
-```python
-rg.User(
-    username="username",
-    first_name="first_name",
-    last_name="last_name",
-    role="owner",
-    password="password",
-    client=client
-)
-```
-
-
 ## How-to guide
 
 This section shows how to identify the currently active user in Argilla, allowing you to verify the correct credentials are used for user management. It then outlines the process of creating a user, listing them all and retrieving a specific one. Finally, it covers the steps to delete a user.
+
+!!! info "Class"
+
+    ```python
+    rg.User(
+        username="username",
+        first_name="first_name",
+        last_name="last_name",
+        role="owner",
+        password="password",
+        client=client
+    )
+    ```
+    > Check the [User - Python Reference](../../reference/argilla_sdk/users.md) to see the attributes, arguments, and methods of the `User` class in detail.
 
 ### Get current user
 

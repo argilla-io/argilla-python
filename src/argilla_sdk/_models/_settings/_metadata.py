@@ -20,6 +20,7 @@ from pydantic import BaseModel, Field, field_serializer, field_validator, model_
 
 from argilla_sdk._exceptions import MetadataError
 
+
 class MetadataPropertyType(str, Enum):
     terms = "terms"
     integer = "integer"
@@ -28,18 +29,21 @@ class MetadataPropertyType(str, Enum):
 
 class BaseMetadataPropertySettings(BaseModel):
     type: MetadataPropertyType
+    visible_for_annotators: Optional[bool] = True
 
 
 class TermsMetadataPropertySettings(BaseMetadataPropertySettings):
     type: Literal[MetadataPropertyType.terms]
     values: Optional[List[str]] = None
 
-    @field_validator("values")
+    @field_validator(
+        "values",
+    )
     @classmethod
     def __validate_values(cls, values):
         if values is None:
-            raise ValueError("values must be provided for a terms metadata field.")
-        elif not isinstance(values, list):
+            return None
+        if not isinstance(values, list):
             raise ValueError(f"values must be a list, got {type(values)}")
         elif not all(isinstance(value, str) for value in values):
             raise ValueError("All values must be strings for terms metadata.")
@@ -71,7 +75,7 @@ class IntegerMetadataPropertySettings(NumericMetadataPropertySettings):
         min_value = values.get("min")
         max_value = values.get("max")
 
-        if not all(isinstance(value, int) for value in [min_value, max_value]):
+        if not all(isinstance(value, int) or value is None for value in [min_value, max_value]):
             raise MetadataError("min and max must be integers.")
         return values
 
@@ -97,7 +101,7 @@ class MetadataFieldModel(BaseModel):
     name: str
     settings: MetadataPropertySettings
 
-    type: Optional[MetadataPropertyType] = None
+    type: Optional[MetadataPropertyType] = Field(None, validate_default=True)
     title: Optional[str] = None
     visible_for_annotators: Optional[bool] = True
 
@@ -118,6 +122,7 @@ class MetadataFieldModel(BaseModel):
         return str(value)
 
     @field_validator("type", mode="plain")
+    @classmethod
     def __validate_type(cls, type, values):
         if type is None:
             return values.data["settings"].type

@@ -67,6 +67,38 @@ def test_create_dataset_with_metadata(client: Argilla, workspace: Workspace) -> 
     assert dataset.settings.metadata[0].name == "category"
 
 
+@pytest.mark.parametrize(
+    "min, max, type",
+    [
+        (0, 1, rg.FloatMetadataProperty),
+        (None, None, rg.FloatMetadataProperty),
+        (0, 1, rg.IntegerMetadataProperty),
+        (None, None, rg.IntegerMetadataProperty),
+    ],
+)
+def test_create_dataset_with_numerical_metadata(client: Argilla, workspace: Workspace, min, max, type) -> Dataset:
+    name = "".join(random.choices(ascii_lowercase, k=16))
+    settings = Settings(
+        fields=[TextField(name="text")],
+        questions=[LabelQuestion(name="label", labels=["positive", "negative"])],
+        metadata=[
+            type(name="price", min=min, max=max),
+        ],
+    )
+    dataset = Dataset(
+        name=name,
+        workspace=workspace.name,
+        settings=settings,
+        client=client,
+    )
+    dataset.publish()
+    gotten_dataset = dataset.get()
+
+    assert gotten_dataset.settings.metadata[0].name == "price"
+    assert gotten_dataset.settings.metadata[0].min == min
+    assert gotten_dataset.settings.metadata[0].max == max
+
+
 def test_add_record_with_metadata(dataset_with_metadata: Dataset):
     records = [
         {"text": "text", "label": "positive", "category": "A"},
@@ -82,6 +114,7 @@ def test_add_record_with_metadata(dataset_with_metadata: Dataset):
         models = record.metadata.models
         assert models[0].value == records[idx]["category"]
         assert models[0].name == "category"
+
 
 
 def test_add_record_with_mapped_metadata(dataset_with_metadata: Dataset):

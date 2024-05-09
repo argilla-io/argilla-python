@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, List
 
 from argilla_sdk._exceptions import MetadataError
 from argilla_sdk._models import (
@@ -22,14 +22,29 @@ __all__ = [
 class MetadataPropertyBase(SettingsPropertyBase):
     _model: MetadataFieldModel
 
+    @property
+    def visible_for_annotators(self) -> Optional[bool]:
+        return self._model.visible_for_annotators
+
+    @visible_for_annotators.setter
+    def visible_for_annotators(self, value: Optional[bool]) -> None:
+        self._model.visible_for_annotators = value
+
 
 class TermsMetadataProperty(MetadataPropertyBase):
-    def __init__(self, name: str, options: list[str], title: Optional[str] = None) -> None:
+    def __init__(
+        self,
+        name: str,
+        options: Optional[List[str]] = None,
+        title: Optional[str] = None,
+        visible_for_annotators: Optional[bool] = True,
+    ) -> None:
         """Create a metadata field with terms settings.
         Args:
             name (str): The name of the metadata field
-            options (list[str]): The list of terms
+            options (Optional[List[str]]): The list of options
             title (Optional[str]): The title of the metadata field
+            visible_for_annotators (Optional[bool]): Whether the metadata field is visible for annotators
         Raises:
             MetadataError: If an error occurs while defining metadata settings
 
@@ -43,6 +58,7 @@ class TermsMetadataProperty(MetadataPropertyBase):
         )
         ```
         """
+        super().__init__()
 
         try:
             settings = TermsMetadataPropertySettings(values=options, type=MetadataPropertyType.terms)
@@ -54,7 +70,16 @@ class TermsMetadataProperty(MetadataPropertyBase):
             type=MetadataPropertyType.terms,
             title=title,
             settings=settings,
+            visible_for_annotators=visible_for_annotators,
         )
+
+    @property
+    def options(self) -> Optional[List[str]]:
+        return self._model.settings.values
+
+    @options.setter
+    def options(self, value: list[str]) -> None:
+        self._model.settings.values = value
 
     @classmethod
     def from_model(cls, model: MetadataFieldModel) -> "TermsMetadataProperty":
@@ -101,6 +126,22 @@ class FloatMetadataProperty(MetadataPropertyBase):
             settings=settings,
         )
 
+    @property
+    def min(self) -> Optional[int]:
+        return self._model.settings.min
+
+    @min.setter
+    def min(self, value: Optional[int]) -> None:
+        self._model.settings.min = value
+
+    @property
+    def max(self) -> Optional[int]:
+        return self._model.settings.max
+
+    @max.setter
+    def max(self, value: Optional[int]) -> None:
+        self._model.settings.max = value
+
     @classmethod
     def from_model(cls, model: MetadataFieldModel) -> "FloatMetadataProperty":
         return FloatMetadataProperty(
@@ -146,6 +187,22 @@ class IntegerMetadataProperty(MetadataPropertyBase):
             title=title,
             settings=settings,
         )
+
+    @property
+    def min(self) -> Optional[int]:
+        return self._model.settings.min
+
+    @min.setter
+    def min(self, value: Optional[int]) -> None:
+        self._model.settings.min = value
+
+    @property
+    def max(self) -> Optional[int]:
+        return self._model.settings.max
+
+    @max.setter
+    def max(self, value: Optional[int]) -> None:
+        self._model.settings.max = value
 
     @classmethod
     def from_model(cls, model: MetadataFieldModel) -> "IntegerMetadataProperty":

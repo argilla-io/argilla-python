@@ -431,7 +431,7 @@ class RecordVectors:
 
     @property
     def models(self) -> List[VectorModel]:
-        return [vector._model for vector in self.__vectors]
+        return [vector.api_model() for vector in self.__vectors]
 
     def to_dict(self) -> Dict[str, List[float]]:
         """Converts the vectors to a dictionary.
@@ -462,14 +462,17 @@ class RecordMetadata:
     def models(self) -> List[MetadataModel]:
         return self.__metadata_models
 
-    def __iter__(self):
-        return iter(self.__metadata_models)
-
-    def __getitem__(self, key: str):
-        return self.__metadata_map.get(key)
-
     def to_dict(self) -> Dict[str, MetadataValue]:
         return {meta.name: meta.value for meta in self.__metadata_models}
+
+    def __iter__(self) -> Iterable[MetadataModel]:
+        return iter(self.__metadata_models)
+
+    def __getitem__(self, key: str) -> MetadataValue:
+        return self.__metadata_map[key]
+
+    def __len__(self) -> int:
+        return len(self.__metadata_models)
 
     def __repr__(self) -> Generator:
         for key, value in self.__metadata_map.items():

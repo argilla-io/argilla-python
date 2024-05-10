@@ -54,17 +54,13 @@ class Workspace(Resource):
         super().__init__(client=client, api=client.api.workspaces)
         self._sync(model=WorkspaceModel(name=name, id=id) if not _model else _model)
 
+    # TODO: Make this method private
     def list_datasets(self) -> List["Dataset"]:
         from argilla_sdk.datasets import Dataset
 
         datasets = self._client.api.datasets.list(self.id)
         self.log(f"Got {len(datasets)} datasets for workspace {self.id}")
         return [Dataset.from_model(model=dataset, client=self._client) for dataset in datasets]
-
-    def list_users(self) -> List["User"]:
-        users = self._client.users.list(workspace=self)
-        self.log(f"Got {len(users)} users for workspace {self.id}")
-        return users
 
     def exists(self) -> bool:
         return self._api.exists(self.id)
@@ -90,11 +86,16 @@ class Workspace(Resource):
 
     @property
     def users(self) -> List["User"]:
-        return self.list_users()
+        return self._list_users()
 
     ############################
     # Private methods
     ############################
+
+    def _list_users(self) -> List["User"]:
+        users = self._client.users.list(workspace=self)
+        self.log(f"Got {len(users)} users for workspace {self.id}")
+        return users
 
     def _remove_user_by_username(self, username: str) -> "User":
         user = self._client.users(username=username)

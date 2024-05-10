@@ -17,7 +17,7 @@ class TestTermsMetadata:
         assert property.visible_for_annotators is True
         assert property.options == ["option1", "option2"]
 
-        assert property._model.dict() == {
+        assert property.api_model().model_dump() == {
             "id": None,
             "name": "metadata",
             "settings": {"type": "terms", "values": ["option1", "option2"], "visible_for_annotators": True},
@@ -36,7 +36,7 @@ class TestTermsMetadata:
 
         model = property.api_model()
         assert model.type == "terms"
-        assert model.dict() == {
+        assert model.model_dump() == {
             "id": None,
             "name": "metadata",
             "title": "metadata",

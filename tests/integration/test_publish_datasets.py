@@ -30,11 +30,6 @@ from argilla_sdk import (
 )
 
 
-@pytest.fixture
-def client() -> Argilla:
-    return Argilla(api_url="http://localhost:6900")
-
-
 def test_publish_dataset(client: "Argilla"):
     new_ws = client.workspaces("new_ws")
     if not new_ws.exists():

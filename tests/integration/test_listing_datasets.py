@@ -2,12 +2,6 @@ import pytest
 
 from argilla_sdk import Argilla, Dataset
 
-
-@pytest.fixture
-def client() -> Argilla:
-    return Argilla()
-
-
 class TestDatasetsList:
 
     def test_list_datasets(self, client: Argilla):

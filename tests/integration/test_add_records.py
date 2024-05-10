@@ -9,12 +9,6 @@ import argilla_sdk as rg
 from argilla_sdk import Argilla
 
 
-@pytest.fixture
-def client() -> rg.Argilla:
-    client = rg.Argilla(api_url="http://localhost:6900", api_key="argilla.apikey")
-    return client
-
-
 def test_create_dataset(client):
     workspace = client.workspaces[0]
     mock_dataset_name = f"test_create_dataset{datetime.now().strftime('%Y%m%d%H%M%S')}"

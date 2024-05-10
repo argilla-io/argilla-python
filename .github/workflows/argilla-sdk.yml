@@ -44,7 +44,11 @@ jobs:
           pdm install
       - name: Wait for argilla-quickstart to start
         run: |
-          while ! nc -z localhost 6900; do sleep 1; done
-      - name: Run tests
+          while ! curl -XGET http://localhost:6900/api/_status; do sleep 5; done
+      - name: Run unit tests
         run: |
-          pdm run test
+          pdm run test tests/unit
+      - name: Run integration tests
+        run: |
+          pdm run test tests/integration
+          

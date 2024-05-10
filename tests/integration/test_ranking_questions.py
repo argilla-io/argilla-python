@@ -6,12 +6,6 @@ import argilla_sdk as rg
 
 
 @pytest.fixture
-def client() -> rg.Argilla:
-    client = rg.Argilla(api_url="http://localhost:6900", api_key="argilla.apikey")
-    return client
-
-
-@pytest.fixture
 def dataset(client: rg.Argilla):
     ws = client.workspaces[0]
     settings = rg.Settings(

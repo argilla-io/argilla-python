@@ -10,12 +10,6 @@ from argilla_sdk import Argilla
 
 
 @pytest.fixture
-def client() -> rg.Argilla:
-    client = rg.Argilla(api_url="http://localhost:6900")
-    return client
-
-
-@pytest.fixture
 def dataset(client) -> rg.Dataset:
     mock_dataset_name = "".join(random.choices(ascii_lowercase, k=16))
     settings = rg.Settings(

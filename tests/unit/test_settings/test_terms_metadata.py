@@ -17,7 +17,7 @@ class TestTermsMetadata:
         assert property.visible_for_annotators is True
         assert property.options == ["option1", "option2"]
 
-        assert property._model.dict() == {
+        assert property.api_model().model_dump() == {
             "id": None,
             "name": "metadata",
             "settings": {"type": "terms", "values": ["option1", "option2"], "visible_for_annotators": True},
@@ -29,13 +29,14 @@ class TestTermsMetadata:
     def test_create_terms_metadata_without_options(self):
         property = rg.TermsMetadataProperty(name="metadata")
 
-        assert property._model.type == "terms"
         assert property.title == "metadata"
         assert property.name == "metadata"
         assert property.visible_for_annotators is True
         assert property.options is None
 
-        assert property._model.dict() == {
+        model = property.api_model()
+        assert model.type == "terms"
+        assert model.model_dump() == {
             "id": None,
             "name": "metadata",
             "title": "metadata",

@@ -3,11 +3,6 @@ import pytest
 from argilla_sdk import User, Argilla
 
 
-@pytest.fixture(scope="session")
-def client():
-    return Argilla()
-
-
 @pytest.fixture(scope="session", autouse=True)
 def clean_environment(client: Argilla):
     for user in client.users:
@@ -29,4 +24,3 @@ class TestManageUsers:
             assert client.users(username=user.username).id == user.id
         finally:
             user.delete()
-

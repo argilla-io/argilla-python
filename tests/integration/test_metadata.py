@@ -8,11 +8,6 @@ from argilla_sdk import Argilla, Dataset, Settings, TextField, Workspace, LabelQ
 
 
 @pytest.fixture
-def client() -> Argilla:
-    return Argilla(api_url="http://localhost:6900", api_key="argilla.apikey")
-
-
-@pytest.fixture
 def workspace(client: Argilla) -> Workspace:
     workspace = client.workspaces("test-workspace")
     if not workspace.exists():

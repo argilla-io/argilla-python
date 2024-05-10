@@ -5,12 +5,6 @@ import pytest
 
 from argilla_sdk import Argilla, Dataset, Settings, TextField, TextQuestion, Workspace, LabelQuestion
 
-
-@pytest.fixture
-def client() -> Argilla:
-    return Argilla(api_url="http://localhost:6900")
-
-
 @pytest.fixture
 def workspace(client: Argilla) -> Workspace:
     workspace = client.workspaces("test-workspace")

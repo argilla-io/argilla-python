@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, It
 from uuid import UUID
 
 from argilla_sdk._api import RecordsAPI
+from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import RecordModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
@@ -105,7 +106,7 @@ class DatasetRecordsIterator(GenericExportMixin):
         return bool(self.__query and (self.__query.query or self.__query.filter))
 
 
-class DatasetRecords(Resource, Iterable[Record]):
+class DatasetRecords(Iterable[Record], LoggingMixin):
     """
     This class is used to work with records from a dataset.
 

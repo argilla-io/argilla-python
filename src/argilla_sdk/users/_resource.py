@@ -76,7 +76,7 @@ class User(Resource):
 
     def remove_from_workspace(self, workspace: "Workspace") -> "User":
         """Removes the user from a workspace"""
-        model = self._api.remove_from_workspace(workspace.id, self.id)
+        model = self._api.delete_from_workspace(workspace.id, self.id)
         self._sync(model=model)
         return self
 

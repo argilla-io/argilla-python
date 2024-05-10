@@ -88,6 +88,10 @@ class Workspace(Resource):
     def datasets(self) -> List["Dataset"]:
         return self.list_datasets()
 
+    @property
+    def users(self) -> List["User"]:
+        return self.list_users()
+
     ############################
     # Private methods
     ############################

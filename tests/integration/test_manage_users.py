@@ -21,6 +21,8 @@ class TestManageUsers:
         user.create()
         try:
             assert user.id is not None
+            assert user.password == "test_password"
+            assert user.username == "test_user"
             assert client.users(username=user.username).id == user.id
         finally:
             user.delete()

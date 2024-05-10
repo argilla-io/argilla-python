@@ -254,28 +254,27 @@ class TestUsersAPI:
 
     def test_list_workspace_users(self, httpx_mock: HTTPXMock):
         workspace_id = uuid.uuid4()
-        mock_return_value = {
-            "items": [
-                {
-                    "id": str(uuid.uuid4()),
-                    "username": "test-user",
-                    "first_name": "Test",
-                    "last_name": "User",
-                    "role": "admin",
-                    "inserted_at": datetime.utcnow().isoformat(),
-                    "updated_at": datetime.utcnow().isoformat(),
-                },
-                {
-                    "id": str(uuid.uuid4()),
-                    "username": "another-test-user",
-                    "first_name": "Another",
-                    "last_name": "User",
-                    "role": "admin",
-                    "inserted_at": datetime.utcnow().isoformat(),
-                    "updated_at": datetime.utcnow().isoformat(),
-                },
-            ]
-        }
+        mock_return_value = [
+            {
+                "id": str(uuid.uuid4()),
+                "username": "test-user",
+                "first_name": "Test",
+                "last_name": "User",
+                "role": "admin",
+                "inserted_at": datetime.utcnow().isoformat(),
+                "updated_at": datetime.utcnow().isoformat(),
+            },
+            {
+                "id": str(uuid.uuid4()),
+                "username": "another-test-user",
+                "first_name": "Another",
+                "last_name": "User",
+                "role": "admin",
+                "inserted_at": datetime.utcnow().isoformat(),
+                "updated_at": datetime.utcnow().isoformat(),
+            },
+        ]
+
         api_url = "http://test_url"
         httpx_mock.add_response(json=mock_return_value, url=f"{api_url}/api/workspaces/{workspace_id}/users")
         with httpx.Client():
@@ -283,5 +282,5 @@ class TestUsersAPI:
             users = client.api.users.list_by_workspace_id(workspace_id)
             assert len(users) == 2
             for i in range(len(users)):
-                assert users[i].username == mock_return_value["items"][i]["username"]
-                assert users[i].id == uuid.UUID(mock_return_value["items"][i]["id"])
+                assert users[i].username == mock_return_value[i]["username"]
+                assert users[i].id == uuid.UUID(mock_return_value[i]["id"])

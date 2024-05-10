@@ -33,13 +33,13 @@ class TestTermsMetadata:
         assert property.title == "metadata"
         assert property.name == "metadata"
         assert property.visible_for_annotators is True
-        assert property.options == []
+        assert property.options is None
 
         assert property._model.dict() == {
             "id": None,
             "name": "metadata",
             "title": "metadata",
-            "settings": {"type": "terms", "values": [], "visible_for_annotators": True},
+            "settings": {"type": "terms", "values": None, "visible_for_annotators": True},
             "type": "terms",
             "visible_for_annotators": True,
         }

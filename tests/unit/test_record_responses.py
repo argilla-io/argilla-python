@@ -15,13 +15,24 @@ import uuid
 
 import pytest
 
-from argilla_sdk import Response, User
+from argilla_sdk import Response, User, Dataset, Settings, TextQuestion, TextField
 from argilla_sdk.records._resource import RecordResponses, Record
 
 
 @pytest.fixture
 def record():
-    return Record(fields={"name": "John Doe"}, metadata={"age": 30})
+    dataset = Dataset(
+        settings=Settings(
+            fields=[TextField(name="name")],
+            allow_extra_metadata=True,
+            questions=[
+                TextQuestion(name="question_a"),
+                TextQuestion(name="question_b"),
+                TextQuestion(name="question_c"),
+            ],
+        )
+    )
+    return Record(fields={"name": "John Doe"}, metadata={"age": 30}, _dataset=dataset)
 
 
 class TestRecordResponses:
@@ -65,7 +76,7 @@ class TestRecordResponses:
         assert record_responses.question_b[0].user_id == user_a.id
 
     def test_generate_responses_models_for_record_responses(self, record: Record):
-        user = User(username="johndoe", id=str(uuid.uuid4()))
+        user = User(username="johndoe", id=uuid.uuid4())
 
         record_responses = RecordResponses(
             responses=[
@@ -75,8 +86,9 @@ class TestRecordResponses:
             record=record,
         )
 
-        assert len(record_responses.models) == 1
-        assert record_responses.models[0].model_dump() == {
+        models = record_responses.api_models()
+        assert len(models) == 1
+        assert models[0].model_dump() == {
             "user_id": str(user.id),
             "values": {
                 "question_a": {"value": "answer_a"},
@@ -86,8 +98,8 @@ class TestRecordResponses:
         }
 
     def test_generate_response_models_for_record_responses_with_multiple_users(self, record: Record):
-        user_a = User(username="johndoe", id=str(uuid.uuid4()))
-        user_b = User(username="janedoe", id=str(uuid.uuid4()))
+        user_a = User(username="johndoe", id=uuid.uuid4())
+        user_b = User(username="janedoe", id=uuid.uuid4())
 
         record_responses = RecordResponses(
             responses=[
@@ -99,8 +111,9 @@ class TestRecordResponses:
             record=record,
         )
 
-        assert len(record_responses.models) == 2
-        assert record_responses.models[0].model_dump() == {
+        models = record_responses.api_models()
+        assert len(models) == 2
+        assert models[0].model_dump() == {
             "user_id": str(user_a.id),
             "values": {
                 "question_a": {"value": "answer_a"},
@@ -108,7 +121,7 @@ class TestRecordResponses:
             },
             "status": "draft",
         }
-        assert record_responses.models[1].model_dump() == {
+        assert models[1].model_dump() == {
             "user_id": str(user_b.id),
             "values": {
                 "question_a": {"value": "answer_a"},

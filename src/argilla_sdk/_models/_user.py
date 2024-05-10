@@ -30,7 +30,7 @@ class Role(str, Enum):
 
 class UserModel(ResourceModel):
     username: str
-    role: str = Role.annotator
+    role: Role = Role.annotator
 
     first_name: Optional[str] = None
     last_name: Optional[str] = None

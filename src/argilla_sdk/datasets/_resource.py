@@ -127,6 +127,10 @@ class Dataset(Resource):
     def publish(self) -> None:
         self._configure(settings=self._settings, publish=True)
 
+    @classmethod
+    def from_model(cls, model: DatasetModel, client: "Argilla") -> "Dataset":
+        return cls(client=client, _model=model)
+
     #####################
     #  Utility methods  #
     #####################

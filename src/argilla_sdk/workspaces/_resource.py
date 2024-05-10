@@ -12,17 +12,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, TYPE_CHECKING, Optional
+from typing import List, TYPE_CHECKING, Optional, overload, Union, Sequence
 from uuid import UUID
 
 from argilla_sdk._api._workspaces import WorkspacesAPI
+from argilla_sdk._helpers import GenericIterator
+from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import WorkspaceModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
 
 if TYPE_CHECKING:
-    from argilla_sdk._models import DatasetModel
-    from argilla_sdk._api._workspaces import WorkspacesAPI
+    from argilla_sdk import Dataset, User
+    from argilla_sdk._api import WorkspacesAPI
 
 
 __all__ = ["Workspace"]
@@ -32,7 +34,6 @@ class Workspace(Resource):
     """Class for interacting with Argilla workspaces"""
 
     name: Optional[str]
-    id: Optional[UUID]
 
     _api: "WorkspacesAPI"
 
@@ -55,21 +56,103 @@ class Workspace(Resource):
         super().__init__(client=client, api=client.api.workspaces)
         self._sync(model=WorkspaceModel(name=name, id=id) if not _model else _model)
 
-    def __len__(self) -> int:
-        return len(self.datasets)
+    # TODO: Make this method private
+    def list_datasets(self) -> List["Dataset"]:
+        from argilla_sdk.datasets import Dataset
 
-    def list_datasets(self) -> List["DatasetModel"]:
         datasets = self._client.api.datasets.list(self.id)
         self.log(f"Got {len(datasets)} datasets for workspace {self.id}")
-        return datasets
+        return [Dataset.from_model(model=dataset, client=self._client) for dataset in datasets]
 
     def exists(self) -> bool:
         return self._api.exists(self.id)
+
+    def add_user(self, user: Union["User", str]) -> "User":
+        return self.users.add(user)
+
+    def remove_user(self, user: Union["User", str]) -> "User":
+        return self.users.delete(user)
 
     ############################
     # Properties
     ############################
 
     @property
-    def datasets(self) -> List["DatasetModel"]:
+    def name(self) -> Optional[str]:
+        return self._model.name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        self._model.name = value
+
+    @property
+    def datasets(self) -> List["Dataset"]:
         return self.list_datasets()
+
+    @property
+    def users(self) -> "WorkspaceUsers":
+        return WorkspaceUsers(workspace=self)
+
+    ############################
+    # Private methods
+    ############################
+
+
+class WorkspaceUsers(Sequence["User"], LoggingMixin):
+
+    class _Iterator(GenericIterator["User"]):
+        pass
+
+    def __init__(self, workspace: "Workspace") -> None:
+        self._workspace = workspace
+
+    @overload
+    def add(self, user: "User") -> "User": ...
+
+    @overload
+    def add(self, user: str) -> "User": ...
+
+    def add(self, user: Union["User", str]) -> "User":
+        if isinstance(user, str):
+            return self._add_user_by_username(username=user)
+        return user.add_to_workspace(workspace=self._workspace)
+
+    @overload
+    def delete(self, user: "User") -> "User": ...
+    @overload
+    def delete(self, user: str) -> "User": ...
+
+    def delete(self, user: Union["User", str]) -> "User":
+        if isinstance(user, str):
+            return self._delete_user_by_username(username=user)
+        return user.remove_from_workspace(workspace=self._workspace)
+
+    def __iter__(self):
+        return self._Iterator(self._list_users())
+
+    def __getitem__(self, index: int) -> "User":
+        return self._list_users()[index]
+
+    def __len__(self) -> int:
+        return len(self._list_users())
+
+    ####################
+    # Private methods
+    ####################
+
+    def _list_users(self) -> List["User"]:
+        users = self._workspace._client.users.list(workspace=self._workspace)
+        self.log(f"Got {len(users)} users for workspace {self._workspace.id}")
+        return users
+
+    def _delete_user_by_username(self, username: str) -> "User":
+        user = self._workspace._client.users(username=username)
+        if not user.exists():
+            raise ValueError(f"User {username} does not exist")
+        return user.remove_from_workspace(workspace=self._workspace)
+
+    def _add_user_by_username(self, username: str) -> "User":
+        user = self._workspace._client.users(username=username)
+        if not user.exists():
+            raise ValueError(f"User {username} does not exist")
+        return user.add_to_workspace(workspace=self._workspace)

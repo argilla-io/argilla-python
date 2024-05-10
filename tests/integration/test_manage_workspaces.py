@@ -29,7 +29,7 @@ class TestWorkspacesManagement:
         test_user.create()
 
         user = workspace.add_user(user=test_user.username)
-        assert user in workspace._list_users()
+        assert user in workspace.users
 
         user = workspace.remove_user(user=user)
-        assert user not in workspace._list_users()
+        assert user not in workspace.users

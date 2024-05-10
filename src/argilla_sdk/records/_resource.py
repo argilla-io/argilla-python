@@ -49,7 +49,7 @@ class Record(Resource):
         suggestions: Optional[Union[Tuple[Suggestion], List[Suggestion]]] = None,
         external_id: Optional[str] = None,
         id: Optional[str] = None,
-        dataset: Optional["Dataset"] = None,
+        _dataset: Optional["Dataset"] = None,
     ):
         """Initializes a Record with fields, metadata, vectors, responses, suggestions, external_id, and id.
         Records are typically defined as flat dictionary objects with fields, metadata, vectors, responses, and suggestions
@@ -63,9 +63,9 @@ class Record(Resource):
             suggestions: A list of Suggestion objects for the record.
             external_id: An external id for the record.
             id: An id for the record.
-            dataset: The dataset object to which the record belongs.
+            _dataset: The dataset object to which the record belongs.
         """
-        self._dataset = dataset
+        self._dataset = _dataset
 
         self._model = RecordModel(
             fields=fields,
@@ -250,7 +250,7 @@ class Record(Resource):
             vectors=vectors,
             metadata=metadata,
             external_id=data.get("external_id") or record_id,
-            dataset=dataset,
+            _dataset=dataset,
         )
 
     def to_dict(self) -> Dict[str, Dict]:
@@ -296,7 +296,7 @@ class Record(Resource):
                 for response in UserResponse.from_model(response_model, dataset=dataset)
             ],
             suggestions=[Suggestion.from_model(model=suggestion, dataset=dataset) for suggestion in model.suggestions],
-            dataset=dataset,
+            _dataset=dataset,
         )
 
 
@@ -359,7 +359,7 @@ class RecordResponses(Iterable[Response]):
         return self.__responses[index]
 
     def __getattr__(self, name) -> List[Response]:
-        return self.__responses_by_question_name.get(name, [])
+        return self.__responses_by_question_name[name]
 
     def to_dict(self) -> Dict[str, List[Dict]]:
         """Converts the responses to a dictionary.

@@ -99,14 +99,16 @@ class UsersAPI(ResourceAPI[UserModel]):
         return user
 
     @api_error_handler
-    def add_to_workspace(self, workspace_id: UUID, user_id: UUID) -> None:
-        self.http_client.post(url=f"/api/workspaces/{workspace_id}/users/{user_id}").raise_for_status()
+    def add_to_workspace(self, workspace_id: UUID, user_id: UUID) -> "UserModel":
+        response = self.http_client.post(url=f"/api/workspaces/{workspace_id}/users/{user_id}").raise_for_status()
         self.log(message=f"Added user {user_id} to workspace {workspace_id}")
+        return self._model_from_json(response_json=response.json())
 
     @api_error_handler
-    def delete_from_workspace(self, workspace_id: UUID, user_id: UUID) -> None:
-        self.http_client.delete(url=f"/api/workspaces/{workspace_id}/users/{user_id}").raise_for_status()
+    def delete_from_workspace(self, workspace_id: UUID, user_id: UUID) -> "UserModel":
+        response = self.http_client.delete(url=f"/api/workspaces/{workspace_id}/users/{user_id}").raise_for_status()
         self.log(message=f"Deleted user {user_id} from workspace {workspace_id}")
+        return self._model_from_json(response_json=response.json())
 
     ####################
     # Private methods #

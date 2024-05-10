@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, TYPE_CHECKING, Optional
+from typing import List, TYPE_CHECKING, Optional, overload, Union
 from uuid import UUID
 
 from argilla_sdk._api._workspaces import WorkspacesAPI
@@ -65,6 +65,27 @@ class Workspace(Resource):
     def exists(self) -> bool:
         return self._api.exists(self.id)
 
+    @overload
+    def add_user(self, user: "User") -> "User": ...
+
+    @overload
+    def add_user(self, user: str) -> "User": ...
+
+    def add_user(self, user: Union["User", str]) -> "User":
+        if isinstance(user, str):
+            return self._add_user_by_username(username=user)
+        return user.add_to_workspace(workspace=self)
+
+    @overload
+    def remove_user(self, user: "User") -> "User": ...
+    @overload
+    def remove_user(self, user: str) -> "User": ...
+
+    def remove_user(self, user: Union["User", str]) -> "User":
+        if isinstance(user, str):
+            return self._remove_user_by_username(username=user)
+        return user.remove_from_workspace(workspace=self)
+
     def __len__(self) -> int:
         return len(self.datasets)
 
@@ -104,7 +125,7 @@ class Workspace(Resource):
         return user.remove_from_workspace(workspace=self)
 
     def _add_user_by_username(self, username: str) -> "User":
-        username = self._client.users(username=username)
-        if not username.exists():
+        user = self._client.users(username=username)
+        if not user.exists():
             raise ValueError(f"User {username} does not exist")
-        return username.add_to_workspace(workspace=self)
+        return user.add_to_workspace(workspace=self)

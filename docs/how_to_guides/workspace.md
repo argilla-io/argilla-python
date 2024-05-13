@@ -23,10 +23,6 @@ Argilla provides a default workspace to help you get started in Python and the U
 | Quickstart Docker and HF Space | admin    | 
 | Server image                  | argilla  |
 
-## How-to guide
-
-This section shows how to create a new workspace in Argilla, the process of listing all the workspaces and retrieving a specific one or checking if it exists. Finally, the guide covers the steps to delete a user.
-
 !!! info "Class"
 
     ```python
@@ -37,7 +33,7 @@ This section shows how to create a new workspace in Argilla, the process of list
     ```
     > Check the [Workspace - Python Reference](../../reference/argilla_sdk/workspaces.md) to see the attributes, arguments, and methods of the `Workspace` class in detail.
 
-### Create a new workspace
+## Create a new workspace
 
 To create a new workspace in Argilla, you can define it in the `Workspace` class and then call the `create` method. This method is inherited from the `Resource` base class and operates without modifications.
 
@@ -59,7 +55,7 @@ created_workspace
 !!! tip "Accessing attributes"
     Access the attributes of a workspace by calling them directly on the `Workspace` object. For example, `workspace.id` or `workspace.name`.
 
-### List workspaces
+## List workspaces
 
 You can list all the existing workspaces in Argilla by calling the `workspaces` attribute on the `Argilla` class and iterating over them. You can also use `len(client.workspaces)` to get the number of workspaces.
 
@@ -76,7 +72,7 @@ for workspace in workspaces:
 !!! tip "Notebooks"
     When using a notebook, executing `client.workspaces` will display a table with the number of `datasets` in each workspace, `name`, `id`, and the last update as `updated_at`.
 
-### Retrieve a workspace
+## Retrieve a workspace
 
 You can retrieve a workspace by accessing the `workspaces` method on the `Argilla` class and passing the name of the workspace as an argument.
 
@@ -89,7 +85,7 @@ retrieved_workspace = client.workspaces("my_workspace")
 retrieved_workspace
 ```
 
-### Check workspace existence
+## Check workspace existence
 
 You can check if a workspace exists by calling the `exists` method on the `Workspace` class. This method returns a boolean value.
 
@@ -104,7 +100,7 @@ workspace_existed = workspace.exists()
 workspace_existed
 ```
 
-### Add a user to a workspace
+## Add a user to a workspace
 
 You can also add a user to a workspace by calling the `add_user` method on the `Workspace` class.
 
@@ -118,7 +114,7 @@ added_user = workspace.add_user("my_username")
 added_user
 ```
 
-### Remove a user from workspace
+## Remove a user from workspace
 
 You can also remove a user from a workspace by calling the `remove_user` method on the `Workspace` class.
 
@@ -132,7 +128,7 @@ removed_user = workspace.remove_user("my_username")
 removed_user
 ```
 
-### Delete a workspace
+## Delete a workspace
 
 To delete a workspace, **no dataset can be associated with it**. If the workspace contains any dataset, deletion will fail. You can delete a workspace by calling the `delete` method on the `Workspace` class.
 

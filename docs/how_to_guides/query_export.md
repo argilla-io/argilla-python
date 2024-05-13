@@ -8,10 +8,6 @@ This guide provides an overview of how to query and filter a dataset in Argilla 
 
 You can search for records in your dataset by **querying** or **filtering**. The query focuses on the content of the text field, while the filter is used to filter the records based on conditions. You can use them independently or combine multiple filters to create complex search queries. You can also export records from a dataset either as a single dictionary or a list of dictionaries.
 
-## How-to guide
-
-This section shows how to query a dataset in Argilla using specific terms or filters, and export records.
-
 !!! info "Class"
 
     === "`rg.query`"
@@ -35,7 +31,7 @@ This section shows how to query a dataset in Argilla using specific terms or fil
         ```
         > Check the [Filter - Python Reference](../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Filter` class in detail.
 
-### Query with search terms
+## Query with search terms
 
 To search for records with terms, you can use the `Dataset.records` attribute with a query string. The search terms are used to search for records that contain the terms in the text field. You can search a single term or various terms, in the latter, all of them should appear in the record to be retrieved.
 
@@ -73,7 +69,7 @@ To search for records with terms, you can use the `Dataset.records` attribute wi
     queried_records
     ```
 
-### Filter by conditions
+## Filter by conditions
 
 You can use the `Filter` class to define the conditions and pass them to the `Dataset.records` attribute to fetch records based on the conditions. Conditions include "==", ">=", "<=", or "in". Conditions can be combined with dot notation to filter records based on metadata, suggestions, or responses. You can use a single condition or multiple conditions to filter records.
 
@@ -128,7 +124,7 @@ You can use the `Filter` class to define the conditions and pass them to the `Da
     filtered_records
     ```
 
-### Query and filter a dataset
+## Query and filter a dataset
 
 As mentioned, you can use a query with a search term and a filter or various filters to create complex search queries.
 
@@ -160,7 +156,7 @@ queried_filtered_records = list(dataset.records(
 queried_filtered_records
 ```
 
-### Export records to a dictionary
+## Export records to a dictionary
 
 Records can be exported from `Dataset.records` as a dictionary. The `to_dict` method can be used to export records as a dictionary. You can specify the orientation of the dictionary output. You can also decide if to flatten or not the dictionary.
 
@@ -190,7 +186,7 @@ exported_records
 # {"text": ["Hello", "World"], "label.suggestion": ["greeting", "greeting"]}
 ```
 
-### Export records to a list
+## Export records to a list
 
 Records can be exported from `Dataset.records` as a list of dictionaries. The `to_list` method can be used to export records as a list of dictionaries. You can decide if to flatten it or not.
 

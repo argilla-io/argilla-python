@@ -14,10 +14,6 @@ A **dataset** is a collection of records that you can configure for labelers to 
 
     The users with the `admin` role can manage (create, retrieve, update and delete) the datasets in the workspaces they have access to.
 
-## How-to guide
-
-This section starts by showing how to create a basic dataset in Argilla and define its settings, and then how to list all the datasets available in each workspace and retrieve a specific one. Finally, the guide covers the steps to update and delete a dataset.
-
 !!! info "Class"
     === "`rg.Dataset`"
 
@@ -51,7 +47,7 @@ This section starts by showing how to create a basic dataset in Argilla and defi
 
         > Check the [Settings - Python Reference](../reference/argilla_sdk/settings/settings.md) to see the attributes, arguments, and methods of the `Settings` class in detail.
 
-### Create a dataset
+## Create a dataset
 
 To create a dataset, you can define it in the `Dataset` class and then call the `create` method that will send the dataset to the server so that it can be visualized in the UI. If the dataset does not appear in the UI, you may need to click the refresh button to update the view. For further configuration of the dataset, you can refer to the [settings section](#define-dataset-settings).
 
@@ -86,9 +82,9 @@ dataset.create()
 !!! tip "Accessing attributes"
     Access the attributes of a dataset by calling them directly on the `dataset` object. For example, `dataset.id`, `dataset.name` or `dataset.settings`. You can similarly access the fields, questions, metadata, vectors and guidelines. For instance, `dataset.fields` or `dataset.questions`.
 
-### Define dataset settings
+## Define dataset settings
 
-#### Fields
+### Fields
 
 The fields in a dataset consist of one or more data items requiring annotation. Currently, Argilla only supports the `TextField` type—a plain text field—though there are plans to introduce additional field types in future updates.
 
@@ -112,7 +108,7 @@ rg.TextField(
 ```
 ![TextField](../assets/images/how_to_guides/dataset/fields.png)
 
-#### Questions
+### Questions
 
 To collect feedback for your dataset, you need to formulate questions that annotators will be asked to answer. Currently, Argilla supports the following types of questions: `LabelQuestion`, `MultiLabelQuestion`, `RankingQuestion`, `RatingQuestion`, `SpanQuestion`, and `TextQuestion`.
 
@@ -266,7 +262,7 @@ To collect feedback for your dataset, you need to formulate questions that annot
 
     ![TextQuestion](../assets/images/how_to_guides/dataset/text_question.png)
 
-#### Metadata
+### Metadata
 
 Metadata properties allow you to configure the use of metadata information for the filtering and sorting features available in the UI and Python SDK. There exist three types of metadata you can add: `TermsMetadataProperty`, `IntegerMetadataProperty` and `FloatMetadataProperty`.
 
@@ -322,7 +318,7 @@ Metadata properties allow you to configure the use of metadata information for t
     ```
     ![FloatMetadataProperty](../assets/images/how_to_guides/dataset/float_metadata.png)
 
-#### Vectors
+### Vectors
 
 To use the similarity search in the UI and the Python SDK, you will need to configure vectors using the `VectorField` class. It has the following configuration:
 
@@ -339,7 +335,7 @@ rg.VectorField(
 ```
 ![VectorField](../assets/images/how_to_guides/dataset/vectors.png)
 
-#### Guidelines
+### Guidelines
 
 Once you have decided on the data to show and the questions to ask, it's important to provide clear guidelines to the annotators. These guidelines help them understand the task and answer the questions consistently. You can provide guidelines in two ways:
 
@@ -357,7 +353,7 @@ It is good practice to use at least the dataset guidelines if not both methods. 
 !!! tip
     If you want further guidance on good practices for guidelines during the project development, check our [blog post](https://argilla.io/blog/annotation-guidelines-practices/).
 
-### List datasets
+## List datasets
 
 You can list all the datasets available in a workspace using the `datasets` attribute of the `Workspace` class. You can also use `len(workspace.datasets)` to get the number of datasets in a workspace.
 
@@ -374,7 +370,7 @@ for dataset in datasets:
     print(dataset)
 ```
 
-### Retrieve a dataset
+## Retrieve a dataset
 
 You can retrieve a dataset by calling the `datasets` method on the `Argilla` class and passing the name of the dataset as an argument. By default, this method attempts to retrieve the dataset from the first workspace. If the dataset is in a different workspace, you must specify either the workspace name or id as an argument.
 
@@ -393,7 +389,7 @@ retrieved_dataset = client.datasets(name="my_dataset", workspace=workspace)
 
 ```
 
-### Check dataset existence
+## Check dataset existence
 
 You can check if a dataset exists by calling the `exists` method on the `Dataset` class. This method returns a boolean value.
 
@@ -408,7 +404,7 @@ dataset_existed = dataset.exists()
 dataset_existed
 ```
 
-### Update a dataset
+## Update a dataset
 
 You can update a dataset by calling the `update` method on the `Dataset` class and passing the new settings as an argument.
 
@@ -442,7 +438,7 @@ dataset_updated = dataset_to_update.update()
 dataset_updated
 ```
 
-### Delete a dataset
+## Delete a dataset
 
 You can delete an existing dataset by calling the `delete` method on the `Dataset` class.
 

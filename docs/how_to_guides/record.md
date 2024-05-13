@@ -10,10 +10,6 @@ A **record** in Argilla is a data item that requires annotation, consisting of o
 
 > A record is part of a dataset, so you will need to create a dataset before adding records. Check these guides to learn how to [create a dataset](dataset.md).
 
-## How-to guide
-
-This section shows how to add records in Argilla with metadata, vectors, suggestions and responses. It also explains how to list and update them.
-
 !!! info "Class"
 
     ```python
@@ -39,7 +35,7 @@ This section shows how to add records in Argilla with metadata, vectors, suggest
     ```
     > Check the [Record - Python Reference](../reference/argilla_sdk/records/records.md) to see the attributes, arguments, and methods of the `Record` class in detail.
 
-### Add records
+## Add records
 
 You can add records to a dataset in two different ways: either by using a dictionary or by directly initializing a `Record` object. You should ensure that fields, metadata and vectors match those configured in the dataset settings. In both cases, are added via the `Dataset.records.add` method. As soon as you add the records, these will be available in the Argilla UI. If they do not appear in the UI, you may need to click the refresh button to update the view.
 
@@ -178,7 +174,7 @@ You can add records to a dataset in two different ways: either by using a dictio
         dataset.records.add(records)
         ```	
 
-#### Metadata
+### Metadata
 
 Record metadata can include any information about the record that is not part of the fields in the form of a dictionary. To use metadata for filtering and sorting records, make sure that the key of the dictionary corresponds with the metadata property `name`. When the key doesn't correspond, this will be considered extra metadata that will get stored with the record (as long as `allow_extra_metadata` is set to `True` for the dataset), but will not be usable for filtering and sorting.
 
@@ -229,7 +225,7 @@ Record metadata can include any information about the record that is not part of
     dataset.records.add(records)
     ```
 
-#### Vectors
+### Vectors
 
 You can associate vectors, like text embeddings, to your records. They can be used for semantic search in the UI and the Python SDK. Make sure that the length of the list corresponds to the dimensions set in the vector settings.
 
@@ -286,7 +282,7 @@ You can associate vectors, like text embeddings, to your records. They can be us
     dataset.records.add(records)
     ```
 
-#### Suggestions
+### Suggestions
 
 Suggestions refer to suggested responses (e.g. model predictions) that you can add to your records to make the annotation process faster. These can be added during the creation of the record or at a later stage. Only one suggestion can be provided for each question, and suggestion values must be compliant with the pre-defined questions e.g. if we have a `RatingQuestion` between 1 and 5, the suggestion should have a valid value within that range.
 
@@ -354,7 +350,7 @@ Suggestions refer to suggested responses (e.g. model predictions) that you can a
     dataset.records.add(records)
     ```
 
-#### Responses
+### Responses
 
 If your dataset includes some annotations, you can add those to the records as you create them. Make sure that the responses adhere to the same format as Argilla's output and meet the schema requirements for the specific type of question being answered. Make sure to include the `user_id` in case you're planning to add more than one response for the same question, if not responses will apply to all the annotators.
 
@@ -411,7 +407,7 @@ If your dataset includes some annotations, you can add those to the records as y
     dataset.records.add(records)
     ```
 
-### List records
+## List records
 
 To list records in a dataset, you can use the `records` method on the `Dataset` object. This method returns a list of `Record` objects that can be iterated over to access the record properties.
 
@@ -433,7 +429,7 @@ for record in dataset.records(
         print(record.question_name.value)
 ```
 
-### Update records
+## Update records
 
 You can update records in a dataset calling the `update` method on the `Dataset` object. To update a record, you need to provide the record `id` or `external_id` and the new data to be updated.
 
@@ -450,5 +446,3 @@ updated_data = [
 ]
 dataset.records.update(records=updated_data)
 ```
-
-

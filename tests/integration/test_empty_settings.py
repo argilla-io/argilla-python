@@ -29,10 +29,10 @@ def test_dataset_empty_settings(client: Argilla, workspace: Workspace) -> Datase
         client=client,
     )
     with pytest.raises(expected_exception=SettingsError):
-        dataset.publish()
+        dataset.create()
 
 
-def test_dataset_no_fields(client: Argilla, workspace: Workspace) -> Dataset:
+def test_dataset_no_fields(client: Argilla, workspace: Workspace) -> None:
     name = "".join(random.choices(ascii_lowercase, k=16))
     settings = Settings(
         questions=[
@@ -46,7 +46,7 @@ def test_dataset_no_fields(client: Argilla, workspace: Workspace) -> Dataset:
         client=client,
     )
     with pytest.raises(expected_exception=SettingsError):
-        dataset.publish()
+        dataset.create()
     
 
 def test_dataset_no_questions(client: Argilla, workspace: Workspace) -> Dataset:
@@ -63,4 +63,4 @@ def test_dataset_no_questions(client: Argilla, workspace: Workspace) -> Dataset:
         client=client,
     )
     with pytest.raises(expected_exception=SettingsError):
-        dataset.publish()
+        dataset.create()

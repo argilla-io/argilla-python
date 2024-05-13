@@ -25,7 +25,7 @@ def dataset(client) -> rg.Dataset:
         settings=settings,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     yield dataset
     dataset.delete()
 

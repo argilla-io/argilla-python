@@ -36,7 +36,7 @@ def dataset_with_metadata(client: Argilla, workspace: Workspace) -> Dataset:
         settings=settings,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     dataset.get()
     return dataset
 
@@ -56,7 +56,7 @@ def test_create_dataset_with_metadata(client: Argilla, workspace: Workspace) -> 
         settings=settings,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     dataset.get()
 
     assert dataset.settings.metadata[0].name == "category"
@@ -86,7 +86,7 @@ def test_create_dataset_with_numerical_metadata(client: Argilla, workspace: Work
         settings=settings,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     gotten_dataset = dataset.get()
 
     assert gotten_dataset.settings.metadata[0].name == "price"

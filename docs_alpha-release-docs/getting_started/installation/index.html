@@ -1483,17 +1483,23 @@
 <p class="admonition-title">Note</p>
 <p>You can use this SDK with any stable release of argilla server &gt;= 1.27.</p>
 </div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>These images are used for introductory purposes, so the data will be lost after restarting.</p>
+</div>
 <ul>
-<li>Using a <a href="https://huggingface.co/new-space?template=argilla/argilla-template-space">HF Space</a>. Note that persistent storage should be manually enabled not to lose any data.</li>
+<li>Using a <a href="https://huggingface.co/new-space?template=argilla/argilla-template-space">HF Space</a>.</li>
 <li>Locally with Docker.</li>
 </ul>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">docker run -d --name quickstart -p 6900:6900 argilla/argilla-quickstart:latest</span>
 </span></code></pre></div>
 <h2 id="connect-to-the-argilla-server">Connect to the Argilla server<a class="headerlink" href="#connect-to-the-argilla-server" title="Permanent link">&para;</a></h2>
-<p>Get your <code>&lt;api_url&gt;</code>:
-* If you are using HF Spaces, it should be constructed as follows: https://[your-owner-name]-[your_space_name].hf.space
-* If you are using Docker, it is the URL shown in your browser (by default http://localhost:6900)</p>
-<p>Get your <code>&lt;api_key&gt;</code> in "My Settings" in the Argilla UI (by default owner.apikey).</p>
+<p>Get your <code>&lt;api_url&gt;</code>:</p>
+<ul>
+<li>If you are using HF Spaces, it should be constructed as follows: <code>https://[your-owner-name]-[your_space_name].hf.space</code></li>
+<li>If you are using Docker, it is the URL shown in your browser (by default <code>http://localhost:6900</code>)</li>
+</ul>
+<p>Get your <code>&lt;api_key&gt;</code> in <code>My Settings</code> in the Argilla UI (by default owner.apikey).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Make sure to replace <code>&lt;api_url&gt;</code> and <code>&lt;api_key&gt;</code> with your actual values. If you are using a private HF Space, you need to specify your <code>HF_TOKEN</code> which can be found <a href="https://huggingface.co/settings/tokens">here</a>.</p>
@@ -1509,7 +1515,7 @@
 <h2 id="developer-documentation">Developer documentation<a class="headerlink" href="#developer-documentation" title="Permanent link">&para;</a></h2>
 <p>If you want to contribute to the development of the SDK, you can follow the instructions below.</p>
 <h3 id="installation_1">Installation<a class="headerlink" href="#installation_1" title="Permanent link">&para;</a></h3>
-<p>To install the development dependencies, run the following command:</p>
+<p>To install the development dependencies, run the following commands:</p>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="gp"># </span>Install<span class="w"> </span>pdm<span class="w"> </span><span class="o">(</span>https://github.com/pdm-project/pdm<span class="o">)</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="go">pip install pdm</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>

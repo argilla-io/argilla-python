@@ -626,16 +626,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-to-guide" class="md-nav__link">
-    <span class="md-ellipsis">
-      How-to guide
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How-to guide">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#get-current-user" class="md-nav__link">
     <span class="md-ellipsis">
       Get current user
@@ -643,8 +633,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#create-a-user" class="md-nav__link">
     <span class="md-ellipsis">
       Create a user
@@ -652,8 +642,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#list-users" class="md-nav__link">
     <span class="md-ellipsis">
       List users
@@ -661,8 +651,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#retrieve-a-user" class="md-nav__link">
     <span class="md-ellipsis">
       Retrieve a user
@@ -670,18 +660,31 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
+  <a href="#add-a-user-to-a-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add a user to a workspace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#remove-a-user-from-a-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remove a user from a workspace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#delete-a-user" class="md-nav__link">
     <span class="md-ellipsis">
       Delete a user
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1413,16 +1416,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-to-guide" class="md-nav__link">
-    <span class="md-ellipsis">
-      How-to guide
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How-to guide">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#get-current-user" class="md-nav__link">
     <span class="md-ellipsis">
       Get current user
@@ -1430,8 +1423,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#create-a-user" class="md-nav__link">
     <span class="md-ellipsis">
       Create a user
@@ -1439,8 +1432,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#list-users" class="md-nav__link">
     <span class="md-ellipsis">
       List users
@@ -1448,8 +1441,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#retrieve-a-user" class="md-nav__link">
     <span class="md-ellipsis">
       Retrieve a user
@@ -1457,18 +1450,31 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
+  <a href="#add-a-user-to-a-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add a user to a workspace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#remove-a-user-from-a-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remove a user from a workspace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#delete-a-user" class="md-nav__link">
     <span class="md-ellipsis">
       Delete a user
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1602,8 +1608,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="how-to-guide">How-to guide<a class="headerlink" href="#how-to-guide" title="Permanent link">&para;</a></h2>
-<p>This section shows how to identify the currently active user in Argilla, allowing you to verify the correct credentials are used for user management. It then outlines the process of creating a user, listing them all and retrieving a specific one. Finally, it covers the steps to delete a user.</p>
 <div class="admonition info">
 <p class="admonition-title">Class</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">User</span><span class="p">(</span>
@@ -1619,7 +1623,7 @@
 <p>Check the <a href="../../reference/argilla_sdk/users.md">User - Python Reference</a> to see the attributes, arguments, and methods of the <code>User</code> class in detail.</p>
 </blockquote>
 </div>
-<h3 id="get-current-user">Get current user<a class="headerlink" href="#get-current-user" title="Permanent link">&para;</a></h3>
+<h2 id="get-current-user">Get current user<a class="headerlink" href="#get-current-user" title="Permanent link">&para;</a></h2>
 <p>To ensure you're using the correct credentials for managing users, you can get the current user in Argilla using the <code>me</code> attribute of the <code>Argilla</code> class.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
@@ -1628,7 +1632,7 @@
 </span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">current_user</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">me</span>
 </span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="n">current_user</span>
 </span></code></pre></div>
-<h3 id="create-a-user">Create a user<a class="headerlink" href="#create-a-user" title="Permanent link">&para;</a></h3>
+<h2 id="create-a-user">Create a user<a class="headerlink" href="#create-a-user" title="Permanent link">&para;</a></h2>
 <p>To create a new user in Argilla, you can define it in the <code>User</code> class and then call the <code>create</code> method. This method is inherited from the <code>Resource</code> base class and operates without modifications.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
@@ -1647,7 +1651,7 @@
 <p class="admonition-title">Accessing attributes</p>
 <p>Access the attributes of a user by calling them directly on the <code>User</code> object. For example, <code>user.id</code> or <code>user.username</code>.</p>
 </div>
-<h3 id="list-users">List users<a class="headerlink" href="#list-users" title="Permanent link">&para;</a></h3>
+<h2 id="list-users">List users<a class="headerlink" href="#list-users" title="Permanent link">&para;</a></h2>
 <p>You can list all the existing users in Argilla by accessing the <code>users</code> attribute on the <code>Argilla</code> class and iterating over them. You can also use <code>len(client.users)</code> to get the number of users.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
@@ -1662,7 +1666,7 @@
 <p class="admonition-title">Notebooks</p>
 <p>When using a notebook, executing <code>client.users</code> will display a table with <code>username</code>, <code>id</code>, <code>role</code>, and the last update as <code>updated_at</code>.</p>
 </div>
-<h3 id="retrieve-a-user">Retrieve a user<a class="headerlink" href="#retrieve-a-user" title="Permanent link">&para;</a></h3>
+<h2 id="retrieve-a-user">Retrieve a user<a class="headerlink" href="#retrieve-a-user" title="Permanent link">&para;</a></h2>
 <p>You can retrieve an existing user from Argilla by accessing the <code>users</code> attribute on the <code>Argilla</code> class and passing the <code>username</code> as an argument.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
@@ -1671,15 +1675,43 @@
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="n">retrieved_user</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">users</span><span class="p">(</span><span class="s1">&#39;my_username&#39;</span><span class="p">)</span>
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">retrieved_user</span>
 </span></code></pre></div>
-<h3 id="delete-a-user">Delete a user<a class="headerlink" href="#delete-a-user" title="Permanent link">&para;</a></h3>
-<p>You can delete an existing user from Argilla by calling the <code>delete</code> method on the <code>User</code> class.</p>
+<h2 id="add-a-user-to-a-workspace">Add a user to a workspace<a class="headerlink" href="#add-a-user-to-a-workspace" title="Permanent link">&para;</a></h2>
+<p>You can add an existing user to a workspace in Argilla by calling the <code>add_to_workspace</code> method on the <code>User</code> class.</p>
+<blockquote>
+<p>For further information on how to manage workspaces, check this <a href="../workspace/">how-to guide</a>.</p>
+</blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
-</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
-</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
-</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">user_to_delete</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">users</span><span class="p">(</span><span class="s1">&#39;my_username&#39;</span><span class="p">)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="n">user</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">users</span><span class="p">(</span><span class="s1">&#39;my_username&#39;</span><span class="p">)</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s1">&#39;my_workspace&#39;</span><span class="p">)</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">deleted_user</span> <span class="o">=</span> <span class="n">user_to_delete</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">added_user</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">add_to_workspace</span><span class="p">(</span><span class="n">workspace</span><span class="p">)</span>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="n">added_user</span>
+</span></code></pre></div>
+<h2 id="remove-a-user-from-a-workspace">Remove a user from a workspace<a class="headerlink" href="#remove-a-user-from-a-workspace" title="Permanent link">&para;</a></h2>
+<p>You can remove an existing user from a workspace in Argilla by calling the <code>remove_from_workspace</code> method on the <code>User</code> class.</p>
+<blockquote>
+<p>For further information on how to manage workspaces, check this <a href="../workspace/">how-to guide</a>.</p>
+</blockquote>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="n">user</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">users</span><span class="p">(</span><span class="s1">&#39;my_username&#39;</span><span class="p">)</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s1">&#39;my_workspace&#39;</span><span class="p">)</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">removed_user</span> <span class="o">=</span> <span class="n">user</span><span class="o">.</span><span class="n">remove_from_workspace</span><span class="p">(</span><span class="n">workspace</span><span class="p">)</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="n">removed_user</span>
+</span></code></pre></div>
+<h2 id="delete-a-user">Delete a user<a class="headerlink" href="#delete-a-user" title="Permanent link">&para;</a></h2>
+<p>You can delete an existing user from Argilla by calling the <code>delete</code> method on the <code>User</code> class.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">user_to_delete</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">users</span><span class="p">(</span><span class="s1">&#39;my_username&#39;</span><span class="p">)</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">deleted_user</span> <span class="o">=</span> <span class="n">user_to_delete</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
 </span></code></pre></div>
 
 

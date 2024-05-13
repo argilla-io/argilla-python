@@ -701,16 +701,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-to-guide" class="md-nav__link">
-    <span class="md-ellipsis">
-      How-to guide
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How-to guide">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#query-with-search-terms" class="md-nav__link">
     <span class="md-ellipsis">
       Query with search terms
@@ -718,8 +708,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#filter-by-conditions" class="md-nav__link">
     <span class="md-ellipsis">
       Filter by conditions
@@ -727,8 +717,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#query-and-filter-a-dataset" class="md-nav__link">
     <span class="md-ellipsis">
       Query and filter a dataset
@@ -736,8 +726,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#export-records-to-a-dictionary" class="md-nav__link">
     <span class="md-ellipsis">
       Export records to a dictionary
@@ -745,18 +735,13 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#export-records-to-a-list" class="md-nav__link">
     <span class="md-ellipsis">
       Export records to a list
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1395,16 +1380,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#how-to-guide" class="md-nav__link">
-    <span class="md-ellipsis">
-      How-to guide
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How-to guide">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#query-with-search-terms" class="md-nav__link">
     <span class="md-ellipsis">
       Query with search terms
@@ -1412,8 +1387,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#filter-by-conditions" class="md-nav__link">
     <span class="md-ellipsis">
       Filter by conditions
@@ -1421,8 +1396,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#query-and-filter-a-dataset" class="md-nav__link">
     <span class="md-ellipsis">
       Query and filter a dataset
@@ -1430,8 +1405,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#export-records-to-a-dictionary" class="md-nav__link">
     <span class="md-ellipsis">
       Export records to a dictionary
@@ -1439,18 +1414,13 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#export-records-to-a-list" class="md-nav__link">
     <span class="md-ellipsis">
       Export records to a list
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1475,8 +1445,6 @@
 <h1 id="query-filter-and-export-records">Query, filter, and export records<a class="headerlink" href="#query-filter-and-export-records" title="Permanent link">&para;</a></h1>
 <p>This guide provides an overview of how to query and filter a dataset in Argilla and export records.</p>
 <p>You can search for records in your dataset by <strong>querying</strong> or <strong>filtering</strong>. The query focuses on the content of the text field, while the filter is used to filter the records based on conditions. You can use them independently or combine multiple filters to create complex search queries. You can also export records from a dataset either as a single dictionary or a list of dictionaries.</p>
-<h2 id="how-to-guide">How-to guide<a class="headerlink" href="#how-to-guide" title="Permanent link">&para;</a></h2>
-<p>This section shows how to query a dataset in Argilla using specific terms or filters, and export records.</p>
 <div class="admonition info">
 <p class="admonition-title">Class</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1"><code>rg.query</code></label><label for="__tabbed_1_2"><code>rg.Filter</code></label></div>
@@ -1505,7 +1473,7 @@
 </div>
 </div>
 </div>
-<h3 id="query-with-search-terms">Query with search terms<a class="headerlink" href="#query-with-search-terms" title="Permanent link">&para;</a></h3>
+<h2 id="query-with-search-terms">Query with search terms<a class="headerlink" href="#query-with-search-terms" title="Permanent link">&para;</a></h2>
 <p>To search for records with terms, you can use the <code>Dataset.records</code> attribute with a query string. The search terms are used to search for records that contain the terms in the text field. You can search a single term or various terms, in the latter, all of them should appear in the record to be retrieved.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Single search term</label><label for="__tabbed_2_2">Multiple search term</label></div>
 <div class="tabbed-content">
@@ -1541,7 +1509,7 @@
 </div>
 </div>
 </div>
-<h3 id="filter-by-conditions">Filter by conditions<a class="headerlink" href="#filter-by-conditions" title="Permanent link">&para;</a></h3>
+<h2 id="filter-by-conditions">Filter by conditions<a class="headerlink" href="#filter-by-conditions" title="Permanent link">&para;</a></h2>
 <p>You can use the <code>Filter</code> class to define the conditions and pass them to the <code>Dataset.records</code> attribute to fetch records based on the conditions. Conditions include "==", "&gt;=", "&lt;=", or "in". Conditions can be combined with dot notation to filter records based on metadata, suggestions, or responses. You can use a single condition or multiple conditions to filter records.</p>
 <table>
 <thead>
@@ -1606,15 +1574,14 @@
 </span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>
 </span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="n">filtered_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span>
 </span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    <span class="n">query</span><span class="o">=</span><span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="n">filters</span><span class="p">)),</span>
-</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    <span class="n">with_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>    <span class="n">with_suggestions</span><span class="o">=</span><span class="kc">True</span>
-</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="p">)</span>
-</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="n">filtered_records</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    <span class="n">with_suggestions</span><span class="o">=</span><span class="kc">True</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="p">)</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="n">filtered_records</span>
 </span></code></pre></div>
 </div>
 </div>
 </div>
-<h3 id="query-and-filter-a-dataset">Query and filter a dataset<a class="headerlink" href="#query-and-filter-a-dataset" title="Permanent link">&para;</a></h3>
+<h2 id="query-and-filter-a-dataset">Query and filter a dataset<a class="headerlink" href="#query-and-filter-a-dataset" title="Permanent link">&para;</a></h2>
 <p>As mentioned, you can use a query with a search term and a filter or various filters to create complex search queries.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
@@ -1642,7 +1609,7 @@
 </span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="p">)</span>
 </span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="n">queried_filtered_records</span>
 </span></code></pre></div>
-<h3 id="export-records-to-a-dictionary">Export records to a dictionary<a class="headerlink" href="#export-records-to-a-dictionary" title="Permanent link">&para;</a></h3>
+<h2 id="export-records-to-a-dictionary">Export records to a dictionary<a class="headerlink" href="#export-records-to-a-dictionary" title="Permanent link">&para;</a></h2>
 <p>Records can be exported from <code>Dataset.records</code> as a dictionary. The <code>to_dict</code> method can be used to export records as a dictionary. You can specify the orientation of the dictionary output. You can also decide if to flatten or not the dictionary.</p>
 <p>=== "
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
@@ -1656,19 +1623,19 @@
 </span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1"># Export records as a dictionary</span>
 </span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 </span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">exported_records</span>
-</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="c1"># {&quot;text&quot;: [&quot;Hello&quot;, &quot;World&quot;], &quot;label.suggestion&quot;: [&quot;greeting&quot;, &quot;greeting&quot;]}</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="c1"># {&#39;fields&#39;: [{&#39;text&#39;: &#39;Hello&#39;},{&#39;text&#39;: &#39;World&#39;}], suggestions&#39;: [{&#39;label&#39;: {&#39;value&#39;: &#39;positive&#39;}}, {&#39;label&#39;: {&#39;value&#39;: &#39;negative&#39;}}]</span>
 </span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>
 </span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="c1"># Export records as a dictionary with orient=index</span>
 </span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
 </span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="n">exported_records</span>
-</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="c1"># {&quot;uuid&quot;: {&quot;text&quot;: &quot;Hello&quot;, &quot;label&quot;: &quot;greeting&quot;}}</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="c1"># {&quot;uuid&quot;: {&#39;fields&#39;: {&#39;text&#39;: &#39;Hello&#39;}, &#39;suggestions&#39;: {&#39;label&#39;: {&#39;value&#39;: &#39;positive&#39;}}}, {&quot;uuid&quot;: {&#39;fields&#39;: {&#39;text&#39;: &#39;World&#39;}, &#39;suggestions&#39;: {&#39;label&#39;: {&#39;value&#39;: &#39;negative&#39;}}},</span>
 </span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>
 </span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="c1"># Export records as a dictionary with flatten=false</span>
-</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="n">exported_records</span>
-</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="c1"># {&#39;fields&#39;: [{&#39;text&#39;: &#39;Hello&#39;},{&#39;text&#39;: &#39;World&#39;}], suggestions&#39;: [{&#39;label&#39;: {&#39;value&#39;: &#39;positive&#39;}}, {&#39;label&#39;: {&#39;value&#39;: &#39;negative&#39;}}]</span>
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="c1"># {&quot;text&quot;: [&quot;Hello&quot;, &quot;World&quot;], &quot;label.suggestion&quot;: [&quot;greeting&quot;, &quot;greeting&quot;]}</span>
 </span></code></pre></div></p>
-<h3 id="export-records-to-a-list">Export records to a list<a class="headerlink" href="#export-records-to-a-list" title="Permanent link">&para;</a></h3>
+<h2 id="export-records-to-a-list">Export records to a list<a class="headerlink" href="#export-records-to-a-list" title="Permanent link">&para;</a></h2>
 <p>Records can be exported from <code>Dataset.records</code> as a list of dictionaries. The <code>to_list</code> method can be used to export records as a list of dictionaries. You can decide if to flatten it or not.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
@@ -1681,12 +1648,12 @@
 </span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="c1"># Export records as a list of dictionaries</span>
 </span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
 </span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">exported_records</span>
-</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="c1"># [{&quot;text&quot;: &quot;Hello&quot;, &quot;label&quot;: &quot;greeting&quot;}, {&quot;text&quot;: &quot;World&quot;, &quot;label&quot;: &quot;greeting&quot;}]</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="c1"># [{&#39;fields&#39;: {&#39;text&#39;: &#39;Hello&#39;}, &#39;suggestion&#39;: {&#39;label&#39;: {value: &#39;greeting&#39;}}}, {&#39;fields&#39;: {&#39;text&#39;: &#39;World&#39;}, &#39;suggestion&#39;: {&#39;label&#39;: {value: &#39;greeting&#39;}}}]</span>
 </span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>
 </span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="c1"># Export records as a list of dictionaries with flatten=False</span>
-</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">flatten</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="n">exported_records</span>
-</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="c1"># [{&#39;fields&#39;: {&#39;text&#39;: &#39;Hello&#39;}, &#39;suggestion&#39;: {&#39;label&#39;: {value: &#39;greeting&#39;}}}, {&#39;fields&#39;: {&#39;text&#39;: &#39;World&#39;}, &#39;suggestion&#39;: {&#39;label&#39;: {value: &#39;greeting&#39;}}}]</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="c1"># [{&quot;text&quot;: &quot;Hello&quot;, &quot;label&quot;: &quot;greeting&quot;}, {&quot;text&quot;: &quot;World&quot;, &quot;label&quot;: &quot;greeting&quot;}]</span>
 </span></code></pre></div>
 
 

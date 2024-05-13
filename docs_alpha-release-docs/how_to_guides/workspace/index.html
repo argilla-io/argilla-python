@@ -647,16 +647,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-to-guide" class="md-nav__link">
-    <span class="md-ellipsis">
-      How-to guide
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How-to guide">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#create-a-new-workspace" class="md-nav__link">
     <span class="md-ellipsis">
       Create a new workspace
@@ -664,8 +654,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#list-workspaces" class="md-nav__link">
     <span class="md-ellipsis">
       List workspaces
@@ -673,8 +663,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#retrieve-a-workspace" class="md-nav__link">
     <span class="md-ellipsis">
       Retrieve a workspace
@@ -682,8 +672,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#check-workspace-existence" class="md-nav__link">
     <span class="md-ellipsis">
       Check workspace existence
@@ -691,18 +681,31 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
+  <a href="#add-a-user-to-a-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add a user to a workspace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#remove-a-user-from-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remove a user from workspace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#delete-a-workspace" class="md-nav__link">
     <span class="md-ellipsis">
       Delete a workspace
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1413,16 +1416,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-to-guide" class="md-nav__link">
-    <span class="md-ellipsis">
-      How-to guide
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="How-to guide">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
   <a href="#create-a-new-workspace" class="md-nav__link">
     <span class="md-ellipsis">
       Create a new workspace
@@ -1430,8 +1423,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#list-workspaces" class="md-nav__link">
     <span class="md-ellipsis">
       List workspaces
@@ -1439,8 +1432,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#retrieve-a-workspace" class="md-nav__link">
     <span class="md-ellipsis">
       Retrieve a workspace
@@ -1448,8 +1441,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#check-workspace-existence" class="md-nav__link">
     <span class="md-ellipsis">
       Check workspace existence
@@ -1457,18 +1450,31 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
+  <a href="#add-a-user-to-a-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Add a user to a workspace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#remove-a-user-from-workspace" class="md-nav__link">
+    <span class="md-ellipsis">
+      Remove a user from workspace
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#delete-a-workspace" class="md-nav__link">
     <span class="md-ellipsis">
       Delete a workspace
     </span>
   </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -1518,8 +1524,6 @@
 </tr>
 </tbody>
 </table>
-<h2 id="how-to-guide">How-to guide<a class="headerlink" href="#how-to-guide" title="Permanent link">&para;</a></h2>
-<p>This section shows how to create a new workspace in Argilla, the process of listing all the workspaces and retrieving a specific one or checking if it exists. Finally, the guide covers the steps to delete a user.</p>
 <div class="admonition info">
 <p class="admonition-title">Class</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">Workspace</span><span class="p">(</span>
@@ -1531,7 +1535,7 @@
 <p>Check the <a href="../../reference/argilla_sdk/workspaces.md">Workspace - Python Reference</a> to see the attributes, arguments, and methods of the <code>Workspace</code> class in detail.</p>
 </blockquote>
 </div>
-<h3 id="create-a-new-workspace">Create a new workspace<a class="headerlink" href="#create-a-new-workspace" title="Permanent link">&para;</a></h3>
+<h2 id="create-a-new-workspace">Create a new workspace<a class="headerlink" href="#create-a-new-workspace" title="Permanent link">&para;</a></h2>
 <p>To create a new workspace in Argilla, you can define it in the <code>Workspace</code> class and then call the <code>create</code> method. This method is inherited from the <code>Resource</code> base class and operates without modifications.</p>
 <blockquote>
 <p>When you create a new workspace, it will be empty. To create and add a new dataset, check these <a href="../dataset.md">guides</a>.</p>
@@ -1552,7 +1556,7 @@
 <p class="admonition-title">Accessing attributes</p>
 <p>Access the attributes of a workspace by calling them directly on the <code>Workspace</code> object. For example, <code>workspace.id</code> or <code>workspace.name</code>.</p>
 </div>
-<h3 id="list-workspaces">List workspaces<a class="headerlink" href="#list-workspaces" title="Permanent link">&para;</a></h3>
+<h2 id="list-workspaces">List workspaces<a class="headerlink" href="#list-workspaces" title="Permanent link">&para;</a></h2>
 <p>You can list all the existing workspaces in Argilla by calling the <code>workspaces</code> attribute on the <code>Argilla</code> class and iterating over them. You can also use <code>len(client.workspaces)</code> to get the number of workspaces.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
@@ -1567,7 +1571,7 @@
 <p class="admonition-title">Notebooks</p>
 <p>When using a notebook, executing <code>client.workspaces</code> will display a table with the number of <code>datasets</code> in each workspace, <code>name</code>, <code>id</code>, and the last update as <code>updated_at</code>.</p>
 </div>
-<h3 id="retrieve-a-workspace">Retrieve a workspace<a class="headerlink" href="#retrieve-a-workspace" title="Permanent link">&para;</a></h3>
+<h2 id="retrieve-a-workspace">Retrieve a workspace<a class="headerlink" href="#retrieve-a-workspace" title="Permanent link">&para;</a></h2>
 <p>You can retrieve a workspace by accessing the <code>workspaces</code> method on the <code>Argilla</code> class and passing the name of the workspace as an argument.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
@@ -1576,7 +1580,7 @@
 </span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">retrieved_workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
 </span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="n">retrieved_workspace</span>
 </span></code></pre></div>
-<h3 id="check-workspace-existence">Check workspace existence<a class="headerlink" href="#check-workspace-existence" title="Permanent link">&para;</a></h3>
+<h2 id="check-workspace-existence">Check workspace existence<a class="headerlink" href="#check-workspace-existence" title="Permanent link">&para;</a></h2>
 <p>You can check if a workspace exists by calling the <code>exists</code> method on the <code>Workspace</code> class. This method returns a boolean value.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
@@ -1587,18 +1591,38 @@
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">workspace_existed</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="n">workspace_existed</span>
 </span></code></pre></div>
-<h3 id="delete-a-workspace">Delete a workspace<a class="headerlink" href="#delete-a-workspace" title="Permanent link">&para;</a></h3>
-<p>To delete a workspace, <strong>no dataset can be associated with it</strong>. If the workspace contains any dataset, deletion will fail. You can delete a workspace by calling the <code>delete</code> method on the <code>Workspace</code> class.</p>
-<blockquote>
-<p>To clear a workspace and delete all their datasets, refer to this <a href="../dataset.md">how-to guide</a>.</p>
-</blockquote>
+<h2 id="add-a-user-to-a-workspace">Add a user to a workspace<a class="headerlink" href="#add-a-user-to-a-workspace" title="Permanent link">&para;</a></h2>
+<p>You can also add a user to a workspace by calling the <code>add_user</code> method on the <code>Workspace</code> class.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
 </span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a>
-</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">workspace_to_delete</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
-</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
-</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">deleted_workspace</span> <span class="o">=</span> <span class="n">workspace_to_delete</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="n">workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="n">added_user</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">add_user</span><span class="p">(</span><span class="s2">&quot;my_username&quot;</span><span class="p">)</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">added_user</span>
+</span></code></pre></div>
+<h2 id="remove-a-user-from-workspace">Remove a user from workspace<a class="headerlink" href="#remove-a-user-from-workspace" title="Permanent link">&para;</a></h2>
+<p>You can also remove a user from a workspace by calling the <code>remove_user</code> method on the <code>Workspace</code> class.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a><span class="n">workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">removed_user</span> <span class="o">=</span> <span class="n">workspace</span><span class="o">.</span><span class="n">remove_user</span><span class="p">(</span><span class="s2">&quot;my_username&quot;</span><span class="p">)</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">removed_user</span>
+</span></code></pre></div>
+<h2 id="delete-a-workspace">Delete a workspace<a class="headerlink" href="#delete-a-workspace" title="Permanent link">&para;</a></h2>
+<p>To delete a workspace, <strong>no dataset can be associated with it</strong>. If the workspace contains any dataset, deletion will fail. You can delete a workspace by calling the <code>delete</code> method on the <code>Workspace</code> class.</p>
+<blockquote>
+<p>To clear a workspace and delete all their datasets, refer to this <a href="../dataset.md">how-to guide</a>.</p>
+</blockquote>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a><span class="n">workspace_to_delete</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">deleted_workspace</span> <span class="o">=</span> <span class="n">workspace_to_delete</span><span class="o">.</span><span class="n">delete</span><span class="p">()</span>
 </span></code></pre></div>
 
 

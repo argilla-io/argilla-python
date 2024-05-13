@@ -1491,7 +1491,7 @@
 
 
 <h1 id="quickstart">Quickstart<a class="headerlink" href="#quickstart" title="Permanent link">&para;</a></h1>
-<p>This guide provides a quick overview of the Argilla SDK and how to publish your first dataset.</p>
+<p>This guide provides a quick overview of the Argilla SDK and how to create your first dataset.</p>
 <ol>
 <li>Setting up your Argilla project</li>
 <li>Create your first dataset</li>
@@ -1508,17 +1508,23 @@
 </span></code></pre></div>
 <h3 id="run-the-argilla-server">Run the Argilla server<a class="headerlink" href="#run-the-argilla-server" title="Permanent link">&para;</a></h3>
 <p>If you have already deployed Argilla Server, you can skip this step. Otherwise, you can quickly deploy it in two different ways:</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>These images are used for introductory purposes, so the data will be lost after restarting.</p>
+</div>
 <ul>
-<li>Using a <a href="https://huggingface.co/new-space?template=argilla/argilla-template-space">HF Space</a>. Note that persistent storage should be manually enabled not to lose any data.</li>
+<li>Using a <a href="https://huggingface.co/new-space?template=argilla/argilla-template-space">HF Space</a>.</li>
 <li>Locally with Docker.</li>
 </ul>
 <div class="language-console highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="go">docker run -d --name quickstart -p 6900:6900 argilla/argilla-quickstart:latest</span>
 </span></code></pre></div>
 <h3 id="connect-to-the-argilla-server">Connect to the Argilla server<a class="headerlink" href="#connect-to-the-argilla-server" title="Permanent link">&para;</a></h3>
-<p>Get your <code>&lt;api_url&gt;</code>:
-* If you are using HF Spaces, it should be constructed as follows: https://[your-owner-name]-[your_space_name].hf.space
-* If you are using Docker, it is the URL shown in your browser (by default http://localhost:6900)</p>
-<p>Get your <code>&lt;api_key&gt;</code> in "My Settings" in the Argilla UI (by default owner.apikey).</p>
+<p>Get your <code>&lt;api_url&gt;</code>:</p>
+<ul>
+<li>If you are using HF Spaces, it should be constructed as follows: <code>https://[your-owner-name]-[your_space_name].hf.space</code></li>
+<li>If you are using Docker, it is the URL shown in your browser (by default <code>http://localhost:6900</code>)</li>
+</ul>
+<p>Get your <code>&lt;api_key&gt;</code> in <code>My Settings</code> in the Argilla UI (by default owner.apikey).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Make sure to replace <code>&lt;api_url&gt;</code> and <code>&lt;api_key&gt;</code> with your actual values. If you are using a private HF Space, you need to specify your <code>HF_TOKEN</code> which can be found <a href="https://huggingface.co/settings/tokens">here</a>.</p>
@@ -1561,7 +1567,7 @@
 </span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">,</span>
 </span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
 </span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="p">)</span>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">dataset</span><span class="o">.</span><span class="n">publish</span><span class="p">()</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">dataset</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 </span></code></pre></div>
 <h2 id="add-records-to-your-dataset">Add records to your dataset<a class="headerlink" href="#add-records-to-your-dataset" title="Permanent link">&para;</a></h2>
 <p>Retrieve the data to be added to the dataset. We will use the IMDB dataset from the Hugging Face Datasets library.</p>
@@ -1571,16 +1577,16 @@
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">data</span> <span class="o">=</span> <span class="n">load_dataset</span><span class="p">(</span><span class="s2">&quot;imdb&quot;</span><span class="p">,</span> <span class="n">split</span><span class="o">=</span><span class="s2">&quot;train[:100]&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
 </span></code></pre></div>
-<p>Now you can add the data to the dataset. Use <code>mapping</code> to indicate which keys in the source data correspond to the dataset fields.</p>
+<p>Now you can add the data to your dataset. Use <code>mapping</code> to indicate which keys in the source data correspond to the dataset fields.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># Add records to the dataset</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">records</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">mapping</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="s2">&quot;review&quot;</span><span class="p">})</span>
 </span></code></pre></div>
 <p>🎉 You have successfully created your first dataset with Argilla. You can now access it in the Argilla UI and start annotating the records.</p>
 <h2 id="more-references">More references<a class="headerlink" href="#more-references" title="Permanent link">&para;</a></h2>
 <ul>
-<li><a href="">Installation guide</a></li>
-<li><a href="">How-to guides</a></li>
-<li><a href="../reference/">API reference</a></li>
+<li><a href="../installation/">Installation guide</a></li>
+<li><a href="../../how_to_guides/">How-to guides</a></li>
+<li><a href="../../reference/argilla_sdk/client/">API reference</a></li>
 </ul>
 
 

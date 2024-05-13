@@ -8,7 +8,7 @@ These are the how-to guides for the *Argilla-python SDK*. They provide step-by-s
 
 <div class="grid cards" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Manage users and credentials__
+-   __Manage users and credentials__
 
     ---
 
@@ -16,7 +16,7 @@ These are the how-to guides for the *Argilla-python SDK*. They provide step-by-s
 
     [:octicons-arrow-right-24: How-to guide](user.md)
 
--   :material-clock-fast:{ .lg .middle } __Manage workspaces__
+-   __Manage workspaces__
 
     ---
 
@@ -24,7 +24,7 @@ These are the how-to guides for the *Argilla-python SDK*. They provide step-by-s
 
     [:octicons-arrow-right-24: How-to guide](workspace.md)
 
--   :material-clipboard-flow-outline:{ .lg .middle } __Manage and create datasets__
+-   __Manage and create datasets__
 
     ---
 
@@ -32,7 +32,7 @@ These are the how-to guides for the *Argilla-python SDK*. They provide step-by-s
 
     [:octicons-arrow-right-24: How-to guide](dataset.md)
 
--   :material-format-font:{ .lg .middle } __Add, update, and delete records__
+-   __Add, update, and delete records__
 
     ---
 
@@ -40,7 +40,7 @@ These are the how-to guides for the *Argilla-python SDK*. They provide step-by-s
 
     [:octicons-arrow-right-24: How-to guide](record.md)
 
--   :material-scale-balance:{ .lg .middle } __Query, filter and export records__
+-   __Query, filter and export records__
 
     ---
 

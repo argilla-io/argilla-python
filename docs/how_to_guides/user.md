@@ -6,10 +6,18 @@ description: In this section, we will provide a step-by-step guide to show how t
 
 This guide provides an overview of user roles and credentials, explaining how to set up and manage users in Argilla.
 
-A **user** in Argilla is an authorized person, who depending on their role, can use the Python SDK and access the UI in a running Argilla instance. We differentiate between three types of users depending on their role, permissions and needs: `owner`, `admin` and `annotator`. 
+A **user** in Argilla is an authorized person, who depending on their role, can use the Python SDK and access the UI in a running Argilla instance. We differentiate between three types of users depending on their role, permissions and needs: `owner`, `admin` and `annotator`.
 
 === "Overview"
-    ![User roles overview](../assets/images/how_to_guides/team/user_roles.png)
+    |                    | Owner      | Admin                     | Annotator |
+        |-------------------------------|------------|---------------------------|-----------|
+        | **Number**                    | Unlimited  | Unlimited                 | Unlimited |
+        | **Create and delete workspaces** | Yes      | No                        | No        |
+        | **Assign users to workspaces** | Yes        | No                        | No        |
+        | **Create, configure, update, and delete datasets** | Yes | Only within assigned workspaces | No |
+        | **Create, update, and delete users** | Yes  | No                        | No        |
+        | **Provide feedback with Argila UI** | Yes   | Yes   | Yes       |
+
 
 === "Owner"
 

@@ -9,15 +9,15 @@ Argilla is a **collaboration platform for AI engineers and domain experts** that
 
 <div class="grid cards" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Get started in 5 minutes__
+-  __Get started in 5 minutes__
 
     ---
 
-    Install `argilla` with [`pip`] and deploy a `Docker` locally or for free on Hugging Face to get up and running in minutes.
+    Install `argilla` with `pip` and deploy a `Docker` locally or for free on Hugging Face to get up and running in minutes.
 
     [:octicons-arrow-right-24: Quickstart](getting_started/quickstart/)
 
--   :material-clipboard-flow-outline:{ .lg .middle } __How to guides__
+-  __How-to guides__
 
     ---
 

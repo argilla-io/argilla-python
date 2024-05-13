@@ -13,51 +13,21 @@ Argilla is a **collaboration platform for AI engineers and domain experts** that
 
     ---
 
-    Install [`argilla`](#) with [`pip`](#) and deploy a [`Docker`](#) for free on Hugging Face to get up and running in minutes.
+    Install `argilla` with [`pip`] and deploy a `Docker` locally or for free on Hugging Face to get up and running in minutes.
 
-    [:octicons-arrow-right-24: Getting started](/argilla-python/overview/quickstart/)
-
--   :material-clipboard-flow-outline:{ .lg .middle } __Installation__
-
-    ---
-
-    Learn how to [`pip`](#) install Argilla and configure the server and UI using [`Docker`](#), [`k8s`](#) and cloud proivders.
-
-    [:octicons-arrow-right-24: Installation](/argilla-python/overview/installation/)
+    [:octicons-arrow-right-24: Quickstart](getting_started/quickstart/)
 
 -   :material-clipboard-flow-outline:{ .lg .middle } __How to guides__
 
     ---
 
-    Get familiar with common workflows for Argilla. From managing [`Users`](#), [`Workspaces`](#). [`Datasets`](#) and [`Records`](#) to fine-tuning a model.
+    Get familiar with common workflows for Argilla. From managing [`Users`](how_to_guides/user.md), [`Workspaces`](how_to_guides/workspace.md). [`Datasets`](how_to_guides/dataset.md) and [`Records`](how_to_guides/record.md) to fine-tuning a model.
 
-    [:octicons-arrow-right-24: How to guide](/argilla-python/how_to_guides/)
-
--   :material-format-font:{ .lg .middle } __Tutorials__
-
-    ---
-
-    Discover cool applied examples of Argilla working on techniques like RAG with [`haystack`](#), fine-tuning [`transformers`](#),  few-shot textcat with [`setfit`](#) and more.
-
-    [:octicons-arrow-right-24: Tutorials](/argilla-python/tutorials/)
-
--   :material-format-font:{ .lg .middle } __UI demo__
-
-    ---
-
-    If you just want to get started, we recommend our [`UI demo`](#) which contains non-technical human readable examples to showcase the diversity of Argilla.
-
-    [:octicons-arrow-right-24: UI demo](https://demo.argilla.io/sign-in?auth=ZGVtbzoxMjM0NTY3OA%3D%3D)
-
--   :material-format-font:{ .lg .middle } __API Reference__
-
-    ---
-
-    Get familiar with the codebase of our [`Python SDK`](#) and [`FastAPI server`](#).
-
-    [:octicons-arrow-right-24: API Reference](/argilla-python/reference)
+    [:octicons-arrow-right-24: How-to guides](how_to_guides)
 
 </div>
+
+## Changelog
 
 ## Why use Argilla?
 

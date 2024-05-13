@@ -15,13 +15,15 @@ import uuid
 
 import pytest
 
-from argilla_sdk import Response, User, Dataset, Settings, TextQuestion, TextField
+from argilla_sdk import Response, User, Dataset, Settings, TextQuestion, TextField, Workspace
 from argilla_sdk.records._resource import RecordResponses, Record
 
 
 @pytest.fixture
 def record():
+    workspace = Workspace(name="workspace", id=uuid.uuid4())
     dataset = Dataset(
+        workspace=workspace,
         settings=Settings(
             fields=[TextField(name="name")],
             allow_extra_metadata=True,
@@ -30,7 +32,7 @@ def record():
                 TextQuestion(name="question_b"),
                 TextQuestion(name="question_c"),
             ],
-        )
+        ),
     )
     return Record(fields={"name": "John Doe"}, metadata={"age": 30}, _dataset=dataset)
 
@@ -38,7 +40,7 @@ def record():
 class TestRecordResponses:
 
     def test_create_record_responses_for_single_user(self, record: Record):
-        user = User(username="johndoe", id=str(uuid.uuid4()))
+        user = User(username="johndoe", id=uuid.uuid4())
 
         responses = [
             Response(question_name="question_a", value="answer_a", user_id=user.id),
@@ -56,8 +58,8 @@ class TestRecordResponses:
         assert record_responses.question_c[0].user_id == user.id
 
     def test_create_record_responses_for_multiple_users(self, record: Record):
-        user_a = User(username="johndoe", id=str(uuid.uuid4()))
-        user_b = User(username="janedoe", id=str(uuid.uuid4()))
+        user_a = User(username="johndoe", id=uuid.uuid4())
+        user_b = User(username="janedoe", id=uuid.uuid4())
 
         responses = [
             Response(question_name="question_a", value="answer_a", user_id=user_a.id),

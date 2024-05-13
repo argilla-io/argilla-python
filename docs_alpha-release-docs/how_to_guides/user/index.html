@@ -1492,11 +1492,58 @@
 
 <h1 id="user-management">User Management<a class="headerlink" href="#user-management" title="Permanent link">&para;</a></h1>
 <p>This guide provides an overview of user roles and credentials, explaining how to set up and manage users in Argilla.</p>
-<p>A <strong>user</strong> in Argilla is an authorized person, who depending on their role, can use the Python SDK and access the UI in a running Argilla instance. We differentiate between three types of users depending on their role, permissions and needs: <code>owner</code>, <code>admin</code> and <code>annotator</code>. </p>
+<p>A <strong>user</strong> in Argilla is an authorized person, who depending on their role, can use the Python SDK and access the UI in a running Argilla instance. We differentiate between three types of users depending on their role, permissions and needs: <code>owner</code>, <code>admin</code> and <code>annotator</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Overview</label><label for="__tabbed_1_2">Owner</label><label for="__tabbed_1_3">Admin</label><label for="__tabbed_1_4">Annotator</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
-<p><img alt="User roles overview" src="../../assets/images/how_to_guides/team/user_roles.png" /></p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Owner</th>
+<th>Admin</th>
+<th>Annotator</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Number</strong></td>
+<td>Unlimited</td>
+<td>Unlimited</td>
+<td>Unlimited</td>
+</tr>
+<tr>
+<td><strong>Create and delete workspaces</strong></td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Assign users to workspaces</strong></td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Create, configure, update, and delete datasets</strong></td>
+<td>Yes</td>
+<td>Only within assigned workspaces</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Create, update, and delete users</strong></td>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td><strong>Provide feedback with Argila UI</strong></td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="tabbed-block">
 <p>The <code>owner</code> refers to the root user who created the Argilla instance. Using workspaces within Argilla proves highly beneficial for organizing tasks efficiently. So, the owner has full access to all workspaces and their functionalities:</p>

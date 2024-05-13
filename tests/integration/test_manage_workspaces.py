@@ -5,6 +5,13 @@ from argilla_sdk import Argilla
 
 class TestWorkspacesManagement:
 
+    def test_create_workspace(self, client: Argilla):
+        workspace = Workspace(name="test_workspace")
+        client.workspaces.add(workspace)
+
+        assert workspace in client.workspaces
+        assert workspace.exists()
+
     def test_create_and_delete_workspace(self, client: Argilla):
         workspace = client.workspaces(name="test_workspace")
         if workspace.exists():

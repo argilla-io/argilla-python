@@ -12,11 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import warnings
 from abc import abstractmethod
 from collections.abc import Sequence
-from functools import singledispatchmethod
 from typing import TYPE_CHECKING, overload, List, Optional, Union
-import warnings
 
 from argilla_sdk import _api
 from argilla_sdk._helpers import GenericIterator
@@ -61,23 +60,8 @@ class Users(Sequence["User"], ResourceHTMLReprMixin):
         self._client = client
         self._api = client.api.users
 
-    @overload
-    def list(self) -> List["User"]: ...
-
-    @overload
-    def list(self, workspace: "Workspace") -> List["User"]: ...
-
-    def list(self, workspace: Optional["Workspace"] = None) -> List["User"]:
-        """List all users."""
-        if workspace is not None:
-            models = self._api.list_by_workspace_id(workspace.id)
-        else:
-            models = self._api.list()
-
-        return [self._from_model(model) for model in models]
-
     def __call__(self, username: str, **kwargs) -> "User":
-        from argilla_sdk.users._resource import User
+        from argilla_sdk.users import User
 
         user_models = self._api.list()
         for model in user_models:
@@ -104,6 +88,32 @@ class Users(Sequence["User"], ResourceHTMLReprMixin):
     def __len__(self) -> int:
         return len(self._api.list())
 
+    def add(self, user: "User") -> "User":
+        """Add a new user to the Argilla platform.
+
+        Args:
+            user: User object.
+
+        Returns:
+            User: The created user.
+        """
+        user._client = self._client
+        return user.create()
+
+    @overload
+    def list(self) -> List["User"]: ...
+    @overload
+    def list(self, workspace: "Workspace") -> List["User"]: ...
+
+    def list(self, workspace: Optional["Workspace"] = None) -> List["User"]:
+        """List all users."""
+        if workspace is not None:
+            models = self._api.list_by_workspace_id(workspace.id)
+        else:
+            models = self._api.list()
+
+        return [self._from_model(model) for model in models]
+
     ############################
     # Private methods
     ############################
@@ -128,7 +138,7 @@ class Workspaces(Sequence["Workspace"], ResourceHTMLReprMixin):
         self._api = client.api.workspaces
 
     def __call__(self, name: str, **kwargs) -> "Workspace":
-        from argilla_sdk.workspaces._resource import Workspace
+        from argilla_sdk.workspaces import Workspace
 
         workspace_models = self._api.list()
 
@@ -158,14 +168,29 @@ class Workspaces(Sequence["Workspace"], ResourceHTMLReprMixin):
     def __len__(self) -> int:
         return len(self._api.list())
 
+    def add(self, workspace: "Workspace") -> "Workspace":
+        """Add a new workspace to the Argilla platform.
+        Args:
+            workspace: Workspace object.
+
+        Returns:
+            Workspace: The created workspace.
+        """
+        workspace._client = self._client
+        return workspace.create()
+
     def list(self) -> List["Workspace"]:
         return [self._from_model(model) for model in self._api.list()]
+
+    ############################
+    # Private methods
+    ############################
 
     def _repr_html_(self) -> "HTML":
         return self._represent_as_html(resources=self.list())
 
     def _from_model(self, model: WorkspaceModel) -> "Workspace":
-        from argilla_sdk.workspaces._resource import Workspace
+        from argilla_sdk.workspaces import Workspace
 
         return Workspace(client=self._client, _model=model)
 
@@ -181,7 +206,7 @@ class Datasets(Sequence["Dataset"], ResourceHTMLReprMixin):
         self._api = client.api.datasets
 
     def __call__(self, name: str, workspace: Optional[Union["Workspace", str]] = None, **kwargs) -> "Dataset":
-        from argilla_sdk.datasets._resource import Dataset
+        from argilla_sdk.datasets import Dataset
 
         if isinstance(workspace, str):
             workspace = self._client.workspaces(workspace)
@@ -212,13 +237,32 @@ class Datasets(Sequence["Dataset"], ResourceHTMLReprMixin):
     def __len__(self) -> int:
         return len(self._api.list())
 
+    def add(self, dataset: "Dataset") -> "Dataset":
+        """
+        Add a new dataset to the Argilla platform
+
+        Args:
+            dataset: Dataset object.
+
+        Returns:
+            Dataset: The created dataset.
+        """
+        dataset._client = self._client
+        dataset.create()
+
+        return dataset
+
     def list(self) -> List["Dataset"]:
         return [self._from_model(model) for model in self._api.list()]
+
+    ############################
+    # Private methods
+    ############################
 
     def _repr_html_(self) -> "HTML":
         return self._represent_as_html(resources=self.list())
 
     def _from_model(self, model: DatasetModel) -> "Dataset":
-        from argilla_sdk.datasets._resource import Dataset
+        from argilla_sdk.datasets import Dataset
 
         return Dataset(client=self._client, _model=model)

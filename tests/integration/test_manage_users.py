@@ -17,12 +17,8 @@ def clean_environment(client: Argilla):
 class TestManageUsers:
 
     def test_create_user(self, client: Argilla):
-        user = User(username="test_user", password="test_password", client=client)
-        user.create()
-        try:
-            assert user.id is not None
-            assert user.password == "test_password"
-            assert user.username == "test_user"
-            assert client.users(username=user.username).id == user.id
-        finally:
-            user.delete()
+
+        user = User(username="test_user", password="test_password")
+        client.users.add(user)
+        assert user.id is not None
+        assert client.users(username=user.username).id == user.id

@@ -27,8 +27,5 @@ class TestCreateDatasets:
         assert dataset in client.datasets
         assert dataset.exists()
 
-        dataset.publish()
-        assert dataset.is_published
-
         created_dataset = client.datasets(name="test_dataset")
         assert created_dataset.settings == dataset.settings

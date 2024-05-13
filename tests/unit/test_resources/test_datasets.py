@@ -75,6 +75,34 @@ def dataset(httpx_mock: HTTPXMock) -> rg.Dataset:
 
 class TestDatasets:
 
+    def mock_dataset_settings(self, httpx_mock: HTTPXMock, dataset_id: uuid.UUID, dataset_dict: dict):
+        mock_field = {
+            "id": str(uuid.uuid4()),
+            "name": "text",
+            "settings": {"type": "text", "use_markdown": True},
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        mock_question = {
+            "id": str(uuid.uuid4()),
+            "name": "response",
+            "settings": {"type": "text", "use_markdown": True},
+            "inserted_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+        httpx_mock.add_response(
+            json=dataset_dict,
+            url=self.url(f"/api/v1/datasets/{dataset_id}"),
+            method="PATCH",
+            status_code=200,
+        )
+        httpx_mock.add_response(
+            json=mock_field, url=self.url(f"/api/v1/datasets/{dataset_id}/fields"), method="POST", status_code=200
+        )
+        httpx_mock.add_response(
+            json=mock_question, url=self.url(f"/api/v1/datasets/{dataset_id}/questions"), method="POST", status_code=200
+        )
+
     def url(self, path: str) -> str:
         return f"http://test_url{path}"
 
@@ -115,7 +143,13 @@ class TestDatasets:
                 method="GET",
                 status_code=200,
             )
-
+            httpx_mock.add_response(
+                json=mock_return_value,
+                url=self.url(f"/api/v1/datasets/{mock_dataset_id}/publish"),
+                method="PUT",
+                status_code=200,
+            )
+            self.mock_dataset_settings(httpx_mock, mock_dataset_id, mock_return_value)
         with httpx.Client():
             if expected_exception:
                 with pytest.raises(expected_exception=expected_exception) as excinfo:
@@ -124,7 +158,6 @@ class TestDatasets:
             else:
                 dataset.create()
                 assert dataset.name == mock_return_value["name"]
-                assert dataset.status == mock_return_value["status"]
 
     @pytest.mark.parametrize(
         "status_code, expected_exception, expected_message",
@@ -141,16 +174,6 @@ class TestDatasets:
     def test_update_dataset(self, httpx_mock: HTTPXMock, status_code, expected_exception, expected_message, dataset):
         mock_dataset_id = uuid.uuid4()
         mock_workspace_id = uuid.uuid4()
-        mock_return_value = {
-            "id": str(mock_dataset_id),
-            "name": "dataset-01",
-            "workspace_id": str(mock_workspace_id),
-            "guidelines": "guidelines",
-            "allow_extra_metadata": False,
-            "last_activity_at": datetime.utcnow().isoformat(),
-            "inserted_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
-        }
         mock_patch_return_value = {
             "id": str(mock_dataset_id),
             "name": "new_name",
@@ -167,27 +190,15 @@ class TestDatasets:
             method="PATCH",
             status_code=status_code,
         )
-        httpx_mock.add_response(
-            json=mock_return_value,
-            url=self.url("/api/v1/datasets"),
-            method="POST",
-            status_code=200,
-        )
-        httpx_mock.add_response(
-            json=mock_return_value,
-            url=self.url(f"/api/v1/datasets/{mock_dataset_id}"),
-            method="GET",
-            status_code=200,
-        )
+
+        dataset.id = mock_dataset_id
         with httpx.Client():
             if expected_exception:
                 with pytest.raises(expected_exception=expected_exception) as excinfo:
-                    dataset.create()
                     dataset.name = "new_name"
-                    dataset = dataset.update()
+                    dataset.update()
                 assert expected_message in str(excinfo.value)
             else:
-                dataset.create()
                 dataset.name = "new_name"
                 dataset = dataset.update()
                 assert dataset.name == "new_name"

@@ -38,43 +38,12 @@ for dataset in my_workspace.datasets:
     print(dataset.name)
 ```
 
-Or, to iterate over all records in a dataset:
-
-```python
-for record in my_dataset.records:
-    print(record)
-```
-
-### Connecting to multiple Argilla servers
-
-To interact with multiple Argilla servers, you can create multiple `Argilla` clients with different `api_url` and `api_key` values.
-
-```python
-
-dev_client = rg.Argilla(
-    api_url="https://dev.argilla.example.com",
-    api_key="dev_token",
-)
-
-prod_client = rg.Argilla(
-    api_url="https://prod.argilla.example.com",
-    api_key="prod_token", 
-)
-
-dataset = rg.Dataset(
-    name="my_dataset",
-    settings=rg.Settings(
-        fields=[rg.TextField(name="text")],
-    ),
-    client=dev_client,
-)
-
-```
-
 
 --- 
 
 ## Class Reference
+
+### `rg.Argilla`
 
 ::: argilla_sdk.client.Argilla
     options: 

@@ -6,7 +6,7 @@
 
 ### Creating a Dataset
 
-To create a new dataset you need to define its name and settings and then publish it to the server.
+To create a new dataset you need to define its name and settings.
 
 ```python
 dataset = rg.Dataset(
@@ -20,8 +20,9 @@ dataset = rg.Dataset(
         ],
     ),
 )
-dataset.publish()
 ```
+
+For a detail guide of the dataset creation and publication process, see the [Dataset how to guide](/argilla-python/how_to_guides/dataset).
 
 ### Retrieving an existing Dataset
 
@@ -32,31 +33,11 @@ To retrieve an existing dataset, use `client.datasets("my_dataset")` instead.
 dataset = client.datasets("my_dataset")
 ```
 
-To check if a dataset exists on the server, use the `exists` method.
-
-```python
-if dataset.exists() == False:
-    dataset.create()
-```
-
-To connect to an existing workspace refer to the workspace by id or object. For example:
-
-```python
-# Get an existing workspace
-workspace = client.workspaces("my_workspace")
-dataset = rg.Dataset(name="my_dataset", workspace=workspace)
-
-# Use the workspace id
-dataset = rg.Dataset(name="my_dataset", workspace_id="workspace_id")
-
-# Use the first workspace
-dataset = rg.Dataset(name="my_dataset")
-
-```
-
 ---
 
 ## Class Reference
+
+### `rg.Dataset`
 
 ::: argilla_sdk.datasets.Dataset
     options: 

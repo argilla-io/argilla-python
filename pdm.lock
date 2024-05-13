@@ -137,7 +137,7 @@ dependencies = [
     "colorama; os_name == \"nt\"",
     "importlib-metadata>=4.6; python_full_version < \"3.10.2\"",
     "packaging>=19.0",
-    "pyproject-hooks",
+    "pyproject-hooks=1.0.0",
     "tomli>=1.1.0; python_version < \"3.11\"",
 ]
 files = [

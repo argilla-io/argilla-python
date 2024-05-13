@@ -43,7 +43,7 @@ class Dataset(Resource):
         name: Optional[str] = None,
         workspace: Optional[Union["Workspace", str]] = None,
         settings: Optional[Settings] = None,
-        client: Optional["Argilla"] = Argilla(),
+        client: Optional["Argilla"] = None,
         _model: Optional[DatasetModel] = None,
     ) -> None:
         """Initalizes a Dataset with a client and model
@@ -53,6 +53,7 @@ class Dataset(Resource):
             settings (Settings): Settings class to be used to configure the dataset.
             client (Argilla): Instance of Argilla to connect with the server.
         """
+        client = client or Argilla._get_default()
         super().__init__(client=client, api=client.api.datasets)
         if name is None:
             name = f"dataset_{uuid4()}"

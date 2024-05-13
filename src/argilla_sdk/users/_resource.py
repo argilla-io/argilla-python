@@ -37,7 +37,7 @@ class User(Resource):
         last_name: Optional[str] = None,
         role: Optional[str] = None,
         password: Optional[str] = None,
-        client: Optional["Argilla"] = Argilla(),
+        client: Optional["Argilla"] = None,
         id: Optional[UUID] = None,
         _model: Optional[UserModel] = None,
     ) -> None:
@@ -49,6 +49,7 @@ class User(Resource):
         Returns:
             User: The initialized user object
         """
+        client = client or Argilla._get_default()
         super().__init__(client=client, api=client.api.users)
 
         if _model is None:

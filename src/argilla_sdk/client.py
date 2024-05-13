@@ -18,6 +18,7 @@ from collections.abc import Sequence
 from typing import TYPE_CHECKING, overload, List, Optional, Union
 
 from argilla_sdk import _api
+from argilla_sdk._api._client import DEFAULT_HTTP_CONFIG
 from argilla_sdk._helpers import GenericIterator
 from argilla_sdk._helpers._resource_repr import ResourceHTMLReprMixin
 from argilla_sdk._models import UserModel, WorkspaceModel, DatasetModel
@@ -31,6 +32,33 @@ __all__ = ["Argilla"]
 
 
 class Argilla(_api.APIClient):
+
+    # Default instance of Argilla
+    _default_client: Optional["Argilla"] = None
+
+    def __init__(
+        self,
+        api_url: Optional[str] = DEFAULT_HTTP_CONFIG.api_url,
+        api_key: Optional[str] = DEFAULT_HTTP_CONFIG.api_key,
+        timeout: int = DEFAULT_HTTP_CONFIG.timeout,
+        **http_client_args,
+    ) -> None:
+        super().__init__(api_url=api_url, api_key=api_key, timeout=timeout, **http_client_args)
+
+        self._set_default(self)
+
+    @classmethod
+    def _set_default(cls, client: "Argilla") -> None:
+        """Set the default instance of Argilla."""
+        cls._default_client = client
+
+    @classmethod
+    def _get_default(cls) -> "Argilla":
+        """Get the default instance of Argilla. If it doesn't exist, create a new one."""
+        if cls._default_client is None:
+            cls._default_client = Argilla()
+        return cls._default_client
+
     @property
     def workspaces(self) -> "Workspaces":
         return Workspaces(client=self)

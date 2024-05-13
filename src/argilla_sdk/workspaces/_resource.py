@@ -41,7 +41,7 @@ class Workspace(Resource):
         self,
         name: Optional[str] = None,
         id: Optional[UUID] = None,
-        client: Optional["Argilla"] = Argilla(),
+        client: Optional["Argilla"] = None,
         _model: Optional[WorkspaceModel] = None,
     ) -> None:
         """Initializes a Workspace object with a client and a name or id
@@ -53,6 +53,7 @@ class Workspace(Resource):
         Returns:
             Workspace: The initialized workspace object
         """
+        client = client or Argilla._get_default()
         super().__init__(client=client, api=client.api.workspaces)
         self._sync(model=WorkspaceModel(name=name, id=id) if not _model else _model)
 

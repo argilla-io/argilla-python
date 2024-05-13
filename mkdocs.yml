@@ -92,6 +92,7 @@ markdown_extensions:
 
 plugins:
   - search
+  - open-in-new-tab
   # - gen-files:
   #     scripts:
   #       - docs/scripts/gen_ref_pages.py
@@ -147,5 +148,5 @@ nav:
   #   - integrations/index.md
   - API Reference:
     - Python SDK: reference/argilla_sdk/
-  - UI Demo:
+  - UI Demo ↗:
     - https://demo.argilla.io/datasets

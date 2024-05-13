@@ -123,7 +123,6 @@ You can use the `Filter` class to define the conditions and pass them to the `Da
 
     filtered_records = list(dataset.records(
         query=rg.Query(filter=filters)),
-        with_metadata=True,
         with_suggestions=True
     )
     filtered_records
@@ -178,17 +177,17 @@ dataset = client.datasets(name="my_dataset", workspace=workspace)
 # Export records as a dictionary
 exported_records = dataset.records.to_dict()
 exported_records
-# {"text": ["Hello", "World"], "label.suggestion": ["greeting", "greeting"]}
+# {'fields': [{'text': 'Hello'},{'text': 'World'}], suggestions': [{'label': {'value': 'positive'}}, {'label': {'value': 'negative'}}]
 
 # Export records as a dictionary with orient=index
 exported_records = dataset.records.to_dict(orient="index")
 exported_records
-# {"uuid": {"text": "Hello", "label": "greeting"}}
+# {"uuid": {'fields': {'text': 'Hello'}, 'suggestions': {'label': {'value': 'positive'}}}, {"uuid": {'fields': {'text': 'World'}, 'suggestions': {'label': {'value': 'negative'}}},
 
 # Export records as a dictionary with flatten=false
-exported_records = dataset.records.to_dict(flatten=False)
+exported_records = dataset.records.to_dict(flatten=True)
 exported_records
-# {'fields': [{'text': 'Hello'},{'text': 'World'}], suggestions': [{'label': {'value': 'positive'}}, {'label': {'value': 'negative'}}]
+# {"text": ["Hello", "World"], "label.suggestion": ["greeting", "greeting"]}
 ```
 
 ### Export records to a list
@@ -207,10 +206,10 @@ dataset = client.datasets(name="my_dataset", workspace=workspace)
 # Export records as a list of dictionaries
 exported_records = dataset.records.to_list()
 exported_records
-# [{"text": "Hello", "label": "greeting"}, {"text": "World", "label": "greeting"}]
+# [{'fields': {'text': 'Hello'}, 'suggestion': {'label': {value: 'greeting'}}}, {'fields': {'text': 'World'}, 'suggestion': {'label': {value: 'greeting'}}}]
 
 # Export records as a list of dictionaries with flatten=False
-exported_records = dataset.records.to_list(flatten=False)
+exported_records = dataset.records.to_list(flatten=True)
 exported_records
-# [{'fields': {'text': 'Hello'}, 'suggestion': {'label': {value: 'greeting'}}}, {'fields': {'text': 'World'}, 'suggestion': {'label': {value: 'greeting'}}}]
+# [{"text": "Hello", "label": "greeting"}, {"text": "World", "label": "greeting"}]
 ```

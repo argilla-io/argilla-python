@@ -19,7 +19,10 @@ If you have already deployed Argilla Server, you can skip this step. Otherwise, 
 !!! note
     You can use this SDK with any stable release of argilla server >= 1.27.
 
-* Using a [HF Space](https://huggingface.co/new-space?template=argilla/argilla-template-space). Note that persistent storage should be manually enabled not to lose any data.
+!!! warning
+    These images are used for introductory purposes, so the data will be lost after restarting.
+
+* Using a [HF Space](https://huggingface.co/new-space?template=argilla/argilla-template-space).
 * Locally with Docker.
 
 ```console
@@ -29,10 +32,11 @@ docker run -d --name quickstart -p 6900:6900 argilla/argilla-quickstart:latest
 ## Connect to the Argilla server
 
 Get your `<api_url>`:
-* If you are using HF Spaces, it should be constructed as follows: https://[your-owner-name]-[your_space_name].hf.space
-* If you are using Docker, it is the URL shown in your browser (by default http://localhost:6900)
 
-Get your `<api_key>` in "My Settings" in the Argilla UI (by default owner.apikey).
+* If you are using HF Spaces, it should be constructed as follows: `https://[your-owner-name]-[your_space_name].hf.space`
+* If you are using Docker, it is the URL shown in your browser (by default `http://localhost:6900`)
+
+Get your `<api_key>` in `My Settings` in the Argilla UI (by default owner.apikey).
 
 !!! note
     Make sure to replace `<api_url>` and `<api_key>` with your actual values. If you are using a private HF Space, you need to specify your `HF_TOKEN` which can be found [here](https://huggingface.co/settings/tokens).
@@ -53,7 +57,7 @@ If you want to contribute to the development of the SDK, you can follow the inst
 
 ### Installation
 
-To install the development dependencies, run the following command:
+To install the development dependencies, run the following commands:
 
 ```console
 # Install pdm (https://github.com/pdm-project/pdm)

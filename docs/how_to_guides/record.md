@@ -419,7 +419,6 @@ To list records in a dataset, you can use the `records` method on the `Dataset` 
 for record in dataset.records(
     with_suggestions=True, 
     with_responses=True, 
-    with_metadata=True, 
     with_vectors=True
     ):
 
@@ -451,13 +450,5 @@ updated_data = [
 ]
 dataset.records.update(records=updated_data)
 ```
-
-You can also update the metadata, vectors, suggestions, and responses separately by iterating over the records and updating the desired attribute.
-
-```python
-for record in dataset.records(with_metadata=True):
-    record.metadata = {"category": "C"}
-```
-
 
 

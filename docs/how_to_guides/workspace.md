@@ -104,6 +104,34 @@ workspace_existed = workspace.exists()
 workspace_existed
 ```
 
+### Add a user to a workspace
+
+You can also add a user to a workspace by calling the `add_user` method on the `Workspace` class.
+
+```python
+import argilla_sdk as rg
+
+client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
+
+workspace = client.workspaces("my_workspace")
+added_user = workspace.add_user("my_username")
+added_user
+```
+
+### Remove a user from workspace
+
+You can also remove a user from a workspace by calling the `remove_user` method on the `Workspace` class.
+
+```python
+import argilla_sdk as rg
+
+client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
+
+workspace = client.workspaces("my_workspace")
+removed_user = workspace.remove_user("my_username")
+removed_user
+```
+
 ### Delete a workspace
 
 To delete a workspace, **no dataset can be associated with it**. If the workspace contains any dataset, deletion will fail. You can delete a workspace by calling the `delete` method on the `Workspace` class.

@@ -139,6 +139,40 @@ retrieved_user = client.users('my_username')
 retrieved_user
 ```
 
+### Add a user to a workspace
+
+You can add an existing user to a workspace in Argilla by calling the `add_to_workspace` method on the `User` class.
+
+> For further information on how to manage workspaces, check this [how-to guide](workspace.md).
+
+```python
+import argilla_sdk as rg
+client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
+
+user = client.users('my_username')
+workspace = client.workspaces('my_workspace')
+
+added_user = user.add_to_workspace(workspace)
+added_user
+```
+
+### Remove a user from a workspace
+
+You can remove an existing user from a workspace in Argilla by calling the `remove_from_workspace` method on the `User` class.
+
+> For further information on how to manage workspaces, check this [how-to guide](workspace.md).
+
+```python
+import argilla_sdk as rg
+client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
+
+user = client.users('my_username')
+workspace = client.workspaces('my_workspace')
+
+removed_user = user.remove_from_workspace(workspace)
+removed_user
+```
+
 ### Delete a user
 
 You can delete an existing user from Argilla by calling the `delete` method on the `User` class.

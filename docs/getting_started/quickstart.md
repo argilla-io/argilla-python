@@ -3,7 +3,7 @@ description: Quickstart of the Argilla-python on how to create your first datase
 ---
 
 # Quickstart
-This guide provides a quick overview of the Argilla SDK and how to publish your first dataset.
+This guide provides a quick overview of the Argilla SDK and how to create your first dataset.
 
 1. Setting up your Argilla project
 2. Create your first dataset
@@ -26,7 +26,10 @@ pip install git+https://github.com/argilla-io/argilla-python.git
 
 If you have already deployed Argilla Server, you can skip this step. Otherwise, you can quickly deploy it in two different ways:
 
-* Using a [HF Space](https://huggingface.co/new-space?template=argilla/argilla-template-space). Note that persistent storage should be manually enabled not to lose any data.
+!!! warning
+    These images are used for introductory purposes, so the data will be lost after restarting.
+
+* Using a [HF Space](https://huggingface.co/new-space?template=argilla/argilla-template-space).
 * Locally with Docker.
 
 ```console
@@ -36,10 +39,11 @@ docker run -d --name quickstart -p 6900:6900 argilla/argilla-quickstart:latest
 ### Connect to the Argilla server
 
 Get your `<api_url>`:
-* If you are using HF Spaces, it should be constructed as follows: https://[your-owner-name]-[your_space_name].hf.space
-* If you are using Docker, it is the URL shown in your browser (by default http://localhost:6900)
 
-Get your `<api_key>` in "My Settings" in the Argilla UI (by default owner.apikey).
+* If you are using HF Spaces, it should be constructed as follows: `https://[your-owner-name]-[your_space_name].hf.space`
+* If you are using Docker, it is the URL shown in your browser (by default `http://localhost:6900`)
+
+Get your `<api_key>` in `My Settings` in the Argilla UI (by default owner.apikey).
 
 !!! note
     Make sure to replace `<api_url>` and `<api_key>` with your actual values. If you are using a private HF Space, you need to specify your `HF_TOKEN` which can be found [here](https://huggingface.co/settings/tokens).
@@ -89,7 +93,7 @@ dataset = rg.Dataset(
     settings=settings,
     client=client,
 )
-dataset.publish()
+dataset.create()
 ```
 
 ## Add records to your dataset
@@ -106,7 +110,7 @@ from datasets import load_dataset
 data = load_dataset("imdb", split="train[:100]").to_list()
 ```
 
-Now you can add the data to the dataset. Use `mapping` to indicate which keys in the source data correspond to the dataset fields.
+Now you can add the data to your dataset. Use `mapping` to indicate which keys in the source data correspond to the dataset fields.
 
 ```python
 # Add records to the dataset
@@ -117,6 +121,6 @@ dataset.records.add(records=data, mapping={"text": "review"})
 
 ## More references
 
-* [Installation guide]()
-* [How-to guides]()
-* [API reference](../reference/)
+* [Installation guide](installation.md)
+* [How-to guides](../how_to_guides/index.md)
+* [API reference](../reference//argilla_sdk/client.md)

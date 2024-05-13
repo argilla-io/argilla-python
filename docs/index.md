@@ -1,6 +1,6 @@
 ---
 description: Argilla is a **collaboration platform for AI engineers and domain experts** that require **high-quality outputs, full data ownership, and overall efficiency**.
-hide: navigation, toc
+hide: navigation
 ---
 
 # Introduction

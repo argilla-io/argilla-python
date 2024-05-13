@@ -1,6 +1,4 @@
-import pytest
-
-from argilla_sdk import Argilla
+from argilla_sdk import Argilla, Workspace
 
 
 class TestWorkspacesManagement:

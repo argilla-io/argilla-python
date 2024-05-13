@@ -140,6 +140,12 @@ class Dataset(Resource):
     #  Utility methods  #
     #####################
 
+    def _sync(self, model: "DatasetModel") -> "Dataset":
+        # We only need to update the model. Maybe in the future the
+        # _sync method makes less sense for those resources defining getter/setters
+        self._model = model
+        return self
+
     # we leave this method as private for now and we use the `ds.publish` one
     def _configure(self, settings: Settings, publish: bool = False) -> "Dataset":
         self._settings = self.__configure_settings_for_dataset(settings=settings)

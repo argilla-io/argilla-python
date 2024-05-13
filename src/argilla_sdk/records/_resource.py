@@ -14,7 +14,7 @@
 
 import warnings
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Tuple, Union, Iterable
+from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Union, Iterable
 from uuid import UUID, uuid4
 
 from argilla_sdk._models import (

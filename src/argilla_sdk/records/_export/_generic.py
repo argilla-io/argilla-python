@@ -57,7 +57,6 @@ class GenericExportMixin(Iterable["Record"], ABC):
     def _export_to_dict(
         self, records: List["Record"], flatten=False, orient="names"
     ) -> Dict[str, Union[str, float, int, list]]:
-
         if orient == "names":
             dataset_records: dict = defaultdict(list)
             for record in records:

@@ -20,7 +20,6 @@ import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
-from argilla_sdk import Workspace
 from argilla_sdk._exceptions import (
     BadRequestError,
     ConflictError,

@@ -148,7 +148,6 @@ class Dataset(Resource):
         return self
 
     def _publish(self) -> "Dataset":
-
         self.settings.validate()
         self._settings.create()
         self._api.publish(dataset_id=self._model.id)
@@ -172,7 +171,6 @@ class Dataset(Resource):
         return settings
 
     def __workspace_id_from_name(self, workspace: Optional[Union["Workspace", str]]) -> UUID:
-
         if workspace is None:
             available_workspaces = self._client.workspaces
             ws = available_workspaces[0]  # type: ignore

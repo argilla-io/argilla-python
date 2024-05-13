@@ -10,8 +10,7 @@ Instead, you can access it via the `Dataset` object:
 
 To add records to a dataset, use the `add` method. Records can be added as dictionaries or as `Record` objects. Single records can also be added as a dictionary or `Record`.
 
-```python
-import argilla_sdk as rg
+<!-- import argilla_sdk as rg
 
 # Create a dataset
 dataset = rg.Dataset(
@@ -27,8 +26,9 @@ dataset = rg.Dataset(
 )
 
 # Publish the dataset to the server
-dataset.publish()
+dataset.publish() -->
 
+```python
 # Add records to a dataset
 dataset.records.add(
     records=[
@@ -69,9 +69,12 @@ for record in dataset.records(with_suggestions=True, with_responses=True):
     print(record.responses)
 
 # Filter records by a query and fetch records with vectors
-for record in dataset.records(query="question:capital", with_vectors=True):
+for record in dataset.records(query="capital", with_vectors=True):
     print(record.vectors)
 ```
+
+Check out the [`rg.Record`](../records/record.md) class reference for more information on the properties and methods available on a record and the [`rg.Query`](../query/query.md) class reference for more information on the query syntax.
+
 
 ### Updating records in a dataset
 
@@ -106,7 +109,6 @@ dataset.records.update(
 )
 ```
 
-
 ### Exporting records from a dataset
 
 Records can also be exported from `Dataset.records`. Generic python exports include `to_dict` and `to_list` methods.
@@ -115,18 +117,6 @@ Records can also be exported from `Dataset.records`. Generic python exports incl
 dataset.records.to_dict()
 # {"text": ["Hello", "World"], "label": ["greeting", "greeting"]}
 
-```
-
-Output the records as a dictionary orientated by index:
-
-```python
-dataset.records.to_dict(orient="index")
-# {"uuid": {"text": "Hello", "label": "greeting"}}
-```
-
-Output the records as a list of dictionaries:
-
-```python
 dataset.records.to_list()
 # [{"text": "Hello", "label": "greeting"}, {"text": "World", "label": "greeting"}]
 ```
@@ -134,6 +124,8 @@ dataset.records.to_list()
 ---
 
 ## Class Reference
+
+### `rg.Dataset.records`
 
 ::: argilla_sdk.records.DatasetRecords
     options: 

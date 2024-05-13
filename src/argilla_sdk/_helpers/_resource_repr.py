@@ -5,14 +5,14 @@ from IPython.display import HTML
 
 RESOURCE_REPR_CONFIG = {
     "Dataset": {
-        "columns": ["name", "id", "workspace_id", "updated_at", "records"],
+        "columns": ["name", "id", "workspace_id", "updated_at"],
         "table_name": "Datasets",
         # "len_column": "records",
     },
     "Workspace": {
-        "columns": ["name", "id", "datasets", "updated_at"],
+        "columns": ["name", "id", "updated_at"],
         "table_name": "Workspaces",
-        "len_column": "datasets",
+        # "len_column": "datasets",
     },
     "User": {"columns": ["username", "id", "role", "updated_at"], "table_name": "Users"},
 }

@@ -23,7 +23,7 @@ def dataset(client: rg.Argilla):
         client=client,
         workspace=ws,
     )
-    ds.publish()
+    ds.create()
     yield ds
     ds.delete()
 

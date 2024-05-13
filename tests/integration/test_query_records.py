@@ -32,7 +32,7 @@ def dataset(client: Argilla, workspace: Workspace) -> Dataset:
         settings=settings,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     yield dataset
     dataset.delete()
 

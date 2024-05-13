@@ -54,7 +54,6 @@ class Workspace(Resource):
             Workspace: The initialized workspace object
         """
         client = client or Argilla._get_default()
-
         super().__init__(client=client, api=client.api.workspaces)
         self._sync(model=WorkspaceModel(name=name, id=id) if not _model else _model)
 

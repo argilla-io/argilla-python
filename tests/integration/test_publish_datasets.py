@@ -64,15 +64,14 @@ def test_publish_dataset(client: "Argilla"):
     )
 
     ds.create()
-    assert ds.__is_published, "The dataset was not published"
 
-    published_ds = client.datasets(name=ds.name, workspace=new_ws)
-    assert published_ds.exists(), "The dataset was not found"
-    assert published_ds == ds
-    assert published_ds.settings == ds.settings, "The settings were not saved"
+    created_dataset = client.datasets(name=ds.name, workspace=new_ws)
+    assert created_dataset.exists(), "The dataset was not found"
+    assert created_dataset == ds
+    assert created_dataset.settings == ds.settings, "The settings were not saved"
 
-    assert published_ds.guidelines == ds.guidelines
-    assert published_ds.allow_extra_metadata == ds.allow_extra_metadata
-    assert published_ds.fields == ds.fields
-    assert published_ds.questions == ds.questions
-    assert published_ds.schema == ds.schema
+    assert created_dataset.guidelines == ds.guidelines
+    assert created_dataset.allow_extra_metadata == ds.allow_extra_metadata
+    assert created_dataset.fields == ds.fields
+    assert created_dataset.questions == ds.questions
+    assert created_dataset.schema == ds.schema

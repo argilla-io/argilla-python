@@ -57,7 +57,6 @@ def test_dataset_with_workspace(client: rg.Argilla):
     assert isinstance(dataset, rg.Dataset)
     assert dataset.id is not None
     assert dataset.exists()
-    assert dataset.__is_published
     assert dataset.workspace_id == ws.id
 
 
@@ -80,7 +79,6 @@ def test_dataset_with_workspace_name(client: rg.Argilla):
     assert isinstance(dataset, rg.Dataset)
     assert dataset.id is not None
     assert dataset.exists()
-    assert dataset.__is_published
     assert dataset.workspace_id == ws.id
 
 
@@ -118,7 +116,6 @@ def test_dataset_with_default_workspace(client: rg.Argilla):
     assert isinstance(dataset, rg.Dataset)
     assert dataset.id is not None
     assert dataset.exists()
-    assert dataset.__is_published
     assert dataset.workspace_id == client.workspaces[0].id
 
 

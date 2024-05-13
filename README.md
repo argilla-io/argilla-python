@@ -32,7 +32,14 @@ If you want to contribute to the development of the SDK, you can follow the inst
 To install the development dependencies, run the following command:
 
 ```console
-pip install -e .[dev]
+# install pdm https://github.com/pdm-project/pdm
+pip install pdm
+
+# install the package in editable mode
+pip install -e .
+
+# install the development dependencies with pdm
+pdm install --dev
 ```
 
 #### Generating Documentation

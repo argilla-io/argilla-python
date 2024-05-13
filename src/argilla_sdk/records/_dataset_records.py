@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, It
 from uuid import UUID
 
 from argilla_sdk._api import RecordsAPI
+from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import RecordModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
@@ -27,7 +28,7 @@ if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
 
 
-class DatasetRecordsIterator:
+class DatasetRecordsIterator(GenericExportMixin):
     """This class is used to iterate over records in a dataset"""
 
     def __init__(
@@ -105,21 +106,7 @@ class DatasetRecordsIterator:
         return bool(self.__query and (self.__query.query or self.__query.filter))
 
 
-class DatasetRecordsIteratorWithExportSupport(DatasetRecordsIterator, GenericExportMixin):
-    """This class is used to iterate over records in a dataset with export support: .to_list() and .to_dict())."""
-
-    def to_dict(self, flatten: bool = False, orient: str = "names") -> Dict[str, Any]:
-        """Return the records as a dictionary."""
-        records = [r for r in self]
-        return self._export_to_dict(records=records, flatten=flatten, orient=orient)
-
-    def to_list(self, flatten: bool = False) -> List[Dict[str, Any]]:
-        """Return the records as a list of dictionaries."""
-        records = [r for r in self]
-        return self._export_to_list(records=records, flatten=flatten)
-
-
-class DatasetRecords(Resource, Iterable[Record]):
+class DatasetRecords(Iterable[Record], LoggingMixin):
     """
     This class is used to work with records from a dataset.
 
@@ -160,7 +147,7 @@ class DatasetRecords(Resource, Iterable[Record]):
         if with_vectors:
             self.__validate_vector_names(vector_names=with_vectors)
 
-        return DatasetRecordsIteratorWithExportSupport(
+        return DatasetRecordsIterator(
             self.__dataset,
             self.__client,
             query=query,
@@ -273,7 +260,7 @@ class DatasetRecords(Resource, Iterable[Record]):
         return self(with_suggestions=True, with_responses=True).to_list(flatten=flatten)
 
     ############################
-    # Utility methods
+    # Private methods
     ############################
 
     def __ingest_records(

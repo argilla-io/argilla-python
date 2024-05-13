@@ -37,15 +37,11 @@ class UsersAPI(ResourceAPI[UserModel]):
     @api_error_handler
     def create(self, user: UserModel) -> UserModel:
         json_body = user.model_dump()
-        response = self.http_client.post(
-            "/api/users",
-            json=json_body,
-        )
-        response.raise_for_status()
-        response_json = response.json()
-        user = self._model_from_json(response_json=response_json)
-        self.log(message=f"Created user {user.username}")
-        return user
+        response = self.http_client.post("/api/users", json=json_body).raise_for_status()
+        user_created = self._model_from_json(response_json=response.json())
+        self.log(message=f"Created user {user_created.username}")
+
+        return user_created
 
     @api_error_handler
     def get(self, user_id: UUID) -> UserModel:

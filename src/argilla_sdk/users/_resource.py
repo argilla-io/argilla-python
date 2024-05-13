@@ -63,6 +63,15 @@ class User(Resource):
             self.log(f"Initialized user with username {username}")
         self._sync(model=_model)
 
+    def create(self) -> "Resource":
+        """Creates the user in Argilla"""
+        model_create = self.api_model()
+        model = self._api.create(model_create)
+        # The password is not returned in the response
+        model.password = model_create.password
+        self._sync(model=model)
+        return self
+
     def exists(self) -> bool:
         """Checks if the user exists in Argilla"""
         # TODO - Implement the exist method in the API

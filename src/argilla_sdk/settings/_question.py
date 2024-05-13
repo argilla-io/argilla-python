@@ -38,6 +38,7 @@ class LabelQuestion(SettingsPropertyBase):
         title: Optional[str] = None,
         description: Optional[str] = None,
         required: bool = True,
+        visible_labels: Optional[int] = None,
     ) -> None:
         """ Define a new label question for `Settings` of a `Dataset`. A label \
             question is a question where the user can select one label from \
@@ -49,13 +50,14 @@ class LabelQuestion(SettingsPropertyBase):
             title: Optional[str]: The title of the question to be shown in the UI.
             description: Optional[str]: The description of the question to be shown in the UI.
             required: bool: If the question is required for a record to be valid.
+            visible_labels: Optional[int]: The number of visible labels for the question.
         """
         self._model = LabelQuestionModel(
             name=name,
             title=title,
             description=description,
             required=required,
-            settings=LabelQuestionSettings(options=_render_values_as_options(labels)),
+            settings=LabelQuestionSettings(options=_render_values_as_options(labels), visible_options=visible_labels),
         )
 
     @classmethod
@@ -75,6 +77,14 @@ class LabelQuestion(SettingsPropertyBase):
     @labels.setter
     def labels(self, labels: List[str]) -> None:
         self._model.settings.options = _render_values_as_options(labels)
+
+    @property
+    def visible_labels(self) -> Optional[int]:
+        return self._model.settings.visible_options
+
+    @visible_labels.setter
+    def visible_labels(self, visible_labels: Optional[int]) -> None:
+        self._model.settings.visible_options = visible_labels
 
     ##############################
     # Private methods
@@ -103,14 +113,16 @@ class MultiLabelQuestion(LabelQuestion):
             title: Optional[str]: The title of the question to be shown in the UI.
             description: Optional[str]: The description of the question to be shown in the UI.
             required: bool: If the question is required for a record to be valid.
+            visible_labels: Optional[int]: The number of visible labels for the question.
         """
         self._model = MultiLabelQuestionModel(
             name=name,
             title=title,
             description=description,
             required=required,
-            visible_labels=visible_labels,
-            settings=MultiLabelQuestionSettings(options=_render_values_as_options(labels)),
+            settings=MultiLabelQuestionSettings(
+                options=_render_values_as_options(labels), visible_options=visible_labels
+            ),
         )
 
     @classmethod
@@ -119,14 +131,6 @@ class MultiLabelQuestion(LabelQuestion):
         instance._model = model
 
         return instance
-
-    @property
-    def visible_labels(self) -> Optional[int]:
-        return self._model.settings.visible_options
-
-    @visible_labels.setter
-    def visible_labels(self, visible_labels: Optional[int]) -> None:
-        self._model.settings.visible_options = visible_labels
 
 
 class TextQuestion(SettingsPropertyBase):
@@ -265,7 +269,7 @@ class RankingQuestion(SettingsPropertyBase):
         self._model.settings.options = _render_values_as_options(values)
 
 
-class SpanQuestion(MultiLabelQuestion):
+class SpanQuestion(SettingsPropertyBase):
     _model: SpanQuestionModel
 
     def __init__(

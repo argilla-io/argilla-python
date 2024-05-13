@@ -14,6 +14,7 @@
 
 from abc import abstractmethod
 from collections.abc import Sequence
+from functools import singledispatchmethod
 from typing import TYPE_CHECKING, overload, List, Optional, Union
 import warnings
 
@@ -74,6 +75,21 @@ class Users(Sequence["User"], ResourceHTMLReprMixin):
         self._client = client
         self._api = client.api.users
 
+    @overload
+    def list(self) -> List["User"]: ...
+
+    @overload
+    def list(self, workspace: "Workspace") -> List["User"]: ...
+
+    def list(self, workspace: Optional["Workspace"] = None) -> List["User"]:
+        """List all users."""
+        if workspace is not None:
+            models = self._api.list_by_workspace_id(workspace.id)
+        else:
+            models = self._api.list()
+
+        return [self._from_model(model) for model in models]
+
     def __call__(self, username: str, **kwargs) -> "User":
         from argilla_sdk.users._resource import User
 
@@ -102,15 +118,15 @@ class Users(Sequence["User"], ResourceHTMLReprMixin):
     def __len__(self) -> int:
         return len(self._api.list())
 
-    def list(self) -> List["User"]:
-        """List all users."""
-        return [self._from_model(model) for model in self._api.list()]
+    ############################
+    # Private methods
+    ############################
 
     def _repr_html_(self) -> "HTML":
         return self._represent_as_html(resources=self.list())
 
     def _from_model(self, model: UserModel) -> "User":
-        from argilla_sdk.users._resource import User
+        from argilla_sdk.users import User
 
         return User(client=self._client, _model=model)
 
@@ -188,7 +204,7 @@ class Datasets(Sequence["Dataset"], ResourceHTMLReprMixin):
 
         for dataset in workspace.datasets:
             if dataset.name == name:
-                return Dataset(_model=dataset, client=self._client)
+                return dataset
         warnings.warn(f"Dataset {name} not found. Creating a new dataset. Do `dataset.create()` to create the dataset.")
         return Dataset(name=name, workspace=workspace, client=self._client, **kwargs)
 

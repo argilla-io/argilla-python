@@ -24,12 +24,10 @@ from argilla_sdk import (
     MultiLabelQuestion,
     RatingQuestion,
     RankingQuestion,
+    TermsMetadataProperty,
+    IntegerMetadataProperty,
+    FloatMetadataProperty,
 )
-
-
-@pytest.fixture
-def client() -> Argilla:
-    return Argilla(api_url="http://localhost:6900")
 
 
 def test_publish_dataset(client: "Argilla"):
@@ -57,6 +55,12 @@ def test_publish_dataset(client: "Argilla"):
             MultiLabelQuestion(name="multi-label-question", labels=["A", "B", "C"]),
             SpanQuestion(name="span-question", field="text-field", labels=["label1", "label2"]),
         ],
+        metadata=[
+            TermsMetadataProperty(name="metadata-property", options=["term1", "term2"]),
+            TermsMetadataProperty(name="term-property"),
+            IntegerMetadataProperty(name="metadata-property-2", min=0, max=10),
+            FloatMetadataProperty(name="metadata-property-3", min=0, max=10),
+        ],
     )
 
     ds.publish()
@@ -64,6 +68,7 @@ def test_publish_dataset(client: "Argilla"):
 
     published_ds = client.datasets(name=ds.name, workspace=new_ws)
     assert published_ds.exists(), "The dataset was not found"
+    assert published_ds == ds
     assert published_ds.settings == ds.settings, "The settings were not saved"
 
     assert published_ds.guidelines == ds.guidelines

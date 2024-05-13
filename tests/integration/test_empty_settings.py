@@ -7,11 +7,6 @@ from argilla_sdk import Argilla, Dataset, Settings, Workspace, TextQuestion, Tex
 from argilla_sdk._exceptions import SettingsError
 
 @pytest.fixture
-def client() -> Argilla:
-    return Argilla(api_url="http://localhost:6900")
-
-
-@pytest.fixture
 def workspace(client: Argilla) -> Workspace:
     workspace = client.workspaces("test-workspace")
     if not workspace.exists():

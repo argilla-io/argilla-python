@@ -8,11 +8,6 @@ from argilla_sdk import Argilla, Dataset, Settings, TextField, Workspace, LabelQ
 
 
 @pytest.fixture
-def client() -> Argilla:
-    return Argilla(api_url="http://localhost:6900", api_key="argilla.apikey")
-
-
-@pytest.fixture
 def workspace(client: Argilla) -> Workspace:
     workspace = client.workspaces("test-workspace")
     if not workspace.exists():
@@ -67,6 +62,38 @@ def test_create_dataset_with_metadata(client: Argilla, workspace: Workspace) -> 
     assert dataset.settings.metadata[0].name == "category"
 
 
+@pytest.mark.parametrize(
+    "min, max, type",
+    [
+        (0, 1, rg.FloatMetadataProperty),
+        (None, None, rg.FloatMetadataProperty),
+        (0, 1, rg.IntegerMetadataProperty),
+        (None, None, rg.IntegerMetadataProperty),
+    ],
+)
+def test_create_dataset_with_numerical_metadata(client: Argilla, workspace: Workspace, min, max, type) -> Dataset:
+    name = "".join(random.choices(ascii_lowercase, k=16))
+    settings = Settings(
+        fields=[TextField(name="text")],
+        questions=[LabelQuestion(name="label", labels=["positive", "negative"])],
+        metadata=[
+            type(name="price", min=min, max=max),
+        ],
+    )
+    dataset = Dataset(
+        name=name,
+        workspace=workspace.name,
+        settings=settings,
+        client=client,
+    )
+    dataset.publish()
+    gotten_dataset = dataset.get()
+
+    assert gotten_dataset.settings.metadata[0].name == "price"
+    assert gotten_dataset.settings.metadata[0].min == min
+    assert gotten_dataset.settings.metadata[0].max == max
+
+
 def test_add_record_with_metadata(dataset_with_metadata: Dataset):
     records = [
         {"text": "text", "label": "positive", "category": "A"},
@@ -78,9 +105,13 @@ def test_add_record_with_metadata(dataset_with_metadata: Dataset):
     for idx, record in enumerate(dataset_with_metadata.records):
         assert record.metadata.category == records[idx]["category"]
         assert record.metadata["category"] == records[idx]["category"]
-        assert len(record._model.metadata) == 1
-        assert record._model.metadata[0].value == records[idx]["category"]
-        assert record._model.metadata[0].name == "category"
+        assert len(record.metadata) == 1
+        models = record.metadata.models
+        assert models[0].value == records[idx]["category"]
+        assert models[0].name == "category"
+
+
+
 
 def test_add_record_with_mapped_metadata(dataset_with_metadata: Dataset):
     records = [
@@ -93,6 +124,7 @@ def test_add_record_with_mapped_metadata(dataset_with_metadata: Dataset):
     for idx, record in enumerate(dataset_with_metadata.records):
         assert record.metadata.category == records[idx]["my_category"]
         assert record.metadata["category"] == records[idx]["my_category"]
-        assert len(record._model.metadata) == 1
-        assert record._model.metadata[0].value == records[idx]["my_category"]
-        assert record._model.metadata[0].name == "category"
+        assert len(record.metadata) == 1
+        models = record.metadata.models
+        assert models[0].value == records[idx]["my_category"]
+        assert models[0].name == "category"

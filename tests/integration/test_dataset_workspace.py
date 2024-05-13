@@ -6,10 +6,15 @@ import argilla_sdk as rg
 from argilla_sdk._exceptions import NotFoundError
 
 
-@pytest.fixture
-def client() -> rg.Argilla:
-    client = rg.Argilla(api_url="http://localhost:6900", api_key="argilla.apikey")
-    return client
+@pytest.fixture(autouse=True, scope="session")
+def clean_test_datasets(client: rg.Argilla):
+    for dataset in client.datasets:
+        if dataset.name.startswith("test_"):
+            dataset.delete()
+    yield
+    for dataset in client.datasets:
+        if dataset.name.startswith("test_"):
+            dataset.delete()
 
 
 @pytest.fixture
@@ -54,7 +59,6 @@ def test_dataset_with_workspace(client: rg.Argilla):
     assert dataset.exists()
     assert dataset.is_published
     assert dataset.workspace_id == ws.id
-    
 
 
 def test_dataset_with_workspace_name(client: rg.Argilla):
@@ -136,4 +140,4 @@ def test_retrieving_dataset_on_default(client: rg.Argilla, dataset: rg.Dataset):
     ws = client.workspaces[0]
     dataset = client.datasets(dataset.name)
     assert isinstance(dataset, rg.Dataset)
-    assert dataset.exists()    
+    assert dataset.exists()

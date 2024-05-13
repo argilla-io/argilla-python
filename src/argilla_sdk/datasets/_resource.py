@@ -53,42 +53,43 @@ class Dataset(Resource):
     def __init__(
         self,
         name: Optional[str] = None,
-        status: Literal["draft", "ready"] = "draft",
         workspace: Optional[Union["Workspace", str]] = None,
         settings: Optional[Settings] = None,
         client: Optional["Argilla"] = Argilla(),
-        id: Optional[Union[UUID, str]] = None,
         _model: Optional[DatasetModel] = None,
     ) -> None:
         """Initalizes a new Argilla Dataset object with the given parameters.
 
         Parameters:
-            name (str): The name of the dataset
-            status (str): The status of the dataset
-            workspace_id (str): The id of the workspace
-            workspace (Workspace): The workspace object
-            settings (Settings): The settings object
-            client (Argilla): The client object
-            id (str): The id of the dataset
-            _model (DatasetModel): The model object
-
-
+            name (str): Name of the dataset. Replaced by random UUID if not assigned.
+            workspace (UUID): Workspace of the dataset. Default is the first workspace found in the client.
+            settings (Settings): Settings class to be used to configure the dataset.
+            client (Argilla): Instance of Argilla to connect with the server.
         """
         super().__init__(client=client, api=client.api.datasets)
         if name is None:
-            name = str(id)
-            self.log(f"Settings dataset name to unique UUID: {id}")
-        self.workspace_id = self.__workspace_id_from_name(workspace=workspace)
-        _model = _model or DatasetModel(
-            name=name,
-            status=status,
-            workspace_id=self._convert_optional_uuid(uuid=self.workspace_id),
-            id=self._convert_optional_uuid(uuid=id),
+            name = f"dataset_{uuid4()}"
+            self.log(f"Settings dataset name to unique UUID: {name}")
+
+        self.workspace_id = (
+            _model.workspace_id
+            if _model and _model.workspace_id
+            else self.__workspace_id_from_name(workspace=workspace)
         )
-        self._model = _model
+        self._model = _model or DatasetModel(
+            name=name,
+            workspace_id=self._convert_optional_uuid(uuid=self.workspace_id),
+        )
         self._settings = self.__configure_settings_for_dataset(settings=settings)
         self.__records = DatasetRecords(client=self._client, dataset=self)
-        self._sync(model=self._model)
+
+    @property
+    def name(self) -> str:
+        return self._model.name
+
+    @name.setter
+    def name(self, value: str) -> None:
+        self._model.name = value
 
     #####################
     #  Properties       #
@@ -157,6 +158,10 @@ class Dataset(Resource):
             None
         """
         self._configure(settings=self._settings, publish=True)
+
+    @classmethod
+    def from_model(cls, model: DatasetModel, client: "Argilla") -> "Dataset":
+        return cls(client=client, _model=model)
 
     #####################
     #  CRUD operations  #

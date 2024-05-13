@@ -126,7 +126,7 @@ class Dataset(Resource):
     def create(self) -> None:
         super().create()
         try:
-            self._configure(settings=self._settings, publish=True)
+            self._publish()
         except Exception as e:
             self.log(message=f"Error creating dataset: {e}", level="error")
             self.__rollback_dataset_creation()
@@ -146,14 +146,11 @@ class Dataset(Resource):
         self._model = model
         return self
 
-    # we leave this method as private for now and we use the `ds.publish` one
-    def _configure(self, settings: Settings, publish: bool = False) -> "Dataset":
-        self._settings = self.__configure_settings_for_dataset(settings=settings)
+    def _publish(self) -> "Dataset":
+
         self.settings.validate()
         self._settings.create()
-
-        if publish:
-            self.__publish()
+        self._api.publish(dataset_id=self._model.id)
 
         return self.get()  # type: ignore
 
@@ -166,7 +163,7 @@ class Dataset(Resource):
             settings = Settings(_dataset=self)
             warnings.warn(
                 message="Settings not provided. Using empty settings for the dataset. \
-                    Define the settings before publishing the dataset.",
+                    Define the settings before creating the dataset.",
                 stacklevel=2,
             )
         else:
@@ -192,12 +189,8 @@ class Dataset(Resource):
             ws = workspace
         return ws.id
 
-    def __publish(self) -> None:
-        response_model = self._api.publish(dataset_id=self._model.id)
-        self._sync(response_model)
-
     def __rollback_dataset_creation(self):
-        if self.exists():
+        if self.exists() and not self.__is_published():
             self.delete()
 
     def __is_published(self) -> bool:

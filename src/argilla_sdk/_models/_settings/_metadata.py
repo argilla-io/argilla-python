@@ -11,7 +11,8 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-import sys
+
+from enum import Enum
 from typing import List, Literal, Optional, Union, Annotated
 from uuid import UUID
 
@@ -19,21 +20,11 @@ from pydantic import BaseModel, Field, field_serializer, field_validator, model_
 
 from argilla_sdk._exceptions import MetadataError
 
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
 
-    class MetadataPropertyType(StrEnum):
-        terms = "terms"
-        integer = "integer"
-        float = "float"
-
-else:
-    from enum import Enum
-
-    class MetadataPropertyType(str, Enum):
-        terms = "terms"
-        integer = "integer"
-        float = "float"
+class MetadataPropertyType(str, Enum):
+    terms = "terms"
+    integer = "integer"
+    float = "float"
 
 
 class BaseMetadataPropertySettings(BaseModel):
@@ -45,7 +36,9 @@ class TermsMetadataPropertySettings(BaseMetadataPropertySettings):
     type: Literal[MetadataPropertyType.terms]
     values: Optional[List[str]] = None
 
-    @field_validator("values")
+    @field_validator(
+        "values",
+    )
     @classmethod
     def __validate_values(cls, values):
         if values is None:

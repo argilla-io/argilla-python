@@ -120,7 +120,7 @@ plugins:
 
 
 nav:
-  - Overview:
+  - Argilla:
     - index.md
     - Quickstart (WIP): overview/quickstart.md
     - Installation (WIP):

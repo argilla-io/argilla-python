@@ -46,9 +46,9 @@ class Record(Resource):
         metadata: Optional[Dict[str, MetadataValue]] = None,
         vectors: Optional[List[Vector]] = None,
         responses: Optional[List[Response]] = None,
-        suggestions: Optional[Union[Tuple[Suggestion], List[Suggestion]]] = None,
+        suggestions: Optional[List[Suggestion]] = None,
         external_id: Optional[str] = None,
-        id: Optional[str] = None,
+        id: Optional[UUID] = None,
         _dataset: Optional["Dataset"] = None,
     ):
         """Initializes a Record with fields, metadata, vectors, responses, suggestions, external_id, and id.
@@ -82,12 +82,11 @@ class Record(Resource):
         self.__responses = RecordResponses(responses=responses, record=self)
         self.__suggestions = RecordSuggestions(suggestions=suggestions, record=self)
 
-    def __repr__(self) -> Generator:
-        yield self.fields
-        yield self.responses
-        yield self.suggestions
-        yield self.metadata
-        yield self.vectors
+    def __repr__(self) -> str:
+        return (
+            f"Record(id={self.id},fields={self.fields},metadata={self.metadata},"
+            f"suggestions={self.suggestions},responses={self.responses})"
+        )
 
     ############################
     # Properties
@@ -319,9 +318,8 @@ class RecordFields:
     def to_dict(self) -> Dict[str, Union[str, None]]:
         return self.__fields
 
-    def __repr__(self) -> Generator:
-        for key, value in self.__fields.items():
-            yield key, value
+    def __repr__(self) -> str:
+        return self.to_dict().__repr__()
 
 
 class RecordResponses(Iterable[Response]):
@@ -371,10 +369,8 @@ class RecordResponses(Iterable[Response]):
             response_dict[response.question_name].append({"value": response.value, "user_id": response.user_id})
         return response_dict
 
-    def __repr__(self) -> Generator:
-        for question_name, responses in self.__question_map.items():
-            for response in responses:
-                yield question_name, response.value, response.user_id
+    def __repr__(self) -> str:
+        return {k: [{"value": v["value"]} for v in values] for k, values in self.to_dict().items()}.__repr__()
 
 
 class RecordSuggestions(Iterable[Suggestion]):
@@ -413,9 +409,8 @@ class RecordSuggestions(Iterable[Suggestion]):
             }
         return suggestion_dict
 
-    def __repr__(self) -> Generator:
-        for suggestion in self.__suggestions:
-            yield suggestion.question_name, suggestion.value, suggestion.score, suggestion.agent
+    def __repr__(self) -> str:
+        return self.to_dict().__repr__()
 
 
 class RecordVectors:
@@ -475,5 +470,4 @@ class RecordMetadata:
         return len(self.__metadata_models)
 
     def __repr__(self) -> Generator:
-        for key, value in self.__metadata_map.items():
-            yield key, value
+        return self.to_dict().__repr__()

@@ -31,6 +31,16 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/getting_started/installation/</loc>
+         <lastmod>2024-05-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/getting_started/quickstart/</loc>
+         <lastmod>2024-05-13</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
          <loc>https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/how_to_guides/</loc>
          <lastmod>2024-05-13</lastmod>
          <changefreq>daily</changefreq>

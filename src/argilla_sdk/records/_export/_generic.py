@@ -11,24 +11,21 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-from typing import Any, Dict, List, TYPE_CHECKING, Union
+from abc import ABC
 from collections import defaultdict
+from typing import Any, Dict, List, TYPE_CHECKING, Union, Iterable
 
 if TYPE_CHECKING:
     from argilla_sdk import Record
 
 
-class GenericExportMixin:
+class GenericExportMixin(Iterable["Record"], ABC):
     """This is a mixin class for DatasetRecords and Export classes.
     It handles methods for exporting records to generic python formats."""
 
-    def _export_to_dict(
-        self, records: List["Record"], flatten=False, orient="names"
-    ) -> Dict[str, Union[str, float, int, list]]:
+    def to_dict(self, flatten: bool = False, orient: str = "names") -> Dict[str, Any]:
         """Export records to a dictionary with either names or record index as keys.
         Args:
-            records (List[Record]): List of Record objects to export.
             flatten (bool): The structure of the exported dictionary.
                 - True: The record fields, metadata, suggestions and responses will be flattened.
                 - False: The record fields, metadata, suggestions and responses will be nested.
@@ -38,6 +35,29 @@ class GenericExportMixin:
         Returns:
             dataset_records (Dict[str, Union[str, float, int, list]]): The exported records in a dictionary format.
         """
+        records = [r for r in self]
+        return self._export_to_dict(records=records, flatten=flatten, orient=orient)
+
+    def to_list(self, flatten: bool = False) -> List[Dict[str, Any]]:
+        """Export records to a list of dictionaries with either names or record index as keys.
+        Args:
+            flatten (bool): The structure of the exported dictionary.
+                - True: The record fields, metadata, suggestions and responses will be flattened.
+                - False: The record fields, metadata, suggestions and responses will be nested.
+        Returns:
+            dataset_records (List[Dict[str, Union[str, float, int, list]]]): The exported records in a list of dictionaries format.
+        """
+        records = [r for r in self]
+        return self._export_to_list(records=records, flatten=flatten)
+
+    ############################
+    # Private methods
+    ############################
+
+    def _export_to_dict(
+        self, records: List["Record"], flatten=False, orient="names"
+    ) -> Dict[str, Union[str, float, int, list]]:
+
         if orient == "names":
             dataset_records: dict = defaultdict(list)
             for record in records:
@@ -52,21 +72,13 @@ class GenericExportMixin:
         return dataset_records
 
     def _export_to_list(self, records: List["Record"], flatten=False) -> List[Dict[str, Union[str, float, int, list]]]:
-        """Export records to a list of dictionaries with either names or record index as keys.
-        Args:
-            records (List[Record]): List of Record objects to export.
-            flatten (bool): The structure of the exported dictionary.
-                - True: The record fields, metadata, suggestions and responses will be flattened.
-                - False: The record fields, metadata, suggestions and responses will be nested.
-        Returns:
-            dataset_records (List[Dict[str, Union[str, float, int, list]]]): The exported records in a list of dictionaries format.
-        """
         dataset_records: list = []
         for record in records:
             dataset_records.append(self.__record_to_dict(record=record, flatten=flatten))
         return dataset_records
 
-    def __record_to_dict(self, record: "Record", flatten=False) -> Dict[str, Any]:
+    @staticmethod
+    def __record_to_dict(record: "Record", flatten=False) -> Dict[str, Any]:
         """Converts a Record object to a dictionary for export.
         Args:
             record (Record): The Record object to convert.

@@ -186,10 +186,6 @@ class Dataset(Resource):
             ws = workspace
         return ws.id
 
-    def __create(self) -> None:
-        response_model = self._api.create(self._model)
-        self._sync(response_model)
-
     def __publish(self) -> None:
         response_model = self._api.publish(dataset_id=self._model.id)
         self._sync(response_model)

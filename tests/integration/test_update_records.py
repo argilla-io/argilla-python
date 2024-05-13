@@ -26,7 +26,7 @@ def dataset(client: rg.Argilla) -> rg.Dataset:
         settings=settings,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     return dataset
 
 

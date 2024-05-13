@@ -25,7 +25,7 @@ def test_create_dataset(client):
         ),
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     gotten_dataset = dataset.get()
     assert dataset.id == gotten_dataset.id
     assert dataset.name == mock_dataset_name
@@ -63,7 +63,7 @@ def test_add_records(client):
         settings=settings,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     dataset.records.add(records=mock_data)
 
     dataset_records = list(dataset.records)
@@ -91,7 +91,7 @@ def test_add_dict_records(client: Argilla):
         questions=[rg.TextQuestion(name="label")],
     )
 
-    ds.publish()
+    ds.create()
 
     mock_data = [
         {
@@ -135,7 +135,7 @@ def test_add_single_record(client: Argilla):
         questions=[rg.TextQuestion(name="label")],
     )
 
-    ds.publish()
+    ds.create()
 
     data = {
         "text": "Hello World, how are you?",
@@ -197,7 +197,7 @@ def test_add_records_with_suggestions(client) -> None:
         settings=settings,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     dataset.records.add(
         mock_data,
         mapping={
@@ -267,7 +267,7 @@ def test_add_records_with_responses(client) -> None:
         client=client,
     )
     user.create()
-    dataset.publish()
+    dataset.create()
     dataset.records.add(
         records=mock_data,
         user_id=user.id,
@@ -328,7 +328,7 @@ def test_add_records_with_responses_and_suggestions(client) -> None:
         client=client,
     )
     user.create()
-    dataset.publish()
+    dataset.create()
     dataset.records.add(
         records=mock_data,
         user_id=user.id,
@@ -393,7 +393,7 @@ def test_add_records_with_fields_mapped(client) -> None:
         client=client,
     )
     user.create()
-    dataset.publish()
+    dataset.create()
     dataset.records.add(
         records=mock_data,
         user_id=user.id,
@@ -459,7 +459,7 @@ def test_add_records_with_id_mapped(client) -> None:
         client=client,
     )
     user.create()
-    dataset.publish()
+    dataset.create()
     dataset.records.add(
         records=mock_data,
         user_id=user.id,
@@ -522,7 +522,7 @@ def test_add_record_resources(client):
         settings=settings,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     dataset.records.add(records=mock_resources)
 
     dataset_records = list(dataset.records(with_suggestions=True))
@@ -584,7 +584,7 @@ def test_add_records_with_responses_and_same_schema_name(client: Argilla):
         client=client,
     )
     user.create()
-    dataset.publish()
+    dataset.create()
     dataset.records.add(
         records=mock_data,
         user_id=user.id,
@@ -623,7 +623,7 @@ def test_add_records_objects_with_responses(client: Argilla):
         client=client,
     )
     user.create()
-    dataset.publish()
+    dataset.create()
 
     records = [
         rg.Record(

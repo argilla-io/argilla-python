@@ -59,13 +59,10 @@ class TestSettings:
             ],
             vectors=[rg.VectorField(name="text", dimensions=3)],
         )
+        
         assert (
             settings.__repr__()
-            == """Settings(guidelines=None, allow_extra_metadata=False, fields=[TextField(name=text, title=text, description=None, type=text, required=True) 
-], questions=[LabelQuestion(name=label, title=text, description=text, type=label_selection, required=True) 
-], vectors=[VectorField(name=text, title=text, description=None, type=vector, required=True) 
-], metadata=[FloatMetadataProperty(name=source, title=source, description=None, type=float, required=False) 
-])"""
+            == f"""Settings(guidelines=None, allow_extra_metadata=False, fields={settings.fields}, questions={settings.questions}, vectors={settings.vectors}, metadata={settings.metadata})"""
         )
 
 

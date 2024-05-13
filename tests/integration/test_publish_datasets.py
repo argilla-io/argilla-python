@@ -63,8 +63,8 @@ def test_publish_dataset(client: "Argilla"):
         ],
     )
 
-    ds.publish()
-    assert ds.is_published, "The dataset was not published"
+    ds.create()
+    assert ds.__is_published, "The dataset was not published"
 
     published_ds = client.datasets(name=ds.name, workspace=new_ws)
     assert published_ds.exists(), "The dataset was not found"

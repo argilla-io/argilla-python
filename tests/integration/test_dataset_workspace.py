@@ -33,7 +33,7 @@ def dataset(client: rg.Argilla):
         workspace=ws,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     yield dataset
     dataset.delete()
 
@@ -53,11 +53,11 @@ def test_dataset_with_workspace(client: rg.Argilla):
         workspace=ws,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     assert isinstance(dataset, rg.Dataset)
     assert dataset.id is not None
     assert dataset.exists()
-    assert dataset.is_published
+    assert dataset.__is_published
     assert dataset.workspace_id == ws.id
 
 
@@ -76,11 +76,11 @@ def test_dataset_with_workspace_name(client: rg.Argilla):
         workspace=ws.name,
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     assert isinstance(dataset, rg.Dataset)
     assert dataset.id is not None
     assert dataset.exists()
-    assert dataset.is_published
+    assert dataset.__is_published
     assert dataset.workspace_id == ws.id
 
 
@@ -114,11 +114,11 @@ def test_dataset_with_default_workspace(client: rg.Argilla):
         ),
         client=client,
     )
-    dataset.publish()
+    dataset.create()
     assert isinstance(dataset, rg.Dataset)
     assert dataset.id is not None
     assert dataset.exists()
-    assert dataset.is_published
+    assert dataset.__is_published
     assert dataset.workspace_id == client.workspaces[0].id
 
 

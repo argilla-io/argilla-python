@@ -51,7 +51,7 @@ You can add records to a dataset in two different ways: either by using a dictio
 
 === "As a dictionary"
 
-    You can add the data directly as a dictionary, where the keys correspond to the names of fields, questions, metadata or vectors in the dataset and the values are the data to be added. However, you can also use a mapping to specify the data structure.
+    You can add the data directly as a dictionary, where the keys correspond to the names of fields, questions, metadata or vectors in the dataset and the values are the data to be added. However, you can also use a `mapping` to indicate which keys in the source data correspond to the dataset fields.
 
     ```python	
     import argilla_sdk as rg
@@ -113,7 +113,7 @@ You can add records to a dataset in two different ways: either by using a dictio
         ]
 
 
-        dataset.records.add(records, user_id=user_id)
+        dataset.records.add(records=records)
         ```	
 
 === "As a `Record` object"
@@ -299,16 +299,16 @@ Suggestions refer to suggested responses (e.g. model predictions) that you can a
         {
             "question": "Do you need oxygen to breathe?",
             "answer": "Yes",
-            "my_label": "positive",
-            "my_label.score": 0.9,
-            "my_label.agent": "model_name"
+            "my_label.suggestion": "positive",
+            "my_label.suggestion.score": 0.9,
+            "my_label.suggestion.agent": "model_name"
         },
         {
             "question": "What is the boiling point of water?",
             "answer": "100 degrees Celsius",
-            "my_label": "negative",
-            "my_label.score": 0.9,
-            "my_label.agent": "model_name"
+            "my_label.suggestion": "negative",
+            "my_label.suggestion.score": 0.9,
+            "my_label.suggestion.agent": "model_name"
         },
     ]
     dataset.records.add(data)
@@ -439,7 +439,7 @@ for record in dataset.records(
 You can update records in a dataset calling the `update` method on the `Dataset` object. To update a record, you need to provide the record `id` or `external_id` and the new data to be updated.
 
 ```python
-data = dataset.records.to_dict()
+data = dataset.records.to_list()
 
 updated_data = [
     {

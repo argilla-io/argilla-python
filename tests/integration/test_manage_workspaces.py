@@ -1,3 +1,5 @@
+import pytest
+
 from argilla_sdk import Argilla
 
 
@@ -6,6 +8,8 @@ class TestWorkspacesManagement:
     def test_create_and_delete_workspace(self, client: Argilla):
         workspace = client.workspaces(name="test_workspace")
         if workspace.exists():
+            for dataset in workspace.datasets:
+                dataset.delete()
             workspace.delete()
 
         workspace.create()
@@ -16,8 +20,6 @@ class TestWorkspacesManagement:
 
     def test_add_and_remove_users_to_workspace(self, client: Argilla):
         workspace = client.workspaces(name="test_workspace")
-        if workspace.exists():
-            workspace.delete()
 
         test_user = client.users(username="test_user")
         if test_user.exists():

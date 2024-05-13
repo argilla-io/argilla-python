@@ -150,11 +150,13 @@ nav:
     #   - Model performance: how_to_guides/metrics/model.md
     #   - Annotator performance: how_to_guides/metrics/annotator.md
     # - Fine-tune a model: fine_tune.md
-  - Tutorials:
-    - tutorials/index.md
-    - tutorials/rag_llm.md
-    - tutorials/rag_rankers_and_retrievers.md
-  - Integrations:
-    - integrations/index.md
+  # - Tutorials:
+  #   - tutorials/index.md
+  #   - tutorials/rag_llm.md
+  #   - tutorials/rag_rankers_and_retrievers.md
+  # - Integrations:
+  #   - integrations/index.md
   - API Reference:
     - Python SDK: reference/argilla_sdk/
+  - UI Demo:
+    - https://demo.argilla.io/datasets

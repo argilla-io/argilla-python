@@ -860,58 +860,12 @@
   
   
   
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../../../how_to_guides/team/" class="md-nav__link ">
-              
-  
-  <span class="md-ellipsis">
-    Manage users, credentials, and workspaces
-  </span>
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_1">
-            <span class="md-nav__icon md-icon"></span>
-            Manage users, credentials, and workspaces
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../../../how_to_guides/team/user/" class="md-nav__link">
+      <a href="../../../how_to_guides/user/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Users
+    Manage users and credentials
   </span>
   
 
@@ -928,23 +882,15 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../how_to_guides/team/workspace/" class="md-nav__link">
+      <a href="../../../how_to_guides/workspace/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Workspaces
+    Manage workspaces
   </span>
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1305,15 +1251,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#connecting-to-multiple-argilla-servers" class="md-nav__link">
-    <span class="md-ellipsis">
-      Connecting to multiple Argilla servers
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1328,6 +1265,15 @@
   
     <nav class="md-nav" aria-label="Class Reference">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rgargilla_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      rg.Argilla
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#argilla_sdk.client.Argilla" class="md-nav__link">
@@ -1871,15 +1817,6 @@
   
 </li>
         
-          <li class="md-nav__item">
-  <a href="#connecting-to-multiple-argilla-servers" class="md-nav__link">
-    <span class="md-ellipsis">
-      Connecting to multiple Argilla servers
-    </span>
-  </a>
-  
-</li>
-        
       </ul>
     </nav>
   
@@ -1894,6 +1831,15 @@
   
     <nav class="md-nav" aria-label="Class Reference">
       <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rgargilla_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      rg.Argilla
+    </span>
+  </a>
+  
+</li>
         
           <li class="md-nav__item">
   <a href="#argilla_sdk.client.Argilla" class="md-nav__link">
@@ -1987,32 +1933,9 @@
 <div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">for</span> <span class="n">dataset</span> <span class="ow">in</span> <span class="n">my_workspace</span><span class="o">.</span><span class="n">datasets</span><span class="p">:</span>
 </span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 </span></code></pre></div>
-<p>Or, to iterate over all records in a dataset:</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">my_dataset</span><span class="o">.</span><span class="n">records</span><span class="p">:</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="nb">print</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
-</span></code></pre></div>
-<h3 id="connecting-to-multiple-argilla-servers">Connecting to multiple Argilla servers<a class="headerlink" href="#connecting-to-multiple-argilla-servers" title="Permanent link">&para;</a></h3>
-<p>To interact with multiple Argilla servers, you can create multiple <code>Argilla</code> clients with different <code>api_url</code> and <code>api_key</code> values.</p>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">dev_client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span>
-</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>    <span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;https://dev.argilla.example.com&quot;</span><span class="p">,</span>
-</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;dev_token&quot;</span><span class="p">,</span>
-</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="p">)</span>
-</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
-</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="n">prod_client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span>
-</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;https://prod.argilla.example.com&quot;</span><span class="p">,</span>
-</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;prod_token&quot;</span><span class="p">,</span> 
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="p">)</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>    <span class="n">settings</span><span class="o">=</span><span class="n">rg</span><span class="o">.</span><span class="n">Settings</span><span class="p">(</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>        <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">)],</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="p">),</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>    <span class="n">client</span><span class="o">=</span><span class="n">dev_client</span><span class="p">,</span>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a><span class="p">)</span>
-</span></code></pre></div>
 <hr />
 <h2 id="class-reference">Class Reference<a class="headerlink" href="#class-reference" title="Permanent link">&para;</a></h2>
+<h3 id="rgargilla_1"><code>rg.Argilla</code><a class="headerlink" href="#rgargilla_1" title="Permanent link">&para;</a></h3>
 
 
 <div class="doc doc-object doc-class">
@@ -2088,8 +2011,7 @@
 
             <details class="quote">
               <summary>Source code in <code>src/argilla_sdk/client.py</code></summary>
-              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-33">33</a></span>
-<span class="normal"><a href="#__codelineno-0-34">34</a></span>
+              <div class="language-python highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-34">34</a></span>
 <span class="normal"><a href="#__codelineno-0-35">35</a></span>
 <span class="normal"><a href="#__codelineno-0-36">36</a></span>
 <span class="normal"><a href="#__codelineno-0-37">37</a></span>
@@ -2119,38 +2041,39 @@
 <span class="normal"><a href="#__codelineno-0-61">61</a></span>
 <span class="normal"><a href="#__codelineno-0-62">62</a></span>
 <span class="normal"><a href="#__codelineno-0-63">63</a></span>
-<span class="normal"><a href="#__codelineno-0-64">64</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-33"><a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="k">class</span> <span class="nc">Argilla</span><span class="p">(</span><span class="n">_api</span><span class="o">.</span><span class="n">APIClient</span><span class="p">):</span>
-</span><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Argilla API client. This is the main entry point to interact with the API.</span>
-</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35"></a>
-</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="sd">    Attributes:</span>
-</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">        workspaces: A collection of workspaces.</span>
-</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">        datasets: A collection of datasets.</span>
-</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">        users: A collection of users.</span>
-</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">        me: The current user.</span>
-</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41"></a>
-</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="sd">    &quot;&quot;&quot;</span>
-</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a>
-</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a>    <span class="nd">@property</span>
-</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="k">def</span> <span class="nf">workspaces</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Workspaces&quot;</span><span class="p">:</span>
-</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A collection of workspaces on the server.&quot;&quot;&quot;</span>
-</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a>        <span class="k">return</span> <span class="n">Workspaces</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a>
-</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a>    <span class="nd">@property</span>
-</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a>    <span class="k">def</span> <span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Datasets&quot;</span><span class="p">:</span>
-</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A collection of datasets on the server.&quot;&quot;&quot;</span>
-</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a>        <span class="k">return</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53"></a>
-</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a>    <span class="nd">@property</span>
-</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Users&quot;</span><span class="p">:</span>
-</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A collection of users on the server.&quot;&quot;&quot;</span>
-</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a>        <span class="k">return</span> <span class="n">Users</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
-</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58"></a>
-</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a>    <span class="nd">@property</span>
-</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60"></a>    <span class="k">def</span> <span class="nf">me</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;User&quot;</span><span class="p">:</span>
-</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The current user.&quot;&quot;&quot;</span>
-</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62"></a>        <span class="kn">from</span> <span class="nn">argilla_sdk</span> <span class="kn">import</span> <span class="n">User</span>
-</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63"></a>
-</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64"></a>        <span class="k">return</span> <span class="n">User</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">get_me</span><span class="p">())</span>
+<span class="normal"><a href="#__codelineno-0-64">64</a></span>
+<span class="normal"><a href="#__codelineno-0-65">65</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="k">class</span> <span class="nc">Argilla</span><span class="p">(</span><span class="n">_api</span><span class="o">.</span><span class="n">APIClient</span><span class="p">):</span>
+</span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Argilla API client. This is the main entry point to interact with the API.</span>
+</span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a>
+</span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="sd">    Attributes:</span>
+</span><span id="__span-0-38"><a id="__codelineno-0-38" name="__codelineno-0-38"></a><span class="sd">        workspaces: A collection of workspaces.</span>
+</span><span id="__span-0-39"><a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="sd">        datasets: A collection of datasets.</span>
+</span><span id="__span-0-40"><a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="sd">        users: A collection of users.</span>
+</span><span id="__span-0-41"><a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="sd">        me: The current user.</span>
+</span><span id="__span-0-42"><a id="__codelineno-0-42" name="__codelineno-0-42"></a>
+</span><span id="__span-0-43"><a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-0-44"><a id="__codelineno-0-44" name="__codelineno-0-44"></a>
+</span><span id="__span-0-45"><a id="__codelineno-0-45" name="__codelineno-0-45"></a>    <span class="nd">@property</span>
+</span><span id="__span-0-46"><a id="__codelineno-0-46" name="__codelineno-0-46"></a>    <span class="k">def</span> <span class="nf">workspaces</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Workspaces&quot;</span><span class="p">:</span>
+</span><span id="__span-0-47"><a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A collection of workspaces on the server.&quot;&quot;&quot;</span>
+</span><span id="__span-0-48"><a id="__codelineno-0-48" name="__codelineno-0-48"></a>        <span class="k">return</span> <span class="n">Workspaces</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="__span-0-49"><a id="__codelineno-0-49" name="__codelineno-0-49"></a>
+</span><span id="__span-0-50"><a id="__codelineno-0-50" name="__codelineno-0-50"></a>    <span class="nd">@property</span>
+</span><span id="__span-0-51"><a id="__codelineno-0-51" name="__codelineno-0-51"></a>    <span class="k">def</span> <span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Datasets&quot;</span><span class="p">:</span>
+</span><span id="__span-0-52"><a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A collection of datasets on the server.&quot;&quot;&quot;</span>
+</span><span id="__span-0-53"><a id="__codelineno-0-53" name="__codelineno-0-53"></a>        <span class="k">return</span> <span class="n">Datasets</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="__span-0-54"><a id="__codelineno-0-54" name="__codelineno-0-54"></a>
+</span><span id="__span-0-55"><a id="__codelineno-0-55" name="__codelineno-0-55"></a>    <span class="nd">@property</span>
+</span><span id="__span-0-56"><a id="__codelineno-0-56" name="__codelineno-0-56"></a>    <span class="k">def</span> <span class="nf">users</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;Users&quot;</span><span class="p">:</span>
+</span><span id="__span-0-57"><a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;A collection of users on the server.&quot;&quot;&quot;</span>
+</span><span id="__span-0-58"><a id="__codelineno-0-58" name="__codelineno-0-58"></a>        <span class="k">return</span> <span class="n">Users</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+</span><span id="__span-0-59"><a id="__codelineno-0-59" name="__codelineno-0-59"></a>
+</span><span id="__span-0-60"><a id="__codelineno-0-60" name="__codelineno-0-60"></a>    <span class="nd">@property</span>
+</span><span id="__span-0-61"><a id="__codelineno-0-61" name="__codelineno-0-61"></a>    <span class="k">def</span> <span class="nf">me</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;User&quot;</span><span class="p">:</span>
+</span><span id="__span-0-62"><a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="w">        </span><span class="sd">&quot;&quot;&quot;The current user.&quot;&quot;&quot;</span>
+</span><span id="__span-0-63"><a id="__codelineno-0-63" name="__codelineno-0-63"></a>        <span class="kn">from</span> <span class="nn">argilla_sdk</span> <span class="kn">import</span> <span class="n">User</span>
+</span><span id="__span-0-64"><a id="__codelineno-0-64" name="__codelineno-0-64"></a>
+</span><span id="__span-0-65"><a id="__codelineno-0-65" name="__codelineno-0-65"></a>        <span class="k">return</span> <span class="n">User</span><span class="p">(</span><span class="n">client</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">_model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">users</span><span class="o">.</span><span class="n">get_me</span><span class="p">())</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
 

@@ -863,58 +863,12 @@
   
   
   
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../team/" class="md-nav__link ">
-              
-  
-  <span class="md-ellipsis">
-    Manage users, credentials, and workspaces
-  </span>
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_1">
-            <span class="md-nav__icon md-icon"></span>
-            Manage users, credentials, and workspaces
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../team/user/" class="md-nav__link">
+      <a href="../user/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Users
+    Manage users and credentials
   </span>
   
 
@@ -931,23 +885,15 @@
   
   
     <li class="md-nav__item">
-      <a href="../team/workspace/" class="md-nav__link">
+      <a href="../workspace/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Workspaces
+    Manage workspaces
   </span>
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1046,15 +992,6 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#rgquery-and-rgfilter" class="md-nav__link">
-    <span class="md-ellipsis">
-      rg.Query and rg.Filter
-    </span>
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#how-to-guide" class="md-nav__link">
@@ -1807,15 +1744,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#rgquery-and-rgfilter" class="md-nav__link">
-    <span class="md-ellipsis">
-      rg.Query and rg.Filter
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#how-to-guide" class="md-nav__link">
     <span class="md-ellipsis">
       How-to guide
@@ -1896,8 +1824,74 @@
 <h1 id="query-filter-and-export-records">Query, filter, and export records<a class="headerlink" href="#query-filter-and-export-records" title="Permanent link">&para;</a></h1>
 <p>This guide provides an overview of how to query and filter a dataset in Argilla and export records.</p>
 <p>You can search for records in your dataset by <strong>querying</strong> or <strong>filtering</strong>. The query focuses on the content of the text field, while the filter is used to filter the records based on conditions. You can use them independently or combine multiple filters to create complex search queries. You can also export records from a dataset either as a single dictionary or a list of dictionaries.</p>
-<h2 id="rgquery-and-rgfilter">rg.Query and rg.Filter<a class="headerlink" href="#rgquery-and-rgfilter" title="Permanent link">&para;</a></h2>
-<p>A query is defined in the <code>Query</code> class that you can use to search for terms or filter records based on conditions. To specify a condition, you should use a tuple or a list of tuples with the following structure: <code>(field, operator, value)</code>. Below, you can see the operators you can use to filter records.</p>
+<h2 id="how-to-guide">How-to guide<a class="headerlink" href="#how-to-guide" title="Permanent link">&para;</a></h2>
+<p>This section shows how to query a dataset in Argilla using specific terms or filters, and export records.</p>
+<div class="admonition info">
+<p class="admonition-title">Class</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1"><code>rg.query</code></label><label for="__tabbed_1_2"><code>rg.Filter</code></label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="n">query</span><span class="o">=</span><span class="s2">&quot;query&quot;</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="nb">filter</span><span class="o">=</span><span class="nb">filter</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">)</span>
+</span></code></pre></div>
+<blockquote>
+<p>Check the <a href="../../reference/argilla_sdk/search/">Query - Python Reference</a> to see the attributes, arguments, and methods of the <code>Query</code> class in detail.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="p">[</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        <span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="p">]</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="p">)</span>
+</span></code></pre></div>
+<blockquote>
+<p>Check the <a href="../../reference/argilla_sdk/search/">Filter - Python Reference</a> to see the attributes, arguments, and methods of the <code>Filter</code> class in detail.</p>
+</blockquote>
+</div>
+</div>
+</div>
+</div>
+<h3 id="query-with-search-terms">Query with search terms<a class="headerlink" href="#query-with-search-terms" title="Permanent link">&para;</a></h3>
+<p>To search for records with terms, you can use the <code>Dataset.records</code> attribute with a query string. The search terms are used to search for records that contain the terms in the text field. You can search a single term or various terms, in the latter, all of them should appear in the record to be retrieved.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Single search term</label><label for="__tabbed_2_2">Multiple search term</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">query</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;my_term&quot;</span><span class="p">)</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">queried_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">queried_records</span>
+</span></code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">query</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;my_term1 my_term2&quot;</span><span class="p">)</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">queried_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">queried_records</span>
+</span></code></pre></div>
+</div>
+</div>
+</div>
+<h3 id="filter-by-conditions">Filter by conditions<a class="headerlink" href="#filter-by-conditions" title="Permanent link">&para;</a></h3>
+<p>You can use the <code>Filter</code> class to define the conditions and pass them to the <code>Dataset.records</code> attribute to fetch records based on the conditions. Conditions include "==", "&gt;=", "&lt;=", or "in". Conditions can be combined with dot notation to filter records based on metadata, suggestions, or responses. You can use a single condition or multiple conditions to filter records.</p>
 <table>
 <thead>
 <tr>
@@ -1924,78 +1918,8 @@
 </tr>
 </tbody>
 </table>
-<blockquote>
-<p>Check the <a href="../../reference/argilla_sdk/search/">Query and Filter - Python Reference</a> to see the attributes, arguments, and methods of the <code>Query</code> and <code>Filter</code> classes in detail.</p>
-</blockquote>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span>
-</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;query&quot;</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="nb">filter</span><span class="o">=</span><span class="n">rg</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span>
-</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="p">[</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>            <span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">),</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>            <span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>            <span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
-</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>            <span class="p">(</span><span class="s2">&quot;field&quot;</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;value1&quot;</span><span class="p">,</span> <span class="s2">&quot;value2&quot;</span><span class="p">])</span>
-</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="p">]</span>
-</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">)</span>
-</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">)</span>
-</span></code></pre></div>
-<h2 id="how-to-guide">How-to guide<a class="headerlink" href="#how-to-guide" title="Permanent link">&para;</a></h2>
-<p>This section shows how to query a dataset in Argilla using specific terms or filters, and export records.</p>
-<h3 id="query-with-search-terms">Query with search terms<a class="headerlink" href="#query-with-search-terms" title="Permanent link">&para;</a></h3>
-<p>To search for records with terms, you can use the <code>Dataset.records</code> attribute with a query string. The search terms are used to search for records that contain the terms in the text field. You can search a single term or various terms, in the latter, all of them should appear in the record to be retrieved.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Single search term</label><label for="__tabbed_1_2">Multiple search term</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Single condition</label><label for="__tabbed_3_2">Multiple conditions</label></div>
 <div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="n">workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="n">query</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;my_term&quot;</span><span class="p">)</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="n">queried_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a><span class="n">queried_records</span>
-</span></code></pre></div>
-</div>
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
-</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
-</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>
-</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="n">workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
-</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>
-</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span>
-</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
-</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">query</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="s2">&quot;my_term1 my_term2&quot;</span><span class="p">)</span>
-</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>
-</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a><span class="n">queried_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">query</span><span class="p">))</span>
-</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a><span class="n">queried_records</span>
-</span></code></pre></div>
-</div>
-</div>
-</div>
-<h3 id="filter-by-conditions">Filter by conditions<a class="headerlink" href="#filter-by-conditions" title="Permanent link">&para;</a></h3>
-<p>You can use the <code>Filter</code> class to define the conditions and pass them to the <code>Dataset.records</code> attribute to fetch records based on the conditions. Conditions include "==", "&gt;=", "&lt;=", or "in". Conditions can be combined with dot notation to filter records based on metadata, suggestions, or responses. You can use a single condition or multiple conditions to filter records.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Single condition</label><label for="__tabbed_2_2">Multiple conditions</label></div>
-<div class="tabbed-content">
-<div class="tabbed-block">
-<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
-</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="n">workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span>
-</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>
-</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="n">filter_label</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Filter</span><span class="p">((</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;positive&quot;</span><span class="p">))</span>
-</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a>
-</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="n">filtered_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="n">filter_label</span><span class="p">)))</span>
-</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="n">filtered_records</span>
-</span></code></pre></div>
-</div>
 <div class="tabbed-block">
 <div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>
@@ -2005,27 +1929,13 @@
 </span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>
 </span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span>
 </span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>
-</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="n">filters</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span>
-</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="p">[</span>
-</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a>        <span class="p">(</span><span class="s2">&quot;label.suggestion&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;positive&quot;</span><span class="p">),</span>
-</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>        <span class="p">(</span><span class="s2">&quot;metadata.count&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
-</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>        <span class="p">(</span><span class="s2">&quot;metadata.count&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
-</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>        <span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">])</span>
-</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>    <span class="p">]</span>
-</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a><span class="p">)</span>
-</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>
-</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a><span class="n">filtered_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span>
-</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>    <span class="n">query</span><span class="o">=</span><span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="n">filters</span><span class="p">)),</span>
-</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>    <span class="n">with_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>    <span class="n">with_suggestions</span><span class="o">=</span><span class="kc">True</span>
-</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a><span class="p">)</span>
-</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a><span class="n">filtered_records</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="n">filter_label</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Filter</span><span class="p">((</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;positive&quot;</span><span class="p">))</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="n">filtered_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="n">filter_label</span><span class="p">)))</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a><span class="n">filtered_records</span>
 </span></code></pre></div>
 </div>
-</div>
-</div>
-<h3 id="query-and-filter-a-dataset">Query and filter a dataset<a class="headerlink" href="#query-and-filter-a-dataset" title="Permanent link">&para;</a></h3>
-<p>As mentioned, you can use a query with a search term and a filter or various filters to create complex search queries.</p>
+<div class="tabbed-block">
 <div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>
 </span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
@@ -2034,27 +1944,27 @@
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a>
 </span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span>
 </span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a>
-</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">query_filter</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span>
-</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;my_term&quot;</span><span class="p">,</span>
-</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>    <span class="nb">filter</span><span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span>
-</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>        <span class="p">[</span>
-</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>            <span class="p">(</span><span class="s2">&quot;label.suggestion&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;positive&quot;</span><span class="p">),</span>
-</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>            <span class="p">(</span><span class="s2">&quot;metadata.count&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
-</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>        <span class="p">]</span>
-</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a>    <span class="p">)</span>
-</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="p">)</span>
-</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a>
-</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="n">queried_filtered_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span>
-</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    <span class="n">query</span><span class="o">=</span><span class="n">query_filter</span><span class="p">,</span>
-</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>    <span class="n">with_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>    <span class="n">with_suggestions</span><span class="o">=</span><span class="kc">True</span>
-</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a>    <span class="p">)</span>
-</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a><span class="p">)</span>
-</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a><span class="n">queried_filtered_records</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="n">filters</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a>    <span class="p">[</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>        <span class="p">(</span><span class="s2">&quot;label.suggestion&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;positive&quot;</span><span class="p">),</span>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a>        <span class="p">(</span><span class="s2">&quot;metadata.count&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a>        <span class="p">(</span><span class="s2">&quot;metadata.count&quot;</span><span class="p">,</span> <span class="s2">&quot;&lt;=&quot;</span><span class="p">,</span> <span class="mi">20</span><span class="p">),</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a>        <span class="p">(</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="s2">&quot;in&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;positive&quot;</span><span class="p">,</span> <span class="s2">&quot;negative&quot;</span><span class="p">])</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>    <span class="p">]</span>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="p">)</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="n">filtered_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a>    <span class="n">query</span><span class="o">=</span><span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span><span class="nb">filter</span><span class="o">=</span><span class="n">filters</span><span class="p">)),</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a>    <span class="n">with_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a>    <span class="n">with_suggestions</span><span class="o">=</span><span class="kc">True</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a><span class="p">)</span>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="n">filtered_records</span>
 </span></code></pre></div>
-<h3 id="export-records-to-a-dictionary">Export records to a dictionary<a class="headerlink" href="#export-records-to-a-dictionary" title="Permanent link">&para;</a></h3>
-<p>Records can be exported from <code>Dataset.records</code> as a dictionary. The <code>to_dict</code> method can be used to export records as a dictionary. You can specify the orientation of the dictionary output. You can also decide if to flatten or not the dictionary.</p>
-<p>=== "
+</div>
+</div>
+</div>
+<h3 id="query-and-filter-a-dataset">Query and filter a dataset<a class="headerlink" href="#query-and-filter-a-dataset" title="Permanent link">&para;</a></h3>
+<p>As mentioned, you can use a query with a search term and a filter or various filters to create complex search queries.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>
 </span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
@@ -2063,23 +1973,27 @@
 </span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>
 </span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span>
 </span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>
-</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="c1"># Export records as a dictionary</span>
-</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="n">exported_records</span>
-</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a><span class="c1"># {&quot;text&quot;: [&quot;Hello&quot;, &quot;World&quot;], &quot;label.suggestion&quot;: [&quot;greeting&quot;, &quot;greeting&quot;]}</span>
-</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>
-</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a><span class="c1"># Export records as a dictionary with orient=index</span>
-</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
-</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a><span class="n">exported_records</span>
-</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="c1"># {&quot;uuid&quot;: {&quot;text&quot;: &quot;Hello&quot;, &quot;label&quot;: &quot;greeting&quot;}}</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a><span class="n">query_filter</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Query</span><span class="p">(</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">query</span><span class="o">=</span><span class="s2">&quot;my_term&quot;</span><span class="p">,</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a>    <span class="nb">filter</span><span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Filter</span><span class="p">(</span>
+</span><span id="__span-6-12"><a id="__codelineno-6-12" name="__codelineno-6-12" href="#__codelineno-6-12"></a>        <span class="p">[</span>
+</span><span id="__span-6-13"><a id="__codelineno-6-13" name="__codelineno-6-13" href="#__codelineno-6-13"></a>            <span class="p">(</span><span class="s2">&quot;label.suggestion&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">,</span> <span class="s2">&quot;positive&quot;</span><span class="p">),</span>
+</span><span id="__span-6-14"><a id="__codelineno-6-14" name="__codelineno-6-14" href="#__codelineno-6-14"></a>            <span class="p">(</span><span class="s2">&quot;metadata.count&quot;</span><span class="p">,</span> <span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+</span><span id="__span-6-15"><a id="__codelineno-6-15" name="__codelineno-6-15" href="#__codelineno-6-15"></a>        <span class="p">]</span>
+</span><span id="__span-6-16"><a id="__codelineno-6-16" name="__codelineno-6-16" href="#__codelineno-6-16"></a>    <span class="p">)</span>
+</span><span id="__span-6-17"><a id="__codelineno-6-17" name="__codelineno-6-17" href="#__codelineno-6-17"></a><span class="p">)</span>
 </span><span id="__span-6-18"><a id="__codelineno-6-18" name="__codelineno-6-18" href="#__codelineno-6-18"></a>
-</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="c1"># Export records as a dictionary with flatten=false</span>
-</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a><span class="n">exported_records</span>
-</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a><span class="c1"># {&#39;fields&#39;: [{&#39;text&#39;: &#39;Hello&#39;},{&#39;text&#39;: &#39;World&#39;}], suggestions&#39;: [{&#39;label&#39;: {&#39;value&#39;: &#39;positive&#39;}}, {&#39;label&#39;: {&#39;value&#39;: &#39;negative&#39;}}]</span>
-</span></code></pre></div></p>
-<h3 id="export-records-to-a-list">Export records to a list<a class="headerlink" href="#export-records-to-a-list" title="Permanent link">&para;</a></h3>
-<p>Records can be exported from <code>Dataset.records</code> as a list of dictionaries. The <code>to_list</code> method can be used to export records as a list of dictionaries. You can decide if to flatten it or not.</p>
+</span><span id="__span-6-19"><a id="__codelineno-6-19" name="__codelineno-6-19" href="#__codelineno-6-19"></a><span class="n">queried_filtered_records</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span>
+</span><span id="__span-6-20"><a id="__codelineno-6-20" name="__codelineno-6-20" href="#__codelineno-6-20"></a>    <span class="n">query</span><span class="o">=</span><span class="n">query_filter</span><span class="p">,</span>
+</span><span id="__span-6-21"><a id="__codelineno-6-21" name="__codelineno-6-21" href="#__codelineno-6-21"></a>    <span class="n">with_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-6-22"><a id="__codelineno-6-22" name="__codelineno-6-22" href="#__codelineno-6-22"></a>    <span class="n">with_suggestions</span><span class="o">=</span><span class="kc">True</span>
+</span><span id="__span-6-23"><a id="__codelineno-6-23" name="__codelineno-6-23" href="#__codelineno-6-23"></a>    <span class="p">)</span>
+</span><span id="__span-6-24"><a id="__codelineno-6-24" name="__codelineno-6-24" href="#__codelineno-6-24"></a><span class="p">)</span>
+</span><span id="__span-6-25"><a id="__codelineno-6-25" name="__codelineno-6-25" href="#__codelineno-6-25"></a><span class="n">queried_filtered_records</span>
+</span></code></pre></div>
+<h3 id="export-records-to-a-dictionary">Export records to a dictionary<a class="headerlink" href="#export-records-to-a-dictionary" title="Permanent link">&para;</a></h3>
+<p>Records can be exported from <code>Dataset.records</code> as a dictionary. The <code>to_dict</code> method can be used to export records as a dictionary. You can specify the orientation of the dictionary output. You can also decide if to flatten or not the dictionary.</p>
+<p>=== "
 <div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
 </span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>
 </span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
@@ -2088,15 +2002,40 @@
 </span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>
 </span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span>
 </span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>
-</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1"># Export records as a list of dictionaries</span>
-</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a><span class="c1"># Export records as a dictionary</span>
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
 </span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a><span class="n">exported_records</span>
-</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="c1"># [{&quot;text&quot;: &quot;Hello&quot;, &quot;label&quot;: &quot;greeting&quot;}, {&quot;text&quot;: &quot;World&quot;, &quot;label&quot;: &quot;greeting&quot;}]</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a><span class="c1"># {&quot;text&quot;: [&quot;Hello&quot;, &quot;World&quot;], &quot;label.suggestion&quot;: [&quot;greeting&quot;, &quot;greeting&quot;]}</span>
 </span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>
-</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="c1"># Export records as a list of dictionaries with flatten=False</span>
-</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a><span class="c1"># Export records as a dictionary with orient=index</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">orient</span><span class="o">=</span><span class="s2">&quot;index&quot;</span><span class="p">)</span>
 </span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="n">exported_records</span>
-</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="c1"># [{&#39;fields&#39;: {&#39;text&#39;: &#39;Hello&#39;}, &#39;suggestion&#39;: {&#39;label&#39;: {value: &#39;greeting&#39;}}}, {&#39;fields&#39;: {&#39;text&#39;: &#39;World&#39;}, &#39;suggestion&#39;: {&#39;label&#39;: {value: &#39;greeting&#39;}}}]</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a><span class="c1"># {&quot;uuid&quot;: {&quot;text&quot;: &quot;Hello&quot;, &quot;label&quot;: &quot;greeting&quot;}}</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a><span class="c1"># Export records as a dictionary with flatten=false</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(</span><span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="n">exported_records</span>
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a><span class="c1"># {&#39;fields&#39;: [{&#39;text&#39;: &#39;Hello&#39;},{&#39;text&#39;: &#39;World&#39;}], suggestions&#39;: [{&#39;label&#39;: {&#39;value&#39;: &#39;positive&#39;}}, {&#39;label&#39;: {&#39;value&#39;: &#39;negative&#39;}}]</span>
+</span></code></pre></div></p>
+<h3 id="export-records-to-a-list">Export records to a list<a class="headerlink" href="#export-records-to-a-list" title="Permanent link">&para;</a></h3>
+<p>Records can be exported from <code>Dataset.records</code> as a list of dictionaries. The <code>to_list</code> method can be used to export records as a list of dictionaries. You can decide if to flatten it or not.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="kn">import</span> <span class="nn">argilla_sdk</span> <span class="k">as</span> <span class="nn">rg</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a><span class="n">client</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Argilla</span><span class="p">(</span><span class="n">api_url</span><span class="o">=</span><span class="s2">&quot;&lt;api_url&gt;&quot;</span><span class="p">,</span> <span class="n">api_key</span><span class="o">=</span><span class="s2">&quot;&lt;api_key&gt;&quot;</span><span class="p">)</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a><span class="n">workspace</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">workspaces</span><span class="p">(</span><span class="s2">&quot;my_workspace&quot;</span><span class="p">)</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">datasets</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span> <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">)</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a><span class="c1"># Export records as a list of dictionaries</span>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="n">exported_records</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a><span class="c1"># [{&quot;text&quot;: &quot;Hello&quot;, &quot;label&quot;: &quot;greeting&quot;}, {&quot;text&quot;: &quot;World&quot;, &quot;label&quot;: &quot;greeting&quot;}]</span>
+</span><span id="__span-8-13"><a id="__codelineno-8-13" name="__codelineno-8-13" href="#__codelineno-8-13"></a>
+</span><span id="__span-8-14"><a id="__codelineno-8-14" name="__codelineno-8-14" href="#__codelineno-8-14"></a><span class="c1"># Export records as a list of dictionaries with flatten=False</span>
+</span><span id="__span-8-15"><a id="__codelineno-8-15" name="__codelineno-8-15" href="#__codelineno-8-15"></a><span class="n">exported_records</span> <span class="o">=</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">flatten</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</span><span id="__span-8-16"><a id="__codelineno-8-16" name="__codelineno-8-16" href="#__codelineno-8-16"></a><span class="n">exported_records</span>
+</span><span id="__span-8-17"><a id="__codelineno-8-17" name="__codelineno-8-17" href="#__codelineno-8-17"></a><span class="c1"># [{&#39;fields&#39;: {&#39;text&#39;: &#39;Hello&#39;}, &#39;suggestion&#39;: {&#39;label&#39;: {value: &#39;greeting&#39;}}}, {&#39;fields&#39;: {&#39;text&#39;: &#39;World&#39;}, &#39;suggestion&#39;: {&#39;label&#39;: {value: &#39;greeting&#39;}}}]</span>
 </span></code></pre></div>
 
 

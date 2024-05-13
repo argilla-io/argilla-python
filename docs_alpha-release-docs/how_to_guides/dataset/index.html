@@ -15,7 +15,7 @@
         <link rel="canonical" href="https://argilla-io.github.io/argilla-python/docs_alpha-release-docs/how_to_guides/dataset/">
       
       
-        <link rel="prev" href="../team/workspace/">
+        <link rel="prev" href="../workspace/">
       
       
         <link rel="next" href="../record/">
@@ -863,58 +863,12 @@
   
   
   
-    
-    
-    
-      
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_1" >
-        
-          
-          
-          <div class="md-nav__link md-nav__container">
-            <a href="../team/" class="md-nav__link ">
-              
-  
-  <span class="md-ellipsis">
-    Manage users, credentials, and workspaces
-  </span>
-  
-
-            </a>
-            
-              
-              <label class="md-nav__link " for="__nav_2_1" id="__nav_2_1_label" tabindex="0">
-                <span class="md-nav__icon md-icon"></span>
-              </label>
-            
-          </div>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_1_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_2_1">
-            <span class="md-nav__icon md-icon"></span>
-            Manage users, credentials, and workspaces
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
     <li class="md-nav__item">
-      <a href="../team/user/" class="md-nav__link">
+      <a href="../user/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Users
+    Manage users and credentials
   </span>
   
 
@@ -931,23 +885,15 @@
   
   
     <li class="md-nav__item">
-      <a href="../team/workspace/" class="md-nav__link">
+      <a href="../workspace/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Workspaces
+    Manage workspaces
   </span>
   
 
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -1004,24 +950,6 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#rgdataset" class="md-nav__link">
-    <span class="md-ellipsis">
-      rg.Dataset
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rgsettings" class="md-nav__link">
-    <span class="md-ellipsis">
-      rg.Settings
-    </span>
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#how-to-guide" class="md-nav__link">
@@ -1885,24 +1813,6 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#rgdataset" class="md-nav__link">
-    <span class="md-ellipsis">
-      rg.Dataset
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#rgsettings" class="md-nav__link">
-    <span class="md-ellipsis">
-      rg.Settings
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#how-to-guide" class="md-nav__link">
     <span class="md-ellipsis">
       How-to guide
@@ -2057,49 +1967,46 @@
 <p>Only users with the <code>owner</code> role can manage (create, retrieve, update and delete) all the datasets.</p>
 <p>The users with the <code>admin</code> role can manage (create, retrieve, update and delete) the datasets in the workspaces they have access to.</p>
 </div>
-<h2 id="rgdataset">rg.Dataset<a class="headerlink" href="#rgdataset" title="Permanent link">&para;</a></h2>
-<p>A dataset in Argilla is represented by the <code>Dataset</code> class. You can indicate the <code>workspace</code> where you want to store your dataset by providing the object or their name. If not, the dataset will be stored in the first workspace. To customize it, you should pass the <code>settings</code> with the fields, questions, metadata, vectors, and guidelines.</p>
-<blockquote>
-<p>Check the <a href="../reference/argilla_sdk/datasets/dataset.md">Dataset - Python Reference</a> to see the attributes, arguments, and methods of the <code>Dataset</code> class in detail.</p>
-</blockquote>
+<h2 id="how-to-guide">How-to guide<a class="headerlink" href="#how-to-guide" title="Permanent link">&para;</a></h2>
+<p>This section starts by showing how to create a basic dataset in Argilla and define its settings, and then how to list all the datasets available in each workspace and retrieve a specific one. Finally, the guide covers the steps to update and delete a dataset.</p>
+<div class="admonition info">
+<p class="admonition-title">Class</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1"><code>rg.Dataset</code></label><label for="__tabbed_1_2"><code>rg.Settings</code></label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;name&quot;</span><span class="p">,</span>
-</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">workspace</span><span class="o">=</span><span class="n">workspace</span><span class="p">,</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">workspace</span><span class="o">=</span><span class="s2">&quot;workspace&quot;</span><span class="p">,</span>
 </span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">,</span>
-</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">status</span><span class="o">=</span><span class="s2">&quot;ready&quot;</span><span class="p">,</span>
-</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="n">client</span><span class="o">=</span><span class="n">client</span><span class="p">,</span>
-</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="p">)</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>    <span class="n">client</span><span class="o">=</span><span class="n">client</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="p">)</span>
 </span></code></pre></div>
-<h2 id="rgsettings">rg.Settings<a class="headerlink" href="#rgsettings" title="Permanent link">&para;</a></h2>
-<p>The settings of a Dataset are represented in the <code>Settings</code> class where you can indicate the <code>fields</code> and the <code>questions</code> that annotators will need to answer to provide feedback. Optionally, you can add <code>metadata</code>, <code>vectors</code> and <code>guidelines</code>. We will cover each of these settings in detail in the following <a href="#define-dataset-settings">section</a>.</p>
+<blockquote>
+<p>Check the <a href="../reference/argilla_sdk/datasets.md">Dataset - Python Reference</a> to see the attributes, arguments, and methods of the <code>Dataset</code> class in detail.</p>
+</blockquote>
+</div>
+<div class="tabbed-block">
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">settings</span><span class="p">(</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">text_field</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">)],</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">questions</span><span class="o">=</span><span class="p">[</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>        <span class="n">rg</span><span class="o">.</span><span class="n">label_question</span><span class="p">(</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>            <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label_1&quot;</span><span class="p">,</span> <span class="s2">&quot;label_2&quot;</span><span class="p">,</span> <span class="s2">&quot;label_3&quot;</span><span class="p">]</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>        <span class="p">)</span>
+</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>    <span class="p">],</span>
+</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>    <span class="n">metadata</span><span class="o">=</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">terms_metadata_property</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;metadata&quot;</span><span class="p">)],</span>
+</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>    <span class="n">vectors</span><span class="o">=</span><span class="p">[</span><span class="n">rg</span><span class="o">.</span><span class="n">vector_field</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">10</span><span class="p">)],</span>
+</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">guidelines</span><span class="o">=</span><span class="s2">&quot;guidelines&quot;</span><span class="p">,</span>
+</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>    <span class="n">allow_extra_metadata</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a><span class="p">)</span>
+</span></code></pre></div>
 <blockquote>
 <p>Check the <a href="../../reference/argilla_sdk/settings/settings/">Settings - Python Reference</a> to see the attributes, arguments, and methods of the <code>Settings</code> class in detail.</p>
 </blockquote>
-<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">Settings</span><span class="p">(</span>
-</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        <span class="n">rg</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">)</span>
-</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>        <span class="p">],</span>
-</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">questions</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>        <span class="n">rg</span><span class="o">.</span><span class="n">LabelQuestion</span><span class="p">(</span>
-</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span>
-</span><span id="__span-1-8"><a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a>            <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;label_1&quot;</span><span class="p">,</span> <span class="s2">&quot;label_2&quot;</span><span class="p">,</span> <span class="s2">&quot;label_3&quot;</span><span class="p">]</span>
-</span><span id="__span-1-9"><a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a>            <span class="p">)</span>
-</span><span id="__span-1-10"><a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a>        <span class="p">],</span>
-</span><span id="__span-1-11"><a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a>    <span class="n">metadata</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-1-12"><a id="__codelineno-1-12" name="__codelineno-1-12" href="#__codelineno-1-12"></a>        <span class="n">rg</span><span class="o">.</span><span class="n">TermsMetadataProperty</span><span class="p">(</span>
-</span><span id="__span-1-13"><a id="__codelineno-1-13" name="__codelineno-1-13" href="#__codelineno-1-13"></a>            <span class="n">name</span><span class="o">=</span><span class="s2">&quot;metadata&quot;</span><span class="p">,</span>
-</span><span id="__span-1-14"><a id="__codelineno-1-14" name="__codelineno-1-14" href="#__codelineno-1-14"></a>            <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;option_1&quot;</span><span class="p">,</span> <span class="s2">&quot;option_2&quot;</span><span class="p">,</span> <span class="s2">&quot;option_3&quot;</span><span class="p">]</span>
-</span><span id="__span-1-15"><a id="__codelineno-1-15" name="__codelineno-1-15" href="#__codelineno-1-15"></a>            <span class="p">)</span>
-</span><span id="__span-1-16"><a id="__codelineno-1-16" name="__codelineno-1-16" href="#__codelineno-1-16"></a>        <span class="p">],</span>
-</span><span id="__span-1-17"><a id="__codelineno-1-17" name="__codelineno-1-17" href="#__codelineno-1-17"></a>    <span class="n">vectors</span> <span class="o">=</span> <span class="p">[</span>
-</span><span id="__span-1-18"><a id="__codelineno-1-18" name="__codelineno-1-18" href="#__codelineno-1-18"></a>        <span class="n">rg</span><span class="o">.</span><span class="n">VectorField</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;vector&quot;</span><span class="p">,</span> <span class="n">dimensions</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
-</span><span id="__span-1-19"><a id="__codelineno-1-19" name="__codelineno-1-19" href="#__codelineno-1-19"></a>        <span class="p">],</span>
-</span><span id="__span-1-20"><a id="__codelineno-1-20" name="__codelineno-1-20" href="#__codelineno-1-20"></a>    <span class="n">guidelines</span> <span class="o">=</span> <span class="s2">&quot;guidelines&quot;</span><span class="p">,</span>
-</span><span id="__span-1-21"><a id="__codelineno-1-21" name="__codelineno-1-21" href="#__codelineno-1-21"></a>    <span class="n">allow_extra_metadata</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-1-22"><a id="__codelineno-1-22" name="__codelineno-1-22" href="#__codelineno-1-22"></a><span class="p">)</span>
-</span></code></pre></div>
-<h2 id="how-to-guide">How-to guide<a class="headerlink" href="#how-to-guide" title="Permanent link">&para;</a></h2>
-<p>This section starts by showing how to create a basic dataset in Argilla and define its settings, and then how to list all the datasets available in each workspace and retrieve a specific one. Finally, the guide covers the steps to update and delete a dataset.</p>
+</div>
+</div>
+</div>
+</div>
 <h3 id="create-a-dataset">Create a dataset<a class="headerlink" href="#create-a-dataset" title="Permanent link">&para;</a></h3>
 <p>To create a dataset, you can define it in the <code>Dataset</code> class and then call the <code>publish</code> method that will send the dataset to the server so that it can be visualized in the UI. If the dataset does not appear in the UI, you may need to click the refresh button to update the view. For further configuration of the dataset, you can refer to the <a href="#define-dataset-settings">settings section</a>.</p>
 <blockquote>
@@ -2141,7 +2048,6 @@
 <ul>
 <li><code>name</code>: The name of the field.</li>
 <li><code>title</code> (optional): The name of the field, as it will be displayed in the UI. Defaults to the <code>name</code> value.</li>
-<li><code>description</code> (optional): The description of the field, as it will be displayed in the UI. Defaults to <code>None</code>.</li>
 <li><code>required</code> (optional): Whether the field is required or not. Defaults to <code>True</code>. At least one field must be required.</li>
 <li><code>use_markdown</code> (optional): Specify whether you want markdown rendered in the UI. Defaults to <code>False</code>. If you set it to True, you will be able to use all the Markdown features for text formatting, as well as embed multimedia content and PDFs.</li>
 </ul>
@@ -2152,15 +2058,14 @@
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">TextField</span><span class="p">(</span>
 </span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;text&quot;</span><span class="p">,</span>
 </span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Text&quot;</span><span class="p">,</span>
-</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">description</span><span class="o">=</span><span class="s2">&quot;The text to be annotated&quot;</span><span class="p">,</span>
-</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">use_markdown</span><span class="o">=</span><span class="kc">False</span>
-</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a><span class="p">)</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">use_markdown</span><span class="o">=</span><span class="kc">False</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="p">)</span>
 </span></code></pre></div>
 <img alt="TextField" src="../../assets/images/how_to_guides/dataset/fields.png" /></p>
 <h4 id="questions">Questions<a class="headerlink" href="#questions" title="Permanent link">&para;</a></h4>
 <p>To collect feedback for your dataset, you need to formulate questions that annotators will be asked to answer. Currently, Argilla supports the following types of questions: <code>LabelQuestion</code>, <code>MultiLabelQuestion</code>, <code>RankingQuestion</code>, <code>RatingQuestion</code>, <code>SpanQuestion</code>, and <code>TextQuestion</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="1:6"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><input id="__tabbed_1_5" name="__tabbed_1" type="radio" /><input id="__tabbed_1_6" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Label</label><label for="__tabbed_1_2">Multi-label</label><label for="__tabbed_1_3">Ranking</label><label for="__tabbed_1_4">Rating</label><label for="__tabbed_1_5">Span</label><label for="__tabbed_1_6">Text</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:6"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><input id="__tabbed_2_4" name="__tabbed_2" type="radio" /><input id="__tabbed_2_5" name="__tabbed_2" type="radio" /><input id="__tabbed_2_6" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Label</label><label for="__tabbed_2_2">Multi-label</label><label for="__tabbed_2_3">Ranking</label><label for="__tabbed_2_4">Rating</label><label for="__tabbed_2_5">Span</label><label for="__tabbed_2_6">Text</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>A <code>LabelQuestion</code> asks annotators to choose a unique label from a list of options. This type is useful for text classification tasks. In the UI, they will have a rounded shape. It has the following configuration:</p>
@@ -2305,14 +2210,14 @@
 </div>
 <h4 id="metadata">Metadata<a class="headerlink" href="#metadata" title="Permanent link">&para;</a></h4>
 <p>Metadata properties allow you to configure the use of metadata information for the filtering and sorting features available in the UI and Python SDK. There exist three types of metadata you can add: <code>TermsMetadataProperty</code>, <code>IntegerMetadataProperty</code> and <code>FloatMetadataProperty</code>.</p>
-<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Terms</label><label for="__tabbed_2_2">Integer</label><label for="__tabbed_2_3">Float</label></div>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Terms</label><label for="__tabbed_3_2">Integer</label><label for="__tabbed_3_3">Float</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <p>A <code>TermsMetadataProperty</code> allows to add a list of strings as metadata options. It has the following configuration:  </p>
 <ul>
 <li><code>name</code>: The name of the metadata property.</li>
 <li><code>title</code> (optional): The name of the metadata property, as it will be displayed in the UI. Defaults to the <code>name</code> value, but capitalized.</li>
-<li><code>options</code>: You can pass a list of valid values for this metadata property, in case you want to run any validation.</li>
+<li><code>options</code> (optional): You can pass a list of valid values for this metadata property, in case you want to run any validation.</li>
 </ul>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">TermsMetadataProperty</span><span class="p">(</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;terms&quot;</span><span class="p">,</span>
@@ -2327,8 +2232,8 @@
 <ul>
 <li><code>name</code>: The name of the metadata property.</li>
 <li><code>title</code> (optional): The name of the metadata property, as it will be displayed in the UI. Defaults to the <code>name</code> value, but capitalized.</li>
-<li><code>min</code>: You can pass a minimum valid value. If none is provided, the minimum value will be computed from the values provided in the records.</li>
-<li><code>max</code>: You can pass a maximum valid value. If none is provided, the maximum value will be computed from the values provided in the records.</li>
+<li><code>min</code> (optional): You can pass a minimum valid value. If none is provided, the minimum value will be computed from the values provided in the records.</li>
+<li><code>max</code> (optional): You can pass a maximum valid value. If none is provided, the maximum value will be computed from the values provided in the records.</li>
 </ul>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-11-1"><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">IntegerMetadataProperty</span><span class="p">(</span>
 </span><span id="__span-11-2"><a id="__codelineno-11-2" name="__codelineno-11-2" href="#__codelineno-11-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;integer&quot;</span><span class="p">,</span>
@@ -2344,8 +2249,8 @@
 <ul>
 <li><code>name</code>: The name of the metadata property.</li>
 <li><code>title</code> (optional): The name of the metadata property, as it will be displayed in the UI. Defaults to the <code>name</code> value, but capitalized.</li>
-<li><code>min</code>: You can pass a minimum valid value. If none is provided, the minimum value will be computed from the values provided in the records.</li>
-<li><code>max</code>: You can pass a maximum valid value. If none is provided, the maximum value will be computed from the values provided in the records.</li>
+<li><code>min</code> (optional): You can pass a minimum valid value. If none is provided, the minimum value will be computed from the values provided in the records.</li>
+<li><code>max</code> (optional): You can pass a maximum valid value. If none is provided, the maximum value will be computed from the values provided in the records.</li>
 </ul>
 <p><div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="n">rg</span><span class="o">.</span><span class="n">FloatMetadataProperty</span><span class="p">(</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;float&quot;</span><span class="p">,</span>

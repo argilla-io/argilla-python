@@ -33,10 +33,8 @@ data = rg.Dataset(
 
 ## Class References
 
-::: argilla_sdk.settings.TextField
-    options: 
-        heading_level: 3
+### `rg.TextField`
 
-::: argilla_sdk.settings.VectorField
+::: argilla_sdk.settings.TextField
     options: 
         heading_level: 3

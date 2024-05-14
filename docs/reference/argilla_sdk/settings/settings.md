@@ -1,6 +1,6 @@
 # `rg.Settings`
 
-`rg.Settings` is used to define the setttings of an Argilla `Dataset`. The settings can be used to configure the behavior of the dataset, such as the fields, questions, guidelines, metadata, and vectors. The `Settings` class is passed to the `Dataset` class and used to publish the dataset to the server. Once published, the settings of a dataset cannot be changed. 
+`rg.Settings` is used to define the setttings of an Argilla `Dataset`. The settings can be used to configure the behavior of the dataset, such as the fields, questions, guidelines, metadata, and vectors. The `Settings` class is passed to the `Dataset` class and used to create the dataset on the server. Once created, the settings of a dataset cannot be changed. 
 
 ## Usage Examples
 
@@ -22,8 +22,8 @@ dataset = rg.Dataset(
     settings=settings,
 )
 
-# Publish the dataset to the server
-dataset.publish()
+# Create the dataset on the server
+dataset.create()
 ```
 
 
@@ -32,6 +32,8 @@ dataset.publish()
 ---
 
 ## Class Reference
+
+### `rg.Settings`
 
 ::: argilla_sdk.settings.Settings
     options: 

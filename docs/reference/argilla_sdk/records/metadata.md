@@ -19,7 +19,7 @@ dataset = Dataset(
         ],
     ),
 )
-dataset.publish()
+dataset.create()
 ```
 
 Then, you can add records to the dataset with metadata that corresponds to the metadata property defined in the dataset settings:

@@ -20,7 +20,7 @@ dataset = Dataset(
         ],
     ),
 )
-dataset.publish()
+dataset.create()
 ```
 
 Then, you can add records to the dataset with vectors that correspond to the vector field defined in the dataset settings:
@@ -66,6 +66,8 @@ dataset.records.add(
 ---
 
 ## Class Reference
+
+### `rg.Vector`
 
 ::: argilla_sdk.vectors.Vector
     options: 

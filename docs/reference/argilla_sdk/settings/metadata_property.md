@@ -38,7 +38,7 @@ int_metadata_field = rg.IntegerMetadataProperty(
 )
 ```
 
-Metadata properties can be added to a dataset settings object and published to the server:
+Metadata properties can be added to a dataset settings object:
 
 ```python
 
@@ -63,13 +63,19 @@ dataset = rg.Dataset(
 
 ## Class References
 
+### `rg.FloatMetadataProperty`
+
 ::: argilla_sdk.settings.FloatMetadataProperty
     options: 
         heading_level: 3
 
+### `rg.IntegerMetadataProperty`
+
 ::: argilla_sdk.settings.IntegerMetadataProperty
     options: 
         heading_level: 3
+
+### `rg.TermsMetadataProperty`
 
 ::: argilla_sdk.settings.TermsMetadataProperty
     options: 

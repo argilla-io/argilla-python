@@ -25,8 +25,8 @@ dataset = rg.Dataset(
     ),
 )
 
-# Publish the dataset to the server
-dataset.publish() -->
+# Create the dataset on the server
+dataset.create() -->
 
 ```python
 # Add records to a dataset

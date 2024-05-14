@@ -48,6 +48,8 @@ for record in dataset.records(with_suggestions=True):
 
 ## Class Reference
 
+### `rg.Suggestion`
+
 ::: argilla_sdk.suggestions.Suggestion
     options: 
         heading_level: 3

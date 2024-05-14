@@ -51,25 +51,37 @@ dataset = rg.Dataset(
 
 ## Class References
 
+### `rg.LabelQuestion`
+
 ::: argilla_sdk.settings.LabelQuestion
     options: 
         heading_level: 3
+
+### `rg.MultiLabelQuestion`
 
 ::: argilla_sdk.settings.MultiLabelQuestion
     options: 
         heading_level: 3
 
+### `rg.RankingQuestion`
+
 ::: argilla_sdk.settings.RankingQuestion
     options: 
         heading_level: 3
+
+### `rg.TextQuestion`
 
 ::: argilla_sdk.settings.TextQuestion
     options: 
         heading_level: 3
 
+### `rg.RatingQuestion`
+
 ::: argilla_sdk.settings.RatingQuestion
     options: 
         heading_level: 3
+
+### `rg.SpanQuestion`
 
 ::: argilla_sdk.settings.SpanQuestion
     options: 

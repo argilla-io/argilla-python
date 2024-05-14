@@ -27,7 +27,7 @@ Argilla is a **collaboration platform for AI engineers and domain experts** that
 
 </div>
 
-## Changelog
+<!-- ## Changelog -->
 
 ## Why use Argilla?
 

@@ -59,6 +59,7 @@ for record in dataset.records:
 
 ## Class Reference
 
+### `rg.Response`
 
 ::: argilla_sdk.responses.Response
     options: 

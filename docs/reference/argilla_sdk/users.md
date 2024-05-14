@@ -27,6 +27,8 @@ client.me
 
 ## Class Reference
 
+### `rg.User`
+
 ::: argilla_sdk.users.User
     options: 
         heading_level: 3

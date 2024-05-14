@@ -6,7 +6,7 @@
 
 ### Creating a Dataset
 
-To create a new dataset you need to define its name and settings.
+To create a new dataset you need to define its name and settings. Optional parameters are `workspace` and `client`, if you want to create the dataset in a specific workspace or on a specific Argilla instance.
 
 ```python
 dataset = rg.Dataset(
@@ -20,6 +20,7 @@ dataset = rg.Dataset(
         ],
     ),
 )
+dataset.create()
 ```
 
 For a detail guide of the dataset creation and publication process, see the [Dataset how to guide](/argilla-python/how_to_guides/dataset).

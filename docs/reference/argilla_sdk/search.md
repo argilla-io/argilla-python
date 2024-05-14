@@ -41,9 +41,13 @@ for record in dataset.records(query=query):
 
 ## Class Reference
 
+### `rg.Query`
+
 ::: argilla_sdk.records._search.Query
     options: 
         heading_level: 3
+
+### `rg.Filter`
 
 ::: argilla_sdk.records._search.Filter        
     options: 

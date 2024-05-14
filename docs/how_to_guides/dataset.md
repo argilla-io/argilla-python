@@ -86,7 +86,7 @@ dataset.create()
 
 ### Fields
 
-The fields in a dataset consist of one or more data items requiring annotation. Currently, Argilla only supports the `TextField` type—a plain text field—though there are plans to introduce additional field types in future updates.
+The fields in a dataset consist of one or more data items requiring annotation. Currently, Argilla only supports plain text and markdown through the `TextField`, though we plan to introduce additional field types in future updates.
 
 A **field** is defined in the `TextField` class that has the following arguments:
 

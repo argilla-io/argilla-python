@@ -164,43 +164,6 @@ class Dataset(Resource):
         return cls(client=client, _model=model)
 
     #####################
-    #  CRUD operations  #
-    #####################
-
-    def create(self) -> "Dataset":
-        """Creates a new dataset on the server without `Settings` configuration and without publishing
-        Returns:
-            Dataset: The created dataset object
-        Examples:
-        """
-        return super().create()
-
-    def get(self) -> "Dataset":
-        """Retrieves the dataset from the server
-        Returns:
-            Dataset: The retrieved dataset object
-        """
-        return super().get()
-
-    def update(self) -> "Dataset":
-        """Updates the dataset on the server
-        Returns:
-            Dataset: The updated dataset object
-        Examples:
-        ```python
-        dataset = rg.Dataset(name="my_dataset")
-        dataset.create()
-        # do something to the dataset configuration locally
-        dataset.update()
-        ```
-        """
-        return super().update()
-
-    def delete(self) -> None:
-        """Deletes the dataset from the server"""
-        return super().delete()
-
-    #####################
     #  Utility methods  #
     #####################
 

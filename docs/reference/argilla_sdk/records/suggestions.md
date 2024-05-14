@@ -27,13 +27,16 @@ If your data contains scores for suggestions you can add them as well via the `m
 dataset.records.add(
     [
         {
-            "text": "Hello World, how are you?",
-            "label": "negative", # this will be used as a suggestion
-            "score": 0.9, # this will be used as the suggestion score
-            "model": "model_name" # this will be used as the suggestion agent
+            "prompt": "Hello World, how are you?",
+            "label": "negative",  # this will be used as a suggestion
+            "score": 0.9,  # this will be used as the suggestion score
+            "model": "model_name",  # this will be used as the suggestion agent
         },
     ],
-    mapping={"score": "label.score", "model": "label.agent"}, # `label` is the question name in the dataset settings
+    mapping={
+        "score": "label.suggestion.score",
+        "model": "label.suggestion.agent",
+    },  # `label` is the question name in the dataset settings
 )
 ```
 

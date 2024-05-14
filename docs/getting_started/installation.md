@@ -46,9 +46,9 @@ import argilla_sdk as rg
 
 client = rg.Argilla(
     api_url="<api_url>",
-    api_key="<api_key>"
+    api_key="<api_key>",
     # extra_headers={"Authorization": f"Bearer {HF_TOKEN}"}
-    )
+)
 ```
 
 ## Developer documentation
@@ -78,4 +78,4 @@ To generate the docs you will need to install the development dependencies, and 
 mkdocs serve
 ```
 
-You will find the built documentation in `http://127.0.0.1:8000/`
+You will find the built documentation in `http://localhost:8000/argilla-python/`.

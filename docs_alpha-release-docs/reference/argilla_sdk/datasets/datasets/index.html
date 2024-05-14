@@ -949,27 +949,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../../settings/metadata_property/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Metadata
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../../settings/fields/" class="md-nav__link">
         
   
@@ -991,11 +970,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../../settings/vectors/" class="md-nav__link">
+      <a href="../../settings/questions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Vectors
+    Questions
   </span>
   
 
@@ -1012,11 +991,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../../settings/questions/" class="md-nav__link">
+      <a href="../../settings/metadata_property/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Questions
+    Metadata
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../settings/vectors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vectors
   </span>
   
 
@@ -1442,7 +1442,7 @@
 <p><code>Dataset</code> is a class that represents a collection of records. It is used to store and manage records in Argilla.</p>
 <h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h2>
 <h3 id="creating-a-dataset">Creating a Dataset<a class="headerlink" href="#creating-a-dataset" title="Permanent link">&para;</a></h3>
-<p>To create a new dataset you need to define its name and settings.</p>
+<p>To create a new dataset you need to define its name and settings. Optional parameters are <code>workspace</code> and <code>client</code>, if you want to create the dataset in a specific workspace or on a specific Argilla instance.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">dataset</span> <span class="o">=</span> <span class="n">rg</span><span class="o">.</span><span class="n">Dataset</span><span class="p">(</span>
 </span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;my_dataset&quot;</span><span class="p">,</span>
 </span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="n">settings</span><span class="o">=</span><span class="n">rg</span><span class="o">.</span><span class="n">Settings</span><span class="p">(</span>
@@ -1454,6 +1454,7 @@
 </span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>        <span class="p">],</span>
 </span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="p">),</span>
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">)</span>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">dataset</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 </span></code></pre></div>
 <p>For a detail guide of the dataset creation and publication process, see the <a href="/argilla-python/how_to_guides/dataset">Dataset how to guide</a>.</p>
 <h3 id="retrieving-an-existing-dataset">Retrieving an existing Dataset<a class="headerlink" href="#retrieving-an-existing-dataset" title="Permanent link">&para;</a></h3>

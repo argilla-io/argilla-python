@@ -18,7 +18,7 @@
         <link rel="prev" href="../../datasets/dataset_records/">
       
       
-        <link rel="next" href="../metadata_property/">
+        <link rel="next" href="../fields/">
       
       
       <link rel="icon" href="../../../../assets/favicon.ico">
@@ -949,27 +949,6 @@
   
   
     <li class="md-nav__item">
-      <a href="../metadata_property/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    Metadata
-  </span>
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
       <a href="../fields/" class="md-nav__link">
         
   
@@ -991,11 +970,11 @@
   
   
     <li class="md-nav__item">
-      <a href="../vectors/" class="md-nav__link">
+      <a href="../questions/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Vectors
+    Questions
   </span>
   
 
@@ -1012,11 +991,32 @@
   
   
     <li class="md-nav__item">
-      <a href="../questions/" class="md-nav__link">
+      <a href="../metadata_property/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Questions
+    Metadata
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../vectors/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Vectors
   </span>
   
 
@@ -1335,6 +1335,15 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#rgsettings_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      rg.Settings
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#argilla_sdk.settings.Settings" class="md-nav__link">
     <span class="md-ellipsis">
       Settings
@@ -1376,7 +1385,7 @@
 
 
 <h1 id="rgsettings"><code>rg.Settings</code><a class="headerlink" href="#rgsettings" title="Permanent link">&para;</a></h1>
-<p><code>rg.Settings</code> is used to define the setttings of an Argilla <code>Dataset</code>. The settings can be used to configure the behavior of the dataset, such as the fields, questions, guidelines, metadata, and vectors. The <code>Settings</code> class is passed to the <code>Dataset</code> class and used to publish the dataset to the server. Once published, the settings of a dataset cannot be changed. </p>
+<p><code>rg.Settings</code> is used to define the setttings of an Argilla <code>Dataset</code>. The settings can be used to configure the behavior of the dataset, such as the fields, questions, guidelines, metadata, and vectors. The <code>Settings</code> class is passed to the <code>Dataset</code> class and used to create the dataset on the server. Once created, the settings of a dataset cannot be changed. </p>
 <h2 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h2>
 <h3 id="creating-a-new-dataset-with-settings">Creating a new dataset with settings<a class="headerlink" href="#creating-a-new-dataset-with-settings" title="Permanent link">&para;</a></h3>
 <p>To create a new dataset with settings, instantiate the <code>Settings</code> class and pass it to the <code>Dataset</code> class. </p>
@@ -1393,14 +1402,15 @@
 </span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>    <span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">,</span>
 </span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="p">)</span>
 </span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>
-</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># Publish the dataset to the server</span>
-</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">dataset</span><span class="o">.</span><span class="n">publish</span><span class="p">()</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="c1"># Create the dataset on the server</span>
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a><span class="n">dataset</span><span class="o">.</span><span class="n">create</span><span class="p">()</span>
 </span></code></pre></div>
 <blockquote>
 <p>To define the settings for fields, questions, metadata, or vectors, refer to the <a href="../fields/"><code>rg.TextField</code></a>, <a href="../questions/"><code>rg.LabelQuestion</code></a>, <a href="../metadata_property/"><code>rg.TermsMetadataProperty</code></a>, and <a href="../vectors/"><code>rg.VectorField</code></a> class documentation.</p>
 </blockquote>
 <hr />
 <h2 id="class-reference">Class Reference<a class="headerlink" href="#class-reference" title="Permanent link">&para;</a></h2>
+<h3 id="rgsettings_1"><code>rg.Settings</code><a class="headerlink" href="#rgsettings_1" title="Permanent link">&para;</a></h3>
 
 
 <div class="doc doc-object doc-class">
@@ -1731,12 +1741,7 @@
 <span class="normal"><a href="#__codelineno-0-344">344</a></span>
 <span class="normal"><a href="#__codelineno-0-345">345</a></span>
 <span class="normal"><a href="#__codelineno-0-346">346</a></span>
-<span class="normal"><a href="#__codelineno-0-347">347</a></span>
-<span class="normal"><a href="#__codelineno-0-348">348</a></span>
-<span class="normal"><a href="#__codelineno-0-349">349</a></span>
-<span class="normal"><a href="#__codelineno-0-350">350</a></span>
-<span class="normal"><a href="#__codelineno-0-351">351</a></span>
-<span class="normal"><a href="#__codelineno-0-352">352</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="k">class</span> <span class="nc">Settings</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
+<span class="normal"><a href="#__codelineno-0-347">347</a></span></pre></div></td><td class="code"><div><pre><span></span><code><span id="__span-0-34"><a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="k">class</span> <span class="nc">Settings</span><span class="p">(</span><span class="n">Resource</span><span class="p">):</span>
 </span><span id="__span-0-35"><a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 </span><span id="__span-0-36"><a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="sd">    Settings class for Argilla Datasets.</span>
 </span><span id="__span-0-37"><a id="__codelineno-0-37" name="__codelineno-0-37"></a>
@@ -2049,12 +2054,7 @@
 </span><span id="__span-0-344"><a id="__codelineno-0-344" name="__codelineno-0-344"></a>    <span class="c1">#####################</span>
 </span><span id="__span-0-345"><a id="__codelineno-0-345" name="__codelineno-0-345"></a>
 </span><span id="__span-0-346"><a id="__codelineno-0-346" name="__codelineno-0-346"></a>    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-</span><span id="__span-0-347"><a id="__codelineno-0-347" name="__codelineno-0-347"></a>        <span class="k">yield</span> <span class="s2">&quot;guidelines&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">guidelines</span>
-</span><span id="__span-0-348"><a id="__codelineno-0-348" name="__codelineno-0-348"></a>        <span class="k">yield</span> <span class="s2">&quot;allow_extra_metadata&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">allow_extra_metadata</span>
-</span><span id="__span-0-349"><a id="__codelineno-0-349" name="__codelineno-0-349"></a>        <span class="k">yield</span> <span class="s2">&quot;fields&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fields</span>
-</span><span id="__span-0-350"><a id="__codelineno-0-350" name="__codelineno-0-350"></a>        <span class="k">yield</span> <span class="s2">&quot;questions&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">questions</span>
-</span><span id="__span-0-351"><a id="__codelineno-0-351" name="__codelineno-0-351"></a>        <span class="k">yield</span> <span class="s2">&quot;vectors&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">vectors</span>
-</span><span id="__span-0-352"><a id="__codelineno-0-352" name="__codelineno-0-352"></a>        <span class="k">yield</span> <span class="s2">&quot;metadata&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">metadata</span>
+</span><span id="__span-0-347"><a id="__codelineno-0-347" name="__codelineno-0-347"></a>        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Settings(guidelines=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">guidelines</span><span class="si">}</span><span class="s2">, allow_extra_metadata=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">allow_extra_metadata</span><span class="si">}</span><span class="s2">, fields=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">fields</span><span class="si">}</span><span class="s2">, questions=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">questions</span><span class="si">}</span><span class="s2">, vectors=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">vectors</span><span class="si">}</span><span class="s2">, metadata=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">metadata</span><span class="si">}</span><span class="s2">)&quot;</span>
 </span></code></pre></div></td></tr></table></div>
             </details>
 

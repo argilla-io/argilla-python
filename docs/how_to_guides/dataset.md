@@ -406,8 +406,6 @@ dataset_existed = dataset.exists()
 
 You can update a dataset by calling the `update` method on the `Dataset` class and passing the new settings as an argument.
 
-> For further information on how to update the dataset settings (fields, questions, metadata, vectors and guidelines), check this [how-to guide](settings.md).
-
 !!! note
     Keep in mind that once your dataset is published, only the guidelines can be updated.
 

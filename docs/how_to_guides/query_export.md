@@ -14,8 +14,8 @@ You can search for records in your dataset by **querying** or **filtering**. The
 
         ```python
         rg.Query(
-        query="query",
-        filter=filter
+            query="query",
+            filter=filter
         )
         ```
         > Check the [Query - Python Reference](../reference/argilla_sdk/search.md) to see the attributes, arguments, and methods of the `Query` class in detail.
@@ -49,7 +49,6 @@ To search for records with terms, you can use the `Dataset.records` attribute wi
     query = rg.Query(query="my_term")
 
     queried_records = list(dataset.records(query=query))
-    queried_records
     ```
 
 === "Multiple search term"
@@ -66,7 +65,6 @@ To search for records with terms, you can use the `Dataset.records` attribute wi
     query = rg.Query(query="my_term1 my_term2")
 
     queried_records = list(dataset.records(query=query))
-    queried_records
     ```
 
 ## Filter by conditions
@@ -94,7 +92,6 @@ You can use the `Filter` class to define the conditions and pass them to the `Da
     filter_label = rg.Filter(("label", "==", "positive"))
 
     filtered_records = list(dataset.records(query=rg.Query(filter=filter_label)))
-    filtered_records
     ```
 
 === "Multiple conditions"
@@ -121,7 +118,6 @@ You can use the `Filter` class to define the conditions and pass them to the `Da
         query=rg.Query(filter=filters)),
         with_suggestions=True
     )
-    filtered_records
     ```
 
 ## Query and filter a dataset
@@ -153,7 +149,6 @@ queried_filtered_records = list(dataset.records(
     with_suggestions=True
     )
 )
-queried_filtered_records
 ```
 
 ## Export records to a dictionary
@@ -172,17 +167,14 @@ dataset = client.datasets(name="my_dataset", workspace=workspace)
 
 # Export records as a dictionary
 exported_records = dataset.records.to_dict()
-exported_records
 # {'fields': [{'text': 'Hello'},{'text': 'World'}], suggestions': [{'label': {'value': 'positive'}}, {'label': {'value': 'negative'}}]
 
 # Export records as a dictionary with orient=index
 exported_records = dataset.records.to_dict(orient="index")
-exported_records
 # {"uuid": {'fields': {'text': 'Hello'}, 'suggestions': {'label': {'value': 'positive'}}}, {"uuid": {'fields': {'text': 'World'}, 'suggestions': {'label': {'value': 'negative'}}},
 
 # Export records as a dictionary with flatten=false
 exported_records = dataset.records.to_dict(flatten=True)
-exported_records
 # {"text": ["Hello", "World"], "label.suggestion": ["greeting", "greeting"]}
 ```
 
@@ -201,11 +193,9 @@ dataset = client.datasets(name="my_dataset", workspace=workspace)
 
 # Export records as a list of dictionaries
 exported_records = dataset.records.to_list()
-exported_records
 # [{'fields': {'text': 'Hello'}, 'suggestion': {'label': {value: 'greeting'}}}, {'fields': {'text': 'World'}, 'suggestion': {'label': {value: 'greeting'}}}]
 
 # Export records as a list of dictionaries with flatten=False
 exported_records = dataset.records.to_list(flatten=True)
-exported_records
 # [{"text": "Hello", "label": "greeting"}, {"text": "World", "label": "greeting"}]
 ```

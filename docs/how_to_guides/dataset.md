@@ -386,7 +386,6 @@ retrieved_dataset = client.datasets(name="my_dataset")
 
 # Retrieve the dataset from the specified workspace
 retrieved_dataset = client.datasets(name="my_dataset", workspace=workspace)
-
 ```
 
 ## Check dataset existence
@@ -401,7 +400,6 @@ client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 dataset = client.datasets(name="my_dataset")
 
 dataset_existed = dataset.exists()
-dataset_existed
 ```
 
 ## Update a dataset
@@ -435,7 +433,6 @@ settings_to_update = rg.Settings(
 dataset_to_update.settings = settings_to_update
 
 dataset_updated = dataset_to_update.update()
-dataset_updated
 ```
 
 ## Delete a dataset

@@ -82,7 +82,6 @@ import argilla_sdk as rg
 client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 
 retrieved_workspace = client.workspaces("my_workspace")
-retrieved_workspace
 ```
 
 ## Check workspace existence
@@ -97,7 +96,6 @@ client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 workspace = client.workspaces("my_workspace")
 
 workspace_existed = workspace.exists()
-workspace_existed
 ```
 
 ## Add a user to a workspace
@@ -111,7 +109,6 @@ client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 
 workspace = client.workspaces("my_workspace")
 added_user = workspace.add_user("my_username")
-added_user
 ```
 
 ## Remove a user from workspace
@@ -125,7 +122,6 @@ client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 
 workspace = client.workspaces("my_workspace")
 removed_user = workspace.remove_user("my_username")
-removed_user
 ```
 
 ## Delete a workspace

@@ -100,7 +100,6 @@ user_to_create = rg.User(
 )
 
 created_user = user_to_create.create()
-created_user
 ```
 !!! tip "Accessing attributes"
     Access the attributes of a user by calling them directly on the `User` object. For example, `user.id` or `user.username`.
@@ -132,7 +131,6 @@ import argilla_sdk as rg
 client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 
 retrieved_user = client.users('my_username')
-retrieved_user
 ```
 
 ## Add a user to a workspace
@@ -149,7 +147,6 @@ user = client.users('my_username')
 workspace = client.workspaces('my_workspace')
 
 added_user = user.add_to_workspace(workspace)
-added_user
 ```
 
 ## Remove a user from a workspace
@@ -166,7 +163,6 @@ user = client.users('my_username')
 workspace = client.workspaces('my_workspace')
 
 removed_user = user.remove_from_workspace(workspace)
-removed_user
 ```
 
 ## Delete a user

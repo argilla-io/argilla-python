@@ -3,7 +3,7 @@ description: Argilla is a **collaboration platform for AI engineers and domain e
 hide: navigation
 ---
 
-# Introduction
+# Welcome to Argilla docs
 
 Argilla is a **collaboration platform for AI engineers and domain experts** that require **high-quality outputs, full data ownership, and overall efficiency**.
 
@@ -33,7 +33,7 @@ Argilla is a **collaboration platform for AI engineers and domain experts** that
 
 Whether you are working on monitoring and improving complex **generative tasks** involving LLM pipelines with RAG, or you are working on a **predictive task** for things like AB-testing of span- and text-classification models. Our versatile platform helps you ensure **your data work pays off**.
 
-### Improve your AI output quality through data quality
+Improve your AI output quality through data quality
 
 Compute is expensive and output quality is important. We help you focus on data, which tackles the root cause of both of these problems at once. Argilla helps you to **achieve and keep high-quality standards** for your data. This means you can improve the quality of your AI output.
 

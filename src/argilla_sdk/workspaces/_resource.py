@@ -32,8 +32,9 @@ class Workspace(Resource):
 
     Attributes:
         name (str): The name of the workspace.
-        id (UUID): The ID of the workspace.
-        datasets (List[DatasetModel]): A list of all datasets in the workspace.
+        id (UUID): The ID of the workspace. This is a unique identifier for the workspace in the server.
+        datasets (List[Dataset]): A list of all datasets in the workspace.
+        users (WorkspaceUsers): A list of all users in the workspace.
     """
 
     name: Optional[str]
@@ -61,6 +62,38 @@ class Workspace(Resource):
         super().__init__(client=client, api=client.api.workspaces)
         self._sync(model=WorkspaceModel(name=name, id=id) if not _model else _model)
 
+    def exists(self) -> bool:
+        """
+        Checks if the workspace exists in the server
+
+        Returns:
+            bool: True if the workspace exists, False otherwise
+        """
+        return self._api.exists(self.id)
+
+    def add_user(self, user: Union["User", str]) -> "User":
+        """Adds a user to the workspace. After adding a user to the workspace, it will have access to the datasets
+        in the workspace.
+
+        Args:
+            user (Union[User, str]): The user to add to the workspace. Can be a User object or a username.
+
+        Returns:
+            User: The user that was added to the workspace
+        """
+        return self.users.add(user)
+
+    def remove_user(self, user: Union["User", str]) -> "User":
+        """Removes a user from the workspace. After removing a user from the workspace, it will no longer have access
+
+        Args:
+            user (Union[User, str]): The user to remove from the workspace. Can be a User object or a username.
+
+        Returns:
+            User: The user that was removed from the workspace.
+        """
+        return self.users.delete(user)
+
     # TODO: Make this method private
     def list_datasets(self) -> List["Dataset"]:
         from argilla_sdk.datasets import Dataset
@@ -68,15 +101,6 @@ class Workspace(Resource):
         datasets = self._client.api.datasets.list(self.id)
         self.log(f"Got {len(datasets)} datasets for workspace {self.id}")
         return [Dataset.from_model(model=dataset, client=self._client) for dataset in datasets]
-
-    def exists(self) -> bool:
-        return self._api.exists(self.id)
-
-    def add_user(self, user: Union["User", str]) -> "User":
-        return self.users.add(user)
-
-    def remove_user(self, user: Union["User", str]) -> "User":
-        return self.users.delete(user)
 
     ############################
     # Properties
@@ -101,6 +125,12 @@ class Workspace(Resource):
 
     @property
     def users(self) -> "WorkspaceUsers":
+        """List all users in the workspace
+
+        Returns:
+            WorkspaceUsers: A list of all users in the workspace
+
+        """
         return WorkspaceUsers(workspace=self)
 
     ############################

@@ -56,18 +56,6 @@ class Argilla(_api.APIClient):
 
         self._set_default(self)
 
-    @classmethod
-    def _set_default(cls, client: "Argilla") -> None:
-        """Set the default instance of Argilla."""
-        cls._default_client = client
-
-    @classmethod
-    def _get_default(cls) -> "Argilla":
-        """Get the default instance of Argilla. If it doesn't exist, create a new one."""
-        if cls._default_client is None:
-            cls._default_client = Argilla()
-        return cls._default_client
-
     @property
     def workspaces(self) -> "Workspaces":
         """A collection of workspaces on the server."""
@@ -89,6 +77,22 @@ class Argilla(_api.APIClient):
         from argilla_sdk import User
 
         return User(client=self, _model=self.api.users.get_me())
+
+    ############################
+    # Private methods
+    ############################
+
+    @classmethod
+    def _set_default(cls, client: "Argilla") -> None:
+        """Set the default instance of Argilla."""
+        cls._default_client = client
+
+    @classmethod
+    def _get_default(cls) -> "Argilla":
+        """Get the default instance of Argilla. If it doesn't exist, create a new one."""
+        if cls._default_client is None:
+            cls._default_client = Argilla()
+        return cls._default_client
 
 
 class Users(Sequence["User"], ResourceHTMLReprMixin):

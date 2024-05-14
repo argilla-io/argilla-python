@@ -52,12 +52,12 @@ class User(Resource):
         """Initializes a User object with a client and a username
 
         Parameters:
-            client (Argilla): The client used to interact with Argilla
             username (str): The username of the user
             first_name (str): The first name of the user
             last_name (str): The last name of the user
             role (str): The role of the user, either 'annotator', admin, or 'owner'
-            password (str): The password of the user
+            password (str): The password of the user. If not provided, a random password will be generated
+            client (Argilla): The client used to interact with Argilla
 
         Returns:
             User: The initialized user object
@@ -78,8 +78,13 @@ class User(Resource):
             self.log(f"Initialized user with username {username}")
         self._sync(model=_model)
 
-    def create(self) -> "Resource":
-        """Creates the user in Argilla"""
+    def create(self) -> "User":
+        """Creates the user in Argilla. After creating a user, it will be able to log in to the Argilla server.
+
+        Returns:
+            User: The user that was created in Argilla.
+
+        """
         model_create = self.api_model()
         model = self._api.create(model_create)
         # The password is not returned in the response
@@ -88,20 +93,42 @@ class User(Resource):
         return self
 
     def exists(self) -> bool:
-        """Checks if the user exists in Argilla"""
+        """Checks if the user exists in Argilla
+
+        Returns:
+            bool: True if the user exists, False otherwise.
+        """
         # TODO - Implement the exist method in the API
         return self.id is not None
 
     def add_to_workspace(self, workspace: "Workspace") -> "User":
-        """Adds the user to a workspace"""
+        """Adds the user to a workspace. After adding a user to a workspace, it will have access to the datasets
+        in the workspace.
+
+        Args:
+            workspace (Workspace): The workspace to add the user to.
+
+        Returns:
+            User: The user that was added to the workspace.
+        """
         model = self._api.add_to_workspace(workspace.id, self.id)
         self._sync(model=model)
         return self
 
     def remove_from_workspace(self, workspace: "Workspace") -> "User":
-        """Removes the user from a workspace"""
+        """Removes the user from a workspace. After removing a user from a workspace, it will no longer have access to
+        the datasets in the workspace.
+
+        Args:
+            workspace (Workspace): The workspace to remove the user from.
+
+        Returns:
+            User: The user that was removed from the workspace.
+
+        """
         model = self._api.delete_from_workspace(workspace.id, self.id)
         self._sync(model=model)
+
         return self
 
     ############################

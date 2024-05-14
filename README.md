@@ -50,4 +50,6 @@ To generate the docs you will need to install the development dependencies, and 
 mkdocs serve
 ```
 
-The docs will be deployed on pushes to `main` branch automatically.
+You will find the built documentation in `http://localhost:8000/argilla-python/`. 
+
+The docs will be deployed for pull request branches automatically.

@@ -11,8 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import pytest
 
 import argilla_sdk as rg
+from argilla_sdk._exceptions import SettingsError
 
 
 class TestSettings:
@@ -78,6 +80,17 @@ class TestSettings:
             settings.__repr__()
             == f"""Settings(guidelines=None, allow_extra_metadata=False, fields={settings.fields}, questions={settings.questions}, vectors={settings.vectors}, metadata={settings.metadata})"""
         )
+
+    def test_settings_validation_with_duplicated_names(self):
+        settings = rg.Settings(
+            fields=[rg.TextField(name="text", title="text")],
+            metadata=[rg.FloatMetadataProperty("source")],
+            questions=[rg.LabelQuestion(name="label", title="text", labels=["positive", "negative"])],
+            vectors=[rg.VectorField(name="text", dimensions=3)],
+        )
+
+        with pytest.raises(SettingsError, match="names of dataset settings must be unique"):
+            settings.validate()
 
 
 class TestSettingsSerialization:

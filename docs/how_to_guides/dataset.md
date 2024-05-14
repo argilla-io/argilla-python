@@ -14,7 +14,7 @@ A **dataset** is a collection of records that you can configure for labelers to 
 
     The users with the `admin` role can manage (create, retrieve, update and delete) the datasets in the workspaces they have access to.
 
-!!! info "Class"
+!!! info "Main Classes"
     === "`rg.Dataset`"
 
         ```python

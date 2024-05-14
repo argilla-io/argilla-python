@@ -8,7 +8,7 @@ This guide provides an overview of how to query and filter a dataset in Argilla 
 
 You can search for records in your dataset by **querying** or **filtering**. The query focuses on the content of the text field, while the filter is used to filter the records based on conditions. You can use them independently or combine multiple filters to create complex search queries. You can also export records from a dataset either as a single dictionary or a list of dictionaries.
 
-!!! info "Class"
+!!! info "Main Classes"
 
     === "`rg.query`"
 

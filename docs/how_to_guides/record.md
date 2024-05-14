@@ -10,7 +10,7 @@ A **record** in Argilla is a data item that requires annotation, consisting of o
 
 > A record is part of a dataset, so you will need to create a dataset before adding records. Check these guides to learn how to [create a dataset](dataset.md).
 
-!!! info "Class"
+!!! info "Main Class"
 
     ```python
     rg.record(

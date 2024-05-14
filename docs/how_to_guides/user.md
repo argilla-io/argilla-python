@@ -57,7 +57,7 @@ Argilla provides a default user with the `owner` role to help you get started in
 | Quickstart Docker and HF Space | owner    | 12345678    | owner.apikey   |
 | Server image                  | argilla  | 1234        | argilla.apikey |
 
-!!! info "Class"
+!!! info "Main Class"
 
     ```python
     rg.User(

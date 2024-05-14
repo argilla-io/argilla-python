@@ -32,14 +32,12 @@ class Dataset(Resource):
     """Class for interacting with Argilla Datasets
 
     Attributes:
-        records (DatasetRecords): The records object
-        is_published (bool): True if the dataset is published, False otherwise
-        settings (Settings): The settings object
-        fields (list): The fields of the dataset
-        questions (list): The questions of the dataset
-        guidelines (str): The guidelines of the dataset
-        allow_extra_metadata (bool): True if extra metadata is allowed, False otherwise
-        schema: The schema of the dataset
+        records (DatasetRecords): The records object for the dataset. Used to interact with the records of the dataset by iterating, searching, etc.
+        settings (Settings): The settings object of the dataset. Used to configure the dataset with fields, questions, guidelines, etc.
+        fields (list): The fields of the dataset, for example the `rg.TextField` of the dataset. Defined in the settings.
+        questions (list): The questions of the dataset defined in the settings. For example, the `rg.TextQuestion` that you want labelers to answer.
+        guidelines (str): The guidelines of the dataset defined in the settings. Used to provide instructions to labelers.
+        allow_extra_metadata (bool): True if extra metadata is allowed, False otherwise.
     """
 
     name: str

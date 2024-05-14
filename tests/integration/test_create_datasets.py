@@ -42,3 +42,48 @@ class TestCreateDatasets:
 
         created_dataset = client.datasets(name="test_dataset")
         assert created_dataset.settings == dataset.settings
+
+    def test_create_multiple_dataset_with_same_settings(self, client: Argilla):
+        settings = Settings(
+            fields=[TextField(name="text")],
+            questions=[RatingQuestion(name="question", values=[1, 2, 3, 4, 5])],
+        )
+        dataset = Dataset(name="test_dataset", settings=settings, client=client).create()
+        dataset2 = Dataset(name="test_dataset2", settings=settings, client=client).create()
+
+        assert dataset in client.datasets
+        assert dataset2 in client.datasets
+
+        assert dataset.exists()
+        assert dataset2.exists()
+
+        for ds in [dataset, dataset2]:
+            schema = client.datasets(name=ds.name).schema
+
+            assert isinstance(schema["text"], TextField)
+            assert schema["text"].name == "text"
+            assert isinstance(schema["question"], RatingQuestion)
+            assert schema["question"].name == "question"
+            assert schema["question"].values == [1, 2, 3, 4, 5]
+
+    def test_create_dataset_from_existing_dataset(self, client: Argilla):
+        dataset = Dataset(
+            name="test_dataset",
+            settings=Settings(
+                fields=[TextField(name="text")],
+                questions=[RatingQuestion(name="question", values=[1, 2, 3, 4, 5])],
+            ),
+        ).create()
+
+        assert dataset in client.datasets
+        created_dataset = client.datasets(dataset.name)
+
+        dataset_copy = Dataset(name="test_dataset_copy", settings=created_dataset.settings, client=client).create()
+        assert dataset_copy in client.datasets
+
+        schema = dataset_copy.schema
+        assert isinstance(schema["text"], TextField)
+        assert schema["text"].name == "text"
+        assert isinstance(schema["question"], RatingQuestion)
+        assert schema["question"].name == "question"
+        assert schema["question"].values == [1, 2, 3, 4, 5]

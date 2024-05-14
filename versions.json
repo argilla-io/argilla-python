@@ -1,5 +1,10 @@
 [
   {
+    "version": "docs_fix-links",
+    "title": "docs_fix-links",
+    "aliases": []
+  },
+  {
     "version": "docs_document-workspace-resource",
     "title": "docs_document-workspace-resource",
     "aliases": []

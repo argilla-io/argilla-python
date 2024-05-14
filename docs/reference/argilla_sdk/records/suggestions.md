@@ -16,8 +16,8 @@ dataset.records.add(
         {
             "text": "Hello World, how are you?",
             "label": "negative",
-            "label.response": "negative",
-            "label.score": 0.9,
+            "label.suggestion.response": "negative",
+            "label.suggestion.score": 0.9,
         },
     ]
 )

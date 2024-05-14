@@ -207,7 +207,7 @@ class Record(Resource):
                     attribute_type = attribute_mapping[1]
                 if len(attribute_mapping) > 2:
                     sub_attribute = attribute_mapping[2]
-            elif schema_item is mapping is None:
+            elif schema_item is mapping is None and attribute != "id":
                 warnings.warn(
                     message=f"""Record attribute {attribute} is not in the schema so skipping. 
                         Define a mapping to map source data fields to Argilla Fields, Questions, and ids
@@ -215,7 +215,6 @@ class Record(Resource):
                 )
                 continue
 
-            # Skip if the attribute is an id or external_id
             if attribute == "id":
                 record_id = value
                 continue

@@ -1,5 +1,5 @@
 # Project information
-site_name: Argilla
+site_name: Argilla Docs
 site_url: https://argilla-io.github.io/argilla-python
 site_author: Argilla, Inc.
 site_description: The Argilla python server SDK
@@ -27,7 +27,7 @@ extra_css:
 
 theme:
   name: material
-  logo: assets/logo-dark-mode.svg
+  logo: assets/logo.svg
   favicon: assets/favicon.ico
   features:
     - navigation.instant
@@ -35,15 +35,19 @@ theme:
     - toc.follow
     - content.code.copy
     - content.code.annotate
+  icon:
+    repo: fontawesome/brands/github
   palette:
     - media: "(prefers-color-scheme)"
       primary: white
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
+
+    # Palette toggle for light mode
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: custom
+      primary: white
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
@@ -88,13 +92,28 @@ markdown_extensions:
 
 plugins:
   - search
-  - gen-files:
-      scripts:
-        - docs/scripts/gen_ref_pages.py
+  - open-in-new-tab
+  # - gen-files:
+  #     scripts:
+  #       - docs/scripts/gen_ref_pages.py
   - literate-nav:
       nav_file: SUMMARY.md
   - section-index
-  - mkdocstrings
+  - mkdocstrings:
+      handlers:
+        python:
+          selection:
+            inherited_members: true # Allow looking up inherited methods
+          rendering:
+            show_root_heading: true # actually display anything at all...
+            # show_root_full_path: true  # display "diffrax.asdf" not just "asdf"
+            show_if_no_docstring: true
+            show_signature_annotations: true
+            show_source: false # don't include source code
+            members_order: source # order methods according to their order of definition in the source code, not alphabetical order
+            heading_level: 4
+            # hide private members
+            private: true
   - social
   - mknotebooks
   - tags:
@@ -102,53 +121,32 @@ plugins:
 
 
 nav:
-  - Overview:
-    - index.md
-    - Quickstart (WIP): overview/quickstart.md
-    - Installation (WIP):
-      - overview/installation/index.md
-      - Python SDK: overview/installation/telemetry.md
-      - FastAPI Server:
-        - overview/installation/telemetry.md
-    - Concepts (WIP):
-      - overview/concepts/index.md
-    - Changelog (WIP): overview/changelog.md
-    - Contributing:
-      - GitHub workflows: overview/community/contributor.md
-      - Development environment: overview/community/developer.md
-    - Community: overview/community/index.md
-    - FAQ: overview/faq.md
-  - How to guides:
+  - Argilla: index.md
+  - Getting started:
+    - Quickstart: getting_started/quickstart.md
+    - Installation: getting_started/installation.md
+    # - FAQ: getting_started/faq.md
+  - How-to guides:
     - how_to_guides/index.md
-    - Manage your annotation team:
-      - how_to_guides/team/index.md
-      - Workspaces: how_to_guides/team/workspace.md
-      - Users: how_to_guides/team/user.md
-    - Define and change your dataset settings:
-      - how_to_guides/dataset/index.md
-      - Fields: how_to_guides/dataset/fields.md
-      - Questions: how_to_guides/dataset/questions.md
-      - Metadata: how_to_guides/dataset/metadata.md
-      - Vectors: how_to_guides/dataset/vectors.md
-    - Work with records in your dataset:
-      - how_to_guides/record/index.md
-      - Fields: how_to_guides/record/fields.md
-      - Questions: how_to_guides/record/questions.md
-      - Metadata: how_to_guides/record/metadata.md
-      - Vectors: how_to_guides/record/vectors.md
-    - Filter and query a dataset: how_to_guides/export.md
-    - Distribute annotation work: how_to_guides/distribute.md
-    - Compute metrics and KPIs:
-      - Dataset progress: how_to_guides/metrics/dataset.md
-      - Model performance: how_to_guides/metrics/model.md
-      - Annotator performance: how_to_guides/metrics/annotator.md
-    - Fine-tune a model: fine_tune.md
-  - Tutorials:
-    - tutorials/index.md
-    - tutorials/rag_llm.md
-    - tutorials/rag_rankers_and_retrievers.md
-  - Integrations:
-    - integrations/index.md
+    - Manage users and credentials: how_to_guides/user.md
+    - Manage workspaces: how_to_guides/workspace.md
+    - Manage and create datasets: how_to_guides/dataset.md
+    - Add, update, and delete records: how_to_guides/record.md
+    - Query, filter, and export records: how_to_guides/query_export.md
+    # - Distribute annotation work: how_to_guides/distribute.md
+    # - Compute metrics and KPIs:
+    #   - how_to_guides/metrics/index.md
+    #   - Dataset progress: how_to_guides/metrics/dataset.md
+    #   - Model performance: how_to_guides/metrics/model.md
+    #   - Annotator performance: how_to_guides/metrics/annotator.md
+    # - Fine-tune a model: fine_tune.md
+  # - Tutorials:
+  #   - tutorials/index.md
+  #   - tutorials/rag_llm.md
+  #   - tutorials/rag_rankers_and_retrievers.md
+  # - Integrations:
+  #   - integrations/index.md
   - API Reference:
-    - Python SDK: reference/
-    - FastAPI Server: reference/
+    - Python SDK: reference/argilla_sdk/
+  - UI Demo ↗:
+    - https://demo.argilla.io/sign-in?auth=ZGVtbzoxMjM0NTY3OA==

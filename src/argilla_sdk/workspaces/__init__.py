@@ -13,3 +13,5 @@
 # limitations under the License.
 
 from argilla_sdk.workspaces._resource import Workspace
+
+__all__ = ["Workspace"]

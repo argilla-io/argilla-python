@@ -21,11 +21,19 @@ from argilla_sdk._models import UserModel, Role
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
 
-__all__ = ["User"]
-
 
 class User(Resource):
-    """Class for interacting with Argilla users"""
+    """Class for interacting with Argilla users in the Argilla server. User profiles \
+        are used to manage access to the Argilla server and track responses to records.
+        
+    Attributes:
+        username (str): The username of the user.
+        first_name (str): The first name of the user.
+        last_name (str): The last name of the user.
+        role (str): The role of the user, either 'annotator' or 'admin'.
+        password (str): The password of the user.
+        id (UUID): The ID of the user.
+    """
 
     _model: UserModel
     _api: UsersAPI
@@ -42,12 +50,18 @@ class User(Resource):
         _model: Optional[UserModel] = None,
     ) -> None:
         """Initializes a User object with a client and a username
-        Args:
+
+        Parameters:
             client (Argilla): The client used to interact with Argilla
             username (str): The username of the user
-            _model (UserModel): The internal Pydantic model of the user from/to the server
+            first_name (str): The first name of the user
+            last_name (str): The last name of the user
+            role (str): The role of the user, either 'annotator', admin, or 'owner'
+            password (str): The password of the user
+
         Returns:
             User: The initialized user object
+        ```
         """
         client = client or Argilla._get_default()
         super().__init__(client=client, api=client.api.users)

@@ -29,7 +29,16 @@ __all__ = ["Dataset"]
 
 
 class Dataset(Resource):
-    """Class for interacting with Argilla Datasets"""
+    """Class for interacting with Argilla Datasets
+
+    Attributes:
+        records (DatasetRecords): The records object for the dataset. Used to interact with the records of the dataset by iterating, searching, etc.
+        settings (Settings): The settings object of the dataset. Used to configure the dataset with fields, questions, guidelines, etc.
+        fields (list): The fields of the dataset, for example the `rg.TextField` of the dataset. Defined in the settings.
+        questions (list): The questions of the dataset defined in the settings. For example, the `rg.TextQuestion` that you want labelers to answer.
+        guidelines (str): The guidelines of the dataset defined in the settings. Used to provide instructions to labelers.
+        allow_extra_metadata (bool): True if extra metadata is allowed, False otherwise.
+    """
 
     name: str
     id: Optional[UUID]
@@ -46,8 +55,9 @@ class Dataset(Resource):
         client: Optional["Argilla"] = None,
         _model: Optional[DatasetModel] = None,
     ) -> None:
-        """Initalizes a Dataset with a client and model
-        Args:
+        """Initalizes a new Argilla Dataset object with the given parameters.
+
+        Parameters:
             name (str): Name of the dataset. Replaced by random UUID if not assigned.
             workspace (UUID): Workspace of the dataset. Default is the first workspace found in the client.
             settings (Settings): Settings class to be used to configure the dataset.
@@ -78,6 +88,10 @@ class Dataset(Resource):
     @name.setter
     def name(self, value: str) -> None:
         self._model.name = value
+
+    #####################
+    #  Properties       #
+    #####################
 
     @property
     def records(self) -> "DatasetRecords":
@@ -121,10 +135,22 @@ class Dataset(Resource):
     def schema(self):
         return self.settings.schema
 
+    #####################
+    #  Core methods     #
+    #####################
+
     def exists(self) -> bool:
+        """Checks if the dataset exists on the server
+        Returns:
+            bool: True if the dataset exists, False otherwise
+        """
         return self.id and self._api.exists(self.id)
 
     def create(self) -> None:
+        """ Creates the dataset on the server with the `Settings` configuration and sets the dataset status to `ready`.
+        Returns:
+            None
+        """
         super().create()
         try:
             self._publish()
@@ -159,7 +185,6 @@ class Dataset(Resource):
         self,
         settings: Optional[Settings] = None,
     ) -> Settings:
-        """Populate the dataset object with settings"""
         if settings is None:
             settings = Settings(_dataset=self)
             warnings.warn(

@@ -32,6 +32,15 @@ __all__ = ["Argilla"]
 
 
 class Argilla(_api.APIClient):
+    """Argilla API client. This is the main entry point to interact with the API.
+
+    Attributes:
+        workspaces: A collection of workspaces.
+        datasets: A collection of datasets.
+        users: A collection of users.
+        me: The current user.
+
+    """
 
     # Default instance of Argilla
     _default_client: Optional["Argilla"] = None
@@ -61,18 +70,22 @@ class Argilla(_api.APIClient):
 
     @property
     def workspaces(self) -> "Workspaces":
+        """A collection of workspaces on the server."""
         return Workspaces(client=self)
 
     @property
     def datasets(self) -> "Datasets":
+        """A collection of datasets on the server."""
         return Datasets(client=self)
 
     @property
     def users(self) -> "Users":
+        """A collection of users on the server."""
         return Users(client=self)
 
     @property
     def me(self) -> "User":
+        """The current user."""
         from argilla_sdk import User
 
         return User(client=self, _model=self.api.users.get_me())

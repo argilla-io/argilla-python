@@ -2,45 +2,53 @@
 description: These are the how-to guides for the Argilla-python SDK. They provide step-by-step instructions for common scenarios, including detailed explanations and code samples.
 ---
 
-# How to guides
+# How-to guides
 
-These are the how-to guides for the Argilla-python SDK. They provide step-by-step instructions for common scenarios, including detailed explanations and code samples.
+These are the how-to guides for the *Argilla-python SDK*. They provide step-by-step instructions for common scenarios, including detailed explanations and code samples.
 
 <div class="grid cards" markdown>
 
--   :material-clock-fast:{ .lg .middle } __Manage your annotation team__
+-   __Manage users and credentials__
 
     ---
 
-    Learn how to Create, Read, Update and Delete (CRUD) a [`Workspace`](#) or [`User`](#) in Argilla.
+    Learn what they are and how to manage (create, read and delete) [`Users`](user.md) in Argilla.
 
-    [:octicons-arrow-right-24: Getting started](/argilla-python/quickstart/)
+    [:octicons-arrow-right-24: How-to guide](user.md)
 
--   :material-clipboard-flow-outline:{ .lg .middle } __Define and change your dataset settings__
-
-    ---
-
-    Learn how to Create, Read, Update and Delete (CRUD) the [`Settings`](#) for a [`Dataset`](#), which are made up of settings for [`Fields`](#),[`Questions`](#),  [`Metadata`](#) and [`Vectors`](#).
-
-    [:octicons-arrow-right-24: Reference](#)
-
--   :material-format-font:{ .lg .middle } __Work with records in your dataset__
+-   __Manage workspaces__
 
     ---
 
-    Learn how to Create, Read, Update and Delete (CRUD) the values for a[`Record`](#), which are made up of [`Suggestions`](#),[`Responses`](#),  [`Metadata`](#) and [`Vectors`](#).
+    Learn what they are and how to manage (create, read and delete) [`Workspaces`](workspace.md) in Argilla.
 
-    [:octicons-arrow-right-24: Customization](#)
+    [:octicons-arrow-right-24: How-to guide](workspace.md)
 
--   :material-scale-balance:{ .lg .middle } __Query, filter and export data__
+-   __Manage and create datasets__
 
     ---
 
-    Learn how to apply export [`Records`](#) with the right filters and queries.
+    Learn what they are and how to manage (create, read and delete) [`Datasets`](dataset.md) and customize them using the `Settings` for `Fields`, `Questions`,  `Metadata` and `Vectors`.
 
-    [:octicons-arrow-right-24: License](#)
+    [:octicons-arrow-right-24: How-to guide](dataset.md)
 
--   :material-scale-balance:{ .lg .middle } __Distribute annotation work__
+-   __Add, update, and delete records__
+
+    ---
+
+    Learn what they are and how to add, update and delete the values for a [`Record`](record.md), which are made up of `Metadata`, `Vectors`, `Suggestions` and `Responses`.
+
+    [:octicons-arrow-right-24: How-to guide](record.md)
+
+-   __Query, filter and export records__
+
+    ---
+
+    Learn how to query and filter a `Dataset` and export their `Records`.
+
+    [:octicons-arrow-right-24: How-to guide](query_export.md)
+
+<!-- -   :material-scale-balance:{ .lg .middle } __Distribute annotation work__
 
     ---
 
@@ -62,6 +70,6 @@ These are the how-to guides for the Argilla-python SDK. They provide step-by-ste
 
     Learn how to fine-tune your own model with [`transformers`](#) and take ownership of your data and models.
 
-    [:octicons-arrow-right-24: License](#)
+    [:octicons-arrow-right-24: License](#) -->
 
 </div>

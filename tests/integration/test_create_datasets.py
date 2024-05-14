@@ -11,6 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+import uuid
+from datetime import datetime
 
 import pytest
 
@@ -28,8 +30,9 @@ def clean_datasets(client: Argilla):
 
 class TestCreateDatasets:
     def test_create_dataset(self, client: Argilla):
+        dataset_name = f"test_dataset_{uuid.uuid4()}"
         dataset = Dataset(
-            name="test_dataset",
+            name=dataset_name,
             settings=Settings(
                 fields=[TextField(name="test_field")],
                 questions=[RatingQuestion(name="test_question", values=[1, 2, 3, 4, 5])],
@@ -40,16 +43,18 @@ class TestCreateDatasets:
         assert dataset in client.datasets
         assert dataset.exists()
 
-        created_dataset = client.datasets(name="test_dataset")
+        created_dataset = client.datasets(name=dataset_name)
         assert created_dataset.settings == dataset.settings
 
     def test_create_multiple_dataset_with_same_settings(self, client: Argilla):
+        dataset_name = f"test_dataset_{uuid.uuid4()}"
+
         settings = Settings(
             fields=[TextField(name="text")],
             questions=[RatingQuestion(name="question", values=[1, 2, 3, 4, 5])],
         )
-        dataset = Dataset(name="test_dataset", settings=settings, client=client).create()
-        dataset2 = Dataset(name="test_dataset2", settings=settings, client=client).create()
+        dataset = Dataset(name=dataset_name, settings=settings, client=client).create()
+        dataset2 = Dataset(name=f"{dataset_name}_2", settings=settings, client=client).create()
 
         assert dataset in client.datasets
         assert dataset2 in client.datasets
@@ -67,8 +72,9 @@ class TestCreateDatasets:
             assert schema["question"].values == [1, 2, 3, 4, 5]
 
     def test_create_dataset_from_existing_dataset(self, client: Argilla):
+        dataset_name = f"test_dataset_{uuid.uuid4()}"
         dataset = Dataset(
-            name="test_dataset",
+            name=dataset_name,
             settings=Settings(
                 fields=[TextField(name="text")],
                 questions=[RatingQuestion(name="question", values=[1, 2, 3, 4, 5])],
@@ -78,7 +84,7 @@ class TestCreateDatasets:
         assert dataset in client.datasets
         created_dataset = client.datasets(dataset.name)
 
-        dataset_copy = Dataset(name="test_dataset_copy", settings=created_dataset.settings, client=client).create()
+        dataset_copy = Dataset(name=f"{dataset.name}_copy", settings=created_dataset.settings, client=client).create()
         assert dataset_copy in client.datasets
 
         schema = dataset_copy.schema

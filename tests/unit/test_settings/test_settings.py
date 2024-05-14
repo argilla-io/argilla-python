@@ -46,6 +46,25 @@ class TestSettings:
         assert settings.questions[0].name == "sentiment"
         assert settings.questions[0].labels == ["positive", "negative"]
 
+    def test_settings_repr(self):
+        settings = rg.Settings(
+            fields=[
+                rg.TextField(name="text", title="text"),
+            ],
+            metadata=[
+                rg.FloatMetadataProperty("source"),
+            ],
+            questions=[
+                rg.LabelQuestion(name="label", title="text", labels=["positive", "negative"]),
+            ],
+            vectors=[rg.VectorField(name="text", dimensions=3)],
+        )
+        
+        assert (
+            settings.__repr__()
+            == f"""Settings(guidelines=None, allow_extra_metadata=False, fields={settings.fields}, questions={settings.questions}, vectors={settings.vectors}, metadata={settings.metadata})"""
+        )
+
 
 class TestSettingsSerialization:
     def test_serialize(self):

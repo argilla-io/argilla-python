@@ -435,10 +435,8 @@ class RecordVectors:
         """
         return {vector.name: vector.values for vector in self.__vectors}
 
-    def __repr__(self) -> Generator:
-        for vector in self.__vectors:
-            yield vector.name
-            yield f"dimenstions: {len(vector.values)}"
+    def __repr__(self) -> str:
+        return {vector.name: f"{len(vector.values)}" for vector in self.__vectors}.__repr__()
 
 
 class RecordMetadata:

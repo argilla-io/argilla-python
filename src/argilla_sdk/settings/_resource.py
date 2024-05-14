@@ -345,9 +345,4 @@ class Settings(Resource):
     #####################
 
     def __repr__(self) -> str:
-        yield "guidelines", self.guidelines
-        yield "allow_extra_metadata", self.allow_extra_metadata
-        yield "fields", self.fields
-        yield "questions", self.questions
-        yield "vectors", self.vectors
-        yield "metadata", self.metadata
+        return f"Settings(guidelines={self.guidelines}, allow_extra_metadata={self.allow_extra_metadata}, fields={self.fields}, questions={self.questions}, vectors={self.vectors}, metadata={self.metadata})"

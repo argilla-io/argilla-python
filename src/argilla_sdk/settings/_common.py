@@ -30,10 +30,4 @@ class SettingsPropertyBase(Resource):
         return self._model.description
 
     def __repr__(self) -> str:
-        yield self.name
-        if self.title:
-            yield f"Title: {self.title}"
-        if self.description:
-            yield f"Description: {self.description}"
-        yield f"Required: {self.required}"
-        yield f"Type: {self._model.settings.type}"
+        return f"{self.__class__.__name__}(name={self.name}, title={self.title}, description={self.description}, type={self._model.settings.type}, required={self.required}) \n"

@@ -1,5 +1,10 @@
 [
   {
+    "version": "docs_update-docs-to-suggestions",
+    "title": "docs_update-docs-to-suggestions",
+    "aliases": []
+  },
+  {
     "version": "docs_fix-links",
     "title": "docs_fix-links",
     "aliases": []

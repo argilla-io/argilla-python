@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import warnings
-from typing import Optional, Literal, Union
+from typing import Optional, Union
 from uuid import UUID, uuid4
 
 from argilla_sdk._api import DatasetsAPI
@@ -32,6 +32,7 @@ class Dataset(Resource):
     """Class for interacting with Argilla Datasets
 
     Attributes:
+        name: Name of the dataset.
         records (DatasetRecords): The records object for the dataset. Used to interact with the records of the dataset by iterating, searching, etc.
         settings (Settings): The settings object of the dataset. Used to configure the dataset with fields, questions, guidelines, etc.
         fields (list): The fields of the dataset, for example the `rg.TextField` of the dataset. Defined in the settings.
@@ -42,7 +43,6 @@ class Dataset(Resource):
 
     name: str
     id: Optional[UUID]
-    status: Literal["draft", "ready"]
 
     _api: "DatasetsAPI"
     _model: "DatasetModel"
@@ -55,13 +55,14 @@ class Dataset(Resource):
         client: Optional["Argilla"] = None,
         _model: Optional[DatasetModel] = None,
     ) -> None:
-        """Initalizes a new Argilla Dataset object with the given parameters.
+        """Initializes a new Argilla Dataset object with the given parameters.
 
         Parameters:
             name (str): Name of the dataset. Replaced by random UUID if not assigned.
-            workspace (UUID): Workspace of the dataset. Default is the first workspace found in the client.
+            workspace (UUID): Workspace of the dataset. Default is the first workspace found in the server.
             settings (Settings): Settings class to be used to configure the dataset.
-            client (Argilla): Instance of Argilla to connect with the server.
+            client (Argilla): Instance of Argilla to connect with the server. Default is the default client.
+            _model (DatasetModel): Model of the dataset. Used to create the dataset from an existing model.
         """
         client = client or Argilla._get_default()
         super().__init__(client=client, api=client.api.datasets)
@@ -81,6 +82,10 @@ class Dataset(Resource):
         self._settings = self.__configure_settings_for_dataset(settings=settings)
         self.__records = DatasetRecords(client=self._client, dataset=self)
 
+    #####################
+    #  Properties       #
+    #####################
+
     @property
     def name(self) -> str:
         return self._model.name
@@ -88,10 +93,6 @@ class Dataset(Resource):
     @name.setter
     def name(self, value: str) -> None:
         self._model.name = value
-
-    #####################
-    #  Properties       #
-    #####################
 
     @property
     def records(self) -> "DatasetRecords":
@@ -141,19 +142,21 @@ class Dataset(Resource):
 
     def exists(self) -> bool:
         """Checks if the dataset exists on the server
+
         Returns:
             bool: True if the dataset exists, False otherwise
         """
         return self.id and self._api.exists(self.id)
 
-    def create(self) -> None:
-        """ Creates the dataset on the server with the `Settings` configuration and sets the dataset status to `ready`.
+    def create(self) -> "Dataset":
+        """Creates the dataset on the server with the `Settings` configuration.
+
         Returns:
-            None
+            Dataset: The created dataset object.
         """
         super().create()
         try:
-            self._publish()
+            return self._publish()
         except Exception as e:
             self.log(message=f"Error creating dataset: {e}", level="error")
             self.__rollback_dataset_creation()

@@ -13,7 +13,7 @@ A **record** in Argilla is a data item that requires annotation, consisting of o
 !!! info "Main Class"
 
     ```python
-    rg.record(
+    rg.Record(
         external_id="1234",
         fields={
             "question": "Do you need oxygen to breathe?",

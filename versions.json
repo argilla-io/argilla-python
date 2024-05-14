@@ -1,5 +1,10 @@
 [
   {
+    "version": "docs_document-workspace-resource",
+    "title": "docs_document-workspace-resource",
+    "aliases": []
+  },
+  {
     "version": "docs_alpha-release-docs",
     "title": "docs_alpha-release-docs",
     "aliases": []

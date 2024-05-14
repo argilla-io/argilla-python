@@ -128,7 +128,7 @@ removed_user = workspace.remove_user("my_username")
 
 To delete a workspace, **no dataset can be associated with it**. If the workspace contains any dataset, deletion will fail. You can delete a workspace by calling the `delete` method on the `Workspace` class.
 
-> To clear a workspace and delete all their datasets, refer to this [how-to guide](../dataset.md).
+> To clear a workspace and delete all their datasets, refer to this [how-to guide](dataset.md).
 
 ```python
 import argilla_sdk as rg

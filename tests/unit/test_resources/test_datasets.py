@@ -74,6 +74,7 @@ def dataset(httpx_mock: HTTPXMock) -> rg.Dataset:
 
 
 class TestDatasets:
+
     def mock_dataset_settings(self, httpx_mock: HTTPXMock, dataset_id: uuid.UUID, dataset_dict: dict):
         mock_field = {
             "id": str(uuid.uuid4()),

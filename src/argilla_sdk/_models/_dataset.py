@@ -46,3 +46,4 @@ class DatasetModel(ResourceModel):
     @field_serializer("workspace_id", when_used="unless-none")
     def serialize_workspace_id(self, value: UUID) -> str:
         return str(value)
+

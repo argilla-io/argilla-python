@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from email import message
 import os
 from functools import cached_property
 from typing import List, Optional, TYPE_CHECKING, Dict, Union
@@ -19,7 +20,7 @@ from uuid import UUID
 from argilla_sdk._exceptions import SettingsError, ArgillaAPIError, ArgillaSerializeError
 from argilla_sdk._models import TextFieldModel, TextQuestionModel, DatasetModel
 from argilla_sdk._resource import Resource
-from argilla_sdk.settings._field import FieldType, VectorField, field_from_model
+from argilla_sdk.settings._field import FieldType, TextField, VectorField, field_from_model
 from argilla_sdk.settings._metadata import MetadataType
 from argilla_sdk.settings._question import QuestionType, question_from_model
 

@@ -12,7 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any
+from typing import Any, Optional, Literal
+from uuid import UUID
 
 from argilla_sdk._models import VectorModel
 from argilla_sdk._resource import Resource

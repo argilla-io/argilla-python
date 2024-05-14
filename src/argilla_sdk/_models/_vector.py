@@ -24,7 +24,7 @@ __all__ = ["VectorModel"]
 class VectorModel(ResourceModel):
     name: str
     vector_values: List[float]
-
+   
     @field_validator("name")
     @classmethod
     def validate_name(cls, value):

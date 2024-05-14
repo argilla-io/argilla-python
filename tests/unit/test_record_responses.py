@@ -38,6 +38,7 @@ def record():
 
 
 class TestRecordResponses:
+
     def test_create_record_responses_for_single_user(self, record: Record):
         user = User(username="johndoe", id=uuid.uuid4())
 

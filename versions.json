@@ -1,5 +1,10 @@
 [
   {
+    "version": "docs_add-more-settings-usage",
+    "title": "docs_add-more-settings-usage",
+    "aliases": []
+  },
+  {
     "version": "dev",
     "title": "dev",
     "aliases": []

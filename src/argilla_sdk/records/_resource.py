@@ -204,6 +204,7 @@ class Record(Resource):
 
             if attribute == "id":
                 record_id = value
+                continue
 
             # Add suggestion values to the suggestions
             if attribute_type == "suggestion":

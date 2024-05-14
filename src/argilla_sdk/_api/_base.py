@@ -12,23 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 from datetime import datetime
-from requests.exceptions import HTTPError
-from requests.models import Response
-from typing import Generic, TYPE_CHECKING, TypeVar, Union
+from typing import Generic, TYPE_CHECKING, TypeVar
 from uuid import UUID
 
-from argilla_sdk._exceptions import (
-    BadRequestError,
-    ForbiddenError,
-    NotFoundError,
-    ConflictError,
-    UnprocessableEntityError,
-    InternalServerError,
-)
 from argilla_sdk._helpers._mixins import LoggingMixin
-from argilla_sdk._models import ResourceModel
 
 
 if TYPE_CHECKING:
@@ -70,4 +58,3 @@ class ResourceAPI(LoggingMixin, Generic[T]):
 
     def _date_from_iso_format(self, date: str) -> datetime:
         return datetime.fromisoformat(date)
-

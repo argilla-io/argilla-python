@@ -106,7 +106,6 @@ class APIClient:
         timeout: int = DEFAULT_HTTP_CONFIG.timeout,
         **http_client_args,
     ):
-
         http_client_args = http_client_args or {}
         http_client_args["timeout"] = timeout
 

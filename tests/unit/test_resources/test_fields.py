@@ -16,7 +16,6 @@ import uuid
 from datetime import datetime
 
 import httpx
-import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg

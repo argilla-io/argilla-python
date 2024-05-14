@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# We skip the flake8 check because we are importing all the models and the import order is important
+# flake8: noqa
 from argilla_sdk._models._resource import ResourceModel
 from argilla_sdk._models._workspace import WorkspaceModel
 from argilla_sdk._models._user import UserModel, Role

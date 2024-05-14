@@ -20,17 +20,17 @@ repos:
       - id: ruff-format
   
   - repo: https://github.com/kynan/nbstripout
-    rev: v0.7.1
+    rev: 0.7.1
     hooks:
       - id: nbstripout
         files: \.ipynb$
         args:
           - --keep-count
           - --keep-output
-          - --keep-prompt-number
-          - --keep-cell-ids
-          - --keep-markdown
-          - --keep-output-timestamp
-          - --keep-execution-count
-          - --keep-metadata
-          - --keep-version
+          # - --keep-prompt-number
+          # - --keep-cell-ids
+          # - --keep-markdown
+          # - --keep-output-timestamp
+          # - --keep-execution-count
+          # - --keep-metadata
+          # - --keep-version

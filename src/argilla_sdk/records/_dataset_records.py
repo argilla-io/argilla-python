@@ -18,7 +18,6 @@ from uuid import UUID
 from argilla_sdk._api import RecordsAPI
 from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import RecordModel
-from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
 from argilla_sdk.records._export import GenericExportMixin
 from argilla_sdk.records._resource import Record
@@ -107,10 +106,10 @@ class DatasetRecordsIterator(GenericExportMixin):
 
 
 class DatasetRecords(Iterable[Record], LoggingMixin):
-    """This class is used to work with records from a dataset and is accessed via `Dataset.records`. 
-    The responsibility of this class is to provide an interface to interact with records in a dataset, 
+    """This class is used to work with records from a dataset and is accessed via `Dataset.records`.
+    The responsibility of this class is to provide an interface to interact with records in a dataset,
     by adding, updating, fetching, querying, deleting, and exporting records.
-    
+
     Attributes:
         client (Argilla): The Argilla client object.
         dataset (Dataset): The dataset object.

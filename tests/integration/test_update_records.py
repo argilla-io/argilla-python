@@ -1,6 +1,19 @@
+# Copyright 2024-present, Argilla, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 import random
 import uuid
-from datetime import datetime
 from string import ascii_lowercase
 
 import pytest
@@ -90,6 +103,6 @@ def test_update_records_partially(client: rg.Argilla, dataset: rg.Dataset):
     updated_mock_data[0]["label"] = "positive"
     dataset.records.add(records=mock_data)
     dataset.records.update(records=updated_mock_data)
-    
+
     for i, record in enumerate(dataset.records(with_suggestions=True)):
         assert record.suggestions[0].value == updated_mock_data[i]["label"]

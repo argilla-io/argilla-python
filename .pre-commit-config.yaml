@@ -27,10 +27,10 @@ repos:
         args:
           - --keep-count
           - --keep-output
-          - --keep-prompt-number
-          - --keep-cell-ids
-          - --keep-markdown
-          - --keep-output-timestamp
-          - --keep-execution-count
-          - --keep-metadata
-          - --keep-version
+          # - --keep-prompt-number
+          # - --keep-cell-ids
+          # - --keep-markdown
+          # - --keep-output-timestamp
+          # - --keep-execution-count
+          # - --keep-metadata
+          # - --keep-version

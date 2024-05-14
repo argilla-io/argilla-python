@@ -34,3 +34,6 @@ repos:
           - --keep-execution-count
           - --keep-metadata
           - --keep-version
+
+ci:
+  autofix_prs: false

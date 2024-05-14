@@ -16,7 +16,6 @@ import argilla_sdk as rg
 
 
 class TestMultiLabelQuestions:
-
     def test_create_question(self):
         question = rg.MultiLabelQuestion(name="span_question", labels=["label1", "label2", "label3"])
         assert question.name == "span_question"

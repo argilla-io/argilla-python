@@ -73,7 +73,7 @@ class TestSettings:
             ],
             vectors=[rg.VectorField(name="text", dimensions=3)],
         )
-        
+
         assert (
             settings.__repr__()
             == f"""Settings(guidelines=None, allow_extra_metadata=False, fields={settings.fields}, questions={settings.questions}, vectors={settings.vectors}, metadata={settings.metadata})"""
@@ -90,4 +90,4 @@ class TestSettingsSerialization:
         settings_serialized = settings.serialize()
         assert settings_serialized["guidelines"] == "This is a guideline"
         assert settings_serialized["fields"][0]["name"] == "prompt"
-        assert settings_serialized["fields"][0]["settings"]["use_markdown"] == True
+        assert settings_serialized["fields"][0]["settings"]["use_markdown"] is True

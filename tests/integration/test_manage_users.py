@@ -29,9 +29,7 @@ def clean_environment(client: Argilla):
 
 
 class TestManageUsers:
-
     def test_create_user(self, client: Argilla):
-
         user = User(username="test_user", password="test_password")
         client.users.add(user)
         assert user.id is not None

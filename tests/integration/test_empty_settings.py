@@ -20,6 +20,7 @@ import pytest
 from argilla_sdk import Argilla, Dataset, Settings, Workspace, TextQuestion, TextField
 from argilla_sdk._exceptions import SettingsError
 
+
 @pytest.fixture
 def workspace(client: Argilla) -> Workspace:
     workspace = client.workspaces("test-workspace")
@@ -32,7 +33,7 @@ def workspace(client: Argilla) -> Workspace:
 
     workspace.delete()
 
-    
+
 def test_dataset_empty_settings(client: Argilla, workspace: Workspace) -> Dataset:
     name = "".join(random.choices(ascii_lowercase, k=16))
     settings = Settings()
@@ -61,7 +62,7 @@ def test_dataset_no_fields(client: Argilla, workspace: Workspace) -> None:
     )
     with pytest.raises(expected_exception=SettingsError):
         dataset.create()
-    
+
 
 def test_dataset_no_questions(client: Argilla, workspace: Workspace) -> Dataset:
     name = "".join(random.choices(ascii_lowercase, k=16))

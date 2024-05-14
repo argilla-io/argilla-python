@@ -148,7 +148,6 @@ def test_retrieving_dataset_on_name(client: rg.Argilla, dataset: rg.Dataset):
 
 
 def test_retrieving_dataset_on_default(client: rg.Argilla, dataset: rg.Dataset):
-    ws = client.workspaces[0]
     dataset = client.datasets(dataset.name)
     assert isinstance(dataset, rg.Dataset)
     assert dataset.exists()

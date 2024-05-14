@@ -125,8 +125,6 @@ def test_add_record_with_metadata(dataset_with_metadata: Dataset):
         assert models[0].name == "category"
 
 
-
-
 def test_add_record_with_mapped_metadata(dataset_with_metadata: Dataset):
     records = [
         {"text": "text", "label": "positive", "my_category": "A"},

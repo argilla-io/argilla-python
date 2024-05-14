@@ -28,9 +28,8 @@ class TestArgilla:
             assert client.api_url == "http://localhost:6900"
             assert client.api_key == "admin.apikey"
 
-
     def test_multiple_clients(self):
-        with mock.patch("argilla_sdk.client._api.APIClient.http_client") as mock_client:
+        with mock.patch("argilla_sdk.client._api.APIClient.http_client"):
             local_client = rg.Argilla(api_url="http://localhost:6900", api_key="admin.apikey")
             remote_client = rg.Argilla(api_url="http://argilla.production.net", api_key="admin.apikey")
             assert local_client.api_url == "http://localhost:6900"

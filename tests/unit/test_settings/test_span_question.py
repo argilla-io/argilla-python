@@ -16,7 +16,6 @@ import argilla_sdk as rg
 
 
 class TestSpanQuestions:
-
     def test_create_question(self):
         question = rg.SpanQuestion(
             name="span_question", field="field", allow_overlapping=True, labels=["label1", "label2", "label3"]

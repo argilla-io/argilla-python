@@ -18,7 +18,6 @@ from argilla_sdk import Record, Suggestion, Response
 
 
 class TestRecords:
-
     def test_record_repr(self):
         record_id = uuid.uuid4()
         user_id = uuid.uuid4()

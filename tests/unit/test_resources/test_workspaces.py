@@ -20,7 +20,6 @@ import pytest
 from pytest_httpx import HTTPXMock
 
 import argilla_sdk as rg
-from argilla_sdk import Workspace
 from argilla_sdk._exceptions import (
     BadRequestError,
     ConflictError,
@@ -42,7 +41,7 @@ class TestWorkspacesSerialization:
 
     def test_json_serialize_raise_typeerror(self):
         with pytest.raises(TypeError):
-            ws = rg.Workspace(
+            rg.Workspace(
                 name="test-workspace",
                 id=uuid.uuid4(),
                 inserted_at=datetime.utcnow(),

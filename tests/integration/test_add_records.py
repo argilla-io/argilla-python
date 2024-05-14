@@ -13,11 +13,9 @@
 # limitations under the License.
 
 import random
-from unittest import mock
 import uuid
 from datetime import datetime
 
-import pytest
 
 import argilla_sdk as rg
 from argilla_sdk import Argilla

@@ -15,7 +15,6 @@
 from typing import Optional, Union
 
 
-from argilla_sdk._resource import Resource
 from argilla_sdk._models import FieldBaseModel, QuestionBaseModel
 from argilla_sdk._resource import Resource
 

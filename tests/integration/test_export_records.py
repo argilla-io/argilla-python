@@ -14,7 +14,6 @@
 
 import random
 import uuid
-from datetime import datetime
 from string import ascii_lowercase
 
 import pytest

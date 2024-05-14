@@ -19,7 +19,6 @@ from argilla_sdk._models import MetadataFieldModel, TermsMetadataPropertySetting
 
 
 class TestTermsMetadata:
-
     def test_create_metadata_terms(self):
         property = rg.TermsMetadataProperty(
             title="A metadata property", name="metadata", options=["option1", "option2"]

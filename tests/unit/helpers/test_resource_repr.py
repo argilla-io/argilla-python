@@ -20,9 +20,7 @@ from argilla_sdk._models import DatasetModel
 
 
 class TestResourceHTMLReprMixin:
-
     def test_represent_workspaces_as_html(self):
-
         client = rg.Argilla()
         workspaces = [
             rg.Workspace(name="workspace1", id=uuid.uuid4()),

@@ -16,7 +16,6 @@ from argilla_sdk import Argilla, Workspace
 
 
 class TestWorkspacesManagement:
-
     def test_create_workspace(self, client: Argilla):
         workspace = Workspace(name="test_workspace")
         client.workspaces.add(workspace)

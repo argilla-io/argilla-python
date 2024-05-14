@@ -24,7 +24,6 @@ from argilla_sdk.client import Argilla
 
 if TYPE_CHECKING:
     from argilla_sdk import Dataset, User
-    from argilla_sdk._api import WorkspacesAPI
 
 
 class Workspace(Resource):
@@ -146,10 +145,12 @@ class WorkspaceUsers(Sequence["User"], LoggingMixin):
         self._workspace = workspace
 
     @overload
-    def add(self, user: "User") -> "User": ...
+    def add(self, user: "User") -> "User":
+        ...
 
     @overload
-    def add(self, user: str) -> "User": ...
+    def add(self, user: str) -> "User":
+        ...
 
     def add(self, user: Union["User", str]) -> "User":
         if isinstance(user, str):
@@ -157,9 +158,12 @@ class WorkspaceUsers(Sequence["User"], LoggingMixin):
         return user.add_to_workspace(workspace=self._workspace)
 
     @overload
-    def delete(self, user: "User") -> "User": ...
+    def delete(self, user: "User") -> "User":
+        ...
+
     @overload
-    def delete(self, user: str) -> "User": ...
+    def delete(self, user: str) -> "User":
+        ...
 
     def delete(self, user: Union["User", str]) -> "User":
         if isinstance(user, str):

@@ -16,7 +16,6 @@ from argilla_sdk import Argilla, Dataset, Settings, TextField, TextQuestion, Wor
 
 
 class TestDatasetsList:
-
     def test_list_datasets(self, client: Argilla):
         workspace = Workspace(name="test_workspace", client=client)
         workspace.create()

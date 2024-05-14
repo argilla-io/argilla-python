@@ -24,7 +24,7 @@ class TestTextField:
         assert text_field.name == mock_name
         assert text_field.use_markdown == mock_use_markdown
         assert text_field.title == mock_name
-        assert text_field.required == True
+        assert text_field.required is True
 
     def test_init_text_field_with_title(self):
         mock_name = "prompt"
@@ -34,7 +34,7 @@ class TestTextField:
         assert text_field.name == mock_name
         assert text_field.use_markdown == mock_use_markdown
         assert text_field.title == mock_title
-        assert text_field.required == True
+        assert text_field.required is True
 
     @pytest.mark.parametrize(
         "name, expected",
@@ -63,4 +63,3 @@ class TestTextField:
         mock_use_markdown = True
         text_field = rg.TextField(name=name, use_markdown=mock_use_markdown, title=title)
         assert text_field.title == expected
-

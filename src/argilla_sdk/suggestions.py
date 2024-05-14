@@ -69,7 +69,6 @@ class Suggestion(Resource):
             agent=agent,
         )
 
-
     ##############################
     # Properties
     ##############################

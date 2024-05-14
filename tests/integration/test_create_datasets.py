@@ -27,7 +27,6 @@ def clean_datasets(client: Argilla):
 
 
 class TestCreateDatasets:
-
     def test_create_dataset(self, client: Argilla):
         dataset = Dataset(
             name="test_dataset",

@@ -14,7 +14,6 @@
 
 import random
 import uuid
-from datetime import datetime
 from string import ascii_lowercase
 
 import pytest
@@ -104,6 +103,6 @@ def test_update_records_partially(client: rg.Argilla, dataset: rg.Dataset):
     updated_mock_data[0]["label"] = "positive"
     dataset.records.add(records=mock_data)
     dataset.records.update(records=updated_mock_data)
-    
+
     for i, record in enumerate(dataset.records(with_suggestions=True)):
         assert record.suggestions[0].value == updated_mock_data[i]["label"]

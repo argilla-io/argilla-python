@@ -24,9 +24,7 @@ def record():
 
 
 class TestRecordSuggestions:
-
     def test_create_record_suggestions(self, record: Record):
-
         suggestions = RecordSuggestions(
             suggestions=[
                 Suggestion("name", "John Doe", score=0.9),

@@ -50,7 +50,7 @@ class RecordModel(ResourceModel):
 
     @field_validator("metadata", mode="before")
     @classmethod
-    def validate_metadata(cls, metadata: Union[List[MetadataModel],dict]) -> List[MetadataModel]:
+    def validate_metadata(cls, metadata: Union[List[MetadataModel], dict]) -> List[MetadataModel]:
         """Ensure metadata is a list of MetadataModel instances when provided as a dict."""
         if not metadata:
             return []

@@ -15,13 +15,30 @@ dataset.records.add(
     [
         {
             "text": "Hello World, how are you?",
-            "label": "negative",
-            "label.suggestion.response": "negative",
-            "label.suggestion.score": 0.9,
+            "label": "negative", # this will be used as a suggestion
         },
     ]
 )
 ```
+
+If your data contains scores for suggestions you can add them as well via the `mapping` parameter. The following example demonstrates how to add a suggestion with a score to a record object:
+
+```python
+dataset.records.add(
+    [
+        {
+            "text": "Hello World, how are you?",
+            "label": "negative", # this will be used as a suggestion
+            "score": 0.9, # this will be used as the suggestion score
+            "model": "model_name" # this will be used as the suggestion agent
+        },
+    ],
+    mapping={"score": "label.score", "model": "label.agent"}, # `label` is the question name in the dataset settings
+)
+```
+
+
+
 Or, instantiate the `Record` and related `Suggestions` objects directly, like this:
 
 ```python

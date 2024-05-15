@@ -21,24 +21,24 @@ from argilla_sdk.records._resource import Record
 
 
 @pytest.fixture
-def ingestion_dataset(client):
+def dataset(client):
     settings = rg.Settings(
         fields=[rg.TextField(name="prompt")],
         questions=[rg.LabelQuestion(name="label", labels=["negative", "positive"])],
         metadata=[rg.FloatMetadataProperty(name="score")],
         vectors=[rg.VectorField(name="vector", dimensions=3)],
     )
-
-    yield rg.Dataset(
+    workspace = rg.Workspace(name="workspace", id=uuid4())
+    return rg.Dataset(
         name="test_dataset",
         settings=settings,
-        client=client,
+        workspace=workspace,
     )
 
 
-def test_ingest_record_from_dict(ingestion_dataset):
+def test_ingest_record_from_dict(dataset):
     record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "prompt": "What is the capital of France?",
             "label": "positive",
@@ -49,9 +49,9 @@ def test_ingest_record_from_dict(ingestion_dataset):
     assert record.suggestions.label.value == "positive"
 
 
-def test_ingest_record_from_dict_with_mapping(ingestion_dataset):
+def test_ingest_record_from_dict_with_mapping(dataset):
     record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "my_prompt": "What is the capital of France?",
             "label": "positive",
@@ -65,9 +65,9 @@ def test_ingest_record_from_dict_with_mapping(ingestion_dataset):
     assert record.suggestions.label.value == "positive"
 
 
-def test_ingest_record_from_dict_with_suggestions(ingestion_dataset):
+def test_ingest_record_from_dict_with_suggestions(dataset):
     record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -78,30 +78,9 @@ def test_ingest_record_from_dict_with_suggestions(ingestion_dataset):
     assert record.suggestions.label.value == "negative"
 
 
-def test_ingest_record_from_dict_with_suggestions_scores(ingestion_dataset):
+def test_ingest_record_from_dict_with_suggestions_scores(dataset):
     record = Record.from_dict(
-        dataset=ingestion_dataset,
-        data={
-            "prompt": "Hello World, how are you?",
-            "label": "negative",
-            "score": 0.9,
-            "model": "model_name",
-        },
-        mapping={
-            "score": "label.suggestion.score",
-            "model": "label.suggestion.agent",
-        },
-    )
-
-    assert record.fields.prompt == "Hello World, how are you?"
-    assert record.suggestions.label.value == "negative"
-    assert record.suggestions.label.score == 0.9
-    assert record.suggestions.label.agent == "model_name"
-
-
-def test_ingest_record_from_dict_with_suggestions_scores_and_agent(ingestion_dataset):
-    record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -120,10 +99,31 @@ def test_ingest_record_from_dict_with_suggestions_scores_and_agent(ingestion_dat
     assert record.suggestions.label.agent == "model_name"
 
 
-def test_ingest_record_from_dict_with_responses(ingestion_dataset):
+def test_ingest_record_from_dict_with_suggestions_scores_and_agent(dataset):
+    record = Record.from_dict(
+        dataset=dataset,
+        data={
+            "prompt": "Hello World, how are you?",
+            "label": "negative",
+            "score": 0.9,
+            "model": "model_name",
+        },
+        mapping={
+            "score": "label.suggestion.score",
+            "model": "label.suggestion.agent",
+        },
+    )
+
+    assert record.fields.prompt == "Hello World, how are you?"
+    assert record.suggestions.label.value == "negative"
+    assert record.suggestions.label.score == 0.9
+    assert record.suggestions.label.agent == "model_name"
+
+
+def test_ingest_record_from_dict_with_responses(dataset):
     user_id = uuid4()
     record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -139,10 +139,10 @@ def test_ingest_record_from_dict_with_responses(ingestion_dataset):
     assert record.responses.label[0].user_id == user_id
 
 
-def test_ingest_record_from_dict_with_id_as_id(ingestion_dataset):
+def test_ingest_record_from_dict_with_id_as_id(dataset):
     record_id = uuid4()
     record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -154,10 +154,10 @@ def test_ingest_record_from_dict_with_id_as_id(ingestion_dataset):
     assert record.id == record_id
 
 
-def test_ingest_record_from_dict_with_id_and_mapping(ingestion_dataset):
+def test_ingest_record_from_dict_with_id_and_mapping(dataset):
     record_id = uuid4()
     record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -172,9 +172,9 @@ def test_ingest_record_from_dict_with_id_and_mapping(ingestion_dataset):
     assert record.id == record_id
 
 
-def test_ingest_record_from_dict_with_metadata(ingestion_dataset):
+def test_ingest_record_from_dict_with_metadata(dataset):
     record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -187,9 +187,9 @@ def test_ingest_record_from_dict_with_metadata(ingestion_dataset):
     assert record.metadata["score"] == 0.9
 
 
-def test_ingest_record_from_dict_with_metadata_and_mapping(ingestion_dataset):
+def test_ingest_record_from_dict_with_metadata_and_mapping(dataset):
     record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -205,9 +205,9 @@ def test_ingest_record_from_dict_with_metadata_and_mapping(ingestion_dataset):
     assert record.metadata["score"] == 0.9
 
 
-def test_ingest_record_from_dict_with_vectors(ingestion_dataset):
+def test_ingest_record_from_dict_with_vectors(dataset):
     record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -220,9 +220,9 @@ def test_ingest_record_from_dict_with_vectors(ingestion_dataset):
     assert record.vectors.vector == [1, 2, 3]
 
 
-def test_ingest_record_from_dict_with_vectors_and_mapping(ingestion_dataset):
+def test_ingest_record_from_dict_with_vectors_and_mapping(dataset):
     record = Record.from_dict(
-        dataset=ingestion_dataset,
+        dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",

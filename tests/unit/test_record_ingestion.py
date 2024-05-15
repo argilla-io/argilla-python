@@ -21,7 +21,7 @@ from argilla_sdk.records._resource import Record
 
 
 @pytest.fixture
-def dataset(client):
+def dataset():
     settings = rg.Settings(
         fields=[rg.TextField(name="prompt")],
         questions=[rg.LabelQuestion(name="label", labels=["negative", "positive"])],

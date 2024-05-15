@@ -3,7 +3,7 @@ from uuid import uuid4
 import pytest
 
 import argilla_sdk as rg
-from argilla_sdk.records._resource import _ingest_record_from_dict
+from argilla_sdk.records._resource import Record
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ def dataset():
 
 
 def test_ingest_record_from_dict(dataset):
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "What is the capital of France?",
@@ -35,7 +35,7 @@ def test_ingest_record_from_dict(dataset):
 
 
 def test_ingest_record_from_dict_with_mapping(dataset):
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "my_prompt": "What is the capital of France?",
@@ -51,7 +51,7 @@ def test_ingest_record_from_dict_with_mapping(dataset):
 
 
 def test_ingest_record_from_dict_with_suggestions(dataset):
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
@@ -64,7 +64,7 @@ def test_ingest_record_from_dict_with_suggestions(dataset):
 
 
 def test_ingest_record_from_dict_with_suggestions_scores(dataset):
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
@@ -85,7 +85,7 @@ def test_ingest_record_from_dict_with_suggestions_scores(dataset):
 
 
 def test_ingest_record_from_dict_with_suggestions_scores_and_agent(dataset):
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
@@ -107,7 +107,7 @@ def test_ingest_record_from_dict_with_suggestions_scores_and_agent(dataset):
 
 def test_ingest_record_from_dict_with_responses(dataset):
     user_id = uuid4()
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
@@ -126,7 +126,7 @@ def test_ingest_record_from_dict_with_responses(dataset):
 
 def test_ingest_record_from_dict_with_id_as_id(dataset):
     record_id = uuid4()
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
@@ -141,7 +141,7 @@ def test_ingest_record_from_dict_with_id_as_id(dataset):
 
 def test_ingest_record_from_dict_with_id_and_mapping(dataset):
     record_id = uuid4()
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
@@ -158,7 +158,7 @@ def test_ingest_record_from_dict_with_id_and_mapping(dataset):
 
 
 def test_ingest_record_from_dict_with_metadata(dataset):
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
@@ -173,7 +173,7 @@ def test_ingest_record_from_dict_with_metadata(dataset):
 
 
 def test_ingest_record_from_dict_with_metadata_and_mapping(dataset):
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
@@ -191,7 +191,7 @@ def test_ingest_record_from_dict_with_metadata_and_mapping(dataset):
 
 
 def test_ingest_record_from_dict_with_vectors(dataset):
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",
@@ -206,7 +206,7 @@ def test_ingest_record_from_dict_with_vectors(dataset):
 
 
 def test_ingest_record_from_dict_with_vectors_and_mapping(dataset):
-    record = _ingest_record_from_dict(
+    record = Record.from_dict(
         dataset=dataset,
         data={
             "prompt": "Hello World, how are you?",

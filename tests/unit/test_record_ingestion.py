@@ -21,7 +21,7 @@ from argilla_sdk.records._resource import Record
 
 
 @pytest.fixture
-def ingestion_dataset():
+def ingestion_dataset(client):
     settings = rg.Settings(
         fields=[rg.TextField(name="prompt")],
         questions=[rg.LabelQuestion(name="label", labels=["negative", "positive"])],
@@ -32,6 +32,7 @@ def ingestion_dataset():
     yield rg.Dataset(
         name="test_dataset",
         settings=settings,
+        client=client,
     )
 
 

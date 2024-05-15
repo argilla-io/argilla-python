@@ -152,9 +152,8 @@ class Settings(Resource):
         return {v.id: v for v in self.schema.values()}
 
     def validate(self) -> None:
-        if not all([self.fields, self.questions]):
-            message = "Fields and questions are required"
-            raise SettingsError(message=message)
+        self._validate_empty_settings()
+        self._validate_duplicate_names()
 
     #####################
     #  Public methods   #
@@ -191,6 +190,34 @@ class Settings(Resource):
         if isinstance(property, QuestionType):
             return property
         raise ValueError(f"Question with id {question_id} not found")
+
+    def serialize(self):
+        try:
+            return {
+                "guidelines": self.guidelines,
+                "fields": self.__serialize_fields(fields=self.fields),
+                "questions": self.__serialize_questions(questions=self.questions),
+                "allow_extra_metadata": self.allow_extra_metadata,
+            }
+        except Exception as e:
+            raise ArgillaSerializeError(f"Failed to serialize the settings. {e.__class__.__name__}") from e
+
+    def __eq__(self, other: "Settings") -> bool:
+        return self.serialize() == other.serialize()  # TODO: Create proper __eq__ methods for fields and questions
+
+    #####################
+    #  Repr Methods     #
+    #####################
+
+    def __repr__(self) -> str:
+        return (
+            f"Settings(guidelines={self.guidelines}, allow_extra_metadata={self.allow_extra_metadata}, "
+            f"fields={self.fields}, questions={self.questions}, vectors={self.vectors}, metadata={self.metadata})"
+        )
+
+    #####################
+    #  Private methods  #
+    #####################
 
     def __fetch_fields(self) -> List[FieldType]:
         models = self._client.api.fields.list(dataset_id=self._dataset.id)
@@ -280,23 +307,21 @@ class Settings(Resource):
             )
             metadata._model = metadata_model
 
-    def serialize(self):
-        try:
-            return {
-                "guidelines": self.guidelines,
-                "fields": self.__serialize_fields(fields=self.fields),
-                "questions": self.__serialize_questions(questions=self.questions),
-                "allow_extra_metadata": self.allow_extra_metadata,
-            }
-        except Exception as e:
-            raise ArgillaSerializeError(f"Failed to serialize the settings. {e.__class__.__name__}") from e
+    def _validate_empty_settings(self):
+        if not all([self.fields, self.questions]):
+            message = "Fields and questions are required"
+            raise SettingsError(message=message)
 
-    #####################
-    #  Utility methods  #
-    #####################
+    def _validate_duplicate_names(self) -> None:
+        dataset_properties_by_name = {}
 
-    def __eq__(self, other: "Settings") -> bool:
-        return self.serialize() == other.serialize()  # TODO: Create proper __eq__ methods for fields and questions
+        for prop in self.fields + self.questions + self.vectors + self.metadata:
+            if prop.name in dataset_properties_by_name:
+                raise SettingsError(
+                    f"names of dataset settings must be unique, "
+                    f"but the name {prop.name!r} is used by {type(prop).__name__!r} and {type(dataset_properties_by_name[prop.name]).__name__!r} "
+                )
+            dataset_properties_by_name[prop.name] = prop
 
     def __process_fields(self, fields: List[FieldType]) -> List["TextFieldModel"]:
         processed_fields = []
@@ -336,10 +361,3 @@ class Settings(Resource):
 
     def __serialize_questions(self, questions: List[QuestionType]):
         return [question.serialize() for question in questions]
-
-    #####################
-    #  Repr Methods     #
-    #####################
-
-    def __repr__(self) -> str:
-        return f"Settings(guidelines={self.guidelines}, allow_extra_metadata={self.allow_extra_metadata}, fields={self.fields}, questions={self.questions}, vectors={self.vectors}, metadata={self.metadata})"

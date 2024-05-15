@@ -82,6 +82,47 @@ dataset.create()
 !!! tip "Accessing attributes"
     Access the attributes of a dataset by calling them directly on the `dataset` object. For example, `dataset.id`, `dataset.name` or `dataset.settings`. You can similarly access the fields, questions, metadata, vectors and guidelines. For instance, `dataset.fields` or `dataset.questions`.
 
+### Create multiple datasets with the same settings
+
+To create multiple datasets with the same settings, define the settings once and pass it to each dataset.
+
+```python
+import argilla_sdk as rg
+
+settings = rg.Settings(
+    guidelines="Select the sentiment of the prompt.",
+    fields=[rg.TextField(name="prompt", use_markdown=True)],
+    questions=[rg.LabelQuestion(name="sentiment", labels=["positive", "negative"])],
+)
+
+dataset1 = rg.Dataset(name="sentiment_analysis_1", settings=settings)
+dataset2 = rg.Dataset(name="sentiment_analysis_2", settings=settings)
+
+# Create the datasets on the server
+dataset1.create()
+dataset2.create()
+
+```
+
+### Create a dataset with settings from an existing dataset
+
+To create a new dataset with settings from an existing dataset, get the settings from the existing dataset and pass it
+to the new dataset.
+
+```python
+import argilla_sdk as rg
+
+# Get the settings from an existing dataset
+existing_dataset = client.datasets("sentiment_analysis")
+
+# Create a new dataset with the same settings
+dataset = rg.Dataset(name="sentiment_analysis_copy", settings=existing_dataset.settings)
+
+# Create the dataset on the server
+dataset.create()
+
+```
+
 ## Define dataset settings
 
 ### Fields

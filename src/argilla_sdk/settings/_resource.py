@@ -331,10 +331,10 @@ class Settings(Resource):
 
         return guidelines
 
-    def __serialize_fields(self, fields):
+    def __serialize_fields(self, fields: List[FieldType]):
         return [field.serialize() for field in fields]
 
-    def __serialize_questions(self, questions):
+    def __serialize_questions(self, questions: List[QuestionType]):
         return [question.serialize() for question in questions]
 
     #####################

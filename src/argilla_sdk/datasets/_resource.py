@@ -133,7 +133,7 @@ class Dataset(Resource):
         self.settings.allow_extra_metadata = value
 
     @property
-    def schema(self):
+    def schema(self) -> dict:
         return self.settings.schema
 
     #####################

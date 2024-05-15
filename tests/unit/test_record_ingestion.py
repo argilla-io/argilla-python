@@ -29,7 +29,7 @@ def dataset():
         vectors=[rg.VectorField(name="vector", dimensions=3)],
     )
 
-    return rg.Dataset(
+    yield rg.Dataset(
         name="test_dataset",
         settings=settings,
     )

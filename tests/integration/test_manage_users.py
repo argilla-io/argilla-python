@@ -34,3 +34,9 @@ class TestManageUsers:
         client.users.add(user)
         assert user.id is not None
         assert client.users(username=user.username).id == user.id
+
+    def test_delete_user(self, client: Argilla):
+        user = User(username="test_delete_user", password="test_password")
+        client.users.add(user)
+        user.delete()
+        assert not user.exists()

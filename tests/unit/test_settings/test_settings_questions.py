@@ -17,7 +17,6 @@ import argilla_sdk as rg
 
 
 class TestQuestions:
-    
     @pytest.mark.parametrize(
         "labels",
         [

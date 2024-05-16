@@ -12,14 +12,27 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import pytest
 import argilla_sdk as rg
 
 
 class TestQuestions:
-    def test_label_question_init(self):
-        question = rg.LabelQuestion(name="label_question", labels=["label1", "label2"])
+    
+    @pytest.mark.parametrize(
+        "labels",
+        [
+            ["label1", "label2", "label3"],
+            {"label1": "1", "label2": "2", "label3": "3"},
+        ],
+    )
+    def test_label_question_init(self, labels):
+        question = rg.LabelQuestion(name="label_question", labels=labels)
         assert question.name == "label_question"
-        assert question.labels == ["label1", "label2"]
+        assert question.labels == ["label1", "label2", "label3"]
+        if isinstance(labels, dict):
+            text_of_labels = [label["text"] for label in question._model.settings.options]
+            for i in range(len(labels)):
+                assert text_of_labels[i] == list(labels.values())[i]
 
     def test_rating_question_init(self):
         question = rg.RatingQuestion(name="rating_question", values=[1, 2, 3])
@@ -31,13 +44,22 @@ class TestQuestions:
         assert question.name == "text_question"
         assert question.use_markdown is True
 
-    def test_multi_label_question_init(self):
-        question = rg.MultiLabelQuestion(
-            name="multi_label_question", labels=["label1", "label2", "label3"], visible_labels=3
-        )
+    @pytest.mark.parametrize(
+        "labels",
+        [
+            ["label1", "label2", "label3"],
+            {"label1": "1", "label2": "2", "label3": "3"},
+        ],
+    )
+    def test_multi_label_question_init(self, labels: list):
+        question = rg.MultiLabelQuestion(name="multi_label_question", labels=labels, visible_labels=3)
         assert question.name == "multi_label_question"
         assert question.labels == ["label1", "label2", "label3"]
         assert question.visible_labels == 3
+        if isinstance(labels, dict):
+            text_of_labels = [label["text"] for label in question._model.settings.options]
+            for i in range(len(labels)):
+                assert text_of_labels[i] == list(labels.values())[i]
 
     def test_ranking_question_init(self):
         question = rg.RankingQuestion(name="ranking_question", values=["rank-a", "rank-b"])

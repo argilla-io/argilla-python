@@ -398,9 +398,11 @@ def question_from_model(model: QuestionModel) -> QuestionType:
         raise ValueError(f"Unsupported question model type: {model.settings.type}")
 
 
-def _render_values_as_options(values: Union[List[str], List[int]]) -> List[Dict[str, str]]:
+def _render_values_as_options(values: Union[List[str], List[int], Dict[str, str]]) -> List[Dict[str, str]]:
     """Render values as options for the question so that the model conforms to the API schema"""
-    if isinstance(values, list) and all(isinstance(value, str) for value in values):
+    if isinstance(values, dict):
+        return [{"text": value, "value": key} for key, value in values.items()]
+    elif isinstance(values, list) and all(isinstance(value, str) for value in values):
         return [{"text": label, "value": label} for label in values]
     elif isinstance(values, list) and all(isinstance(value, int) for value in values):
         return [{"value": value} for value in values]

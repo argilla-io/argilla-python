@@ -71,7 +71,7 @@ You can add records to a dataset in two different ways: either by using a dictio
     ]
     dataset.records.add(data)
 
-    # Add records to the dataset with the a mapping of the fields
+    # Add records to the dataset with the a mapping of the fields 'question' and 'answer'
     data = [
         {
             "query": "Do you need oxygen to breathe?",

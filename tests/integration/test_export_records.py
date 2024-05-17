@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import random
 import uuid
 from string import ascii_lowercase
+from tempfile import NamedTemporaryFile
 
 import pytest
 
@@ -180,3 +182,70 @@ def test_export_records_dict_nested_orient_index(client: Argilla, dataset: rg.Da
         assert exported_record["fields"]["text"] == mock_record["text"]
         assert exported_record["suggestions"]["label"]["value"] == mock_record["label"]
         assert exported_record["external_id"] == str(mock_record["external_id"])
+
+
+def test_export_records_to_disk(dataset: rg.Dataset):
+    mock_data = [
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "external_id": uuid.uuid4(),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "negative",
+            "external_id": uuid.uuid4(),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "external_id": uuid.uuid4(),
+        },
+    ]
+    dataset.records.add(records=mock_data)
+
+    with NamedTemporaryFile() as temp_file:
+        dataset.records._to_disk(path=temp_file.name)
+        with open(temp_file.name, "r") as f:
+            exported_records = json.load(f)
+    assert len(exported_records) == len(mock_data)
+    assert exported_records[0]["fields"]["text"] == "Hello World, how are you?"
+    assert exported_records[0]["suggestions"]["label"]["value"] == "positive"
+
+
+def test_export_records_from_disk(dataset: rg.Dataset):
+    mock_data = [
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "external_id": uuid.uuid4(),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "negative",
+            "external_id": uuid.uuid4(),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "external_id": uuid.uuid4(),
+        },
+    ]
+    dataset.records.add(records=mock_data)
+
+    with NamedTemporaryFile() as temp_file:
+        dataset.records._to_disk(path=temp_file.name)
+        dataset.records._from_disk(path=temp_file.name)
+
+    for i, record in enumerate(dataset.records(with_suggestions=True)):
+        assert record.fields.text == mock_data[i]["text"]
+        assert record.suggestions.label.value == mock_data[i]["label"]
+        assert str(record.external_id) == str(mock_data[i]["external_id"])
+        
+    #     if i == len(mock_data) - 1:
+    #         break
+    
+    # for i, record in enumerate(dataset.records(with_suggestions=True, start_offset=len(mock_data))):
+    #     assert record.fields.text == mock_data[i]["text"]
+    #     assert record.suggestions.label.value == mock_data[i]["label"]
+    #     assert str(record.external_id) != str(mock_data[i]["external_id"])

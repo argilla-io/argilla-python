@@ -11,7 +11,8 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import json
+import os
 import warnings
 from typing import Optional, Union
 from uuid import UUID, uuid4
@@ -165,6 +166,50 @@ class Dataset(Resource):
     @classmethod
     def from_model(cls, model: DatasetModel, client: "Argilla") -> "Dataset":
         return cls(client=client, _model=model)
+
+    def to_disk(self, path: str) -> str:
+        """Exports the dataset to disk in the given path.
+
+        Args:
+            path (str): The path to export the dataset to.
+        """
+
+        path = os.path.join(path, self.name)
+        os.makedirs(path, exist_ok=True)
+        dataset_path = os.path.join(path, "dataset.json")
+        settings_path = os.path.join(path, "settings.json")
+        records_path = os.path.join(path, "records.json")
+
+        with open(dataset_path, "w") as f:
+            json.dump(self._model.model_dump(), f)
+
+        self.settings.to_disk(settings_path)
+
+        if self.exists():
+            self.records._to_disk(records_path)
+
+        return path
+
+    @classmethod
+    def from_disk(
+        cls,
+        path: str,
+        client: Optional["Argilla"] = None,
+    ) -> "Dataset":
+        dataset_path = os.path.join(path, "dataset.json")
+
+        with open(dataset_path, "r") as f:
+            dataset_model = json.load(f)
+            dataset_model = DatasetModel(**dataset_model)
+        dataset = cls.from_model(model=dataset_model, client=client)
+
+        settings_path = os.path.join(path, "settings.json")
+        dataset.settings = Settings.from_disk(path=settings_path)
+
+        records_path = os.path.join(path, "records.json")
+        if os.path.exists(records_path):
+            dataset.records._from_disk(path=records_path)
+        return dataset
 
     #####################
     #  Utility methods  #

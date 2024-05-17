@@ -60,12 +60,12 @@ class GenericExportMixin(Iterable["Record"], ABC):
         if orient == "names":
             dataset_records: dict = defaultdict(list)
             for record in records:
-                for key, value in self.__record_to_dict(record=record, flatten=flatten).items():
+                for key, value in self._record_to_dict(record=record, flatten=flatten).items():
                     dataset_records[key].append(value)
         elif orient == "index":
             dataset_records: dict = {}
             for record in records:
-                dataset_records[record.external_id] = self.__record_to_dict(record=record, flatten=flatten)
+                dataset_records[record.external_id] = self._record_to_dict(record=record, flatten=flatten)
         else:
             raise ValueError(f"Invalid value for orient parameter: {orient}")
         return dataset_records
@@ -73,11 +73,11 @@ class GenericExportMixin(Iterable["Record"], ABC):
     def _export_to_list(self, records: List["Record"], flatten=False) -> List[Dict[str, Union[str, float, int, list]]]:
         dataset_records: list = []
         for record in records:
-            dataset_records.append(self.__record_to_dict(record=record, flatten=flatten))
+            dataset_records.append(self._record_to_dict(record=record, flatten=flatten))
         return dataset_records
 
     @staticmethod
-    def __record_to_dict(record: "Record", flatten=False) -> Dict[str, Any]:
+    def _record_to_dict(record: "Record", flatten=False) -> Dict[str, Any]:
         """Converts a Record object to a dictionary for export.
         Args:
             record (Record): The Record object to convert.

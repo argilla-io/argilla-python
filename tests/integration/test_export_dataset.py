@@ -22,7 +22,6 @@ from tempfile import TemporaryDirectory
 import pytest
 
 import argilla_sdk as rg
-from argilla_sdk import Argilla
 
 
 @pytest.fixture
@@ -68,7 +67,7 @@ def test_export_dataset_to_disk(dataset: rg.Dataset):
 
     with TemporaryDirectory() as temp_dir:
         output_dir = dataset.to_disk(path=temp_dir)
-        
+
         records_path = os.path.join(output_dir, "records.json")
         assert os.path.exists(records_path)
         with open(records_path, "r") as f:
@@ -78,7 +77,7 @@ def test_export_dataset_to_disk(dataset: rg.Dataset):
         assert os.path.exists(settings_path)
         with open(settings_path, "r") as f:
             exported_settings = json.load(f)
-            
+
         dataset_path = os.path.join(output_dir, "dataset.json")
         assert os.path.exists(dataset_path)
         with open(dataset_path, "r") as f:
@@ -90,7 +89,7 @@ def test_export_dataset_to_disk(dataset: rg.Dataset):
 
     assert exported_settings["fields"][0]["name"] == "text"
     assert exported_settings["questions"][0]["name"] == "label"
-    
+
     assert exported_dataset["name"] == dataset.name
 
 
@@ -125,5 +124,5 @@ def test_import_dataset_from_disk(dataset: rg.Dataset, client):
     assert new_dataset.settings.fields[0].name == "text"
     assert new_dataset.settings.questions[0].name == "label"
     assert new_dataset.settings == dataset.settings
-    
+
     assert new_dataset.name == dataset.name

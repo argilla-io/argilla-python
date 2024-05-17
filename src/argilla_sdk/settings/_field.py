@@ -61,7 +61,7 @@ class TextField(SettingsPropertyBase):
         instance._model = model
 
         return instance
-    
+
     @classmethod
     def from_dict(cls, data: dict) -> "TextField":
         model = TextFieldModel(**data)

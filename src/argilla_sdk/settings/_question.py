@@ -427,11 +427,13 @@ def question_from_model(model: QuestionModel) -> QuestionType:
     except KeyError:
         raise ValueError(f"Unsupported question model type: {model.settings.type}")
 
+
 def question_from_dict(data: dict) -> QuestionType:
     try:
         return _TYPE_TO_CLASS[data["settings"]["type"]].from_dict(data)
     except KeyError:
         raise ValueError(f"Unsupported question model type: {data['settings']['type']}")
+
 
 def _render_values_as_options(values: Union[List[str], List[int]]) -> List[Dict[str, str]]:
     """Render values as options for the question so that the model conforms to the API schema"""

@@ -182,7 +182,6 @@ class Record(Resource):
         Returns:
             A Record object.
         """
-
         fields: Dict[str, str] = {}
         responses: List[Response] = []
         record_id: Optional[str] = None

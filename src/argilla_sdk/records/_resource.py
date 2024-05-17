@@ -252,7 +252,7 @@ class Record(Resource):
 
         suggestions = [Suggestion(**suggestion_dict) for suggestion_dict in suggestion_values.values()]
 
-        return Record(
+        return cls(
             id=record_id,
             fields=fields,
             suggestions=suggestions,

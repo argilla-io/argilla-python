@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional, Union
+from typing import Any, Optional, Union
 
 
 from argilla_sdk._models import FieldBaseModel, QuestionBaseModel
@@ -44,3 +44,8 @@ class SettingsPropertyBase(Resource):
 
     def __repr__(self) -> str:
         return f"{self.__class__.__name__}(name={self.name}, title={self.title}, description={self.description}, type={self._model.settings.type}, required={self.required}) \n"
+
+    def serialize(self) -> dict[str, Any]:
+        serialized_model = super().serialize()
+        serialized_model["type"] = self._model.settings.type
+        return serialized_model

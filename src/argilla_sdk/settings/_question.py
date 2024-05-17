@@ -80,6 +80,11 @@ class LabelQuestion(SettingsPropertyBase):
         instance._model = model
         return instance
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "LabelQuestion":
+        model = LabelQuestionModel(**data)
+        return cls.from_model(model=model)
+
     ##############################
     # Public properties
     ##############################
@@ -146,6 +151,11 @@ class MultiLabelQuestion(LabelQuestion):
 
         return instance
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "MultiLabelQuestion":
+        model = MultiLabelQuestionModel(**data)
+        return cls.from_model(model=model)
+
 
 class TextQuestion(SettingsPropertyBase):
     _model: TextQuestionModel
@@ -182,6 +192,11 @@ class TextQuestion(SettingsPropertyBase):
         instance._model = model
 
         return instance
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "TextQuestion":
+        model = TextQuestionModel(**data)
+        return cls.from_model(model=model)
 
     @property
     def use_markdown(self) -> bool:
@@ -229,6 +244,11 @@ class RatingQuestion(SettingsPropertyBase):
 
         return instance
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "RatingQuestion":
+        model = RatingQuestionModel(**data)
+        return cls.from_model(model=model)
+
     @property
     def values(self) -> List[int]:
         return _render_options_as_values(self._model.settings.options)
@@ -273,6 +293,11 @@ class RankingQuestion(SettingsPropertyBase):
         instance._model = model
 
         return instance
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "RankingQuestion":
+        model = RankingQuestionModel(**data)
+        return cls.from_model(model=model)
 
     @property
     def values(self) -> List[str]:
@@ -371,6 +396,11 @@ class SpanQuestion(SettingsPropertyBase):
 
         return instance
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "SpanQuestion":
+        model = SpanQuestionModel(**data)
+        return cls.from_model(model=model)
+
 
 QuestionType = Union[
     LabelQuestion,
@@ -397,6 +427,11 @@ def question_from_model(model: QuestionModel) -> QuestionType:
     except KeyError:
         raise ValueError(f"Unsupported question model type: {model.settings.type}")
 
+def question_from_dict(data: dict) -> QuestionType:
+    try:
+        return _TYPE_TO_CLASS[data["settings"]["type"]].from_dict(data)
+    except KeyError:
+        raise ValueError(f"Unsupported question model type: {data['settings']['type']}")
 
 def _render_values_as_options(values: Union[List[str], List[int]]) -> List[Dict[str, str]]:
     """Render values as options for the question so that the model conforms to the API schema"""

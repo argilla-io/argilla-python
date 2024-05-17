@@ -92,6 +92,12 @@ class User(Resource):
         self._sync(model=model)
         return self
 
+    def delete(self) -> None:
+        """Deletes the user from Argilla. After deleting a user, it will no longer be able to log in to the Argilla server."""
+        super().delete()
+        # exists relies on the id, so we need to set it to None
+        self._model = UserModel(username=self.username)
+
     def exists(self) -> bool:
         """Checks if the user exists in Argilla
 

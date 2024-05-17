@@ -186,7 +186,7 @@ class Dataset(Resource):
         self.settings.to_disk(settings_path)
 
         if self.exists():
-            self.records._to_disk(records_path)
+            self.records.to_disk(records_path)
 
         return path
 
@@ -208,7 +208,7 @@ class Dataset(Resource):
 
         records_path = os.path.join(path, "records.json")
         if os.path.exists(records_path):
-            dataset.records._from_disk(path=records_path)
+            dataset.records.from_disk(path=records_path)
         return dataset
 
     #####################

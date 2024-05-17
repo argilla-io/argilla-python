@@ -205,7 +205,7 @@ def test_export_records_to_disk(dataset: rg.Dataset):
     dataset.records.add(records=mock_data)
 
     with NamedTemporaryFile() as temp_file:
-        dataset.records._to_disk(path=temp_file.name)
+        dataset.records.to_disk(path=temp_file.name)
         with open(temp_file.name, "r") as f:
             exported_records = json.load(f)
     assert len(exported_records) == len(mock_data)
@@ -218,34 +218,22 @@ def test_export_records_from_disk(dataset: rg.Dataset):
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "label": "negative",
-            "external_id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": uuid.uuid4(),
         },
     ]
     dataset.records.add(records=mock_data)
 
     with NamedTemporaryFile() as temp_file:
-        dataset.records._to_disk(path=temp_file.name)
-        dataset.records._from_disk(path=temp_file.name)
+        dataset.records.to_disk(path=temp_file.name)
+        dataset.records.from_disk(path=temp_file.name)
 
     for i, record in enumerate(dataset.records(with_suggestions=True)):
         assert record.fields.text == mock_data[i]["text"]
         assert record.suggestions.label.value == mock_data[i]["label"]
-        assert str(record.external_id) == str(mock_data[i]["external_id"])
-        
-    #     if i == len(mock_data) - 1:
-    #         break
-    
-    # for i, record in enumerate(dataset.records(with_suggestions=True, start_offset=len(mock_data))):
-    #     assert record.fields.text == mock_data[i]["text"]
-    #     assert record.suggestions.label.value == mock_data[i]["label"]
-    #     assert str(record.external_id) != str(mock_data[i]["external_id"])

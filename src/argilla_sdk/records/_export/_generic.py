@@ -65,7 +65,7 @@ class GenericExportMixin(Iterable["Record"], ABC):
         elif orient == "index":
             dataset_records: dict = {}
             for record in records:
-                dataset_records[record.external_id] = self.__record_to_dict(record=record, flatten=flatten)
+                dataset_records[record.id] = self.__record_to_dict(record=record, flatten=flatten)
         else:
             raise ValueError(f"Invalid value for orient parameter: {orient}")
         return dataset_records

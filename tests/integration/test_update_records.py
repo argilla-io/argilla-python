@@ -48,24 +48,24 @@ def test_update_records_separately(client: rg.Argilla, dataset: rg.Dataset):
         {
             "text": "Hello World, how are you?",
             "label": "negative",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "label": "negative",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "label": "negative",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
     ]
     updated_mock_data = [
         {
             "text": r["text"],
             "label": "positive",
-            "external_id": r["external_id"],
+            "id": r["id"],
         }
         for r in mock_data
     ]
@@ -74,9 +74,9 @@ def test_update_records_separately(client: rg.Argilla, dataset: rg.Dataset):
     dataset.records.update(records=updated_mock_data)
     dataset_records = list(dataset.records)
 
-    assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
-    assert dataset_records[1].external_id == str(mock_data[1]["external_id"])
-    assert dataset_records[2].external_id == str(mock_data[2]["external_id"])
+    assert dataset_records[0].id == str(mock_data[0]["id"])
+    assert dataset_records[1].id == str(mock_data[1]["id"])
+    assert dataset_records[2].id == str(mock_data[2]["id"])
     for record in dataset.records(with_suggestions=True):
         assert record.suggestions[0].value == "positive"
 

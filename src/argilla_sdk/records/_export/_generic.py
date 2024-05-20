@@ -31,7 +31,7 @@ class GenericExportMixin(Iterable["Record"], ABC):
                 - False: The record fields, metadata, suggestions and responses will be nested.
             orient (str): The orientation of the exported dictionary.
                 - "names": The keys of the dictionary will be the names of the fields, metadata, suggestions and responses.
-                - "index": The keys of the dictionary will be the external_id of the records.
+                - "index": The keys of the dictionary will be the id of the records.
         Returns:
             dataset_records (Dict[str, Union[str, float, int, list]]): The exported records in a dictionary format.
         """

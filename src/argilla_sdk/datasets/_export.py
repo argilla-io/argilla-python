@@ -46,7 +46,7 @@ class DiskImportExportMixin(ABC):
         Args:
             path (str): The path to export the dataset to.
         """
-        
+
         dir_path, dataset_path, settings_path, records_path = self._define_child_paths(path=path)
         os.makedirs(path, exist_ok=True)
 
@@ -95,7 +95,7 @@ class DiskImportExportMixin(ABC):
         dataset = cls.from_model(model=dataset_model, client=client)
 
         dataset.settings = Settings.from_json(path=settings_path)
-        
+
         if os.path.exists(records_path):
             dataset.records.from_json(path=records_path)
         return dataset
@@ -103,7 +103,7 @@ class DiskImportExportMixin(ABC):
     ############################
     # Utility methods
     ############################
-    
+
     @classmethod
     def _define_child_paths(cls, path: Union[Path, str]) -> Tuple[Path, Path, Path, Path]:
         path = Path(path)
@@ -118,26 +118,33 @@ class DiskImportExportMixin(ABC):
 
     @property
     @abstractmethod
-    def records(self) -> "DatasetRecords": ...
+    def records(self) -> "DatasetRecords":
+        ...
 
     @property
     @abstractmethod
-    def settings(self) -> Settings: ...
+    def settings(self) -> Settings:
+        ...
 
     @settings.setter
     @abstractmethod
-    def settings(self, value: Settings): ...
+    def settings(self, value: Settings):
+        ...
 
     @property
     @abstractmethod
-    def name(self) -> str: ...
+    def name(self) -> str:
+        ...
 
     @abstractmethod
-    def create(self) -> "Dataset": ...
+    def create(self) -> "Dataset":
+        ...
 
     @abstractmethod
-    def exists(self) -> bool: ...
+    def exists(self) -> bool:
+        ...
 
     @classmethod
     @abstractmethod
-    def from_model(cls, model: DatasetModel, client: Argilla) -> "Dataset": ...
+    def from_model(cls, model: DatasetModel, client: Argilla) -> "Dataset":
+        ...

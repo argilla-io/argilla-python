@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 import json
+import logging
 import os
 import warnings
 from typing import Optional, Union
@@ -173,7 +174,7 @@ class Dataset(Resource):
         Args:
             path (str): The path to export the dataset to.
         """
-
+        
         path = os.path.join(path, self.name)
         os.makedirs(path, exist_ok=True)
         dataset_path = os.path.join(path, "dataset.json")
@@ -194,13 +195,35 @@ class Dataset(Resource):
     def from_disk(
         cls,
         path: str,
+        target_workspace: Optional[Union["Workspace", str]] = None,
+        target_name: Optional[str] = None,
         client: Optional["Argilla"] = None,
     ) -> "Dataset":
+        
+        client = client or Argilla._get_default()
+        
         dataset_path = os.path.join(path, "dataset.json")
 
         with open(dataset_path, "r") as f:
             dataset_model = json.load(f)
             dataset_model = DatasetModel(**dataset_model)
+            
+        if isinstance(target_workspace, str):
+            workspace_id = client.workspaces(target_workspace).id
+        elif isinstance(target_workspace, Workspace):
+            workspace_id = target_workspace.id
+        else:
+            warnings.warn("Workspace not provided. Using default workspace.")
+            workspace_id = client.workspaces.default.id
+        dataset_model.workspace_id = workspace_id
+        
+        if target_name:
+            logging.warning(f"Changing dataset name from {dataset_model.name} to {target_name}")
+            dataset_model.name = target_name
+        elif client.api.datasets.name_exists(name=dataset_model.name, workspace_id=workspace_id):
+            logging.warning(f"Loaded dataset name {dataset_model.name} already exists. Changing to unique UUID.")
+            dataset_model.name = f"{dataset_model.name}_{uuid4()}"
+        
         dataset = cls.from_model(model=dataset_model, client=client)
 
         settings_path = os.path.join(path, "settings.json")

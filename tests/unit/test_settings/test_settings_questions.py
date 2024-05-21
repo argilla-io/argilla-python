@@ -12,12 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
 import argilla_sdk as rg
 
 
 class TestQuestions:
-
     def test_label_question_init(self):
         labels = ["label1", "label2", "label3"]
         question = rg.LabelQuestion(name="label_question", labels=labels)

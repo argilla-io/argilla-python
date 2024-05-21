@@ -15,7 +15,7 @@
 import pytest
 import uuid
 from datetime import datetime
-from tempfile import NamedTemporaryFile, TemporaryDirectory
+from tempfile import NamedTemporaryFile
 
 import httpx
 from pytest_httpx import HTTPXMock

@@ -68,7 +68,7 @@ class GenericExportMixin(Iterable["Record"], ABC):
                 dataset_records[record.external_id] = self._record_to_dict(record=record, flatten=flatten)
         else:
             raise ValueError(f"Invalid value for orient parameter: {orient}")
-        return dataset_records
+        return dict(dataset_records)
 
     def _export_to_list(self, records: List["Record"], flatten=False) -> List[Dict[str, Union[str, float, int, list]]]:
         dataset_records: list = []

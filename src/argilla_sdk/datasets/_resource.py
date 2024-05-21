@@ -11,9 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import json
-import logging
-import os
+
 import warnings
 from typing import Optional, Union
 from uuid import UUID, uuid4
@@ -23,6 +21,7 @@ from argilla_sdk._exceptions import NotFoundError, SettingsError
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
+from argilla_sdk.datasets._export import DiskImportExportMixin
 from argilla_sdk.records import DatasetRecords
 from argilla_sdk.settings import Settings
 from argilla_sdk.workspaces._resource import Workspace
@@ -30,7 +29,7 @@ from argilla_sdk.workspaces._resource import Workspace
 __all__ = ["Dataset"]
 
 
-class Dataset(Resource):
+class Dataset(Resource, DiskImportExportMixin):
     """Class for interacting with Argilla Datasets
 
     Attributes:
@@ -167,71 +166,6 @@ class Dataset(Resource):
     @classmethod
     def from_model(cls, model: DatasetModel, client: "Argilla") -> "Dataset":
         return cls(client=client, _model=model)
-
-    def to_disk(self, path: str) -> str:
-        """Exports the dataset to disk in the given path.
-
-        Args:
-            path (str): The path to export the dataset to.
-        """
-
-        path = os.path.join(path, self.name)
-        os.makedirs(path, exist_ok=True)
-        dataset_path = os.path.join(path, "dataset.json")
-        settings_path = os.path.join(path, "settings.json")
-        records_path = os.path.join(path, "records.json")
-
-        with open(dataset_path, "w") as f:
-            json.dump(self._model.model_dump(), f)
-
-        self.settings.to_disk(settings_path)
-
-        if self.exists():
-            self.records.to_disk(records_path)
-
-        return path
-
-    @classmethod
-    def from_disk(
-        cls,
-        path: str,
-        target_workspace: Optional[Union["Workspace", str]] = None,
-        target_name: Optional[str] = None,
-        client: Optional["Argilla"] = None,
-    ) -> "Dataset":
-        client = client or Argilla._get_default()
-
-        dataset_path = os.path.join(path, "dataset.json")
-
-        with open(dataset_path, "r") as f:
-            dataset_model = json.load(f)
-            dataset_model = DatasetModel(**dataset_model)
-
-        if isinstance(target_workspace, str):
-            workspace_id = client.workspaces(target_workspace).id
-        elif isinstance(target_workspace, Workspace):
-            workspace_id = target_workspace.id
-        else:
-            warnings.warn("Workspace not provided. Using default workspace.")
-            workspace_id = client.workspaces.default.id
-        dataset_model.workspace_id = workspace_id
-
-        if target_name:
-            logging.warning(f"Changing dataset name from {dataset_model.name} to {target_name}")
-            dataset_model.name = target_name
-        elif client.api.datasets.name_exists(name=dataset_model.name, workspace_id=workspace_id):
-            logging.warning(f"Loaded dataset name {dataset_model.name} already exists. Changing to unique UUID.")
-            dataset_model.name = f"{dataset_model.name}_{uuid4()}"
-
-        dataset = cls.from_model(model=dataset_model, client=client)
-
-        settings_path = os.path.join(path, "settings.json")
-        dataset.settings = Settings.from_disk(path=settings_path)
-
-        records_path = os.path.join(path, "records.json")
-        if os.path.exists(records_path):
-            dataset.records.from_disk(path=records_path)
-        return dataset
 
     #####################
     #  Utility methods  #

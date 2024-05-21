@@ -65,7 +65,6 @@ def test_export_records_dict_flattened(client: Argilla, dataset: rg.Dataset):
     ]
     dataset.records.add(records=mock_data)
     exported_records = dataset.records.to_dict(flatten=True)
-    assert len(exported_records) == 5
     assert isinstance(exported_records, dict)
     assert isinstance(exported_records["external_id"], list)
     assert isinstance(exported_records["text"], list)

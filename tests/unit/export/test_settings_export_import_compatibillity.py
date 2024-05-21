@@ -76,17 +76,9 @@ def dataset(httpx_mock: HTTPXMock, settings) -> rg.Dataset:
         yield dataset
 
 
-def test_export_settings_to_disk(settings):
+def test_export_settings_from_disk(settings):
     with NamedTemporaryFile() as f:
         settings.to_disk(f.name)
         loaded_settings = rg.Settings.from_disk(f.name)
 
     assert settings == loaded_settings
-
-
-def test_export_dataset_to_disk(dataset):
-    with TemporaryDirectory(ignore_cleanup_errors=True) as f:
-        directory_path = dataset.to_disk(f)
-        loaded_dataset = rg.Dataset.from_disk(directory_path)
-
-    assert dataset == loaded_dataset

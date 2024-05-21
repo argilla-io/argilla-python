@@ -184,7 +184,7 @@ def test_export_records_dict_nested_orient_index(client: Argilla, dataset: rg.Da
         assert exported_record["external_id"] == str(mock_record["external_id"])
 
 
-def test_export_records_to_disk(dataset: rg.Dataset):
+def test_export_records_to_json(dataset: rg.Dataset):
     mock_data = [
         {
             "text": "Hello World, how are you?",
@@ -205,7 +205,7 @@ def test_export_records_to_disk(dataset: rg.Dataset):
     dataset.records.add(records=mock_data)
 
     with NamedTemporaryFile() as temp_file:
-        dataset.records.to_disk(path=temp_file.name)
+        dataset.records.to_json(path=temp_file.name)
         with open(temp_file.name, "r") as f:
             exported_records = json.load(f)
     assert len(exported_records) == len(mock_data)
@@ -213,7 +213,7 @@ def test_export_records_to_disk(dataset: rg.Dataset):
     assert exported_records[0]["suggestions"]["label"]["value"] == "positive"
 
 
-def test_export_records_from_disk(dataset: rg.Dataset):
+def test_export_records_from_json(dataset: rg.Dataset):
     mock_data = [
         {
             "text": "Hello World, how are you?",
@@ -231,8 +231,8 @@ def test_export_records_from_disk(dataset: rg.Dataset):
     dataset.records.add(records=mock_data)
 
     with NamedTemporaryFile() as temp_file:
-        dataset.records.to_disk(path=temp_file.name)
-        dataset.records.from_disk(path=temp_file.name)
+        dataset.records.to_json(path=temp_file.name)
+        dataset.records.from_json(path=temp_file.name)
 
     for i, record in enumerate(dataset.records(with_suggestions=True)):
         assert record.fields.text == mock_data[i]["text"]

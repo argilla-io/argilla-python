@@ -78,7 +78,7 @@ def dataset(httpx_mock: HTTPXMock, settings) -> rg.Dataset:
 
 def test_export_settings_from_disk(settings):
     with NamedTemporaryFile() as f:
-        settings.to_disk(f.name)
-        loaded_settings = rg.Settings.from_disk(f.name)
+        settings.to_json(f.name)
+        loaded_settings = rg.Settings.from_json(f.name)
 
     assert settings == loaded_settings

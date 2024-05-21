@@ -306,7 +306,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         """
         return self(with_suggestions=True, with_responses=True).to_list(flatten=flatten)
 
-    def to_disk(self, path: str) -> str:
+    def to_json(self, path: str) -> str:
         """
         Export the records to a file on disk. This is a convenient shortcut for dataset.records(...).to_disk().
 
@@ -323,7 +323,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             json.dump(record_dicts, f)
         return path
 
-    def from_disk(self, path: str) -> "DatasetRecords":
+    def from_json(self, path: str) -> "DatasetRecords":
         """Creates a DatasetRecords object from a disk path.
 
         Args:

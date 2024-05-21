@@ -204,7 +204,7 @@ class Settings(Resource):
         except Exception as e:
             raise ArgillaSerializeError(f"Failed to serialize the settings. {e.__class__.__name__}") from e
 
-    def to_disk(self, path: str) -> None:
+    def to_json(self, path: str) -> None:
         """Save the settings to a file on disk
 
         Parameters:
@@ -215,7 +215,7 @@ class Settings(Resource):
             json.dump(self.serialize(), file)
 
     @classmethod
-    def from_disk(cls, path: str) -> "Settings":
+    def from_json(cls, path: str) -> "Settings":
         """Load the settings from a file on disk"""
 
         with open(path, "r") as file:

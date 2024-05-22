@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import json
+from pathlib import Path
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Iterable
 from uuid import UUID
 
@@ -306,7 +307,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         """
         return self(with_suggestions=True, with_responses=True).to_list(flatten=flatten)
 
-    def to_json(self, path: str) -> str:
+    def to_json(self, path: Union[Path, str]) -> str:
         """
         Export the records to a file on disk. This is a convenient shortcut for dataset.records(...).to_disk().
 

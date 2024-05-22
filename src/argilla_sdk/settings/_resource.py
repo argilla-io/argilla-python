@@ -15,6 +15,7 @@
 import json
 import os
 from functools import cached_property
+from pathlib import Path
 from typing import List, Optional, TYPE_CHECKING, Dict, Union
 from uuid import UUID
 
@@ -204,7 +205,7 @@ class Settings(Resource):
         except Exception as e:
             raise ArgillaSerializeError(f"Failed to serialize the settings. {e.__class__.__name__}") from e
 
-    def to_json(self, path: str) -> None:
+    def to_json(self, path: Union[Path, str]) -> None:
         """Save the settings to a file on disk
 
         Parameters:

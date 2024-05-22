@@ -454,19 +454,13 @@ class RecordMetadata(dict):
     """This is a container class for the metadata of a Record."""
 
     def __init__(self, metadata: Optional[Dict[str, MetadataValue]] = None) -> None:
-        super().__init__(metadata)
+        super().__init__(metadata or {})
 
     def __getattr__(self, item: str):
         return self[item]
 
     def __setattr__(self, key: str, value: MetadataValue):
         self[key] = value
-
-    def __iter__(self) -> Iterable[MetadataModel]:
-        return iter(self.models)
-
-    def __len__(self) -> int:
-        return len(self.models)
 
     def to_dict(self) -> Dict[str, MetadataValue]:
         return dict(self)

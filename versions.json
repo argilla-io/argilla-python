@@ -1,5 +1,10 @@
 [
   {
+    "version": "docs_support-metadata-update",
+    "title": "docs_support-metadata-update",
+    "aliases": []
+  },
+  {
     "version": "docs_collection-of-small-issues-related-to-docs",
     "title": "docs_collection-of-small-issues-related-to-docs",
     "aliases": []

@@ -434,7 +434,7 @@ for record in dataset.records(
 You can update records in a dataset calling the `update` method on the `Dataset` object. To update a record, you need to provide the record `id` or `external_id` and the new data to be updated.
 
 ```python
-data = dataset.records.to_list()
+data = dataset.records.to_list(flatten=True)
 
 updated_data = [
     {
@@ -446,3 +446,25 @@ updated_data = [
 ]
 dataset.records.update(records=updated_data)
 ```
+!!! tip "Update the metadata"
+    To update the metadata of a record, you can iterate over the records and update the metadata dictionary by key, attribute or using `metadata.update`. After that, you should update the records in the dataset.
+
+    ```python
+    updated_records = []
+    for record in dataset.records():
+
+        # By key
+        record.metadata["my_metadata"] = "new_value"
+        record.metadata["my_new_metadata-key"] = "new_value"
+
+        # By attribute
+        record.metadata.my_metadata = "new_value"
+        record.metadata.my_new_metadata = "new_value"
+
+        # With metadata.update
+        record.metadata.update({"my_metadata": "new_value", "my_new_metadata": "new_value"})
+        
+        updated_records.append(record)
+
+    dataset.records.update(records=updated_records)
+    ```

@@ -15,8 +15,9 @@
 import json
 import random
 import uuid
+from pathlib import Path
 from string import ascii_lowercase
-from tempfile import NamedTemporaryFile
+from tempfile import TemporaryDirectory
 
 import pytest
 
@@ -229,9 +230,10 @@ def test_export_records_from_json(dataset: rg.Dataset):
     ]
     dataset.records.add(records=mock_data)
 
-    with NamedTemporaryFile() as temp_file:
-        dataset.records.to_json(path=temp_file.name)
-        dataset.records.from_json(path=temp_file.name)
+    with TemporaryDirectory() as temp_dir:
+        temp_file = Path(temp_dir) / "records.json"
+        dataset.records.to_json(path=temp_file)
+        dataset.records.from_json(path=temp_file)
 
     for i, record in enumerate(dataset.records(with_suggestions=True)):
         assert record.fields.text == mock_data[i]["text"]

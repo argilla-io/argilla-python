@@ -12,12 +12,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+from enum import Enum
+
+from pydantic import Field
 
 from argilla_sdk._models._settings._questions._label_selection import LabelQuestionSettings, LabelQuestionModel
-    
+
+
+class LabelsOrder(str, Enum):
+    natural = "natural"
+    suggestion = "suggestion"
+
 
 class MultiLabelQuestionSettings(LabelQuestionSettings):
     type: str = "multi_label_selection"
+    labels_order: LabelsOrder = Field(LabelsOrder.natural, description="The order of the labels in the UI.")
 
 
 class MultiLabelQuestionModel(LabelQuestionModel):

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import ABC, abstractmethod
+from abc import ABC
 import json
 import logging
 import os
@@ -29,7 +29,6 @@ from argilla_sdk.workspaces._resource import Workspace
 
 if TYPE_CHECKING:
     from argilla_sdk import Dataset
-    from argilla_sdk.records import DatasetRecords
 
 
 class DiskImportExportMixin(ABC):
@@ -139,4 +138,3 @@ class DiskImportExportMixin(ABC):
         settings_path = path / cls._default_settings_path
         records_path = path / cls._default_records_path
         return dataset_path, settings_path, records_path
-

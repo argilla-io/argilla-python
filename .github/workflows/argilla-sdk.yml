@@ -102,12 +102,19 @@ jobs:
         with:
           cache: true
 
+      - name: Read package version
+        run: |
+          PACKAGE_VERSION=$(pdm show --version)
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+          echo "Package version: $PACKAGE_VERSION"
+
       - name: Publish Package to PyPI test environment 🥪
         run: pdm publish --no-build --repository testpypi
         continue-on-error: true
 
       - name: Test Installing 🍿
-        run: pip install --index-url https://test.pypi.org/simple --no-deps -U argilla-sdk
+        run: |
+          pip install --index-url https://test.pypi.org/simple --no-deps  argilla-sdk==$PACKAGE_VERSION
 
       - name: Publish Package to PyPI 🥩
         if: ${{ github.event_name == 'release' }}

@@ -72,7 +72,7 @@ jobs:
   publish_release:
     name: Publish Release
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'release' }}
+    # if: ${{ github.event_name == 'release' }}
 
     needs:
       - build

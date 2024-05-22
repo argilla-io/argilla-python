@@ -460,6 +460,12 @@ class RecordMetadata:
     __metadata_map: Dict[str, MetadataValue]
     __metadata_models: List[MetadataModel]
 
+    def __init__(self, metadata: Optional[Dict[str, MetadataValue]] = None) -> None:
+        self.__metadata_map = metadata or {}
+        for key, value in self.__metadata_map.items():
+            setattr(self, key, value)
+        self.__metadata_models = [MetadataModel(name=key, value=value) for key, value in self.__metadata_map.items()]
+
     def __iter__(self) -> Iterable[MetadataModel]:
         return iter(self.__metadata_models)
 
@@ -471,12 +477,6 @@ class RecordMetadata:
 
     def __repr__(self) -> str:
         return self.to_dict().__repr__()
-
-    def __init__(self, metadata: Optional[Dict[str, MetadataValue]] = None) -> None:
-        self.__metadata_map = metadata or {}
-        for key, value in self.__metadata_map.items():
-            setattr(self, key, value)
-        self.__metadata_models = [MetadataModel(name=key, value=value) for key, value in self.__metadata_map.items()]
 
     @property
     def models(self) -> List[MetadataModel]:

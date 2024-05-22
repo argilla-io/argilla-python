@@ -204,8 +204,9 @@ def test_export_records_to_json(dataset: rg.Dataset):
     ]
     dataset.records.add(records=mock_data)
 
-    with NamedTemporaryFile() as temp_file:
-        dataset.records.to_json(path=temp_file.name)
+    with TemporaryDirectory() as temp_dir:
+        temp_file = Path(temp_dir) / "records.json"
+        dataset.records.to_json(path=temp_file)
         with open(temp_file.name, "r") as f:
             exported_records = json.load(f)
     assert len(exported_records) == len(mock_data)

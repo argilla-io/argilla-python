@@ -71,12 +71,12 @@ class LabelQuestion(SettingsPropertyBase):
             title=title,
             description=description,
             required=required,
-            settings=LabelQuestionSettings(options=_render_values_as_options(labels), visible_options=visible_labels),
+            settings=LabelQuestionSettings(options=self._render_values_as_options(labels), visible_options=visible_labels),
         )
 
     @classmethod
     def from_model(cls, model: LabelQuestionModel) -> "LabelQuestion":
-        instance = cls(name=model.name, labels=_render_options_as_values(model.settings.options))
+        instance = cls(name=model.name, labels=cls._render_options_as_values(model.settings.options))
         instance._model = model
         return instance
 
@@ -86,11 +86,11 @@ class LabelQuestion(SettingsPropertyBase):
 
     @property
     def labels(self) -> List[str]:
-        return _render_options_as_values(self._model.settings.options)
+        return self._render_options_as_labels(self._model.settings.options)
 
     @labels.setter
     def labels(self, labels: List[str]) -> None:
-        self._model.settings.options = _render_values_as_options(labels)
+        self._model.settings.options = self._render_values_as_options(labels)
 
     @property
     def visible_labels(self) -> Optional[int]:
@@ -135,13 +135,13 @@ class MultiLabelQuestion(LabelQuestion):
             description=description,
             required=required,
             settings=MultiLabelQuestionSettings(
-                options=_render_values_as_options(labels), visible_options=visible_labels
+                options=self._render_values_as_options(labels), visible_options=visible_labels
             ),
         )
 
     @classmethod
     def from_model(cls, model: MultiLabelQuestionModel) -> "MultiLabelQuestion":
-        instance = cls(name=model.name, labels=_render_options_as_values(model.settings.options))
+        instance = cls(name=model.name, labels=cls._render_options_as_values(model.settings.options))
         instance._model = model
 
         return instance
@@ -219,23 +219,23 @@ class RatingQuestion(SettingsPropertyBase):
             description=description,
             required=required,
             values=values,
-            settings=RatingQuestionSettings(options=_render_values_as_options(values)),
+            settings=RatingQuestionSettings(options=self._render_values_as_options(values)),
         )
 
     @classmethod
     def from_model(cls, model: RatingQuestionModel) -> "RatingQuestion":
-        instance = cls(name=model.name, values=_render_options_as_values(model.settings.options))
+        instance = cls(name=model.name, values=cls._render_options_as_values(model.settings.options))
         instance._model = model
 
         return instance
 
     @property
     def values(self) -> List[int]:
-        return _render_options_as_values(self._model.settings.options)
+        return self._render_options_as_labels(self._model.settings.options)
 
     @values.setter
     def values(self, values: List[int]) -> None:
-        self._model.values = _render_values_as_options(values)
+        self._model.values = self._render_values_as_options(values)
 
 
 class RankingQuestion(SettingsPropertyBase):
@@ -264,23 +264,23 @@ class RankingQuestion(SettingsPropertyBase):
             title=title,
             description=description,
             required=required,
-            settings=RankingQuestionSettings(options=_render_values_as_options(values)),
+            settings=RankingQuestionSettings(options=self._render_values_as_options(values)),
         )
 
     @classmethod
     def from_model(cls, model: RankingQuestionModel) -> "RankingQuestion":
-        instance = cls(name=model.name, values=_render_options_as_values(model.settings.options))
+        instance = cls(name=model.name, values=cls._render_options_as_values(model.settings.options))
         instance._model = model
 
         return instance
 
     @property
     def values(self) -> List[str]:
-        return _render_options_as_values(self._model.settings.options)
+        return self._render_options_as_labels(self._model.settings.options)
 
     @values.setter
     def values(self, values: List[int]) -> None:
-        self._model.settings.options = _render_values_as_options(values)
+        self._model.settings.options = self._render_values_as_options(values)
 
 
 class SpanQuestion(SettingsPropertyBase):
@@ -320,7 +320,7 @@ class SpanQuestion(SettingsPropertyBase):
                 field=field,
                 allow_overlapping=allow_overlapping,
                 visible_options=visible_labels,
-                options=_render_values_as_options(labels),
+                options=self._render_values_as_options(labels),
             ),
         )
 
@@ -354,18 +354,18 @@ class SpanQuestion(SettingsPropertyBase):
 
     @property
     def labels(self) -> List[str]:
-        return _render_options_as_values(self._model.settings.options)
+        return self._render_options_as_labels(self._model.settings.options)
 
     @labels.setter
     def labels(self, labels: List[str]) -> None:
-        self._model.settings.options = _render_values_as_options(labels)
+        self._model.settings.options = self._render_values_as_options(labels)
 
     @classmethod
     def from_model(cls, model: SpanQuestionModel) -> "SpanQuestion":
         instance = cls(
             name=model.name,
             field=model.settings.field,
-            labels=_render_options_as_values(model.settings.options),
+            labels=cls._render_options_as_values(model.settings.options),
         )
         instance._model = model
 
@@ -397,18 +397,3 @@ def question_from_model(model: QuestionModel) -> QuestionType:
     except KeyError:
         raise ValueError(f"Unsupported question model type: {model.settings.type}")
 
-
-def _render_values_as_options(values: Union[List[str], List[int], Dict[str, str]]) -> List[Dict[str, str]]:
-    """Render values as options for the question so that the model conforms to the API schema"""
-    if isinstance(values, dict):
-        return [{"text": value, "value": key} for key, value in values.items()]
-    elif isinstance(values, list) and all(isinstance(value, str) for value in values):
-        return [{"text": label, "value": label} for label in values]
-    elif isinstance(values, list) and all(isinstance(value, int) for value in values):
-        return [{"value": value} for value in values]
-    else:
-        raise ValueError("Invalid labels format. Please provide a list of strings or a list of dictionaries.")
-
-
-def _render_options_as_values(options: List[dict]) -> List[Union[str, int]]:
-    return [option["value"] for option in options]

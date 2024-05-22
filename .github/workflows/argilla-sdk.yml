@@ -72,7 +72,7 @@ jobs:
   publish_release:
     name: Publish Release
     runs-on: ubuntu-latest
-    # if: ${{ github.event_name == 'release' }}
+    if: ${{ github.event_name == 'release' }} || ${{ github.event_name == 'tag' }}
 
     needs:
       - build
@@ -104,9 +104,11 @@ jobs:
 
       - name: Publish Package to PyPI test environment 🥪
         run: pdm publish --no-build --repository testpypi
+        continue-on-error: true
 
       - name: Test Installing 🍿
-        run: pip install --index-url https://test.pypi.org/simple --no-deps argilla-server==${GITHUB_REF#refs/*/v}
+        run: pip install --index-url https://test.pypi.org/simple --no-deps -U argilla-sdk
 
       - name: Publish Package to PyPI 🥩
+        if: ${{ github.event_name == 'release' }}
         run: pdm publish --no-build

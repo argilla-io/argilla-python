@@ -62,6 +62,7 @@ jobs:
           pdm build
       - name: Upload artifact
         uses: actions/upload-artifact@v4
+        # Upload the package to be used in the next jobs only once
         if: ${{ matrix.python-version == '3.8' }}
         with:
           name: argilla-sdk

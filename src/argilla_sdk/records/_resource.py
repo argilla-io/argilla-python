@@ -466,9 +466,6 @@ class RecordMetadata(dict):
     def __setattr__(self, key: str, value: MetadataValue):
         self[key] = value
 
-    def to_dict(self) -> Dict[str, MetadataValue]:
-        return dict(self)
-
     @property
     def models(self) -> List[MetadataModel]:
         return [MetadataModel(name=key, value=value) for key, value in self.items()]

@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional, Dict, Union
+from typing import List, Optional, Union
 
 from argilla_sdk._models._settings._questions import (
     LabelQuestionModel,
@@ -71,7 +71,9 @@ class LabelQuestion(SettingsPropertyBase):
             title=title,
             description=description,
             required=required,
-            settings=LabelQuestionSettings(options=self._render_values_as_options(labels), visible_options=visible_labels),
+            settings=LabelQuestionSettings(
+                options=self._render_values_as_options(labels), visible_options=visible_labels
+            ),
         )
 
     @classmethod
@@ -396,4 +398,3 @@ def question_from_model(model: QuestionModel) -> QuestionType:
         return _TYPE_TO_CLASS[model.settings.type].from_model(model)
     except KeyError:
         raise ValueError(f"Unsupported question model type: {model.settings.type}")
-

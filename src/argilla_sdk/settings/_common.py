@@ -48,7 +48,7 @@ class SettingsPropertyBase(Resource):
     ##############################
     #  Private methods
     ##############################
-    
+
     @staticmethod
     def _render_values_as_options(values: Union[List[str], List[int], Dict[str, str]]) -> List[Dict[str, str]]:
         """Render values as options for the question so that the model conforms to the API schema"""

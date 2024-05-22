@@ -29,7 +29,7 @@ def _dict_to_record(record_dict: Dict[str, Any]) -> "Record":
     suggestions = record_dict.get("suggestions", [])
     responses = record_dict.get("responses", [])
     vectors = record_dict.get("vectors", {})
-    external_id = record_dict.get("external_id", None)
+    external_id = record_dict.get("id", None)
 
     suggestions = [Suggestion(question_name=question_name, **value) for question_name, value in suggestions.items()]
     responses = [
@@ -40,7 +40,7 @@ def _dict_to_record(record_dict: Dict[str, Any]) -> "Record":
     vectors = [Vector(name=vector_name, values=values) for vector_name, values in vectors.items()]
 
     return Record(
-        external_id=external_id,
+        id=external_id,
         fields=fields,
         suggestions=suggestions,
         responses=responses,

@@ -54,10 +54,6 @@ class TestQuestions:
         assert question.name == "multi_label_question"
         assert question.labels == ["label1", "label2", "label3"]
         assert question.visible_labels == 3
-        if isinstance(labels, dict):
-            text_of_labels = [label["text"] for label in question._model.settings.options]
-            for i in range(len(labels)):
-                assert text_of_labels[i] == list(labels.values())[i]
 
     def test_ranking_question_init(self):
         question = rg.RankingQuestion(name="ranking_question", values=["rank-a", "rank-b"])

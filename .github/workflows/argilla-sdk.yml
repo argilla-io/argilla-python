@@ -8,9 +8,8 @@ concurrency:
 
 on:
   push:
-    tags:
-      - "*"
     branches: [ "main" ]
+
   pull_request:
     branches: [ "main" ]
 
@@ -82,6 +81,8 @@ jobs:
       # contents: read
       # IMPORTANT: this permission is mandatory for trusted publishing on PyPI
       id-token: write
+      # This permission is needed for creating tags
+      contents: write
 
     defaults:
       run:
@@ -107,6 +108,13 @@ jobs:
           PACKAGE_VERSION=$(pdm show --version)
           echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
           echo "Package version: $PACKAGE_VERSION"
+
+      - name: Create tag
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git tag -a v${{ env.PACKAGE_VERSION }} -m "Release v${{ env.PACKAGE_VERSION }}"
+          git push origin v${{ env.PACKAGE_VERSION }}
 
       - name: Publish Package to PyPI test environment 🥪
         run: pdm publish --no-build --repository testpypi

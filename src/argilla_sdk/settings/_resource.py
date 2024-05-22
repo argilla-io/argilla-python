@@ -211,12 +211,15 @@ class Settings(Resource):
         Parameters:
             path (str): The path to save the settings to
         """
-
+        if not isinstance(path, Path):
+            path = Path(path)
+        if path.exists():
+            raise FileExistsError(f"File {path} already exists")
         with open(path, "w") as file:
             json.dump(self.serialize(), file)
 
     @classmethod
-    def from_json(cls, path: str) -> "Settings":
+    def from_json(cls, path: Union[Path, str]) -> "Settings":
         """Load the settings from a file on disk"""
 
         with open(path, "r") as file:

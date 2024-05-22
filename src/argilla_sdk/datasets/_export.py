@@ -46,25 +46,15 @@ class DiskImportExportMixin(ABC):
         Args:
             path (str): The path to export the dataset to. Must be an empty directory.
         """
-
         dataset_path, settings_path, records_path = self._define_child_paths(path=path)
-
-        # Deal with path creation and use
-        if os.path.exists(path):
-            if not os.path.isdir(path):
-                raise ValueError(f"Path {path} is not a directory")
-            if os.listdir(path):
-                raise ValueError(f"Directory {path} is not empty")
-        else:
-            os.makedirs(name=path, exist_ok=True)
-
+        logging.info(f"Loading dataset from {dataset_path}")
+        logging.info(f"Loading settings from {settings_path}")
+        logging.info(f"Loading records from {records_path}")
         # Export the dataset model, settings and records
-        with open(dataset_path, "w") as f:
-            json.dump(self._model.model_dump(), f)
+        self._persist_dataset_model(path=dataset_path)
         self.settings.to_json(path=settings_path)
         if self.exists():
             self.records.to_json(path=records_path)
-
         return path
 
     @classmethod
@@ -88,14 +78,9 @@ class DiskImportExportMixin(ABC):
         client = client or Argilla._get_default()
 
         dataset_path, settings_path, records_path = cls._define_child_paths(path=path)
-
         logging.info(f"Loading dataset from {dataset_path}")
         logging.info(f"Loading settings from {settings_path}")
         logging.info(f"Loading records from {records_path}")
-
-        if not os.path.exists(dataset_path):
-            raise FileNotFoundError(f"Dataset model not found at {dataset_path}")
-
         dataset_model = cls._load_dataset_model(path=dataset_path)
 
         # Get the relevant workspace_id of the incoming dataset
@@ -108,7 +93,7 @@ class DiskImportExportMixin(ABC):
             workspace_id = client.workspaces.default.id
         dataset_model.workspace_id = workspace_id
 
-        # Get a relevant and uniwue name for the incoming dataset.
+        # Get a relevant and unique name for the incoming dataset.
         if target_name:
             logging.warning(f"Changing dataset name from {dataset_model.name} to {target_name}")
             dataset_model.name = target_name
@@ -119,6 +104,7 @@ class DiskImportExportMixin(ABC):
         # Create the dataset and load the settings and records
         dataset = cls.from_model(model=dataset_model, client=client)
         dataset.settings = Settings.from_json(path=settings_path)
+        dataset.create()
         if os.path.exists(records_path):
             dataset.records.from_json(path=records_path)
         return dataset
@@ -128,12 +114,18 @@ class DiskImportExportMixin(ABC):
     ############################
 
     def _persist_dataset_model(self, path: Path):
-        with open(path, "w") as f:
+        """Persists the dataset model to disk."""
+        if path.exists():
+            raise FileExistsError(f"Dataset already exists at {path}")
+        with open(file=path, mode="w") as f:
             json.dump(self._model.model_dump(), f)
 
     @classmethod
     def _load_dataset_model(cls, path: Path):
-        with open(path, "r") as f:
+        """Loads the dataset model from disk."""
+        if not os.path.exists(path):
+            raise FileNotFoundError(f"Dataset model not found at {path}")
+        with open(file=path, mode="r") as f:
             dataset_model = json.load(f)
             dataset_model = DatasetModel(**dataset_model)
         return dataset_model
@@ -141,6 +133,8 @@ class DiskImportExportMixin(ABC):
     @classmethod
     def _define_child_paths(cls, path: Union[Path, str]) -> Tuple[Path, Path, Path]:
         path = Path(path)
+        if not path.is_dir():
+            raise NotADirectoryError(f"Path {path} is not a directory")
         dataset_path = path / cls._default_dataset_path
         settings_path = path / cls._default_settings_path
         records_path = path / cls._default_records_path
@@ -152,33 +146,26 @@ class DiskImportExportMixin(ABC):
 
     @property
     @abstractmethod
-    def records(self) -> "DatasetRecords":
-        ...
+    def records(self) -> "DatasetRecords": ...
 
     @property
     @abstractmethod
-    def settings(self) -> Settings:
-        ...
+    def settings(self) -> Settings: ...
 
     @settings.setter
     @abstractmethod
-    def settings(self, value: Settings):
-        ...
+    def settings(self, value: Settings): ...
 
     @property
     @abstractmethod
-    def name(self) -> str:
-        ...
+    def name(self) -> str: ...
 
     @abstractmethod
-    def create(self) -> "Dataset":
-        ...
+    def create(self) -> "Dataset": ...
 
     @abstractmethod
-    def exists(self) -> bool:
-        ...
+    def exists(self) -> bool: ...
 
     @classmethod
     @abstractmethod
-    def from_model(cls, model: DatasetModel, client: Argilla) -> "Dataset":
-        ...
+    def from_model(cls, model: DatasetModel, client: Argilla) -> "Dataset": ...

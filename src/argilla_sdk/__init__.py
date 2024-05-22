@@ -21,3 +21,6 @@ from argilla_sdk.suggestions import *  # noqa
 from argilla_sdk.responses import *  # noqa
 from argilla_sdk.records import *  # noqa
 from argilla_sdk.vectors import *  # noqa
+
+
+__version__ = "0.1.0.alpha.0"

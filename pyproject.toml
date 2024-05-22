@@ -29,7 +29,8 @@ line-length = 120
 distribution = true
 
 [tool.pdm.version]
-source = "scm"
+source = "file"
+path = "src/argilla_sdk/__init__.py"
 
 [tool.pdm.dev-dependencies]
 dev = [

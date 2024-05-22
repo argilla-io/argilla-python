@@ -98,9 +98,28 @@ workspace = client.workspaces("my_workspace")
 workspace_existed = workspace.exists()
 ```
 
+## List users in a workspace
+
+You can list all the users in a workspace by accessing the `users` attribute on the `Workspace` class and iterating over them. You can also use `len(workspace.users)` to get the number of users by workspace.
+
+> For further information on how to manage users, check this [how-to guide](user.md).
+
+```python
+import argilla_sdk as rg
+
+client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
+
+workspace = client.workspaces('my_workspace')
+
+for user in workspace.users:
+    print(user)
+```
+
 ## Add a user to a workspace
 
 You can also add a user to a workspace by calling the `add_user` method on the `Workspace` class.
+
+> For further information on how to manage users, check this [how-to guide](user.md).
 
 ```python
 import argilla_sdk as rg
@@ -108,6 +127,7 @@ import argilla_sdk as rg
 client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 
 workspace = client.workspaces("my_workspace")
+
 added_user = workspace.add_user("my_username")
 ```
 
@@ -115,12 +135,15 @@ added_user = workspace.add_user("my_username")
 
 You can also remove a user from a workspace by calling the `remove_user` method on the `Workspace` class.
 
+> For further information on how to manage users, check this [how-to guide](user.md).
+
 ```python
 import argilla_sdk as rg
 
 client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 
 workspace = client.workspaces("my_workspace")
+
 removed_user = workspace.remove_user("my_username")
 ```
 

@@ -120,6 +120,26 @@ You can use the `Filter` class to define the conditions and pass them to the `Da
     )
     ```
 
+## Filter by status
+
+You can filter records based on their status. The status can be `pending`, `draft`, `submitted`, or `discarded`.
+
+```python
+import argilla_sdk as rg
+
+client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
+
+workspace = client.workspaces("my_workspace")
+
+dataset = client.datasets(name="my_dataset", workspace=workspace)
+
+status_filter = rg.Query(
+    filter = rg.Filter(("status", "==", "submitted"))
+)
+
+filtered_records = list(dataset.records(status_filter))
+```
+
 ## Query and filter a dataset
 
 As mentioned, you can use a query with a search term and a filter or various filters to create complex search queries.

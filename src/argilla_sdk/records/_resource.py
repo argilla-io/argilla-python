@@ -14,7 +14,7 @@
 
 import warnings
 from collections import defaultdict
-from typing import TYPE_CHECKING, Any, Dict, Generator, List, Optional, Union, Iterable
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, Iterable
 from uuid import UUID, uuid4
 
 from argilla_sdk._models import (
@@ -450,33 +450,27 @@ class RecordVectors:
         return {vector.name: f"{len(vector.values)}" for vector in self.__vectors}.__repr__()
 
 
-class RecordMetadata:
+class RecordMetadata(dict):
     """This is a container class for the metadata of a Record."""
 
-    __metadata_map: Dict[str, MetadataValue]
-    __metadata_models: List[MetadataModel]
-
     def __init__(self, metadata: Optional[Dict[str, MetadataValue]] = None) -> None:
-        self.__metadata_map = metadata or {}
-        for key, value in self.__metadata_map.items():
-            setattr(self, key, value)
-        self.__metadata_models = [MetadataModel(name=key, value=value) for key, value in self.__metadata_map.items()]
+        super().__init__(metadata)
+
+    def __getattr__(self, item: str):
+        return self[item]
+
+    def __setattr__(self, key: str, value: MetadataValue):
+        self[key] = value
+
+    def __iter__(self) -> Iterable[MetadataModel]:
+        return iter(self.models)
+
+    def __len__(self) -> int:
+        return len(self.models)
+
+    def to_dict(self) -> Dict[str, MetadataValue]:
+        return dict(self)
 
     @property
     def models(self) -> List[MetadataModel]:
-        return self.__metadata_models
-
-    def to_dict(self) -> Dict[str, MetadataValue]:
-        return {meta.name: meta.value for meta in self.__metadata_models}
-
-    def __iter__(self) -> Iterable[MetadataModel]:
-        return iter(self.__metadata_models)
-
-    def __getitem__(self, key: str) -> MetadataValue:
-        return self.__metadata_map[key]
-
-    def __len__(self) -> int:
-        return len(self.__metadata_models)
-
-    def __repr__(self) -> Generator:
-        return self.to_dict().__repr__()
+        return [MetadataModel(name=key, value=value) for key, value in self.items()]

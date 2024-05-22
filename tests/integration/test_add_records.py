@@ -201,7 +201,7 @@ def test_add_records_with_suggestions(client) -> None:
         ],
         questions=[
             rg.TextQuestion(name="comment", use_markdown=False),
-            rg.MultiLabelQuestion(name="topics", labels=["topic1", "topic2", "topic3"]),
+            rg.MultiLabelQuestion(name="topics", labels=["topic1", "topic2", "topic3"], order="suggestions"),
         ],
     )
     dataset = rg.Dataset(

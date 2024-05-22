@@ -15,7 +15,7 @@
 import pytest
 import uuid
 from datetime import datetime
-from tempfile import NamedTemporaryFile
+from tempfile import TemporaryDirectory
 
 import httpx
 from pytest_httpx import HTTPXMock
@@ -77,8 +77,9 @@ def dataset(httpx_mock: HTTPXMock, settings) -> rg.Dataset:
 
 
 def test_export_settings_from_disk(settings):
-    with NamedTemporaryFile() as f:
-        settings.to_json(f.name)
-        loaded_settings = rg.Settings.from_json(f.name)
+    with TemporaryDirectory() as temp_dir:
+        temp_file_path = f"{temp_dir}/settings.json"
+        settings.to_json(temp_file_path)
+        loaded_settings = rg.Settings.from_json(temp_file_path)
 
     assert settings == loaded_settings

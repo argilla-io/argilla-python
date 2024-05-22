@@ -113,6 +113,7 @@ class MultiLabelQuestion(LabelQuestion):
         name: str,
         labels: List[str],
         visible_labels: Optional[int] = None,
+        labels_order: str = "natural",
         title: Optional[str] = None,
         description: Optional[str] = None,
         required: bool = True,
@@ -128,6 +129,7 @@ class MultiLabelQuestion(LabelQuestion):
             description: Optional[str]: The description of the question to be shown in the UI.
             required: bool: If the question is required for a record to be valid.
             visible_labels: Optional[int]: The number of visible labels for the question.
+            labels_order: str: The order of the labels in the UI. Can be either "natural" or "suggestion". Default is "natural". 
         """
         self._model = MultiLabelQuestionModel(
             name=name,
@@ -135,13 +137,13 @@ class MultiLabelQuestion(LabelQuestion):
             description=description,
             required=required,
             settings=MultiLabelQuestionSettings(
-                options=_render_values_as_options(labels), visible_options=visible_labels
+                options=_render_values_as_options(labels), visible_options=visible_labels, labels_order=labels_order
             ),
         )
 
     @classmethod
     def from_model(cls, model: MultiLabelQuestionModel) -> "MultiLabelQuestion":
-        instance = cls(name=model.name, labels=_render_options_as_values(model.settings.options))
+        instance = cls(name=model.name, labels=_render_options_as_values(model.settings.options), labels_order=model.settings.labels_order)
         instance._model = model
 
         return instance

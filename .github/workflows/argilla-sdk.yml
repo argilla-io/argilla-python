@@ -103,7 +103,9 @@ jobs:
           cache: true
 
       - name: Publish Package to PyPI test environment 🥪
-        run: pdm publish --no-build --repository testpypi
+        run: |
+          git status
+          pdm publish --no-build --repository testpypi
 
       - name: Test Installing 🍿
         run: pip install --index-url https://test.pypi.org/simple --no-deps argilla-server==${GITHUB_REF#refs/*/v}

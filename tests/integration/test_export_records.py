@@ -207,7 +207,7 @@ def test_export_records_to_json(dataset: rg.Dataset):
     with TemporaryDirectory() as temp_dir:
         temp_file = Path(temp_dir) / "records.json"
         dataset.records.to_json(path=temp_file)
-        with open(temp_file.name, "r") as f:
+        with open(temp_file, "r") as f:
             exported_records = json.load(f)
     assert len(exported_records) == len(mock_data)
     assert exported_records[0]["fields"]["text"] == "Hello World, how are you?"

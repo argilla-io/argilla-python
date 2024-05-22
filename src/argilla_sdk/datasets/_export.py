@@ -18,7 +18,7 @@ import logging
 import os
 from pathlib import Path
 import warnings
-from typing import Optional, Union, TYPE_CHECKING, Tuple
+from typing import Optional, Union, TYPE_CHECKING, Tuple, Type
 from uuid import uuid4
 
 from argilla_sdk._models import DatasetModel
@@ -40,7 +40,7 @@ class DiskImportExportMixin(ABC):
     _default_records_path = "records.json"
     _default_dataset_path = "dataset.json"
 
-    def to_disk(self, path: str) -> str:
+    def to_disk(self: "Dataset", path: str) -> str:
         """Exports the dataset to disk in the given path. The dataset is exported as a directory containing the dataset model, settings and records as json files.
 
         Args:
@@ -59,7 +59,7 @@ class DiskImportExportMixin(ABC):
 
     @classmethod
     def from_disk(
-        cls,
+        cls: Type["Dataset"],
         path: str,
         target_workspace: Optional[Union["Workspace", str]] = None,
         target_name: Optional[str] = None,
@@ -140,39 +140,3 @@ class DiskImportExportMixin(ABC):
         records_path = path / cls._default_records_path
         return dataset_path, settings_path, records_path
 
-    ############################
-    # Abstracted Dataset Methods
-    ############################
-
-    @property
-    @abstractmethod
-    def records(self) -> "DatasetRecords":
-        ...
-
-    @property
-    @abstractmethod
-    def settings(self) -> Settings:
-        ...
-
-    @settings.setter
-    @abstractmethod
-    def settings(self, value: Settings):
-        ...
-
-    @property
-    @abstractmethod
-    def name(self) -> str:
-        ...
-
-    @abstractmethod
-    def create(self) -> "Dataset":
-        ...
-
-    @abstractmethod
-    def exists(self) -> bool:
-        ...
-
-    @classmethod
-    @abstractmethod
-    def from_model(cls, model: DatasetModel, client: Argilla) -> "Dataset":
-        ...

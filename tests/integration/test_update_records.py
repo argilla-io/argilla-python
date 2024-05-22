@@ -19,6 +19,8 @@ from string import ascii_lowercase
 import pytest
 
 import argilla_sdk as rg
+from argilla_sdk import Record
+from argilla_sdk._models import RecordModel
 
 
 @pytest.fixture
@@ -26,6 +28,7 @@ def dataset(client: rg.Argilla) -> rg.Dataset:
     workspace = client.workspaces[0]
     mock_dataset_name = "".join(random.choices(ascii_lowercase, k=16))
     settings = rg.Settings(
+        allow_extra_metadata=True,
         fields=[
             rg.TextField(name="text"),
         ],
@@ -106,3 +109,20 @@ def test_update_records_partially(client: rg.Argilla, dataset: rg.Dataset):
 
     for i, record in enumerate(dataset.records(with_suggestions=True)):
         assert record.suggestions[0].value == updated_mock_data[i]["label"]
+
+
+def test_update_records_by_server_id(client: rg.Argilla, dataset: rg.Dataset):
+    record = Record.from_model(
+        RecordModel(fields={"text": "Hello World, how are you?"}, metadata={"key": "value"}),
+        dataset=dataset,
+    )
+    created_record = dataset.records.add(record)[0]
+
+    created_record.metadata["new-key"] = "new-value"
+    dataset.records.update([created_record])
+
+    assert len(list(dataset.records)) == 1
+
+    updated_record = list(dataset.records)[0]
+    assert updated_record.metadata["new-key"] == "new-value"
+    assert updated_record._server_id == created_record._server_id

@@ -8,9 +8,15 @@ concurrency:
 
 on:
   push:
+    tags:
+      - "*"
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
+  release:
+    types:
+      - published
 
 jobs:
   build:
@@ -51,4 +57,55 @@ jobs:
       - name: Run integration tests
         run: |
           pdm run test tests/integration
-          
+      - name: Build package
+        run: |
+          pdm build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ matrix.python-version == '3.8' }}
+        with:
+          name: argilla-sdk
+          path: dist
+
+  # This job will publish argilla-sdk package into PyPI repository
+  publish_release:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'release' }}
+
+    needs:
+      - build
+
+    permissions:
+      # This permission is needed for private repositories.
+      # contents: read
+      # IMPORTANT: this permission is mandatory for trusted publishing on PyPI
+      id-token: write
+
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - name: Checkout Code 🛎
+        uses: actions/checkout@v4
+
+      - name: Download python package
+        uses: actions/download-artifact@v4
+        with:
+          name: argilla-sdk
+          path: dist
+
+      - name: Setup PDM
+        uses: pdm-project/setup-pdm@v4
+        with:
+          cache: true
+
+      - name: Publish Package to PyPI test environment 🥪
+        run: pdm publish --no-build --repository testpypi
+
+      - name: Test Installing 🍿
+        run: pip install --index-url https://test.pypi.org/simple --no-deps argilla-server==${GITHUB_REF#refs/*/v}
+
+      - name: Publish Package to PyPI 🥩
+        run: pdm publish --no-build

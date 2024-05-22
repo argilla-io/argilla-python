@@ -446,7 +446,7 @@ updated_data = [
 ]
 dataset.records.update(records=updated_data)
 ```
-!!! tip "Update the metadata"
+!!! note "Update the metadata"
     To update the metadata of a record, you can iterate over the records and update the metadata dictionary by key, attribute or using `metadata.update`. After that, you should update the records in the dataset.
 
     ```python

@@ -17,8 +17,8 @@ from typing import List
 from pydantic import field_validator, Field
 
 from argilla_sdk._models._settings._questions._base import QuestionSettings, QuestionBaseModel
-    
-    
+
+
 class RatingQuestionSettings(QuestionSettings):
     type: str = "rating"
 
@@ -35,6 +35,6 @@ class RatingQuestionSettings(QuestionSettings):
 
         return options
 
- 
+
 class RatingQuestionModel(QuestionBaseModel):
     settings: RatingQuestionSettings

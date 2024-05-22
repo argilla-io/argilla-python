@@ -14,7 +14,7 @@
 
 from argilla_sdk._models._settings._questions._base import QuestionSettings, QuestionBaseModel
 
-    
+
 class TextQuestionSettings(QuestionSettings):
     type: str = "text"
 

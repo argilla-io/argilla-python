@@ -41,7 +41,10 @@ class TestQuestions:
 
     def test_multi_label_question_init_ordered(self):
         question = rg.MultiLabelQuestion(
-            name="multi_label_question", labels=["label1", "label2", "label3"], visible_labels=3, labels_order="suggestion"
+            name="multi_label_question",
+            labels=["label1", "label2", "label3"],
+            visible_labels=3,
+            labels_order="suggestion",
         )
         assert question.name == "multi_label_question"
         assert question.labels == ["label1", "label2", "label3"]

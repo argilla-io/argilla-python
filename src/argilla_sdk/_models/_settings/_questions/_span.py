@@ -19,10 +19,10 @@ from pydantic import field_validator, Field, model_validator
 from argilla_sdk._models._settings._questions._base import QuestionSettings, QuestionBaseModel
 
 try:
-    from typing import Self 
+    from typing import Self
 except ImportError:
     from typing_extensions import Self
-    
+
 
 class SpanQuestionSettings(QuestionSettings):
     type: str = "span"

@@ -22,8 +22,8 @@ try:
     from typing import Self
 except ImportError:
     from typing_extensions import Self
-    
-    
+
+
 class LabelQuestionSettings(QuestionSettings):
     type: str = "label_selection"
 

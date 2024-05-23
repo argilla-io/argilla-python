@@ -16,6 +16,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Iterable
 from uuid import UUID
 
+from datasets import Dataset as HFDataset
+
 from argilla_sdk._api import RecordsAPI
 from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import RecordModel
@@ -186,7 +188,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
     def add(
         self,
-        records: Union[dict, List[dict], Record, List[Record]],
+        records: Union[dict, List[dict], Record, List[Record], HFDataset],
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
         batch_size: int = DEFAULT_BATCH_SIZE,
@@ -210,6 +212,11 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         Add generic records to a dataset as dictionaries:
 
         """
+        if isinstance(
+            records, HFDataset
+        ):  
+            records = self()._record_dicts_from_datasets(records)
+            
         record_models = self._ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
 
         batch_size = self._normalize_batch_size(
@@ -318,7 +325,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
         """
         return self(with_suggestions=True, with_responses=True).to_json(path=path)
-    
+
     def from_json(self, path: Union[Path, str]) -> "DatasetRecords":
         """Creates a DatasetRecords object from a disk path.
 
@@ -332,7 +339,21 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         records = self()._records_from_json(path=path)
         self.update(records)
         return self
-    
+
+    def to_datasets(self) -> HFDataset:
+        """
+        Export the records to a file on disk. This is a convenient shortcut for dataset.records(...).to_disk().
+
+        Parameters:
+            path (str): The path to the file to save the records.
+            orient (str): The structure of the exported dictionary.
+
+        Returns:
+            The path to the file where the records were saved.
+
+        """
+        return self(with_suggestions=True, with_responses=True).to_datasets()
+
     ############################
     # Private methods
     ############################

@@ -147,7 +147,7 @@ class MultiLabelQuestion(LabelQuestion):
     def from_model(cls, model: MultiLabelQuestionModel) -> "MultiLabelQuestion":
         instance = cls(
             name=model.name,
-            labels=labels=cls._render_options_as_values(model.settings.options),
+            labels=cls._render_options_as_values(model.settings.options),
             labels_order=model.settings.labels_order,
         )
         instance._model = model

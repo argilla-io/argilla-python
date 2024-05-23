@@ -212,11 +212,9 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         Add generic records to a dataset as dictionaries:
 
         """
-        if isinstance(
-            records, HFDataset
-        ):  
+        if isinstance(records, HFDataset):
             records = self()._record_dicts_from_datasets(records)
-            
+
         record_models = self._ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
 
         batch_size = self._normalize_batch_size(

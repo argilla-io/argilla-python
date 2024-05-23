@@ -1,6 +1,7 @@
 from argilla_sdk.records._io._generic import GenericIOMixin  # noqa
 from argilla_sdk.records._io._json import JSONIOMixin  # noqa
+from argilla_sdk.records._io._datasets import HFDatasetsIOMixin  # noqa
 
 
-class RecordsIOMixin(GenericIOMixin, JSONIOMixin):
+class RecordsIOMixin(GenericIOMixin, JSONIOMixin, HFDatasetsIOMixin):
     pass

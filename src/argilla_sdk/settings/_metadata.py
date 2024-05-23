@@ -223,3 +223,16 @@ class MetadataField:
             return switch[metadata_type].from_model(model)
         except KeyError as e:
             raise MetadataError(f"Unknown metadata property type: {metadata_type}") from e
+
+    @classmethod
+    def from_dict(cls, data: dict) -> MetadataType:
+        switch = {
+            MetadataPropertyType.terms: TermsMetadataProperty,
+            MetadataPropertyType.float: FloatMetadataProperty,
+            MetadataPropertyType.integer: IntegerMetadataProperty,
+        }
+        metadata_type = data["type"]
+        try:
+            return switch[metadata_type](**data)
+        except KeyError as e:
+            raise MetadataError(f"Unknown metadata property type: {metadata_type}") from e

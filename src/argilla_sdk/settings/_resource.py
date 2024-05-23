@@ -11,17 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+
+import json
 import os
 from functools import cached_property
+from pathlib import Path
 from typing import List, Optional, TYPE_CHECKING, Dict, Union
 from uuid import UUID
 
 from argilla_sdk._exceptions import SettingsError, ArgillaAPIError, ArgillaSerializeError
 from argilla_sdk._models import TextFieldModel, TextQuestionModel, DatasetModel
 from argilla_sdk._resource import Resource
-from argilla_sdk.settings._field import FieldType, VectorField, field_from_model
+from argilla_sdk.settings._field import FieldType, VectorField, field_from_model, field_from_dict
 from argilla_sdk.settings._metadata import MetadataType
-from argilla_sdk.settings._question import QuestionType, question_from_model
+from argilla_sdk.settings._question import QuestionType, question_from_model, question_from_dict
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -201,6 +204,41 @@ class Settings(Resource):
             }
         except Exception as e:
             raise ArgillaSerializeError(f"Failed to serialize the settings. {e.__class__.__name__}") from e
+
+    def to_json(self, path: Union[Path, str]) -> None:
+        """Save the settings to a file on disk
+
+        Parameters:
+            path (str): The path to save the settings to
+        """
+        if not isinstance(path, Path):
+            path = Path(path)
+        if path.exists():
+            raise FileExistsError(f"File {path} already exists")
+        with open(path, "w") as file:
+            json.dump(self.serialize(), file)
+
+    @classmethod
+    def from_json(cls, path: Union[Path, str]) -> "Settings":
+        """Load the settings from a file on disk"""
+
+        with open(path, "r") as file:
+            settings_dict = json.load(file)
+
+        guidelines = settings_dict.get("guidelines")
+        fields = settings_dict.get("fields")
+        questions = settings_dict.get("questions")
+        allow_extra_metadata = settings_dict.get("allow_extra_metadata")
+
+        fields = [field_from_dict(field) for field in fields]
+        questions = [question_from_dict(question) for question in questions]
+
+        return cls(
+            guidelines=guidelines,
+            fields=fields,
+            questions=questions,
+            allow_extra_metadata=allow_extra_metadata,
+        )
 
     def __eq__(self, other: "Settings") -> bool:
         return self.serialize() == other.serialize()  # TODO: Create proper __eq__ methods for fields and questions

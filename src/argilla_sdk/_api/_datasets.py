@@ -106,6 +106,9 @@ class DatasetsAPI(ResourceAPI[DatasetModel]):
                 self.log(message=f"Got dataset {dataset.name}")
                 return dataset
 
+    def name_exists(self, name: str, workspace_id: UUID) -> bool:
+        return bool(self.get_by_name_and_workspace_id(name=name, workspace_id=workspace_id))
+
     ####################
     # Private methods #
     ####################

@@ -275,17 +275,18 @@ class Record(Resource):
             `{"fields": {"prompt": "...", "response": "..."}, "responses": {"rating": "..."},
         """
         fields = self.fields.to_dict()
-        metadata = self.metadata
+        metadata = dict(self.metadata)
         suggestions = self.suggestions.to_dict()
         responses = self.responses.to_dict()
-
+        vectors = self.vectors.to_dict()
         return {
             "id": self.id,
             "fields": fields,
             "metadata": metadata,
             "suggestions": suggestions,
             "responses": responses,
-            "_server_id": self._model.id,
+            "vectors": vectors,
+            "_server_id": str(self._model.id),
         }
 
     @classmethod
@@ -451,7 +452,7 @@ class RecordVectors:
         Returns:
             A dictionary of vectors.
         """
-        return {vector.name: vector.values for vector in self.__vectors}
+        return {vector.name: list(map(float, vector.values)) for vector in self.__vectors}
 
 
 class RecordMetadata(dict):

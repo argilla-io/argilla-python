@@ -12,9 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
 import random
 import uuid
+from pathlib import Path
 from string import ascii_lowercase
+from tempfile import TemporaryDirectory
 
 import pytest
 
@@ -63,7 +66,6 @@ def test_export_records_dict_flattened(client: Argilla, dataset: rg.Dataset):
     ]
     dataset.records.add(records=mock_data)
     exported_records = dataset.records.to_dict(flatten=True)
-    assert len(exported_records) == 6  # 6 fields per record (See Record.to_dict to understand this magic number)
     assert isinstance(exported_records, dict)
     assert isinstance(exported_records["id"], list)
     assert isinstance(exported_records["text"], list)
@@ -180,3 +182,64 @@ def test_export_records_dict_nested_orient_index(client: Argilla, dataset: rg.Da
         assert exported_record["fields"]["text"] == mock_record["text"]
         assert exported_record["suggestions"]["label"]["value"] == mock_record["label"]
         assert exported_record["id"] == str(mock_record["id"])
+
+
+def test_export_records_to_json(dataset: rg.Dataset):
+    mock_data = [
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "external_id": uuid.uuid4(),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "negative",
+            "external_id": uuid.uuid4(),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "external_id": uuid.uuid4(),
+        },
+    ]
+    dataset.records.add(records=mock_data)
+
+    with TemporaryDirectory() as temp_dir:
+        temp_file = Path(temp_dir) / "records.json"
+        dataset.records.to_json(path=temp_file)
+        with open(temp_file, "r") as f:
+            exported_records = json.load(f)
+    assert len(exported_records) == len(mock_data)
+    assert exported_records[0]["fields"]["text"] == "Hello World, how are you?"
+    assert exported_records[0]["suggestions"]["label"]["value"] == "positive"
+
+
+def test_export_records_from_json(dataset: rg.Dataset):
+    mock_data = [
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "id": uuid.uuid4(),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "negative",
+            "id": uuid.uuid4(),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "id": uuid.uuid4(),
+        },
+    ]
+    dataset.records.add(records=mock_data)
+
+    with TemporaryDirectory() as temp_dir:
+        temp_file = Path(temp_dir) / "records.json"
+        dataset.records.to_json(path=temp_file)
+        dataset.records.from_json(path=temp_file)
+
+    for i, record in enumerate(dataset.records(with_suggestions=True)):
+        assert record.fields.text == mock_data[i]["text"]
+        assert record.suggestions.label.value == mock_data[i]["label"]
+        assert record.id == str(mock_data[i]["id"])

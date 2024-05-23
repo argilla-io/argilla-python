@@ -237,6 +237,15 @@ class Workspaces(Sequence["Workspace"], ResourceHTMLReprMixin):
         return [self._from_model(model) for model in self._api.list()]
 
     ############################
+    # Properties
+    ############################
+
+    @property
+    def default(self) -> "Workspace":
+        """The default workspace."""
+        return self[0]
+
+    ############################
     # Private methods
     ############################
 

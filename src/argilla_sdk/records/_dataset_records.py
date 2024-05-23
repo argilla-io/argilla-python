@@ -12,6 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+from pathlib import Path
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Iterable
 from uuid import UUID
 
@@ -20,6 +22,7 @@ from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import RecordModel
 from argilla_sdk.client import Argilla
 from argilla_sdk.records._export import GenericExportMixin
+from argilla_sdk.records._helpers import _dict_to_record
 from argilla_sdk.records._resource import Record
 from argilla_sdk.records._search import Query
 
@@ -76,6 +79,8 @@ class DatasetRecordsIterator(GenericExportMixin):
             yield Record.from_model(model=record_model, dataset=self.__dataset)
 
     def _fetch_from_server(self) -> List[RecordModel]:
+        if not self.__dataset.exists():
+            raise ValueError(f"Dataset {self.__dataset.name} does not exist on the server.")
         if self._is_search_query():
             return self._fetch_from_server_with_search()
         return self._fetch_from_server_with_list()
@@ -301,6 +306,42 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             A list of dictionaries of records.
         """
         return self(with_suggestions=True, with_responses=True).to_list(flatten=flatten)
+
+    def to_json(self, path: Union[Path, str]) -> Path:
+        """
+        Export the records to a file on disk. This is a convenient shortcut for dataset.records(...).to_disk().
+
+        Parameters:
+            path (str): The path to the file to save the records.
+            orient (str): The structure of the exported dictionary.
+
+        Returns:
+            The path to the file where the records were saved.
+
+        """
+        if isinstance(path, str):
+            path = Path(path)
+        if path.exists():
+            raise FileExistsError(f"File {path} already exists.")
+        record_dicts = self(with_suggestions=True, with_responses=True).to_list()
+        with open(path, "w") as f:
+            json.dump(record_dicts, f)
+        return path
+
+    def from_json(self, path: Union[Path, str]) -> "DatasetRecords":
+        """Creates a DatasetRecords object from a disk path.
+
+        Args:
+            path (str): The path to the file containing the records.
+
+        Returns:
+            DatasetRecords: The DatasetRecords object created from the disk path.
+
+        """
+        with open(path, "r") as f:
+            records = json.load(f)
+        self.update(records=[_dict_to_record(record) for record in records])
+        return self
 
     ############################
     # Private methods

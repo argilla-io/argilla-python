@@ -62,6 +62,11 @@ class TextField(SettingsPropertyBase):
 
         return instance
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "TextField":
+        model = TextFieldModel(**data)
+        return cls.from_model(model=model)
+
 
 class VectorField(SettingsPropertyBase):
     """Vector field for use in Argilla `Dataset` `Settings`"""
@@ -94,6 +99,11 @@ class VectorField(SettingsPropertyBase):
 
         return instance
 
+    @classmethod
+    def from_dict(cls, data: dict) -> "VectorField":
+        model = VectorFieldModel(**data)
+        return cls.from_model(model=model)
+
     @property
     def dimensions(self) -> int:
         return self._model.dimensions
@@ -120,3 +130,15 @@ def field_from_model(model: FieldModel) -> FieldType:
         return MetadataField.from_model(model)
     else:
         raise ValueError(f"Unsupported field model type: {type(model)}")
+
+
+def field_from_dict(data: dict) -> FieldType:
+    """Create a field instance from a field dictionary"""
+    if data["type"] == "text":
+        return TextField.from_dict(data)
+    elif data["type"] == "vector":
+        return VectorField.from_dict(data)
+    elif data["type"] == "metadata":
+        return MetadataField.from_dict(data)
+    else:
+        raise ValueError(f"Unsupported field type: {data['type']}")

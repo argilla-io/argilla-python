@@ -31,7 +31,7 @@ class GenericExportMixin(Iterable["Record"], ABC):
                 - False: The record fields, metadata, suggestions and responses will be nested.
             orient (str): The orientation of the exported dictionary.
                 - "names": The keys of the dictionary will be the names of the fields, metadata, suggestions and responses.
-                - "index": The keys of the dictionary will be the external_id of the records.
+                - "index": The keys of the dictionary will be the id of the records.
         Returns:
             dataset_records (Dict[str, Union[str, float, int, list]]): The exported records in a dictionary format.
         """
@@ -65,7 +65,7 @@ class GenericExportMixin(Iterable["Record"], ABC):
         elif orient == "index":
             dataset_records: dict = {}
             for record in records:
-                dataset_records[record.external_id] = self.__record_to_dict(record=record, flatten=flatten)
+                dataset_records[record.id] = self.__record_to_dict(record=record, flatten=flatten)
         else:
             raise ValueError(f"Invalid value for orient parameter: {orient}")
         return dataset_records

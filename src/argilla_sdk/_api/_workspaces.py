@@ -99,12 +99,14 @@ class WorkspacesAPI(ResourceAPI[WorkspaceModel]):
 
     @api_error_handler
     def add_user(self, workspace_id: UUID, user_id: UUID) -> None:
+        # TODO: This method is already defined in UsersAPI and should be removed from here
         response = self.http_client.post(f"{self.url_stub}/{workspace_id}/users/{user_id}")
         response.raise_for_status()
         self.log(message=f"Added user {user_id} to workspace {workspace_id}")
 
     @api_error_handler
     def remove_user(self, workspace_id: UUID, user_id: UUID) -> None:
+        # TODO: This method is already defined in UsersAPI and should be removed from here
         response = self.http_client.delete(f"{self.url_stub}/{workspace_id}/users/{user_id}")
         response.raise_for_status()
         self.log(message=f"Removed user {user_id} from workspace {workspace_id}")

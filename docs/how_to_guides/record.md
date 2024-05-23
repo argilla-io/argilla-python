@@ -431,7 +431,7 @@ for record in dataset.records(
 
 ## Update records
 
-You can update records in a dataset calling the `update` method on the `Dataset` object. To update a record, you need to provide the record `id` or `external_id` and the new data to be updated.
+You can update records in a dataset calling the `update` method on the `Dataset` object. To update a record, you need to provide the record `id` and the new data to be updated.
 
 ```python
 data = dataset.records.to_list(flatten=True)
@@ -440,7 +440,7 @@ updated_data = [
     {
         "text": sample["text"],
         "label": "positive",
-        "external_id": sample["external_id"],
+        "id": sample["id"],
     }
     for sample in data
 ]

@@ -19,14 +19,14 @@ from pydantic import Field
 from argilla_sdk._models._settings._questions._label_selection import LabelQuestionSettings, LabelQuestionModel
 
 
-class LabelsOrder(str, Enum):
+class OptionsOrder(str, Enum):
     natural = "natural"
     suggestion = "suggestion"
 
 
 class MultiLabelQuestionSettings(LabelQuestionSettings):
     type: str = "multi_label_selection"
-    labels_order: LabelsOrder = Field(LabelsOrder.natural, description="The order of the labels in the UI.")
+    options_order: OptionsOrder = Field(OptionsOrder.natural, description="The order of the labels in the UI.")
 
 
 class MultiLabelQuestionModel(LabelQuestionModel):

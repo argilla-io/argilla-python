@@ -7,6 +7,12 @@ concurrency:
   cancel-in-progress: true
 
 on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "If true, the workflow will publish the package to PyPI. Default is false."
+        default: false
+
   push:
     branches: [ "main" ]
 
@@ -15,7 +21,7 @@ on:
 
   release:
     types:
-      - published
+      - "published"
 
 jobs:
   build:
@@ -71,8 +77,7 @@ jobs:
   publish_release:
     name: Publish Release
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'release' }} || ${{ github.event_name == 'tag' }}
-
+    if: github.event_name == 'workflow_dispatch'
     needs:
       - build
 
@@ -103,11 +108,13 @@ jobs:
         with:
           cache: true
 
-      - name: Read package version
+      - name: Read package info
         run: |
           PACKAGE_VERSION=$(pdm show --version)
+          PACKAGE_NAME=$(pdm show --name)
           echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
-          echo "Package version: $PACKAGE_VERSION"
+          echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+          echo "$PACKAGE_NAME==$PACKAGE_VERSION"
 
       - name: Create tag
         run: |
@@ -122,8 +129,8 @@ jobs:
 
       - name: Test Installing 🍿
         run: |
-          pip install --index-url https://test.pypi.org/simple --no-deps  argilla-sdk==$PACKAGE_VERSION
+          pip install --index-url https://test.pypi.org/simple --no-deps  $PACKAGE_NAME==$PACKAGE_VERSION
 
       - name: Publish Package to PyPI 🥩
-        if: ${{ github.event_name == 'release' }}
+        if: ${{ inputs.release }}
         run: pdm publish --no-build

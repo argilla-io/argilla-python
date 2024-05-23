@@ -15,6 +15,7 @@
 import uuid
 
 from argilla_sdk import Record, Suggestion, Response
+from argilla_sdk._models import MetadataModel
 
 
 class TestRecords:
@@ -35,3 +36,27 @@ class TestRecords:
             "suggestions={'question': {'value': 'answer', 'score': None, 'agent': None}},"
             f"responses={{'question': [{{'value': 'answer'}}]}})"
         )
+
+    def test_update_record_metadata_by_key(self):
+        record = Record(fields={"name": "John", "age": "30"}, metadata={"key": "value"})
+
+        record.metadata["key"] = "new_value"
+        record.metadata["new-key"] = "new_value"
+
+        assert record.metadata == {"key": "new_value", "new-key": "new_value"}
+        assert record.metadata.models == [
+            MetadataModel(name="key", value="new_value"),
+            MetadataModel(name="new-key", value="new_value"),
+        ]
+
+    def test_update_record_metadata_by_attribute(self):
+        record = Record(fields={"name": "John", "age": "30"}, metadata={"key": "value"})
+
+        record.metadata.key = "new_value"
+        record.metadata.new_key = "new_value"
+
+        assert record.metadata == {"key": "new_value", "new_key": "new_value"}
+        assert record.metadata.models == [
+            MetadataModel(name="key", value="new_value"),
+            MetadataModel(name="new_key", value="new_value"),
+        ]

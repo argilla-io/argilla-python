@@ -78,7 +78,7 @@ Check out the [`rg.Record`](../records/record.md) class reference for more infor
 
 ### Updating records in a dataset
 
-Records can also be updated using the `id` or `external_id` to identify the records to be updated:
+Records can also be updated using the `id` to identify the records to be updated:
 
 ```python
 # Add records to a dataset

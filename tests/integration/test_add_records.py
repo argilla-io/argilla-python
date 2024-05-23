@@ -49,17 +49,17 @@ def test_add_records(client):
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "label": "negative",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
     ]
     settings = rg.Settings(
@@ -81,9 +81,9 @@ def test_add_records(client):
     dataset_records = list(dataset.records)
 
     assert dataset.name == mock_dataset_name
-    assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
-    assert dataset_records[1].external_id == str(mock_data[1]["external_id"])
-    assert dataset_records[2].external_id == str(mock_data[2]["external_id"])
+    assert dataset_records[0].id == str(mock_data[0]["id"])
+    assert dataset_records[1].id == str(mock_data[1]["id"])
+    assert dataset_records[2].id == str(mock_data[2]["id"])
     assert dataset_records[0].fields.text == mock_data[0]["text"]
     assert dataset_records[1].fields.text == mock_data[1]["text"]
     assert dataset_records[2].fields.text == mock_data[2]["text"]
@@ -109,27 +109,26 @@ def test_add_dict_records(client: Argilla):
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": "1",
+            "id": "1",
         },
         {
             "text": "Hello World, how are you?",
             "label": "negative",
-            "external_id": "2",
+            "id": "2",
         },
-        {"text": "Hello World, how are you?", "label": "negative", "external_id": "3"},
+        {"text": "Hello World, how are you?", "label": "negative", "id": "3"},
     ]
 
     # Now the dataset is published and is ready for annotate
     ds.records.add(mock_data)
 
     for record, data in zip(ds.records, mock_data):
-        assert record.id
-        assert record.external_id == data["external_id"]
+        assert record.id == data["id"]
         assert record.fields.text == data["text"]
         assert "label" not in record.__dict__
 
     for record, data in zip(ds.records(batch_size=1, with_suggestions=True), mock_data):
-        assert record.external_id == data["external_id"]
+        assert record.id == data["id"]
         assert record.suggestions.label.value == data["label"]
 
 
@@ -152,7 +151,7 @@ def test_add_single_record(client: Argilla):
     data = {
         "text": "Hello World, how are you?",
         "label": "positive",
-        "external_id": "1",
+        "id": "1",
     }
 
     # Now the dataset is published and is ready for annotate
@@ -162,8 +161,7 @@ def test_add_single_record(client: Argilla):
     assert len(records) == 1
 
     record = records[0]
-    assert record.id
-    assert record.external_id == data["external_id"]
+    assert record.id == data["id"]
     assert record.fields.text == data["text"]
 
 
@@ -173,7 +171,7 @@ def test_add_records_with_suggestions(client) -> None:
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
             "comment": "I'm doing great, thank you!",
             "topics": ["topic1", "topic2"],
             "topics.score": [0.9, 0.8],
@@ -181,7 +179,7 @@ def test_add_records_with_suggestions(client) -> None:
         {
             "text": "Hello World, how are you?",
             "label": "negative",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
             "comment": "I'm doing great, thank you!",
             "topics": ["topic3"],
             "topics.score": [0.9],
@@ -189,7 +187,7 @@ def test_add_records_with_suggestions(client) -> None:
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
             "comment": "I'm doing great, thank you!",
             "topics": ["topic1", "topic2", "topic3"],
             "topics.score": [0.9, 0.8, 0.7],
@@ -222,7 +220,7 @@ def test_add_records_with_suggestions(client) -> None:
 
     dataset_records = list(dataset.records(with_suggestions=True))
 
-    assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
+    assert dataset_records[0].id == str(mock_data[0]["id"])
     assert dataset_records[0].suggestions.comment.value == "I'm doing great, thank you!"
     assert dataset_records[0].suggestions.comment.score is None
     assert dataset_records[0].suggestions.topics.value == ["topic1", "topic2"]
@@ -246,17 +244,17 @@ def test_add_records_with_responses(client) -> None:
         {
             "text": "Hello World, how are you?",
             "my_label": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "my_label": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "my_label": "negative",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
     ]
     settings = rg.Settings(
@@ -292,7 +290,7 @@ def test_add_records_with_responses(client) -> None:
     dataset_records = list(dataset.records(with_responses=True))
 
     for record, mock_record in zip(dataset_records, mock_data):
-        assert record.external_id == str(mock_record["external_id"])
+        assert record.id == str(mock_record["id"])
         assert record.fields.text == mock_record["text"]
         assert record.responses.label[0].value == mock_record["my_label"]
         assert record.responses.label[0].user_id == user.id
@@ -305,19 +303,19 @@ def test_add_records_with_responses_and_suggestions(client) -> None:
             "text": "Hello World, how are you?",
             "my_label": "negative",
             "my_guess": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "my_label": "negative",
             "my_guess": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "my_label": "negative",
             "my_guess": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
     ]
     settings = rg.Settings(
@@ -353,7 +351,7 @@ def test_add_records_with_responses_and_suggestions(client) -> None:
 
     dataset_records = list(dataset.records(with_suggestions=True))
 
-    assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
+    assert dataset_records[0].id == str(mock_data[0]["id"])
     assert dataset_records[1].fields.text == mock_data[1]["text"]
     assert dataset_records[2].suggestions.label.value == "positive"
     assert dataset_records[2].responses.label[0].value == "negative"
@@ -367,21 +365,21 @@ def test_add_records_with_fields_mapped(client) -> None:
             "x": "Hello World, how are you?",
             "my_label": "negative",
             "my_guess": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
             "score": 0.5,
         },
         {
             "x": "Hello World, how are you?",
             "my_label": "negative",
             "my_guess": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
             "score": 0.5,
         },
         {
             "x": "Hello World, how are you?",
             "my_label": "negative",
             "my_guess": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
             "score": 0.5,
         },
     ]
@@ -420,7 +418,7 @@ def test_add_records_with_fields_mapped(client) -> None:
 
     dataset_records = list(dataset.records(with_suggestions=True))
 
-    assert dataset_records[0].external_id == str(mock_data[0]["external_id"])
+    assert dataset_records[0].id == str(mock_data[0]["id"])
     assert dataset_records[1].fields.text == mock_data[1]["x"]
     assert dataset_records[2].suggestions.label.value == "positive"
     assert dataset_records[2].suggestions.label.score == 0.5
@@ -481,7 +479,7 @@ def test_add_records_with_id_mapped(client) -> None:
 
     dataset_records = list(dataset.records(with_suggestions=True))
 
-    assert dataset_records[0].external_id == str(mock_data[0]["uuid"])
+    assert dataset_records[0].id == str(mock_data[0]["uuid"])
     assert dataset_records[1].fields.text == mock_data[1]["x"]
     assert dataset_records[2].suggestions.label.value == "positive"
     assert dataset_records[2].responses.label[0].value == "negative"
@@ -499,7 +497,7 @@ def test_add_record_resources(client):
                 rg.Suggestion("topics", ["topic1", "topic2"], score=[0.9, 0.8]),
             ],
             responses=[rg.Response("label", "positive", user_id=user_id)],
-            external_id=str(uuid.uuid4()),
+            id=str(uuid.uuid4()),
         ),
         rg.Record(
             fields={"text": "Hello World, how are you?"},
@@ -508,7 +506,7 @@ def test_add_record_resources(client):
                 rg.Suggestion("topics", ["topic1", "topic2"], score=[0.9, 0.8]),
             ],
             responses=[rg.Response("label", "positive", user_id=user_id)],
-            external_id=str(uuid.uuid4()),
+            id=str(uuid.uuid4()),
         ),
         rg.Record(
             fields={"text": "Hello World, how are you?"},
@@ -517,7 +515,7 @@ def test_add_record_resources(client):
                 rg.Suggestion("topics", ["topic1", "topic2"], score=[0.9, 0.8]),
             ],
             responses=[rg.Response("label", "positive", user_id=user_id)],
-            external_id=str(uuid.uuid4()),
+            id=str(uuid.uuid4()),
         ),
     ]
     settings = rg.Settings(
@@ -541,19 +539,19 @@ def test_add_record_resources(client):
 
     assert dataset.name == mock_dataset_name
 
-    assert dataset_records[0].external_id == str(mock_resources[0].external_id)
+    assert dataset_records[0].id == str(mock_resources[0].id)
     assert dataset_records[0].suggestions.label.value == "positive"
     assert dataset_records[0].suggestions.label.score == 0.9
     assert dataset_records[0].suggestions.topics.value == ["topic1", "topic2"]
     assert dataset_records[0].suggestions.topics.score == [0.9, 0.8]
 
-    assert dataset_records[1].external_id == str(mock_resources[1].external_id)
+    assert dataset_records[1].id == str(mock_resources[1].id)
     assert dataset_records[1].suggestions.label.value == "positive"
     assert dataset_records[1].suggestions.label.score == 0.9
     assert dataset_records[1].suggestions.topics.value == ["topic1", "topic2"]
     assert dataset_records[1].suggestions.topics.score == [0.9, 0.8]
 
-    assert dataset_records[2].external_id == str(mock_resources[2].external_id)
+    assert dataset_records[2].id == str(mock_resources[2].id)
     assert dataset_records[2].suggestions.label.value == "positive"
     assert dataset_records[2].suggestions.label.score == 0.9
     assert dataset_records[2].suggestions.topics.value == ["topic1", "topic2"]
@@ -641,17 +639,17 @@ def test_add_records_objects_with_responses(client: Argilla):
         rg.Record(
             fields={"text": "Hello World, how are you?"},
             responses=[rg.Response("label", "negative", user_id=user.id)],
-            external_id=str(uuid.uuid4()),
+            id=str(uuid.uuid4()),
         ),
         rg.Record(
             fields={"text": "Hello World, how are you?"},
             responses=[rg.Response("label", "positive", user_id=user.id)],
-            external_id=str(uuid.uuid4()),
+            id=str(uuid.uuid4()),
         ),
         rg.Record(
             fields={"text": "Hello World, how are you?"},
             responses=[rg.Response("comment", "The comment", user_id=user.id)],
-            external_id=str(uuid.uuid4()),
+            id=str(uuid.uuid4()),
         ),
     ]
 
@@ -660,11 +658,11 @@ def test_add_records_objects_with_responses(client: Argilla):
     dataset_records = list(dataset.records())
 
     assert dataset.name == mock_dataset_name
-    assert dataset_records[0].external_id == str(records[0].external_id)
+    assert dataset_records[0].id == records[0].id
     assert dataset_records[0].responses.label[0].value == "negative"
 
-    assert dataset_records[1].external_id == str(records[1].external_id)
+    assert dataset_records[1].id == records[1].id
     assert dataset_records[1].responses.label[0].value == "positive"
 
-    assert dataset_records[2].external_id == str(records[2].external_id)
+    assert dataset_records[2].id == records[2].id
     assert dataset_records[2].responses.comment[0].value == "The comment"

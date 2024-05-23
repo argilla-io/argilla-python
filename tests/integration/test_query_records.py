@@ -55,20 +55,20 @@ def dataset(client: Argilla, workspace: Workspace) -> Dataset:
 def test_query_records_by_text(client: Argilla, dataset: Dataset):
     dataset.records.add(
         [
-            {"text": "First record", "external_id": 1},
-            {"text": "Second record", "external_id": 2},
+            {"text": "First record", "id": 1},
+            {"text": "Second record", "id": 2},
         ]
     )
 
     records = list(dataset.records(query="first"))
 
     assert len(records) == 1
-    assert records[0].external_id == "1"
+    assert records[0].id == "1"
     assert records[0].fields.text == "First record"
 
     records = list(dataset.records(query="second"))
     assert len(records) == 1
-    assert records[0].external_id == "2"
+    assert records[0].id == "2"
     assert records[0].fields.text == "Second record"
 
     records = list(dataset.records(query="record"))
@@ -80,17 +80,17 @@ def test_query_records_by_suggestion_value(client: Argilla, dataset: Dataset):
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": 1,
+            "id": 1,
         },
         {
             "text": "Hello World, how are you?",
             "label": "negative",
-            "external_id": 2,
+            "id": 2,
         },
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": 3,
+            "id": 3,
         },
     ]
 
@@ -100,14 +100,14 @@ def test_query_records_by_suggestion_value(client: Argilla, dataset: Dataset):
     records = list(dataset.records(query=query))
 
     assert len(records) == 2
-    assert records[0].external_id == "1"
-    assert records[1].external_id == "3"
+    assert records[0].id == "1"
+    assert records[1].id == "3"
 
     query = rg.Query(filter=rg.Filter(("label", "==", "negative")))
     records = list(dataset.records(query=query))
 
     assert len(records) == 1
-    assert records[0].external_id == "2"
+    assert records[0].id == "2"
 
     query = rg.Query(filter=rg.Filter(("label", "in", ["positive", "negative"])))
     records = list(dataset.records(query=query))

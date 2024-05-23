@@ -146,7 +146,7 @@ class MultiLabelQuestion(LabelQuestion):
             settings=MultiLabelQuestionSettings(
                 options=self._render_values_as_options(labels),
                 visible_options=visible_labels,
-                labels_order=labels_order,
+                options_order=labels_order,
             ),
         )
 
@@ -155,7 +155,7 @@ class MultiLabelQuestion(LabelQuestion):
         instance = cls(
             name=model.name,
             labels=cls._render_options_as_values(model.settings.options),
-            labels_order=model.settings.labels_order,
+            labels_order=model.settings.options_order,
         )
         instance._model = model
 

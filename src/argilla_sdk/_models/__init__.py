@@ -18,9 +18,11 @@ from argilla_sdk._models._resource import ResourceModel
 from argilla_sdk._models._workspace import WorkspaceModel
 from argilla_sdk._models._user import UserModel, Role
 from argilla_sdk._models._dataset import DatasetModel
-from argilla_sdk._models._record import RecordModel
-from argilla_sdk._models._suggestion import SuggestionModel
-from argilla_sdk._models._response import UserResponseModel, ResponseStatus
+from argilla_sdk._models._record._record import RecordModel
+from argilla_sdk._models._record._suggestion import SuggestionModel
+from argilla_sdk._models._record._response import UserResponseModel, ResponseStatus
+from argilla_sdk._models._record._vector import VectorModel
+from argilla_sdk._models._record._metadata import MetadataModel, MetadataValue
 from argilla_sdk._models._search import (
     SearchQueryModel,
     AndFilterModel,
@@ -59,5 +61,3 @@ from argilla_sdk._models._settings._metadata import (
     FloatMetadataPropertySettings,
     IntegerMetadataPropertySettings,
 )
-from argilla_sdk._models._vector import VectorModel
-from argilla_sdk._models._metadata import MetadataModel, MetadataValue

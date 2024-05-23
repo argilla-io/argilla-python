@@ -48,7 +48,7 @@ def test_export_to_dict(record):
 
     assert record.responses[0].value == imported_record.responses[0].value
     assert record.suggestions[0].value == imported_record.suggestions[0].value
-    for key, value in record.metadata.to_dict().items():
+    for key, value in record.metadata.items():
         assert imported_record.metadata[key] == value
     assert record.fields.text == imported_record.fields.text
     assert record.vectors.text == imported_record.vectors.text
@@ -62,7 +62,7 @@ def test_export_to_dict_json(record):
 
     assert record.responses[0].value == imported_record.responses[0].value
     assert record.suggestions[0].value == imported_record.suggestions[0].value
-    for key, value in record.metadata.to_dict().items():
+    for key, value in record.metadata.items():
         assert imported_record.metadata[key] == value
     assert record.fields.text == imported_record.fields.text
     assert record.vectors.text == imported_record.vectors.text

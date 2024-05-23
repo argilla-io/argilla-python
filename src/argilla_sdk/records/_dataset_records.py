@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import json
 from pathlib import Path
 from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Iterable
 from uuid import UUID
@@ -21,8 +20,7 @@ from argilla_sdk._api import RecordsAPI
 from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import RecordModel
 from argilla_sdk.client import Argilla
-from argilla_sdk.records._export import GenericExportMixin
-from argilla_sdk.records._helpers import _dict_to_record
+from argilla_sdk.records._io import RecordsIOMixin
 from argilla_sdk.records._resource import Record
 from argilla_sdk.records._search import Query
 
@@ -30,7 +28,7 @@ if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
 
 
-class DatasetRecordsIterator(GenericExportMixin):
+class DatasetRecordsIterator(RecordsIOMixin):
     """This class is used to iterate over records in a dataset"""
 
     def __init__(
@@ -166,7 +164,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             query = Query(query=query)
 
         if with_vectors:
-            self.__validate_vector_names(vector_names=with_vectors)
+            self._validate_vector_names(vector_names=with_vectors)
 
         return DatasetRecordsIterator(
             self.__dataset,
@@ -212,7 +210,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         Add generic records to a dataset as dictionaries:
 
         """
-        record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
+        record_models = self._ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
 
         batch_size = self._normalize_batch_size(
             batch_size=batch_size,
@@ -257,7 +255,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             A list of Record objects representing the updated records.
 
         """
-        record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
+        record_models = self._ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
         batch_size = self._normalize_batch_size(
             batch_size=batch_size,
             records_length=len(record_models),
@@ -319,15 +317,8 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             The path to the file where the records were saved.
 
         """
-        if isinstance(path, str):
-            path = Path(path)
-        if path.exists():
-            raise FileExistsError(f"File {path} already exists.")
-        record_dicts = self(with_suggestions=True, with_responses=True).to_list()
-        with open(path, "w") as f:
-            json.dump(record_dicts, f)
-        return path
-
+        return self(with_suggestions=True, with_responses=True).to_json(path=path)
+    
     def from_json(self, path: Union[Path, str]) -> "DatasetRecords":
         """Creates a DatasetRecords object from a disk path.
 
@@ -338,16 +329,15 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             DatasetRecords: The DatasetRecords object created from the disk path.
 
         """
-        with open(path, "r") as f:
-            records = json.load(f)
-        self.update(records=[_dict_to_record(record) for record in records])
+        records = self().from_json(path=path)
+        self.update(records)
         return self
-
+    
     ############################
     # Private methods
     ############################
 
-    def __ingest_records(
+    def _ingest_records(
         self,
         records: Union[List[Dict[str, Any]], Dict[str, Any], List[Record], Record],
         mapping: Optional[Dict[str, str]] = None,
@@ -382,7 +372,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
         return norm_batch_size
 
-    def __validate_vector_names(self, vector_names: Union[List[str], str]) -> None:
+    def _validate_vector_names(self, vector_names: Union[List[str], str]) -> None:
         if not isinstance(vector_names, list):
             vector_names = [vector_names]
         for vector_name in vector_names:

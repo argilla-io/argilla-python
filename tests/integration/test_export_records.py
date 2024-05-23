@@ -181,7 +181,7 @@ def test_export_records_dict_nested_orient_index(client: Argilla, dataset: rg.Da
         assert id_ == exported_record["id"]
         assert exported_record["fields"]["text"] == mock_record["text"]
         assert exported_record["suggestions"]["label"]["value"] == mock_record["label"]
-        assert exported_record["id"] == str(mock_record["external_id"])
+        assert exported_record["id"] == str(mock_record["id"])
 
 
 def test_export_records_to_json(dataset: rg.Dataset):

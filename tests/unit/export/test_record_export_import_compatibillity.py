@@ -38,7 +38,7 @@ def record(user_id):
         responses=[rg.Response("label", "positive", user_id=user_id)],
         metadata={"source": "twitter", "language": "en"},
         vectors=[rg.Vector("text", [0, 0, 0])],
-        external_id=str(uuid.uuid4()),
+        id=str(uuid.uuid4()),
     )
 
 

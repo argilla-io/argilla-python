@@ -17,9 +17,19 @@ import argilla_sdk as rg
 
 class TestQuestions:
     def test_label_question_init(self):
-        question = rg.LabelQuestion(name="label_question", labels=["label1", "label2"])
+        labels = ["label1", "label2", "label3"]
+        question = rg.LabelQuestion(name="label_question", labels=labels)
         assert question.name == "label_question"
-        assert question.labels == ["label1", "label2"]
+        assert question.labels == ["label1", "label2", "label3"]
+
+    def test_label_question_init_with_dict(self):
+        labels = {"label1": "1", "label2": "2", "label3": "3"}
+        question = rg.LabelQuestion(name="label_question", labels=labels)
+        assert question.name == "label_question"
+        assert question.labels == ["label1", "label2", "label3"]
+        text_of_labels = [label["text"] for label in question._model.settings.options]
+        for i in range(len(labels)):
+            assert text_of_labels[i] == list(labels.values())[i]
 
     def test_rating_question_init(self):
         question = rg.RatingQuestion(name="rating_question", values=[1, 2, 3])
@@ -32,9 +42,15 @@ class TestQuestions:
         assert question.use_markdown is True
 
     def test_multi_label_question_init(self):
-        question = rg.MultiLabelQuestion(
-            name="multi_label_question", labels=["label1", "label2", "label3"], visible_labels=3
-        )
+        labels = ["label1", "label2", "label3"]
+        question = rg.MultiLabelQuestion(name="multi_label_question", labels=labels, visible_labels=3)
+        assert question.name == "multi_label_question"
+        assert question.labels == ["label1", "label2", "label3"]
+        assert question.visible_labels == 3
+
+    def test_multi_label_question_init_with_dict(self):
+        labels = {"label1": "1", "label2": "2", "label3": "3"}
+        question = rg.MultiLabelQuestion(name="multi_label_question", labels=labels, visible_labels=3)
         assert question.name == "multi_label_question"
         assert question.labels == ["label1", "label2", "label3"]
         assert question.visible_labels == 3

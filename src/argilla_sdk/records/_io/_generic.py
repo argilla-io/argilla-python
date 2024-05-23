@@ -19,7 +19,7 @@ if TYPE_CHECKING:
     from argilla_sdk import Record
 
 
-class GenericExportMixin(Iterable["Record"], ABC):
+class GenericIOMixin(Iterable["Record"], ABC):
     """This is a mixin class for DatasetRecords and Export classes.
     It handles methods for exporting records to generic python formats."""
 

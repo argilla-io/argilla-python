@@ -3,13 +3,13 @@ from abc import ABC
 from pathlib import Path
 from typing import List, TYPE_CHECKING, Union, Iterable
 
-from argilla_sdk.records._io._generic import GenericExportMixin
+from argilla_sdk.records._io._generic import GenericIOMixin
 
 if TYPE_CHECKING:
     from argilla_sdk import Record
 
 
-class GenericJSONIOMixin(Iterable["Record"], ABC):
+class JSONIOMixin(Iterable["Record"], ABC):
     def to_json(self, path: Union[Path, str]) -> Path:
         """
         Export the records to a file on disk. This is a convenient shortcut for dataset.records(...).to_disk().
@@ -26,7 +26,7 @@ class GenericJSONIOMixin(Iterable["Record"], ABC):
             path = Path(path)
         if path.exists():
             raise FileExistsError(f"File {path} already exists.")
-        record_dicts = [GenericExportMixin._record_to_dict(record) for record in self]
+        record_dicts = [GenericIOMixin._record_to_dict(record) for record in self]
         with open(path, "w") as f:
             json.dump(record_dicts, f)
         return path
@@ -43,5 +43,5 @@ class GenericJSONIOMixin(Iterable["Record"], ABC):
         """
         with open(path, "r") as f:
             record_dicts = json.load(f)
-        records = [GenericExportMixin._dict_to_record(record) for record in record_dicts]
+        records = [GenericIOMixin._dict_to_record(record) for record in record_dicts]
         return records

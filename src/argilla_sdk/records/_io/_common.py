@@ -1,5 +1,6 @@
-from argilla_sdk.records._io._generic import GenericExportMixin  # noqa
-from argilla_sdk.records._io._json import GenericJSONIOMixin  # noqa
+from argilla_sdk.records._io._generic import GenericIOMixin  # noqa
+from argilla_sdk.records._io._json import JSONIOMixin  # noqa
 
-class RecordsIOMixin(GenericExportMixin, GenericJSONIOMixin):
+
+class RecordsIOMixin(GenericIOMixin, JSONIOMixin):
     pass

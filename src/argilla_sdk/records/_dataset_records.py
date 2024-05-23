@@ -329,7 +329,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             DatasetRecords: The DatasetRecords object created from the disk path.
 
         """
-        records = self().from_json(path=path)
+        records = self()._records_from_json(path=path)
         self.update(records)
         return self
     

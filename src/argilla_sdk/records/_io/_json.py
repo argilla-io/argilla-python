@@ -31,7 +31,7 @@ class JSONIOMixin(Iterable["Record"], ABC):
             json.dump(record_dicts, f)
         return path
 
-    def from_json(self, path: Union[Path, str]) -> List["Record"]:
+    def _records_from_json(self, path: Union[Path, str]) -> List["Record"]:
         """Creates a DatasetRecords object from a disk path.
 
         Args:

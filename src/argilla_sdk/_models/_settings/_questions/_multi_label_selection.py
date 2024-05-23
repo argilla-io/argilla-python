@@ -12,15 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk.client import *  # noqa
-from argilla_sdk.datasets import *  # noqa
-from argilla_sdk.workspaces._resource import *  # noqa
-from argilla_sdk.users._resource import *  # noqa
-from argilla_sdk.settings import *  # noqa
-from argilla_sdk.suggestions import *  # noqa
-from argilla_sdk.responses import *  # noqa
-from argilla_sdk.records import *  # noqa
-from argilla_sdk.vectors import *  # noqa
+from enum import Enum
+
+from pydantic import Field
+
+from argilla_sdk._models._settings._questions._label_selection import LabelQuestionSettings, LabelQuestionModel
 
 
-__version__ = "0.1.0.alpha.1"
+class LabelsOrder(str, Enum):
+    natural = "natural"
+    suggestion = "suggestion"
+
+
+class MultiLabelQuestionSettings(LabelQuestionSettings):
+    type: str = "multi_label_selection"
+    labels_order: LabelsOrder = Field(LabelsOrder.natural, description="The order of the labels in the UI.")
+
+
+class MultiLabelQuestionModel(LabelQuestionModel):
+    settings: MultiLabelQuestionSettings

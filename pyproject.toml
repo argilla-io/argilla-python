@@ -1,22 +1,23 @@
 [project]
 name = "argilla-sdk"
-version = "0.1.0"
 description = "The Argilla python server SDK"
 authors = [
     {name = "Argilla", email = "contact@argilla.io"},
-]
-dependencies = [
-    "httpx>=0.26.0",
-    "pydantic>=2.6.0, <3.0.0",
 ]
 requires-python = ">=3.10,<3.12"
 readme = "README.md"
 license = {text = "Apache 2.0"}
 
+dynamic = ["version"]
+
+dependencies = [
+    "httpx>=0.26.0",
+    "pydantic>=2.6.0, <3.0.0",
+]
+
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
-
 
 [tool.ruff]
 line-length = 120
@@ -26,6 +27,10 @@ line-length = 120
 
 [tool.pdm]
 distribution = true
+
+[tool.pdm.version]
+source = "file"
+path = "src/argilla_sdk/__init__.py"
 
 [tool.pdm.dev-dependencies]
 dev = [

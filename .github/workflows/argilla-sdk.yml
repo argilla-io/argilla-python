@@ -1,16 +1,27 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
-name: Test and build the `argilla-sdk` python package
+name: Build and publish the `argilla-sdk` python package
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: "If true, the workflow will publish the package to PyPI. Default is false."
+        default: false
+
   push:
     branches: [ "main" ]
+
   pull_request:
     branches: [ "main" ]
+
+  release:
+    types:
+      - "published"
 
 jobs:
   build:
@@ -31,9 +42,9 @@ jobs:
       matrix:
         python-version: [ "3.8", "3.9", "3.10", "3.11" ]
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Setup PDM
-        uses: pdm-project/setup-pdm@v3
+        uses: pdm-project/setup-pdm@v4
         with:
           python-version: ${{ matrix.python-version }}
           cache: true
@@ -51,4 +62,75 @@ jobs:
       - name: Run integration tests
         run: |
           pdm run test tests/integration
-          
+      - name: Build package
+        run: |
+          pdm build
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        # Upload the package to be used in the next jobs only once
+        if: ${{ matrix.python-version == '3.8' }}
+        with:
+          name: argilla-sdk
+          path: dist
+
+  # This job will publish argilla-sdk package into PyPI repository
+  publish_release:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch'
+    needs:
+      - build
+
+    permissions:
+      # This permission is needed for private repositories.
+      # contents: read
+      # IMPORTANT: this permission is mandatory for trusted publishing on PyPI
+      id-token: write
+      # This permission is needed for creating tags
+      contents: write
+
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - name: Checkout Code 🛎
+        uses: actions/checkout@v4
+
+      - name: Download python package
+        uses: actions/download-artifact@v4
+        with:
+          name: argilla-sdk
+          path: dist
+
+      - name: Setup PDM
+        uses: pdm-project/setup-pdm@v4
+        with:
+          cache: true
+
+      - name: Read package info
+        run: |
+          PACKAGE_VERSION=$(pdm show --version)
+          PACKAGE_NAME=$(pdm show --name)
+          echo "PACKAGE_VERSION=$PACKAGE_VERSION" >> $GITHUB_ENV
+          echo "PACKAGE_NAME=$PACKAGE_NAME" >> $GITHUB_ENV
+          echo "$PACKAGE_NAME==$PACKAGE_VERSION"
+
+      - name: Create tag
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git tag -a v${{ env.PACKAGE_VERSION }} -m "Release v${{ env.PACKAGE_VERSION }}"
+          git push origin v${{ env.PACKAGE_VERSION }}
+
+      - name: Publish Package to PyPI test environment 🥪
+        run: pdm publish --no-build --repository testpypi
+        continue-on-error: true
+
+      - name: Test Installing 🍿
+        run: |
+          pip install --index-url https://test.pypi.org/simple --no-deps  $PACKAGE_NAME==$PACKAGE_VERSION
+
+      - name: Publish Package to PyPI 🥩
+        if: ${{ inputs.release }}
+        run: pdm publish --no-build

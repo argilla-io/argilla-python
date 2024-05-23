@@ -55,6 +55,17 @@ class TestQuestions:
         assert question.labels == ["label1", "label2", "label3"]
         assert question.visible_labels == 3
 
+    def test_multi_label_question_init_ordered(self):
+        question = rg.MultiLabelQuestion(
+            name="multi_label_question",
+            labels=["label1", "label2", "label3"],
+            visible_labels=3,
+            labels_order="suggestion",
+        )
+        assert question.name == "multi_label_question"
+        assert question.labels == ["label1", "label2", "label3"]
+        assert question.visible_labels == 3
+
     def test_ranking_question_init(self):
         question = rg.RankingQuestion(name="ranking_question", values=["rank-a", "rank-b"])
         assert question.name == "ranking_question"

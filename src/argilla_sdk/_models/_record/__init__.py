@@ -12,15 +12,3 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from argilla_sdk.client import *  # noqa
-from argilla_sdk.datasets import *  # noqa
-from argilla_sdk.workspaces._resource import *  # noqa
-from argilla_sdk.users._resource import *  # noqa
-from argilla_sdk.settings import *  # noqa
-from argilla_sdk.suggestions import *  # noqa
-from argilla_sdk.responses import *  # noqa
-from argilla_sdk.records import *  # noqa
-from argilla_sdk.vectors import *  # noqa
-
-
-__version__ = "0.1.0.alpha.1"

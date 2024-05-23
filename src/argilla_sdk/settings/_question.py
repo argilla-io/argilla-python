@@ -428,3 +428,10 @@ def question_from_model(model: QuestionModel) -> QuestionType:
         return _TYPE_TO_CLASS[model.settings.type].from_model(model)
     except KeyError:
         raise ValueError(f"Unsupported question model type: {model.settings.type}")
+
+
+def question_from_dict(data: dict) -> QuestionType:
+    try:
+        return _TYPE_TO_CLASS[data["settings"]["type"]].from_dict(data)
+    except KeyError:
+        raise ValueError(f"Unsupported question model type: {data['settings']['type']}")

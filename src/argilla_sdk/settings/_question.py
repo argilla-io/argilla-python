@@ -139,7 +139,9 @@ class MultiLabelQuestion(LabelQuestion):
             description=description,
             required=required,
             settings=MultiLabelQuestionSettings(
-                options=self._render_values_as_options(labels), visible_options=visible_labels, labels_order=labels_order
+                options=self._render_values_as_options(labels),
+                visible_options=visible_labels,
+                labels_order=labels_order,
             ),
         )
 

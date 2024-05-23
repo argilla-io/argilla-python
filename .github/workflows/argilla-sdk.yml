@@ -132,5 +132,5 @@ jobs:
           pip install --index-url https://test.pypi.org/simple --no-deps  $PACKAGE_NAME==$PACKAGE_VERSION
 
       - name: Publish Package to PyPI 🥩
-        if: ${{ inputs.release }}
+        if: ${{ inputs.release == 'true' }}
         run: pdm publish --no-build

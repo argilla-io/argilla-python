@@ -326,7 +326,8 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         return JsonIO.to_json(records=records, path=path)
 
     def from_json(self, path: Union[Path, str]) -> "DatasetRecords":
-        """Creates a DatasetRecords object from a disk path.
+        """Creates a DatasetRecords object from a disk path to a JSON file. 
+            The JSON file should be defined by `DatasetRecords.to_json`.
 
         Args:
             path (str): The path to the file containing the records.
@@ -371,7 +372,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         if all(map(lambda r: isinstance(r, dict), records)):
             # Records as flat dicts of values to be matched to questions as suggestion or response
             records = [
-                Record.from_dict(data=r, mapping=mapping, dataset=self.__dataset, user_id=user_id) for r in records
+                Record.from_mapping(data=r, mapping=mapping, dataset=self.__dataset, user_id=user_id) for r in records
             ]  # type: ignore
         elif all(map(lambda r: isinstance(r, Record), records)):
             for record in records:

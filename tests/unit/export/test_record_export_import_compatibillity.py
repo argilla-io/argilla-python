@@ -18,7 +18,7 @@ import uuid
 import pytest
 
 import argilla_sdk as rg
-from argilla_sdk.records._io import RecordsIOMixin
+from argilla_sdk.records._io import GenericIO
 
 
 @pytest.fixture
@@ -42,8 +42,8 @@ def record(user_id):
 
 
 def test_export_to_dict(record):
-    record_dict = RecordsIOMixin._record_to_dict(record)
-    imported_record = RecordsIOMixin._dict_to_record(record_dict)
+    record_dict = GenericIO._record_to_dict(record)
+    imported_record = GenericIO._dict_to_record(record_dict)
 
     assert record.responses[0].value == imported_record.responses[0].value
     assert record.suggestions[0].value == imported_record.suggestions[0].value
@@ -54,10 +54,10 @@ def test_export_to_dict(record):
 
 
 def test_export_to_dict_json(record):
-    record_dict = RecordsIOMixin._record_to_dict(record)
+    record_dict = GenericIO._record_to_dict(record)
     record_dict = json.dumps(record_dict)
     record_dict = json.loads(record_dict)
-    imported_record = RecordsIOMixin._dict_to_record(record_dict)
+    imported_record = GenericIO._dict_to_record(record_dict)
 
     assert record.responses[0].value == imported_record.responses[0].value
     assert record.suggestions[0].value == imported_record.suggestions[0].value

@@ -22,7 +22,7 @@ from argilla_sdk._api import RecordsAPI
 from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import RecordModel
 from argilla_sdk.client import Argilla
-from argilla_sdk.records._io import RecordsIOMixin
+from argilla_sdk.records._io import HFDatasetsIO, GenericIO, JsonIO
 from argilla_sdk.records._resource import Record
 from argilla_sdk.records._search import Query
 
@@ -30,7 +30,7 @@ if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
 
 
-class DatasetRecordsIterator(RecordsIOMixin):
+class DatasetRecordsIterator:
     """This class is used to iterate over records in a dataset"""
 
     def __init__(
@@ -212,11 +212,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         Add generic records to a dataset as dictionaries:
 
         """
-        if isinstance(records, HFDataset):
-            records = self()._record_dicts_from_datasets(records)
-
         record_models = self._ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
-
         batch_size = self._normalize_batch_size(
             batch_size=batch_size,
             records_length=len(record_models),
@@ -239,7 +235,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
     def update(
         self,
-        records: Union[dict, List[dict], Record, List[Record]],
+        records: Union[dict, List[dict], Record, List[Record], HFDataset],
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
         batch_size: int = DEFAULT_BATCH_SIZE,
@@ -296,8 +292,10 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             A dictionary of records.
 
         """
-        return self(with_suggestions=True, with_responses=True).to_dict(flatten=flatten, orient=orient)
-
+        records = list(self(with_suggestions=True, with_responses=True))
+        data = GenericIO.to_dict(records=records, flatten=flatten, orient=orient)
+        return data
+    
     def to_list(self, flatten: bool = False) -> List[Dict[str, Any]]:
         """
         Return the records as a list of dictionaries. This is a convenient shortcut for dataset.records(...).to_list().
@@ -308,11 +306,13 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         Returns:
             A list of dictionaries of records.
         """
-        return self(with_suggestions=True, with_responses=True).to_list(flatten=flatten)
+        records = list(self(with_suggestions=True, with_responses=True))
+        data = GenericIO.to_list(records=records, flatten=flatten)
+        return data
 
     def to_json(self, path: Union[Path, str]) -> Path:
         """
-        Export the records to a file on disk. This is a convenient shortcut for dataset.records(...).to_disk().
+        Export the records to a file on disk.
 
         Parameters:
             path (str): The path to the file to save the records.
@@ -322,7 +322,8 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             The path to the file where the records were saved.
 
         """
-        return self(with_suggestions=True, with_responses=True).to_json(path=path)
+        records = list(self(with_suggestions=True, with_responses=True))
+        return JsonIO.to_json(records=records, path=path)
 
     def from_json(self, path: Union[Path, str]) -> "DatasetRecords":
         """Creates a DatasetRecords object from a disk path.
@@ -334,13 +335,13 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             DatasetRecords: The DatasetRecords object created from the disk path.
 
         """
-        records = self()._records_from_json(path=path)
-        self.update(records)
+        records = JsonIO._records_from_json(path=path)
+        self.update(records=records)
         return self
 
     def to_datasets(self) -> HFDataset:
         """
-        Export the records to a file on disk. This is a convenient shortcut for dataset.records(...).to_disk().
+        Export the records to a file on disk.
 
         Parameters:
             path (str): The path to the file to save the records.
@@ -350,7 +351,8 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             The path to the file where the records were saved.
 
         """
-        return self(with_suggestions=True, with_responses=True).to_datasets()
+        records = list(self(with_suggestions=True, with_responses=True))
+        return HFDatasetsIO.to_datasets(records=records)
 
     ############################
     # Private methods
@@ -358,13 +360,14 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
     def _ingest_records(
         self,
-        records: Union[List[Dict[str, Any]], Dict[str, Any], List[Record], Record],
+        records: Union[List[Dict[str, Any]], Dict[str, Any], List[Record], Record, HFDataset],
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
     ) -> List[RecordModel]:
         if isinstance(records, (Record, dict)):
             records = [records]
-
+        if isinstance(records, HFDataset):
+            records = HFDatasetsIO._record_dicts_from_datasets(dataset=records)
         if all(map(lambda r: isinstance(r, dict), records)):
             # Records as flat dicts of values to be matched to questions as suggestion or response
             records = [

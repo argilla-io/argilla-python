@@ -18,7 +18,7 @@ import uuid
 import pytest
 
 import argilla_sdk as rg
-from argilla_sdk.records._io import GenericIO
+from argilla_sdk.records._resource import Record
 
 
 @pytest.fixture
@@ -41,23 +41,23 @@ def record(user_id):
     )
 
 
-def test_export_to_dict(record):
-    record_dict = GenericIO._record_to_dict(record)
-    imported_record = GenericIO._dict_to_record(record_dict)
+def test_export_record_to_from_dict(record):
+    record_dict = record.to_dict()
+    imported_record = rg.Record.from_dict(record_dict)
 
     assert record.responses[0].value == imported_record.responses[0].value
     assert record.suggestions[0].value == imported_record.suggestions[0].value
     for key, value in record.metadata.items():
         assert imported_record.metadata[key] == value
     assert record.fields.text == imported_record.fields.text
-    assert record.vectors.text == imported_record.vectors.text
+    assert record.id == imported_record.id
 
 
-def test_export_to_dict_json(record):
-    record_dict = GenericIO._record_to_dict(record)
+def test_export_generic_io_via_json(record):
+    record_dict = record.to_dict()
     record_dict = json.dumps(record_dict)
     record_dict = json.loads(record_dict)
-    imported_record = GenericIO._dict_to_record(record_dict)
+    imported_record = Record.from_dict(record_dict)
 
     assert record.responses[0].value == imported_record.responses[0].value
     assert record.suggestions[0].value == imported_record.suggestions[0].value

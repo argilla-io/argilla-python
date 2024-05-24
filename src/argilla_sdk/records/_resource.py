@@ -170,14 +170,14 @@ class Record(Resource):
         return serialized_model
 
     @classmethod
-    def from_dict(
+    def from_mapping(
         cls,
         dataset: "Dataset",
         data: dict,
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
     ) -> "Record":
-        """Converts a record dictionary to a Record object.
+        """Converts a mapped record dictionary to a Record object for use by the add or update methods.
         Args:
             dataset: The dataset object to which the record belongs.
             data: A dictionary representing the record.
@@ -288,6 +288,40 @@ class Record(Resource):
             "vectors": vectors,
             "_server_id": str(self._model.id),
         }
+
+    @classmethod
+    def from_dict(cls, data: Dict[str, Dict], dataset: Optional["Dataset"] = None) -> "Record":
+        """Converts a dictionary to a Record object.
+        Args:
+            data: A dictionary representing the record.
+            dataset: The dataset object to which the record belongs.
+        Returns:
+            A Record object.
+        """
+        fields = data.get("fields", {})
+        metadata = data.get("metadata", {})
+        suggestions = data.get("suggestions", {})
+        responses = data.get("responses", {})
+        vectors = data.get("vectors", {})
+        record_id = data.get("id", None)
+
+        suggestions = [Suggestion(question_name=question_name, **value) for question_name, value in suggestions.items()]
+        responses = [
+            Response(question_name=question_name, **value)
+            for question_name, _responses in responses.items()
+            for value in _responses
+        ]
+        vectors = [Vector(name=vector_name, values=values) for vector_name, values in vectors.items()]
+
+        return cls(
+            id=record_id,
+            fields=fields,
+            suggestions=suggestions,
+            responses=responses,
+            vectors=vectors,
+            metadata=metadata,
+            _dataset=dataset,
+        )
 
     @classmethod
     def from_model(cls, model: RecordModel, dataset: "Dataset") -> "Record":

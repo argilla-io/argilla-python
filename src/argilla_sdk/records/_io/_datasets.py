@@ -12,19 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from abc import ABC
-from typing import Dict, List, TYPE_CHECKING, Union, Iterable
+from typing import Dict, List, TYPE_CHECKING, Union
 
 from datasets import Dataset
 
-from argilla_sdk.records._io._generic import GenericIOMixin
+from argilla_sdk.records._io._generic import GenericIO
 
 if TYPE_CHECKING:
     from argilla_sdk import Record
 
 
-class HFDatasetsIOMixin(Iterable["Record"], ABC):
-    def to_datasets(self) -> Dataset:
+class HFDatasetsIO:
+    
+    @staticmethod
+    def to_datasets(records: List["Record"]) -> Dataset:
         """
         Export the records to a Hugging Face dataset.
 
@@ -32,11 +33,12 @@ class HFDatasetsIOMixin(Iterable["Record"], ABC):
             The dataset containing the records.
 
         """
-        record_dicts = [GenericIOMixin._record_to_dict(record=record, flatten=True) for record in self]
+        record_dicts = [GenericIO._record_to_dict(record=record, flatten=True) for record in records]
         dataset = Dataset.from_list(record_dicts)
         return dataset
 
-    def _record_dicts_from_datasets(self, dataset: Dataset) -> List[Dict[str, Union[str, float, int, list]]]:
+    @staticmethod
+    def _record_dicts_from_datasets(dataset: Dataset) -> List[Dict[str, Union[str, float, int, list]]]:
         """Creates a dictionaries from a HF dataset that can be passed to DatasetRecords.add or DatasetRecords.update.
 
         Parameters:

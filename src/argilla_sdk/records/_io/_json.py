@@ -13,18 +13,18 @@
 # limitations under the License.
 
 import json
-from abc import ABC
 from pathlib import Path
-from typing import List, TYPE_CHECKING, Union, Iterable
+from typing import List, TYPE_CHECKING, Union
 
-from argilla_sdk.records._io._generic import GenericIOMixin
+from argilla_sdk.records._io._generic import GenericIO
 
 if TYPE_CHECKING:
     from argilla_sdk import Record
 
 
-class JSONIOMixin(Iterable["Record"], ABC):
-    def to_json(self, path: Union[Path, str]) -> Path:
+class JsonIO:
+    @staticmethod
+    def to_json(records: List["Record"], path: Union[Path, str]) -> Path:
         """
         Export the records to a file on disk. This is a convenient shortcut for dataset.records(...).to_disk().
 
@@ -40,15 +40,16 @@ class JSONIOMixin(Iterable["Record"], ABC):
             path = Path(path)
         if path.exists():
             raise FileExistsError(f"File {path} already exists.")
-        record_dicts = [GenericIOMixin._record_to_dict(record) for record in self]
+        record_dicts = [GenericIO._record_to_dict(record) for record in records]
         with open(path, "w") as f:
             json.dump(record_dicts, f)
         return path
 
-    def _records_from_json(self, path: Union[Path, str]) -> List["Record"]:
+    @staticmethod
+    def _records_from_json(path: Union[Path, str]) -> List["Record"]:
         """Creates a DatasetRecords object from a disk path.
 
-        Args:
+        Parameters:
             path (str): The path to the file containing the records.
 
         Returns:
@@ -57,5 +58,5 @@ class JSONIOMixin(Iterable["Record"], ABC):
         """
         with open(path, "r") as f:
             record_dicts = json.load(f)
-        records = [GenericIOMixin._dict_to_record(record) for record in record_dicts]
+        records = [GenericIO._dict_to_record(record) for record in record_dicts]
         return records

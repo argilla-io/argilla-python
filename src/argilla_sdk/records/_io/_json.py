@@ -11,15 +11,11 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 import json
 from pathlib import Path
-from typing import List, TYPE_CHECKING, Union
+from typing import List, Union
 
-from argilla_sdk.records._io._generic import GenericIO
-
-if TYPE_CHECKING:
-    from argilla_sdk import Record
+from argilla_sdk.records._resource import Record
 
 
 class JsonIO:
@@ -40,7 +36,7 @@ class JsonIO:
             path = Path(path)
         if path.exists():
             raise FileExistsError(f"File {path} already exists.")
-        record_dicts = [GenericIO._record_to_dict(record) for record in records]
+        record_dicts = [Record.to_dict(record) for record in records]
         with open(path, "w") as f:
             json.dump(record_dicts, f)
         return path
@@ -58,5 +54,5 @@ class JsonIO:
         """
         with open(path, "r") as f:
             record_dicts = json.load(f)
-        records = [GenericIO._dict_to_record(record) for record in record_dicts]
+        records = [Record.from_dict(record_dict) for record_dict in record_dicts]
         return records

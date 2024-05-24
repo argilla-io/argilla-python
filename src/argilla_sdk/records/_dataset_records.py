@@ -295,7 +295,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         records = list(self(with_suggestions=True, with_responses=True))
         data = GenericIO.to_dict(records=records, flatten=flatten, orient=orient)
         return data
-    
+
     def to_list(self, flatten: bool = False) -> List[Dict[str, Any]]:
         """
         Return the records as a list of dictionaries. This is a convenient shortcut for dataset.records(...).to_list().

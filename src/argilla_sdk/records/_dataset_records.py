@@ -326,7 +326,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         return JsonIO.to_json(records=records, path=path)
 
     def from_json(self, path: Union[Path, str]) -> "DatasetRecords":
-        """Creates a DatasetRecords object from a disk path to a JSON file. 
+        """Creates a DatasetRecords object from a disk path to a JSON file.
             The JSON file should be defined by `DatasetRecords.to_json`.
 
         Args:

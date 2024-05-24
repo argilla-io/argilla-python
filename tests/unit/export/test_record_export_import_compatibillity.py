@@ -44,15 +44,15 @@ def record(user_id):
 def test_export_record_to_from_dict(record):
     record_dict = record.to_dict()
     imported_record = rg.Record.from_dict(record_dict)
-    
+
     assert record.responses[0].value == imported_record.responses[0].value
     assert record.suggestions[0].value == imported_record.suggestions[0].value
     for key, value in record.metadata.items():
         assert imported_record.metadata[key] == value
     assert record.fields.text == imported_record.fields.text
     assert record.id == imported_record.id
-    
-    
+
+
 def test_export_generic_io_via_json(record):
     record_dict = record.to_dict()
     record_dict = json.dumps(record_dict)
@@ -65,4 +65,3 @@ def test_export_generic_io_via_json(record):
         assert imported_record.metadata[key] == value
     assert record.fields.text == imported_record.fields.text
     assert record.vectors.text == imported_record.vectors.text
-

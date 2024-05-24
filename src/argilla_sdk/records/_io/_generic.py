@@ -115,4 +115,3 @@ class GenericIO:
                         {f"{question_name}.response.{user_id}.{key}": value for key, value in _response.items()}
                     )
         return record_dict
-

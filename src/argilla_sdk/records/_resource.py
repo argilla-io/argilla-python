@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import warnings
 from collections import defaultdict
 from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union, Iterable
 from uuid import UUID, uuid4
@@ -27,7 +26,6 @@ from argilla_sdk._models import (
 )
 from argilla_sdk._resource import Resource
 from argilla_sdk.responses import Response, UserResponse
-from argilla_sdk.settings import QuestionType, VectorField, TextField, MetadataType
 from argilla_sdk.suggestions import Suggestion
 from argilla_sdk.vectors import Vector
 
@@ -168,103 +166,6 @@ class Record(Resource):
         serialized_model["responses"] = serialized_responses
         serialized_model["suggestions"] = serialized_suggestions
         return serialized_model
-
-    @classmethod
-    def from_mapping(
-        cls,
-        dataset: "Dataset",
-        data: dict,
-        mapping: Optional[Dict[str, str]] = None,
-        user_id: Optional[UUID] = None,
-    ) -> "Record":
-        """Converts a mapped record dictionary to a Record object for use by the add or update methods.
-        Args:
-            dataset: The dataset object to which the record belongs.
-            data: A dictionary representing the record.
-            mapping: A dictionary mapping source data keys to Argilla fields, questions, and ids.
-            user_id: The user id to associate with the record responses.
-        Returns:
-            A Record object.
-        """
-        fields: Dict[str, str] = {}
-        responses: List[Response] = []
-        record_id: Optional[str] = None
-        suggestion_values = defaultdict(dict)
-        vectors: List[Vector] = []
-        metadata: Dict[str, MetadataValue] = {}
-
-        schema = dataset.schema
-
-        for attribute, value in data.items():
-            schema_item = schema.get(attribute)
-            attribute_type = None
-            sub_attribute = None
-
-            # Map source data keys using the mapping
-            if mapping and attribute in mapping:
-                attribute_mapping = mapping.get(attribute)
-                attribute_mapping = attribute_mapping.split(".")
-                attribute = attribute_mapping[0]
-                schema_item = schema.get(attribute)
-                if len(attribute_mapping) > 1:
-                    attribute_type = attribute_mapping[1]
-                if len(attribute_mapping) > 2:
-                    sub_attribute = attribute_mapping[2]
-            elif schema_item is mapping is None and attribute != "id":
-                warnings.warn(
-                    message=f"""Record attribute {attribute} is not in the schema so skipping. 
-                        Define a mapping to map source data fields to Argilla Fields, Questions, and ids
-                        """
-                )
-                continue
-
-            if attribute == "id":
-                record_id = value
-                continue
-
-            # Add suggestion values to the suggestions
-            if attribute_type == "suggestion":
-                if sub_attribute in ["score", "agent"]:
-                    suggestion_values[attribute][sub_attribute] = value
-
-                elif sub_attribute is None:
-                    suggestion_values[attribute].update(
-                        {"value": value, "question_name": attribute, "question_id": schema_item.id}
-                    )
-                else:
-                    warnings.warn(
-                        message=f"Record attribute {sub_attribute} is not a valid suggestion sub_attribute so skipping."
-                    )
-                continue
-
-            # Assign the value to question, field, or response based on schema item
-            if isinstance(schema_item, TextField):
-                fields[attribute] = value
-            elif isinstance(schema_item, QuestionType) and attribute_type == "response":
-                responses.append(Response(question_name=attribute, value=value, user_id=user_id))
-            elif isinstance(schema_item, QuestionType) and attribute_type is None:
-                suggestion_values[attribute].update(
-                    {"value": value, "question_name": attribute, "question_id": schema_item.id}
-                )
-            elif isinstance(schema_item, VectorField):
-                vectors.append(Vector(name=attribute, values=value))
-            elif isinstance(schema_item, MetadataType):
-                metadata[attribute] = value
-            else:
-                warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
-                continue
-
-        suggestions = [Suggestion(**suggestion_dict) for suggestion_dict in suggestion_values.values()]
-
-        return cls(
-            id=record_id,
-            fields=fields,
-            suggestions=suggestions,
-            responses=responses,
-            vectors=vectors,
-            metadata=metadata,
-            _dataset=dataset,
-        )
 
     def to_dict(self) -> Dict[str, Dict]:
         """Converts a Record object to a dictionary for export.

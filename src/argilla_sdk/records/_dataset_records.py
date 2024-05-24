@@ -11,9 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
+import warnings
+from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Iterable
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Sequence, Union
 from uuid import UUID
 
 from datasets import Dataset as HFDataset
@@ -22,9 +23,13 @@ from argilla_sdk._api import RecordsAPI
 from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import RecordModel
 from argilla_sdk.client import Argilla
-from argilla_sdk.records._io import HFDatasetsIO, GenericIO, JsonIO
+from argilla_sdk.records._io import GenericIO, HFDatasetsIO, JsonIO
 from argilla_sdk.records._resource import Record
 from argilla_sdk.records._search import Query
+from argilla_sdk.responses import Response
+from argilla_sdk.settings import MetadataType, QuestionType, TextField, VectorField
+from argilla_sdk.suggestions import Suggestion
+from argilla_sdk.vectors import Vector
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -295,7 +300,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         records = list(self(with_suggestions=True, with_responses=True))
         data = GenericIO.to_dict(records=records, flatten=flatten, orient=orient)
         return data
-    
+
     def to_list(self, flatten: bool = False) -> List[Dict[str, Any]]:
         """
         Return the records as a list of dictionaries. This is a convenient shortcut for dataset.records(...).to_list().
@@ -371,9 +376,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             records = HFDatasetsIO._record_dicts_from_datasets(dataset=records)
         if all(map(lambda r: isinstance(r, dict), records)):
             # Records as flat dicts of values to be matched to questions as suggestion or response
-            records = [
-                Record.from_mapping(data=r, mapping=mapping, dataset=self.__dataset, user_id=user_id) for r in records
-            ]  # type: ignore
+            records = [self._infer_record_from_mapping(data=r, mapping=mapping, user_id=user_id) for r in records]  # type: ignore
         elif all(map(lambda r: isinstance(r, Record), records)):
             for record in records:
                 record.dataset = self.__dataset
@@ -403,3 +406,98 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
                 continue
             if vector_name not in self.__dataset.schema:
                 raise ValueError(f"Vector field {vector_name} not found in dataset schema.")
+
+    def _infer_record_from_mapping(
+        self,
+        data: dict,
+        mapping: Optional[Dict[str, str]] = None,
+        user_id: Optional[UUID] = None,
+    ) -> "Record":
+        """Converts a mapped record dictionary to a Record object for use by the add or update methods.
+        Args:
+            dataset: The dataset object to which the record belongs.
+            data: A dictionary representing the record.
+            mapping: A dictionary mapping source data keys to Argilla fields, questions, and ids.
+            user_id: The user id to associate with the record responses.
+        Returns:
+            A Record object.
+        """
+        fields: Dict[str, str] = {}
+        responses: List[Response] = []
+        record_id: Optional[str] = None
+        suggestion_values = defaultdict(dict)
+        vectors: List[Vector] = []
+        metadata: Dict[str, MetadataValue] = {}
+
+        schema = self.__dataset.schema
+
+        for attribute, value in data.items():
+            schema_item = schema.get(attribute)
+            attribute_type = None
+            sub_attribute = None
+
+            # Map source data keys using the mapping
+            if mapping and attribute in mapping:
+                attribute_mapping = mapping.get(attribute)
+                attribute_mapping = attribute_mapping.split(".")
+                attribute = attribute_mapping[0]
+                schema_item = schema.get(attribute)
+                if len(attribute_mapping) > 1:
+                    attribute_type = attribute_mapping[1]
+                if len(attribute_mapping) > 2:
+                    sub_attribute = attribute_mapping[2]
+            elif schema_item is mapping is None and attribute != "id":
+                warnings.warn(
+                    message=f"""Record attribute {attribute} is not in the schema so skipping. 
+                        Define a mapping to map source data fields to Argilla Fields, Questions, and ids
+                        """
+                )
+                continue
+
+            if attribute == "id":
+                record_id = value
+                continue
+
+            # Add suggestion values to the suggestions
+            if attribute_type == "suggestion":
+                if sub_attribute in ["score", "agent"]:
+                    suggestion_values[attribute][sub_attribute] = value
+
+                elif sub_attribute is None:
+                    suggestion_values[attribute].update(
+                        {"value": value, "question_name": attribute, "question_id": schema_item.id}
+                    )
+                else:
+                    warnings.warn(
+                        message=f"Record attribute {sub_attribute} is not a valid suggestion sub_attribute so skipping."
+                    )
+                continue
+
+            # Assign the value to question, field, or response based on schema item
+            if isinstance(schema_item, TextField):
+                fields[attribute] = value
+            elif isinstance(schema_item, QuestionType) and attribute_type == "response":
+                responses.append(Response(question_name=attribute, value=value, user_id=user_id))
+            elif isinstance(schema_item, QuestionType) and attribute_type is None:
+                suggestion_values[attribute].update(
+                    {"value": value, "question_name": attribute, "question_id": schema_item.id}
+                )
+            elif isinstance(schema_item, VectorField):
+                vectors.append(Vector(name=attribute, values=value))
+            elif isinstance(schema_item, MetadataType):
+                metadata[attribute] = value
+            else:
+                warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
+                continue
+
+        suggestions = [Suggestion(**suggestion_dict) for suggestion_dict in suggestion_values.values()]
+
+        return Record(
+            id=record_id,
+            fields=fields,
+            suggestions=suggestions,
+            responses=responses,
+            vectors=vectors,
+            metadata=metadata,
+            _dataset=self.__dataset,
+        )

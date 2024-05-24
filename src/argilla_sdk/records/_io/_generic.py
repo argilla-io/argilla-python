@@ -116,36 +116,3 @@ class GenericIO:
                     )
         return record_dict
 
-    @staticmethod
-    def _dict_to_record(record_dict: Dict[str, Any]) -> "Record":
-        """Converts a dictionary to a Record object.
-        Args:
-            record_dict (Dict[str, Any]): The dictionary to convert to a Record object.
-        Returns:
-            Record: The Record object.
-        """
-        from argilla_sdk import Suggestion, Response, Record, Vector
-
-        fields = record_dict.get("fields", [])
-        metadata = record_dict.get("metadata", {})
-        suggestions = record_dict.get("suggestions", [])
-        responses = record_dict.get("responses", [])
-        vectors = record_dict.get("vectors", {})
-        external_id = record_dict.get("id", None)
-
-        suggestions = [Suggestion(question_name=question_name, **value) for question_name, value in suggestions.items()]
-        responses = [
-            Response(question_name=question_name, **value)
-            for question_name, _responses in responses.items()
-            for value in _responses
-        ]
-        vectors = [Vector(name=vector_name, values=values) for vector_name, values in vectors.items()]
-
-        return Record(
-            id=external_id,
-            fields=fields,
-            suggestions=suggestions,
-            responses=responses,
-            metadata=metadata,
-            vectors=vectors,
-        )

@@ -205,6 +205,7 @@ class Record(Resource):
         responses = data.get("responses", {})
         vectors = data.get("vectors", {})
         record_id = data.get("id", None)
+        _server_id = data.get("_server_id", None)
 
         suggestions = [Suggestion(question_name=question_name, **value) for question_name, value in suggestions.items()]
         responses = [
@@ -222,6 +223,7 @@ class Record(Resource):
             vectors=vectors,
             metadata=metadata,
             _dataset=dataset,
+            _server_id=_server_id,
         )
 
     @classmethod

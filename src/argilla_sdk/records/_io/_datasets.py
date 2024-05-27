@@ -18,10 +18,10 @@ from typing import Dict, List, Type, Union
 try:
     from datasets import Dataset as HFDataset
 
-    datasets_imported = True
+    datasets_installed = True
 except ImportError:
     warnings.warn("Hugging Face datasets is not installed. Please install it using `pip install datasets`.")
-    datasets_imported = False
+    datasets_installed = False
 
     class HFDataset(Type):
         pass
@@ -41,9 +41,7 @@ class HFDatasetsIO:
         Returns:
             bool: True if the object is a Hugging Face dataset, False otherwise.
         """
-        if not datasets_imported:
-            return False
-        return isinstance(dataset, HFDataset)
+        return datasets_installed and isinstance(dataset, HFDataset)
 
     @staticmethod
     def to_datasets(records: List["Record"]) -> HFDataset:
@@ -52,8 +50,9 @@ class HFDatasetsIO:
 
         Returns:
             The dataset containing the records.
-
         """
+        if not datasets_installed:
+            raise ImportError("Hugging Face datasets is not installed. Please install it using `pip install datasets`.")
         record_dicts = GenericIO.to_list(records, flatten=True)
         dataset = HFDataset.from_list(record_dicts)
         return dataset

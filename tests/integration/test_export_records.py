@@ -251,17 +251,17 @@ def test_export_records_to_hf_datasets(dataset: rg.Dataset):
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "label": "negative",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
         {
             "text": "Hello World, how are you?",
             "label": "positive",
-            "external_id": uuid.uuid4(),
+            "id": uuid.uuid4(),
         },
     ]
     dataset.records.add(records=mock_data)
@@ -272,6 +272,7 @@ def test_export_records_to_hf_datasets(dataset: rg.Dataset):
     assert "text" in hf_dataset.column_names
     assert "label.suggestion" in hf_dataset.column_names
     assert hf_dataset["text"][0] == "Hello World, how are you?"
+    assert hf_dataset["id"][0] == str(mock_data[0]["id"])
 
 
 def test_import_records_from_hf_dataset(dataset: rg.Dataset) -> None:

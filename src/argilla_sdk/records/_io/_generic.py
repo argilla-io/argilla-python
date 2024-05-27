@@ -39,7 +39,9 @@ class GenericIO:
         return dataset_records
 
     @staticmethod
-    def to_dict(records: List["Record"], flatten: bool = False, orient: str = "names") -> Dict[str, Union[str, float, int, list]]:
+    def to_dict(
+        records: List["Record"], flatten: bool = False, orient: str = "names"
+    ) -> Dict[str, Union[str, float, int, list]]:
         """Export records to a dictionary with either names or record index as keys.
         Args:
             flatten (bool): The structure of the exported dictionary.
@@ -67,7 +69,7 @@ class GenericIO:
     ############################
     # Private methods
     ############################
-    
+
     @staticmethod
     def _record_to_dict(record: "Record", flatten=False) -> Dict[str, Any]:
         """Converts a Record object to a dictionary for export.

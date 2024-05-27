@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import warnings
-from typing import Dict, List, Type, Union
+from typing import Dict, List, Union
 
 
 from argilla_sdk.records._io._generic import GenericIO

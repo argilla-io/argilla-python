@@ -17,13 +17,11 @@ from pathlib import Path
 from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Sequence, Union
 from uuid import UUID
 
-from datasets import Dataset as HFDataset
-
 from argilla_sdk._api import RecordsAPI
 from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import RecordModel
 from argilla_sdk.client import Argilla
-from argilla_sdk.records._io import GenericIO, HFDatasetsIO, JsonIO
+from argilla_sdk.records._io import HFDatasetsIO, GenericIO, JsonIO, HFDataset
 from argilla_sdk.records._resource import Record
 from argilla_sdk.records._search import Query
 from argilla_sdk.responses import Response
@@ -372,7 +370,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
     ) -> List[RecordModel]:
         if isinstance(records, (Record, dict)):
             records = [records]
-        if isinstance(records, HFDataset):
+        if HFDatasetsIO._is_hf_dataset(dataset=records):
             records = HFDatasetsIO._record_dicts_from_datasets(dataset=records)
         if all(map(lambda r: isinstance(r, dict), records)):
             # Records as flat dicts of values to be matched to questions as suggestion or response
@@ -383,7 +381,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         else:
             raise ValueError(
                 "Records should be a dictionary, a list of dictionaries, a Record instance, "
-                "or a list of Record instances."
+                "a list of Record instances, or `datasets.Dataset`."
             )
         return [record.api_model() for record in records]
 

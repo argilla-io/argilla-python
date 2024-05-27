@@ -15,3 +15,4 @@
 from argilla_sdk.records._io._datasets import HFDatasetsIO  # noqa: F401
 from argilla_sdk.records._io._generic import GenericIO  # noqa: F401
 from argilla_sdk.records._io._json import JsonIO  # noqa: F401
+from argilla_sdk.records._io._datasets import HFDataset  # noqa: F401

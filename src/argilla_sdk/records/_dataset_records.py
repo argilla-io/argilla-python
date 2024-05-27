@@ -11,26 +11,29 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-import json
+import warnings
+from collections import defaultdict
 from pathlib import Path
-from typing import Any, Dict, List, Optional, TYPE_CHECKING, Union, Sequence, Iterable
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Sequence, Union
 from uuid import UUID
 
 from argilla_sdk._api import RecordsAPI
 from argilla_sdk._helpers._mixins import LoggingMixin
 from argilla_sdk._models import RecordModel
 from argilla_sdk.client import Argilla
-from argilla_sdk.records._export import GenericExportMixin
-from argilla_sdk.records._helpers import _dict_to_record
+from argilla_sdk.records._io import HFDatasetsIO, GenericIO, JsonIO, HFDataset
 from argilla_sdk.records._resource import Record
 from argilla_sdk.records._search import Query
+from argilla_sdk.responses import Response
+from argilla_sdk.settings import MetadataType, QuestionType, TextField, VectorField
+from argilla_sdk.suggestions import Suggestion
+from argilla_sdk.vectors import Vector
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
 
 
-class DatasetRecordsIterator(GenericExportMixin):
+class DatasetRecordsIterator:
     """This class is used to iterate over records in a dataset"""
 
     def __init__(
@@ -166,7 +169,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             query = Query(query=query)
 
         if with_vectors:
-            self.__validate_vector_names(vector_names=with_vectors)
+            self._validate_vector_names(vector_names=with_vectors)
 
         return DatasetRecordsIterator(
             self.__dataset,
@@ -188,7 +191,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
     def add(
         self,
-        records: Union[dict, List[dict], Record, List[Record]],
+        records: Union[dict, List[dict], Record, List[Record], HFDataset],
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
         batch_size: int = DEFAULT_BATCH_SIZE,
@@ -212,8 +215,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         Add generic records to a dataset as dictionaries:
 
         """
-        record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
-
+        record_models = self._ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
         batch_size = self._normalize_batch_size(
             batch_size=batch_size,
             records_length=len(record_models),
@@ -236,7 +238,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
     def update(
         self,
-        records: Union[dict, List[dict], Record, List[Record]],
+        records: Union[dict, List[dict], Record, List[Record], HFDataset],
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
         batch_size: int = DEFAULT_BATCH_SIZE,
@@ -257,7 +259,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             A list of Record objects representing the updated records.
 
         """
-        record_models = self.__ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
+        record_models = self._ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
         batch_size = self._normalize_batch_size(
             batch_size=batch_size,
             records_length=len(record_models),
@@ -286,14 +288,19 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         Return the records as a dictionary. This is a convenient shortcut for dataset.records(...).to_dict().
 
         Parameters:
-            flatten (bool): Whether to flatten the dictionary and use dot notation for nested keys like suggestions and responses.
-            orient (str): The structure of the exported dictionary.
-
+            flatten (bool): The structure of the exported dictionary.
+                - True: The record fields, metadata, suggestions and responses will be flattened.
+                - False: The record fields, metadata, suggestions and responses will be nested.
+            orient (str): The orientation of the exported dictionary.
+                - "names": The keys of the dictionary will be the names of the fields, metadata, suggestions and responses.
+                - "index": The keys of the dictionary will be the id of the records.
         Returns:
             A dictionary of records.
 
         """
-        return self(with_suggestions=True, with_responses=True).to_dict(flatten=flatten, orient=orient)
+        records = list(self(with_suggestions=True, with_responses=True))
+        data = GenericIO.to_dict(records=records, flatten=flatten, orient=orient)
+        return data
 
     def to_list(self, flatten: bool = False) -> List[Dict[str, Any]]:
         """
@@ -305,11 +312,13 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         Returns:
             A list of dictionaries of records.
         """
-        return self(with_suggestions=True, with_responses=True).to_list(flatten=flatten)
+        records = list(self(with_suggestions=True, with_responses=True))
+        data = GenericIO.to_list(records=records, flatten=flatten)
+        return data
 
     def to_json(self, path: Union[Path, str]) -> Path:
         """
-        Export the records to a file on disk. This is a convenient shortcut for dataset.records(...).to_disk().
+        Export the records to a file on disk.
 
         Parameters:
             path (str): The path to the file to save the records.
@@ -319,17 +328,12 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             The path to the file where the records were saved.
 
         """
-        if isinstance(path, str):
-            path = Path(path)
-        if path.exists():
-            raise FileExistsError(f"File {path} already exists.")
-        record_dicts = self(with_suggestions=True, with_responses=True).to_list()
-        with open(path, "w") as f:
-            json.dump(record_dicts, f)
-        return path
+        records = list(self(with_suggestions=True, with_responses=True))
+        return JsonIO.to_json(records=records, path=path)
 
     def from_json(self, path: Union[Path, str]) -> "DatasetRecords":
-        """Creates a DatasetRecords object from a disk path.
+        """Creates a DatasetRecords object from a disk path to a JSON file.
+            The JSON file should be defined by `DatasetRecords.to_json`.
 
         Args:
             path (str): The path to the file containing the records.
@@ -338,36 +342,49 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             DatasetRecords: The DatasetRecords object created from the disk path.
 
         """
-        with open(path, "r") as f:
-            records = json.load(f)
-        self.update(records=[_dict_to_record(record) for record in records])
+        records = JsonIO._records_from_json(path=path)
+        return self.update(records=records)
         return self
+
+    def to_datasets(self) -> HFDataset:
+        """
+        Export the records to a file on disk.
+
+        Parameters:
+            path (str): The path to the file to save the records.
+            orient (str): The structure of the exported dictionary.
+
+        Returns:
+            The path to the file where the records were saved.
+
+        """
+        records = list(self(with_suggestions=True, with_responses=True))
+        return HFDatasetsIO.to_datasets(records=records)
 
     ############################
     # Private methods
     ############################
 
-    def __ingest_records(
+    def _ingest_records(
         self,
-        records: Union[List[Dict[str, Any]], Dict[str, Any], List[Record], Record],
+        records: Union[List[Dict[str, Any]], Dict[str, Any], List[Record], Record, HFDataset],
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
     ) -> List[RecordModel]:
         if isinstance(records, (Record, dict)):
             records = [records]
-
+        if HFDatasetsIO._is_hf_dataset(dataset=records):
+            records = HFDatasetsIO._record_dicts_from_datasets(dataset=records)
         if all(map(lambda r: isinstance(r, dict), records)):
             # Records as flat dicts of values to be matched to questions as suggestion or response
-            records = [
-                Record.from_dict(data=r, mapping=mapping, dataset=self.__dataset, user_id=user_id) for r in records
-            ]  # type: ignore
+            records = [self._infer_record_from_mapping(data=r, mapping=mapping, user_id=user_id) for r in records]  # type: ignore
         elif all(map(lambda r: isinstance(r, Record), records)):
             for record in records:
                 record.dataset = self.__dataset
         else:
             raise ValueError(
                 "Records should be a dictionary, a list of dictionaries, a Record instance, "
-                "or a list of Record instances."
+                "a list of Record instances, or `datasets.Dataset`."
             )
         return [record.api_model() for record in records]
 
@@ -382,7 +399,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
         return norm_batch_size
 
-    def __validate_vector_names(self, vector_names: Union[List[str], str]) -> None:
+    def _validate_vector_names(self, vector_names: Union[List[str], str]) -> None:
         if not isinstance(vector_names, list):
             vector_names = [vector_names]
         for vector_name in vector_names:
@@ -390,3 +407,98 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
                 continue
             if vector_name not in self.__dataset.schema:
                 raise ValueError(f"Vector field {vector_name} not found in dataset schema.")
+
+    def _infer_record_from_mapping(
+        self,
+        data: dict,
+        mapping: Optional[Dict[str, str]] = None,
+        user_id: Optional[UUID] = None,
+    ) -> "Record":
+        """Converts a mapped record dictionary to a Record object for use by the add or update methods.
+        Args:
+            dataset: The dataset object to which the record belongs.
+            data: A dictionary representing the record.
+            mapping: A dictionary mapping source data keys to Argilla fields, questions, and ids.
+            user_id: The user id to associate with the record responses.
+        Returns:
+            A Record object.
+        """
+        fields: Dict[str, str] = {}
+        responses: List[Response] = []
+        record_id: Optional[str] = None
+        suggestion_values = defaultdict(dict)
+        vectors: List[Vector] = []
+        metadata: Dict[str, MetadataValue] = {}
+
+        schema = self.__dataset.schema
+
+        for attribute, value in data.items():
+            schema_item = schema.get(attribute)
+            attribute_type = None
+            sub_attribute = None
+
+            # Map source data keys using the mapping
+            if mapping and attribute in mapping:
+                attribute_mapping = mapping.get(attribute)
+                attribute_mapping = attribute_mapping.split(".")
+                attribute = attribute_mapping[0]
+                schema_item = schema.get(attribute)
+                if len(attribute_mapping) > 1:
+                    attribute_type = attribute_mapping[1]
+                if len(attribute_mapping) > 2:
+                    sub_attribute = attribute_mapping[2]
+            elif schema_item is mapping is None and attribute != "id":
+                warnings.warn(
+                    message=f"""Record attribute {attribute} is not in the schema so skipping. 
+                        Define a mapping to map source data fields to Argilla Fields, Questions, and ids
+                        """
+                )
+                continue
+
+            if attribute == "id":
+                record_id = value
+                continue
+
+            # Add suggestion values to the suggestions
+            if attribute_type == "suggestion":
+                if sub_attribute in ["score", "agent"]:
+                    suggestion_values[attribute][sub_attribute] = value
+
+                elif sub_attribute is None:
+                    suggestion_values[attribute].update(
+                        {"value": value, "question_name": attribute, "question_id": schema_item.id}
+                    )
+                else:
+                    warnings.warn(
+                        message=f"Record attribute {sub_attribute} is not a valid suggestion sub_attribute so skipping."
+                    )
+                continue
+
+            # Assign the value to question, field, or response based on schema item
+            if isinstance(schema_item, TextField):
+                fields[attribute] = value
+            elif isinstance(schema_item, QuestionType) and attribute_type == "response":
+                responses.append(Response(question_name=attribute, value=value, user_id=user_id))
+            elif isinstance(schema_item, QuestionType) and attribute_type is None:
+                suggestion_values[attribute].update(
+                    {"value": value, "question_name": attribute, "question_id": schema_item.id}
+                )
+            elif isinstance(schema_item, VectorField):
+                vectors.append(Vector(name=attribute, values=value))
+            elif isinstance(schema_item, MetadataType):
+                metadata[attribute] = value
+            else:
+                warnings.warn(message=f"Record attribute {attribute} is not in the schema or mapping so skipping.")
+                continue
+
+        suggestions = [Suggestion(**suggestion_dict) for suggestion_dict in suggestion_values.values()]
+
+        return Record(
+            id=record_id,
+            fields=fields,
+            suggestions=suggestions,
+            responses=responses,
+            vectors=vectors,
+            metadata=metadata,
+            _dataset=self.__dataset,
+        )

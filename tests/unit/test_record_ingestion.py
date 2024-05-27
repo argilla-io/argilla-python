@@ -17,7 +17,6 @@ from uuid import uuid4
 import pytest
 
 import argilla_sdk as rg
-from argilla_sdk.records._resource import Record
 
 
 @pytest.fixture
@@ -37,8 +36,7 @@ def dataset():
 
 
 def test_ingest_record_from_dict(dataset):
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "What is the capital of France?",
             "label": "positive",
@@ -50,8 +48,7 @@ def test_ingest_record_from_dict(dataset):
 
 
 def test_ingest_record_from_dict_with_mapping(dataset):
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "my_prompt": "What is the capital of France?",
             "label": "positive",
@@ -66,8 +63,7 @@ def test_ingest_record_from_dict_with_mapping(dataset):
 
 
 def test_ingest_record_from_dict_with_suggestions(dataset):
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -79,8 +75,7 @@ def test_ingest_record_from_dict_with_suggestions(dataset):
 
 
 def test_ingest_record_from_dict_with_suggestions_scores(dataset):
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -100,8 +95,7 @@ def test_ingest_record_from_dict_with_suggestions_scores(dataset):
 
 
 def test_ingest_record_from_dict_with_suggestions_scores_and_agent(dataset):
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -122,8 +116,7 @@ def test_ingest_record_from_dict_with_suggestions_scores_and_agent(dataset):
 
 def test_ingest_record_from_dict_with_responses(dataset):
     user_id = uuid4()
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -141,8 +134,7 @@ def test_ingest_record_from_dict_with_responses(dataset):
 
 def test_ingest_record_from_dict_with_id_as_id(dataset):
     record_id = uuid4()
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -156,8 +148,7 @@ def test_ingest_record_from_dict_with_id_as_id(dataset):
 
 def test_ingest_record_from_dict_with_id_and_mapping(dataset):
     record_id = uuid4()
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -173,8 +164,7 @@ def test_ingest_record_from_dict_with_id_and_mapping(dataset):
 
 
 def test_ingest_record_from_dict_with_metadata(dataset):
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -188,8 +178,7 @@ def test_ingest_record_from_dict_with_metadata(dataset):
 
 
 def test_ingest_record_from_dict_with_metadata_and_mapping(dataset):
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -206,8 +195,7 @@ def test_ingest_record_from_dict_with_metadata_and_mapping(dataset):
 
 
 def test_ingest_record_from_dict_with_vectors(dataset):
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",
@@ -221,8 +209,7 @@ def test_ingest_record_from_dict_with_vectors(dataset):
 
 
 def test_ingest_record_from_dict_with_vectors_and_mapping(dataset):
-    record = Record.from_dict(
-        dataset=dataset,
+    record = dataset.records._infer_record_from_mapping(
         data={
             "prompt": "Hello World, how are you?",
             "label": "negative",

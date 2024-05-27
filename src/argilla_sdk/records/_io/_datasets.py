@@ -15,7 +15,6 @@
 import warnings
 from typing import Dict, List, Union
 
-
 from argilla_sdk.records._io._generic import GenericIO
 
 
@@ -49,7 +48,7 @@ class HFDatasetsIO:
             bool: True if the object is a Hugging Face dataset, False otherwise.
         """
         HFDataset = _hf_datasets_installed()
-        return datasets_installed and isinstance(dataset, HFDataset)
+        return isinstance(dataset, HFDataset)
 
     @staticmethod
     def to_datasets(records: List["Record"]) -> HFDataset:

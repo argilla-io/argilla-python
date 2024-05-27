@@ -15,19 +15,26 @@
 import warnings
 from typing import Dict, List, Type, Union
 
-try:
-    from datasets import Dataset as HFDataset
-
-    datasets_installed = True
-except ImportError:
-    warnings.warn("Hugging Face datasets is not installed. Please install it using `pip install datasets`.")
-    datasets_installed = False
-
-    class HFDataset(Type):
-        pass
-
 
 from argilla_sdk.records._io._generic import GenericIO
+
+
+def _hf_datasets_installed():
+    """Check if Hugging Face datasets is installed.
+
+    Returns:
+        bool: True if Hugging Face datasets is installed, False otherwise.
+    """
+    try:
+        from datasets import Dataset as HFDataset
+
+        return HFDataset
+    except ImportError:
+        warnings.warn("Hugging Face datasets is not installed. Please install it using `pip install datasets`.")
+        return None
+
+
+HFDataset = _hf_datasets_installed()
 
 
 class HFDatasetsIO:
@@ -41,6 +48,7 @@ class HFDatasetsIO:
         Returns:
             bool: True if the object is a Hugging Face dataset, False otherwise.
         """
+        HFDataset = _hf_datasets_installed()
         return datasets_installed and isinstance(dataset, HFDataset)
 
     @staticmethod
@@ -51,7 +59,8 @@ class HFDatasetsIO:
         Returns:
             The dataset containing the records.
         """
-        if not datasets_installed:
+        HFDataset = _hf_datasets_installed()
+        if HFDataset is None:
             raise ImportError("Hugging Face datasets is not installed. Please install it using `pip install datasets`.")
         record_dicts = GenericIO.to_list(records, flatten=True)
         dataset = HFDataset.from_list(record_dicts)

@@ -15,6 +15,11 @@ dependencies = [
     "pydantic>=2.6.0, <3.0.0",
 ]
 
+[project.optional-dependencies] 
+io = [
+    "datasets>=2.0.0",
+]
+
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"

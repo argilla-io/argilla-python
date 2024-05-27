@@ -20,6 +20,7 @@ from string import ascii_lowercase
 from tempfile import TemporaryDirectory
 
 import pytest
+from datasets import Dataset as HFDataset
 
 import argilla_sdk as rg
 from argilla_sdk import Argilla
@@ -238,6 +239,62 @@ def test_export_records_from_json(dataset: rg.Dataset):
         temp_file = Path(temp_dir) / "records.json"
         dataset.records.to_json(path=temp_file)
         dataset.records.from_json(path=temp_file)
+
+    for i, record in enumerate(dataset.records(with_suggestions=True)):
+        assert record.fields.text == mock_data[i]["text"]
+        assert record.suggestions.label.value == mock_data[i]["label"]
+        assert record.id == str(mock_data[i]["id"])
+
+
+def test_export_records_to_hf_datasets(dataset: rg.Dataset):
+    mock_data = [
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "id": uuid.uuid4(),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "negative",
+            "id": uuid.uuid4(),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "id": uuid.uuid4(),
+        },
+    ]
+    dataset.records.add(records=mock_data)
+    hf_dataset = dataset.records.to_datasets()
+
+    assert isinstance(hf_dataset, HFDataset)
+    assert hf_dataset.num_rows == len(mock_data)
+    assert "text" in hf_dataset.column_names
+    assert "label.suggestion" in hf_dataset.column_names
+    assert hf_dataset["text"][0] == "Hello World, how are you?"
+    assert hf_dataset["id"][0] == str(mock_data[0]["id"])
+
+
+def test_import_records_from_hf_dataset(dataset: rg.Dataset) -> None:
+    mock_data = [
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "id": str(uuid.uuid4()),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "negative",
+            "id": str(uuid.uuid4()),
+        },
+        {
+            "text": "Hello World, how are you?",
+            "label": "positive",
+            "id": str(uuid.uuid4()),
+        },
+    ]
+    mock_hf_dataset = HFDataset.from_list(mock_data)
+    dataset.records.add(records=mock_hf_dataset)
 
     for i, record in enumerate(dataset.records(with_suggestions=True)):
         assert record.fields.text == mock_data[i]["text"]

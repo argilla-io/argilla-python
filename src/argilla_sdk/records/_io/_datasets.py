@@ -54,7 +54,7 @@ class HFDatasetsIO:
             The dataset containing the records.
 
         """
-        record_dicts = [GenericIO._record_to_dict(record=record, flatten=True) for record in records]
+        record_dicts = GenericIO.to_list(records, flatten=True)
         dataset = HFDataset.from_list(record_dicts)
         return dataset
 

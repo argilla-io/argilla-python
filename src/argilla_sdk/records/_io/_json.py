@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import List, Union
 
 from argilla_sdk.records._resource import Record
+from argilla_sdk.records._io import GenericIO
 
 
 class JsonIO:
@@ -36,7 +37,7 @@ class JsonIO:
             path = Path(path)
         if path.exists():
             raise FileExistsError(f"File {path} already exists.")
-        record_dicts = [Record.to_dict(record) for record in records]
+        record_dicts = GenericIO.to_list(records, flatten=False)
         with open(path, "w") as f:
             json.dump(record_dicts, f)
         return path

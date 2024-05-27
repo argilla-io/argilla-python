@@ -24,7 +24,22 @@ class GenericIO:
     It handles methods for exporting records to generic python formats."""
 
     @staticmethod
-    def to_dict(records: List["Record"], flatten: bool = False, orient: str = "names") -> Dict[str, Any]:
+    def to_list(records: List["Record"], flatten: bool = False) -> List[Dict[str, Union[str, float, int, list]]]:
+        """Export records to a list of dictionaries with either names or record index as keys.
+        Args:
+            flatten (bool): The structure of the exported dictionary.
+                - True: The record fields, metadata, suggestions and responses will be flattened.
+                - False: The record fields, metadata, suggestions and responses will be nested.
+        Returns:
+            dataset_records (List[Dict[str, Union[str, float, int, list]]]): The exported records in a list of dictionaries format.
+        """
+        dataset_records: list = []
+        for record in records:
+            dataset_records.append(GenericIO._record_to_dict(record=record, flatten=flatten))
+        return dataset_records
+
+    @staticmethod
+    def to_dict(records: List["Record"], flatten: bool = False, orient: str = "names") -> Dict[str, Union[str, float, int, list]]:
         """Export records to a dictionary with either names or record index as keys.
         Args:
             flatten (bool): The structure of the exported dictionary.
@@ -36,28 +51,6 @@ class GenericIO:
         Returns:
             dataset_records (Dict[str, Union[str, float, int, list]]): The exported records in a dictionary format.
         """
-        return GenericIO._export_to_dict(records=records, flatten=flatten, orient=orient)
-
-    @staticmethod
-    def to_list(records: List["Record"], flatten: bool = False) -> List[Dict[str, Any]]:
-        """Export records to a list of dictionaries with either names or record index as keys.
-        Args:
-            flatten (bool): The structure of the exported dictionary.
-                - True: The record fields, metadata, suggestions and responses will be flattened.
-                - False: The record fields, metadata, suggestions and responses will be nested.
-        Returns:
-            dataset_records (List[Dict[str, Union[str, float, int, list]]]): The exported records in a list of dictionaries format.
-        """
-        return GenericIO._export_to_list(records=records, flatten=flatten)
-
-    ############################
-    # Private methods
-    ############################
-
-    @staticmethod
-    def _export_to_dict(
-        records: List["Record"], flatten=False, orient="names"
-    ) -> Dict[str, Union[str, float, int, list]]:
         if orient == "names":
             dataset_records: dict = defaultdict(list)
             for record in records:
@@ -71,13 +64,10 @@ class GenericIO:
             raise ValueError(f"Invalid value for orient parameter: {orient}")
         return dict(dataset_records)
 
-    @staticmethod
-    def _export_to_list(records: List["Record"], flatten=False) -> List[Dict[str, Union[str, float, int, list]]]:
-        dataset_records: list = []
-        for record in records:
-            dataset_records.append(GenericIO._record_to_dict(record=record, flatten=flatten))
-        return dataset_records
-
+    ############################
+    # Private methods
+    ############################
+    
     @staticmethod
     def _record_to_dict(record: "Record", flatten=False) -> Dict[str, Any]:
         """Converts a Record object to a dictionary for export.

@@ -23,4 +23,4 @@ from argilla_sdk.records import *  # noqa
 from argilla_sdk.vectors import *  # noqa
 
 
-__version__ = "0.1.0a3"
+__version__ = "2.0.0a0.dev0"

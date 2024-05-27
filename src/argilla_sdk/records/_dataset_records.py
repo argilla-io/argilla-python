@@ -288,9 +288,12 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         Return the records as a dictionary. This is a convenient shortcut for dataset.records(...).to_dict().
 
         Parameters:
-            flatten (bool): Whether to flatten the dictionary and use dot notation for nested keys like suggestions and responses.
-            orient (str): The structure of the exported dictionary.
-
+            flatten (bool): The structure of the exported dictionary.
+                - True: The record fields, metadata, suggestions and responses will be flattened.
+                - False: The record fields, metadata, suggestions and responses will be nested.
+            orient (str): The orientation of the exported dictionary.
+                - "names": The keys of the dictionary will be the names of the fields, metadata, suggestions and responses.
+                - "index": The keys of the dictionary will be the id of the records.
         Returns:
             A dictionary of records.
 
@@ -340,7 +343,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
         """
         records = JsonIO._records_from_json(path=path)
-        self.update(records=records)
+        return self.update(records=records)
         return self
 
     def to_datasets(self) -> HFDataset:
@@ -485,7 +488,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             elif isinstance(schema_item, MetadataType):
                 metadata[attribute] = value
             else:
-                warnings.warn(message=f"""Record attribute {attribute} is not in the schema or mapping so skipping.""")
+                warnings.warn(message=f"Record attribute {attribute} is not in the schema or mapping so skipping.")
                 continue
 
         suggestions = [Suggestion(**suggestion_dict) for suggestion_dict in suggestion_values.values()]

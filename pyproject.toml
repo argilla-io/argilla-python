@@ -58,6 +58,7 @@ dev = [
     "Pillow >= 9.5.0",
     "CairoSVG >= 2.7.1",
     "mknotebooks >= 0.8.0",
+    "datasets>=2.19.1",
 ]
 
 [tool.pdm.scripts]

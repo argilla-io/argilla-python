@@ -187,7 +187,7 @@ class Record(Resource):
             "suggestions": suggestions,
             "responses": responses,
             "vectors": vectors,
-            "_server_id": str(self._model.id),
+            "_server_id": str(self._model.id) if self._model.id else None,
         }
 
     @classmethod

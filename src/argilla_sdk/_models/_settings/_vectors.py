@@ -1,0 +1,41 @@
+from typing import Optional
+from uuid import UUID
+
+from pydantic import BaseModel, field_validator, field_serializer
+from pydantic_core.core_schema import ValidationInfo
+
+from argilla_sdk._helpers._log import log
+
+
+class VectorFieldModel(BaseModel):
+    name: str
+    title: Optional[str] = None
+    dimensions: int
+
+    id: Optional[UUID] = None
+    dataset_id: Optional[UUID] = None
+
+    @field_serializer("id", "dataset_id", when_used="unless-none")
+    def serialize_id(self, value: UUID) -> str:
+        return str(value)
+
+    @field_validator("name")
+    @classmethod
+    def _name_lower(cls, name):
+        formatted_name = name.lower().replace(" ", "_")
+        return formatted_name
+
+    @field_validator("title")
+    @classmethod
+    def _title_default(cls, title: str, info: ValidationInfo) -> str:
+        data = info.data
+        validated_title = title or data["name"]
+        log(f"TextField title is {validated_title}")
+        return validated_title
+
+    @field_validator("dimensions")
+    @classmethod
+    def _dimension_gt_zero(cls, dimensions):
+        if dimensions <= 0:
+            raise ValueError("dimensions must be greater than 0")
+        return dimensions

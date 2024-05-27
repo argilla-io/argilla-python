@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Optional, Union
+from typing import Optional
 from uuid import UUID
 
 from pydantic import BaseModel, field_serializer, field_validator, Field
@@ -57,16 +57,4 @@ class TextFieldModel(FieldBaseModel):
     settings: FieldSettings = FieldSettings(type="text", use_markdown=False)
 
 
-class VectorFieldModel(FieldBaseModel):
-    dimensions: int
-    settings: Optional[FieldSettings] = FieldSettings(type="vector")
-
-    @field_validator("dimensions")
-    @classmethod
-    def __dimension_gt_zero(cls, dimensions):
-        if dimensions <= 0:
-            raise ValueError("dimensions must be greater than 0")
-        return dimensions
-
-
-FieldModel = Union[TextFieldModel, VectorFieldModel]
+FieldModel = TextFieldModel

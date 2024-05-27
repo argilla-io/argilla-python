@@ -35,7 +35,6 @@ from argilla_sdk._models._settings._fields import (
     TextFieldModel,
     FieldSettings,
     FieldBaseModel,
-    VectorFieldModel,
     FieldModel,
 )
 from argilla_sdk._models._settings._questions import (
@@ -61,3 +60,4 @@ from argilla_sdk._models._settings._metadata import (
     FloatMetadataPropertySettings,
     IntegerMetadataPropertySettings,
 )
+from argilla_sdk._models._settings._vectors import VectorFieldModel

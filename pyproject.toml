@@ -15,7 +15,7 @@ dependencies = [
     "pydantic>=2.6.0, <3.0.0",
 ]
 
-[project.optional-dependencies] 
+[project.optional-dependencies]
 io = [
     "datasets>=2.0.0",
 ]

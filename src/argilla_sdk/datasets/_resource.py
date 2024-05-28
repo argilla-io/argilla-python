@@ -171,12 +171,6 @@ class Dataset(Resource, DiskImportExportMixin):
     #  Utility methods  #
     #####################
 
-    def _sync(self, model: "DatasetModel") -> "Dataset":
-        # We only need to update the model. Maybe in the future the
-        # _sync method makes less sense for those resources defining getter/setters
-        self._model = model
-        return self
-
     def _publish(self) -> "Dataset":
         self.settings.validate()
         self._settings.create()

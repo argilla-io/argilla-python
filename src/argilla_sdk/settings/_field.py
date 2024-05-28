@@ -16,7 +16,7 @@ from typing import Optional, Union
 
 from argilla_sdk._models import FieldSettings, MetadataFieldModel, TextFieldModel, VectorFieldModel
 from argilla_sdk.settings._common import SettingsPropertyBase
-from argilla_sdk.settings._metadata import MetadataField
+from argilla_sdk.settings._metadata import MetadataField, MetadataType
 
 __all__ = ["TextField", "FieldType", "VectorField"]
 
@@ -132,12 +132,10 @@ class VectorField(SettingsPropertyBase):
         return "vector"
 
 
-FieldType = Union[TextField, VectorField, MetadataField]
-
-_FieldModel = Union[TextFieldModel, VectorFieldModel, MetadataFieldModel]
+FieldType = Union[TextField, VectorField, MetadataType]
 
 
-def field_from_model(model: _FieldModel) -> FieldType:
+def field_from_model(model: Union[TextFieldModel, VectorFieldModel, MetadataFieldModel]) -> FieldType:
     """Create a field instance from a field model"""
     if isinstance(model, TextFieldModel):
         return TextField.from_model(model)

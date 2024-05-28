@@ -30,6 +30,7 @@ class VectorField(Resource):
 
     _model: VectorFieldModel
     _api: VectorsAPI
+    _dataset: "Dataset"
 
     def __init__(
         self,

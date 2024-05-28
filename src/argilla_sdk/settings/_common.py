@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Optional, Union, List, Dict
+from typing import Any, Optional, Union
 
 from argilla_sdk._models import FieldBaseModel, QuestionBaseModel
 from argilla_sdk._resource import Resource

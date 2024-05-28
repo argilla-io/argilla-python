@@ -177,7 +177,7 @@ class Settings(Resource):
         self._upsert_fields()
         self.__upsert_questions()
         self._upsert_vectors()
-        self.__upsert_metadata()
+        self._upsert_metadata()
         self.__update_dataset_related_attributes()
 
         self._update_last_api_call()
@@ -339,12 +339,13 @@ class Settings(Resource):
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create vector {vector.name}") from e
 
-    def __upsert_metadata(self) -> None:
+    def _upsert_metadata(self) -> None:
         for metadata in self.__metadata:
-            metadata_model = self._client.api.metadata.create(
-                dataset_id=self._dataset.id, metadata_field=metadata._model
-            )
-            metadata._model = metadata_model
+            try:
+                metadata.dataset = self.dataset
+                metadata.create()
+            except ArgillaAPIError as e:
+                raise SettingsError(f"Failed to create metadata {metadata.name}") from e
 
     def _validate_empty_settings(self):
         if not all([self.fields, self.questions]):

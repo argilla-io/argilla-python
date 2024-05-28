@@ -24,7 +24,7 @@ from argilla_sdk._models import TextFieldModel, TextQuestionModel, DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.settings._field import FieldType, VectorField, field_from_model, field_from_dict
 from argilla_sdk.settings._metadata import MetadataType
-from argilla_sdk.settings._question import QuestionType, question_from_model, question_from_dict
+from argilla_sdk.settings._question import QuestionType, question_from_model, question_from_dict, QuestionPropertyBase
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -190,7 +190,7 @@ class Settings(Resource):
 
     def question_by_id(self, question_id: UUID) -> QuestionType:
         property = self.schema_by_id.get(question_id)
-        if isinstance(property, QuestionType):
+        if isinstance(property, QuestionPropertyBase):
             return property
         raise ValueError(f"Question with id {question_id} not found")
 

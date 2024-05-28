@@ -19,13 +19,15 @@ from uuid import UUID
 
 from argilla_sdk._api import RecordsAPI
 from argilla_sdk._helpers._mixins import LoggingMixin
-from argilla_sdk._models import RecordModel
+from argilla_sdk._models import RecordModel, MetadataValue
 from argilla_sdk.client import Argilla
 from argilla_sdk.records._io import GenericIO, HFDataset, HFDatasetsIO, JsonIO
 from argilla_sdk.records._resource import Record
 from argilla_sdk.records._search import Query
 from argilla_sdk.responses import Response
-from argilla_sdk.settings import MetadataType, MetadataValue, QuestionType, TextField, VectorField
+from argilla_sdk.settings import TextField, VectorField
+from argilla_sdk.settings._metadata import MetadataPropertyBase
+from argilla_sdk.settings._question import QuestionPropertyBase
 from argilla_sdk.suggestions import Suggestion
 from argilla_sdk.vectors import Vector
 
@@ -472,15 +474,15 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
             # Assign the value to question, field, or response based on schema item
             if isinstance(schema_item, TextField):
                 fields[attribute] = value
-            elif isinstance(schema_item, QuestionType) and attribute_type == "response":
+            elif isinstance(schema_item, QuestionPropertyBase) and attribute_type == "response":
                 responses.append(Response(question_name=attribute, value=value, user_id=user_id))
-            elif isinstance(schema_item, QuestionType) and attribute_type is None:
+            elif isinstance(schema_item, QuestionPropertyBase) and attribute_type is None:
                 suggestion_values[attribute].update(
                     {"value": value, "question_name": attribute, "question_id": schema_item.id}
                 )
             elif isinstance(schema_item, VectorField):
                 vectors.append(Vector(name=attribute, values=value))
-            elif isinstance(schema_item, MetadataType):
+            elif isinstance(schema_item, MetadataPropertyBase):
                 metadata[attribute] = value
             else:
                 warnings.warn(message=f"Record attribute {attribute} is not in the schema or mapping so skipping.")

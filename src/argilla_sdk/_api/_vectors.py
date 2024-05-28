@@ -16,6 +16,7 @@ from typing import List, Dict
 from uuid import UUID
 
 import httpx
+
 from argilla_sdk._api._base import ResourceAPI
 from argilla_sdk._exceptions import api_error_handler
 from argilla_sdk._models import VectorFieldModel
@@ -33,35 +34,30 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
     ################
 
     @api_error_handler
-    def create(self, dataset_id: UUID, vector: VectorFieldModel) -> VectorFieldModel:
-        url = f"/api/v1/datasets/{dataset_id}/vectors-settings"
-        response = self.http_client.post(url=url, json=vector.model_dump())
-        response.raise_for_status()
-        response_json = response.json()
-        vector_model = self._model_from_json(response_json=response_json)
-        self.log(message=f"Created vector {vector_model.name} in dataset {dataset_id}")
-        return vector_model
+    def create(self, model: VectorFieldModel) -> VectorFieldModel:
+        url = f"/api/v1/datasets/{model.dataset_id}/vectors-settings"
+        response = self.http_client.post(url=url, json=model.model_dump()).raise_for_status()
+        model_created = self._model_from_json(response_json=response.json())
+        self.log(message=f"Created vector {model_created.name} in dataset {model_created.dataset_id}")
+        return model_created
 
     @api_error_handler
-    def update(self, vector: VectorFieldModel) -> VectorFieldModel:
-        # TODO: Implement update method for vectors with server side ID
-        raise NotImplementedError
+    def update(self, model: VectorFieldModel) -> VectorFieldModel:
+        url = f"/api/v1/vectors-settings/{model.id}"
+        response = self.http_client.patch(url, json=model.model_dump()).raise_for_status()
+        model_updated = self._model_from_json(response.json())
+        self.log(message=f"Updated vector {model_updated.name} with id {model_updated.id}")
+        return model_updated
 
     @api_error_handler
     def delete(self, vector_id: UUID) -> None:
-        # TODO: Implement delete method for vectors with server side ID
-        raise NotImplementedError
+        url = f"/api/v1/vectors-settings/{vector_id}"
+        self.http_client.delete(url).raise_for_status()
+        self.log(message=f"Deleted vector with id {vector_id}")
 
     ####################
     # Utility methods #
     ####################
-
-    def create_many(self, dataset_id: UUID, vectors: List[VectorFieldModel]) -> List[VectorFieldModel]:
-        vector_models = []
-        for vector in vectors:
-            vector_model = self.create(dataset_id=dataset_id, vector=vector)
-            vector_models.append(vector_model)
-        return vector_models
 
     @api_error_handler
     def list(self, dataset_id: UUID) -> List[VectorFieldModel]:

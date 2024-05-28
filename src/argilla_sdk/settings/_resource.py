@@ -20,11 +20,12 @@ from typing import List, Optional, TYPE_CHECKING, Dict, Union
 from uuid import UUID
 
 from argilla_sdk._exceptions import SettingsError, ArgillaAPIError, ArgillaSerializeError
-from argilla_sdk._models import TextFieldModel, TextQuestionModel, DatasetModel
+from argilla_sdk._models._dataset import DatasetModel
 from argilla_sdk._resource import Resource
-from argilla_sdk.settings._field import FieldType, VectorField, field_from_model, field_from_dict
-from argilla_sdk.settings._metadata import MetadataType
+from argilla_sdk.settings._field import FieldType, field_from_dict, TextField
+from argilla_sdk.settings._metadata import MetadataType, MetadataField
 from argilla_sdk.settings._question import QuestionType, question_from_model, question_from_dict
+from argilla_sdk.settings._vector import VectorField
 
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
@@ -165,7 +166,7 @@ class Settings(Resource):
     def get(self) -> "Settings":
         self.__fetch_fields()
         self.__fetch_questions()
-        self.__fetch_vectors()
+        self._fetch_vectors()
         self.__fetch_metadata()
         self.__get_dataset_related_attributes()
 
@@ -175,7 +176,7 @@ class Settings(Resource):
     def create(self) -> "Settings":
         self.__upsert_fields()
         self.__upsert_questions()
-        self.__upsert_vectors()
+        self._upsert_vectors()
         self.__upsert_metadata()
         self.__update_dataset_related_attributes()
 
@@ -257,9 +258,9 @@ class Settings(Resource):
     #  Private methods  #
     #####################
 
-    def __fetch_fields(self) -> List[FieldType]:
+    def __fetch_fields(self) -> List[TextField]:
         models = self._client.api.fields.list(dataset_id=self._dataset.id)
-        self.__fields = [field_from_model(model) for model in models]
+        self.__fields = [TextField.from_model(model) for model in models]
 
         return self.__fields
 
@@ -269,15 +270,14 @@ class Settings(Resource):
 
         return self.__questions
 
-    def __fetch_vectors(self) -> List[VectorField]:
-        models = self._client.api.vectors.list(dataset_id=self._dataset.id)
-        self.__vectors = [field_from_model(model) for model in models]
-
+    def _fetch_vectors(self) -> List[VectorField]:
+        models = self.dataset._client.api.vectors.list(self.dataset.id)
+        self.__vectors = [VectorField.from_model(model) for model in models]
         return self.__vectors
 
     def __fetch_metadata(self) -> List[MetadataType]:
         models = self._client.api.metadata.list(dataset_id=self._dataset.id)
-        self.__metadata = [field_from_model(model) for model in models]
+        self.__metadata = [MetadataField.from_model(model) for model in models]
 
         return self.__metadata
 
@@ -330,11 +330,11 @@ class Settings(Resource):
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create field {field.name}") from e
 
-    def __upsert_vectors(self) -> None:
+    def _upsert_vectors(self) -> None:
         for vector in self.__vectors:
             try:
-                vector_model = self._client.api.vectors.create(dataset_id=self._dataset.id, vector=vector._model)
-                vector._model = vector_model
+                vector.dataset = self.dataset
+                vector.create()
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create vector {vector.name}") from e
 
@@ -360,26 +360,6 @@ class Settings(Resource):
                     f"but the name {prop.name!r} is used by {type(prop).__name__!r} and {type(dataset_properties_by_name[prop.name]).__name__!r} "
                 )
             dataset_properties_by_name[prop.name] = prop
-
-    def __process_fields(self, fields: List[FieldType]) -> List["TextFieldModel"]:
-        processed_fields = []
-        for field in fields:
-            try:
-                processed_field = field._model
-            except Exception as e:
-                raise SettingsError(f"Failed to process field {field.name}") from e
-            processed_fields.append(processed_field)
-        return processed_fields
-
-    def __process_questions(self, questions: List[QuestionType]) -> List["TextQuestionModel"]:
-        processed_questions = []
-        for question in questions:
-            try:
-                processed_question = question._model
-            except Exception as e:
-                raise SettingsError(f"Failed to process question {question.name}") from e
-            processed_questions.append(processed_question)
-        return processed_questions
 
     def __process_guidelines(self, guidelines):
         if guidelines is None:

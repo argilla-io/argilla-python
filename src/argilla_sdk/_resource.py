@@ -79,21 +79,21 @@ class Resource(LoggingMixin, UUIDMixin):
 
     def create(self) -> "Resource":
         response_model = self._api.create(self._model)
-        self._sync(response_model)
+        self._model = response_model
         self._update_last_api_call()
         self.log(f"Resource created: {self}")
         return self
 
     def get(self) -> "Resource":
         response_model = self._api.get(self._model.id)
-        self._sync(response_model)
+        self._model = response_model
         self._update_last_api_call()
         self.log(f"Resource fetched: {self}")
         return self
 
     def update(self) -> "Resource":
         response_model = self._api.update(self._model)
-        self._sync(response_model)
+        self._model = response_model
         self._update_last_api_call()
         self.log(f"Resource updated: {self}")
         return self
@@ -118,20 +118,6 @@ class Resource(LoggingMixin, UUIDMixin):
             return self._model.model_dump_json()
         except Exception as e:
             raise ArgillaSerializeError(f"Failed to serialize the resource. {e.__class__.__name__}") from e
-
-    def _sync(self, model: "ResourceModel"):
-        """Updates the resource with the ClientAPI that is used to interact with
-        Argilla and adds an updated model to the resource.
-        Args:
-            model (Union[WorkspaceModel, UserModel, DatasetModel]): The updated model
-        Returns:
-            Self: The updated resource
-        """
-        self._model = model
-        # set all attributes from the model to the resource
-        for field in self._model.model_fields:
-            setattr(self, field, getattr(self._model, field))
-        return self
 
     def _update_last_api_call(self):
         self._last_api_call = datetime.utcnow()

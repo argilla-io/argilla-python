@@ -34,24 +34,24 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
     ################
 
     @api_error_handler
-    def create(self, vector_model: VectorFieldModel) -> VectorFieldModel:
-        url = f"/api/v1/datasets/{vector_model.dataset_id}/vectors-settings"
-        response = self.http_client.post(url=url, json=vector_model.model_dump())
+    def create(self, vector: VectorFieldModel) -> VectorFieldModel:
+        url = f"/api/v1/datasets/{vector.dataset_id}/vectors-settings"
+        response = self.http_client.post(url=url, json=vector.model_dump())
         response.raise_for_status()
         response_json = response.json()
-        model_created = self._model_from_json(response_json=response_json)
-        self.log(message=f"Created vector {model_created.name} in dataset {model_created.dataset_id}")
-        return model_created
+        created_vector = self._model_from_json(response_json=response_json)
+        self.log(message=f"Created vector {created_vector.name} in dataset {created_vector.dataset_id}")
+        return created_vector
 
     @api_error_handler
-    def update(self, vector_model: VectorFieldModel) -> VectorFieldModel:
-        url = f"/api/v1/vectors-settings/{vector_model.id}"
-        response = self.http_client.patch(url, json=vector_model.model_dump())
+    def update(self, vector: VectorFieldModel) -> VectorFieldModel:
+        url = f"/api/v1/vectors-settings/{vector.id}"
+        response = self.http_client.patch(url, json=vector.model_dump())
         response.raise_for_status()
         response_json = response.json()
-        model_updated = self._model_from_json(response_json)
-        self.log(message=f"Updated vector {model_updated.name} with id {model_updated.id}")
-        return model_updated
+        updated_vector = self._model_from_json(response_json)
+        self.log(message=f"Updated vector {updated_vector.name} with id {updated_vector.id}")
+        return updated_vector
 
     @api_error_handler
     def delete(self, vector_id: UUID) -> None:

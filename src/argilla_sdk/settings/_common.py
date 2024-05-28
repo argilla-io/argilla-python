@@ -25,6 +25,12 @@ class SettingsPropertyBase(Resource):
 
     _model: Union[FieldBaseModel, QuestionBaseModel]
 
+    def __repr__(self) -> str:
+        return (
+            f"{self.__class__.__name__}(name={self.name}, title={self.title}, description={self.description}, "
+            f"type={self.type}, required={self.required}) \n"
+        )
+
     @property
     def name(self) -> str:
         return self._model.name
@@ -41,12 +47,13 @@ class SettingsPropertyBase(Resource):
     def description(self) -> Optional[str]:
         return self._model.description
 
-    def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(name={self.name}, title={self.title}, description={self.description}, type={self._model.settings.type}, required={self.required}) \n"
+    @property
+    def type(self) -> str:
+        return self._model.settings.type
 
     def serialize(self) -> dict[str, Any]:
         serialized_model = super().serialize()
-        serialized_model["type"] = self._model.settings.type
+        serialized_model["type"] = self.type
         return serialized_model
 
     ##############################

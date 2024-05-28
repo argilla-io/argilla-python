@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Dict
 
 from argilla_sdk._models._settings._questions import (
     LabelQuestionModel,
@@ -42,7 +42,37 @@ __all__ = [
 ]
 
 
-class LabelQuestion(SettingsPropertyBase):
+class QuestionPropertyBase(SettingsPropertyBase):
+    @staticmethod
+    def _render_values_as_options(values: Union[List[str], List[int], Dict[str, str]]) -> List[Dict[str, str]]:
+        """Render values as options for the question so that the model conforms to the API schema"""
+        if isinstance(values, dict):
+            return [{"text": value, "value": key} for key, value in values.items()]
+        elif isinstance(values, list) and all(isinstance(value, str) for value in values):
+            return [{"text": label, "value": label} for label in values]
+        elif isinstance(values, list) and all(isinstance(value, int) for value in values):
+            return [{"value": value} for value in values]
+        else:
+            raise ValueError("Invalid labels format. Please provide a list of strings or a list of dictionaries.")
+
+    @staticmethod
+    def _render_options_as_values(options: List[dict]) -> Dict[str, str]:
+        """Render options as values for the question so that the model conforms to the API schema"""
+        values = {}
+        for option in options:
+            if "text" in option:
+                values[option["value"]] = option["text"]
+            else:
+                values[option["value"]] = option["value"]
+        return values
+
+    @classmethod
+    def _render_options_as_labels(cls, options: List[Dict[str, str]]) -> List[str]:
+        """Render values as labels for the question so that they can be returned as a list of strings"""
+        return list(cls._render_options_as_values(options=options).keys())
+
+
+class LabelQuestion(QuestionPropertyBase):
     _model: LabelQuestionModel
 
     def __init__(
@@ -167,7 +197,7 @@ class MultiLabelQuestion(LabelQuestion):
         return cls.from_model(model=model)
 
 
-class TextQuestion(SettingsPropertyBase):
+class TextQuestion(QuestionPropertyBase):
     _model: TextQuestionModel
 
     def __init__(
@@ -217,7 +247,7 @@ class TextQuestion(SettingsPropertyBase):
         self._model.settings.use_markdown = use_markdown
 
 
-class RatingQuestion(SettingsPropertyBase):
+class RatingQuestion(QuestionPropertyBase):
     _model: RatingQuestionModel
 
     def __init__(
@@ -268,7 +298,7 @@ class RatingQuestion(SettingsPropertyBase):
         self._model.values = self._render_values_as_options(values)
 
 
-class RankingQuestion(SettingsPropertyBase):
+class RankingQuestion(QuestionPropertyBase):
     _model: RankingQuestionModel
 
     def __init__(
@@ -318,7 +348,7 @@ class RankingQuestion(SettingsPropertyBase):
         self._model.settings.options = self._render_values_as_options(values)
 
 
-class SpanQuestion(SettingsPropertyBase):
+class SpanQuestion(QuestionPropertyBase):
     _model: SpanQuestionModel
 
     def __init__(

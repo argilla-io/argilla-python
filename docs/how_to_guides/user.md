@@ -81,7 +81,6 @@ import argilla_sdk as rg
 client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 
 current_user = client.me
-current_user
 ```
 
 ## Create a user
@@ -133,7 +132,7 @@ import argilla_sdk as rg
 
 client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
 
-retrieved_user = client.users('my_username')
+retrieved_user = client.users("my_username")
 ```
 
 ## List users in a workspace

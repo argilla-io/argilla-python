@@ -5,8 +5,6 @@ hide: toc
 
 # About
 
-## Our story
-
 Argilla is a collaboration platform for AI engineers and domain experts that require high-quality outputs, full data ownership, and overall efficiency. We are an open-source community-driven project not only focused on building a great product but also on building a great community, where you can get support, share your experiences, and contribute to the project!
 
 Argilla was founded in 2017 by Dani and Paco. After, we joined the Data Pitch EU programme and built our first team. We iterated a lot on the stack and the UI, thanks to many enterprise customers such as Airbus, Reale Seguros, etc. At some point, we realized there was already a lot of valuable alternatives for training NLP models (spaCy and later Hugging Face), but not so many to focus on building and improving datasets!
@@ -21,7 +19,7 @@ Early 2024, we got elected for that year's CB Insights AI top 100 list. Addition
 
 ## Our believes
 
-!!! Quote "AI"
+!!! Quote "AI in general"
 
     - Data quality is key to AI success.
     - AI should not be a black box, and AI is not magic.
@@ -32,9 +30,9 @@ Early 2024, we got elected for that year's CB Insights AI top 100 list. Addition
 
     - You must fine-tune if you want to get the best possible model.
     - Prompt engineering is not enough to build accurate models that can safely be deployed in production.
-    - Retrieval Augmented Generation (RAG) will only bring companies so far but to achieve the next level of performance, companies need to fine-tune their models on their own data.
+    - Retrieval Augmented Generation (RAG) will only bring companies so far but to get the highest quality output, companies need to fine-tune their models on their own data.
 
-!!! Quote "AI feedback and Human-in-the-loop"
+!!! Quote "AI and human feedback"
 
     - Data labelling can be fun and engaging for domain experts aided by AI engineers.
     - AI Engineers can configure the right tooling through AI feedback from a combination of generative models, predictive models, and simple heuristics.

@@ -85,6 +85,7 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
   - pymdownx.superfences
+  - pymdownx.details
   - pymdownx.tabbed:
       alternate_style: true
   - footnotes
@@ -144,6 +145,8 @@ nav:
     - Tutorials:
       - tutorials/index.md
       - tutorials/rag_llm.md
+    - Integrations:
+      - integrations/index.md
     # - Distribute annotation work: how_to_guides/distribute.md
     # - Compute metrics and KPIs:
     #   - how_to_guides/metrics/index.md
@@ -162,5 +165,9 @@ nav:
   - Community:
     - community/index.md
     - Contributor Guide: community/contributor.md
+    - Developer Guide: community/developer.md
+    - Changelog: https://github.com/argilla-io/argilla/blob/develop/argilla/CHANGELOG.md
+    - Frequently Asked Questions (FAQs): community/faq.md
+    - About us: community/about.md
   - UI Demo ↗:
     - https://demo.argilla.io/sign-in?auth=ZGVtbzoxMjM0NTY3OA==

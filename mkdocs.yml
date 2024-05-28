@@ -34,10 +34,13 @@ theme:
     - navigation.instant
     - navigation.sections
     - navigation.tabs
+    # - navigation.tabs.sticky
     - navigation.footer
-    - navigation.indexes
+    # - navigation.indexes
     - navigation.top
     - navigation.tracking
+    # - navigation.expand
+    - navigation.path
     - toc.follow
     - content.code.copy
     - content.code.annotate
@@ -125,7 +128,7 @@ plugins:
   - social
   - mknotebooks
   - tags:
-      tags_file: tutorials/index.md
+      tags_file: guides/tutorials/index.md
 
 
 nav:
@@ -135,18 +138,21 @@ nav:
     - Installation: getting_started/installation.md
     # - FAQ: getting_started/faq.md
   - Guides:
-    - how_to_guides/index.md
+    - guides/index.md
     - How-to guides:
-      - Manage users and credentials: how_to_guides/user.md
-      - Manage workspaces: how_to_guides/workspace.md
-      - Manage and create datasets: how_to_guides/dataset.md
-      - Add, update, and delete records: how_to_guides/record.md
-      - Query, filter, and export records: how_to_guides/query_export.md
+      - guides/how_to_guides/index.md
+      - Manage users and credentials: guides/how_to_guides/user.md
+      - Manage workspaces: guides/how_to_guides/workspace.md
+      - Manage and create datasets: guides/how_to_guides/dataset.md
+      - Add, update, and delete records: guides/how_to_guides/record.md
+      - Query, filter, and export records: guides/how_to_guides/query_export.md
     - Tutorials:
-      - tutorials/index.md
-      - tutorials/rag_llm.md
+      - guides/tutorials/index.md
+      - Bulk labelling through vector search and fine-tuning a few-shot text classifier: guides/tutorials/few-shot-textcat-with-setfit.ipynb
     - Integrations:
-      - integrations/index.md
+      - guides/integrations/index.md
+      - distilabel ↗: https://github.com/argilla-io/distilabel
+      - argilla-llama-index ↗: https://github.com/argilla-io/argilla-llama-index
     # - Distribute annotation work: how_to_guides/distribute.md
     # - Compute metrics and KPIs:
     #   - how_to_guides/metrics/index.md

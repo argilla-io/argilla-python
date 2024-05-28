@@ -14,7 +14,7 @@ These are the tutorials for the Argilla-python SDK. They provide step-by-step in
 
     In this tutorial, you will learn how to use bulk labeling with semantic search from [`sentence-transformers`](#) embeddings and how to fine-tune a  [`SetFit`](#) model for classification.
 
-    [:octicons-arrow-right-24: Tutorial](/argilla-python/quickstart/)
+    [:octicons-arrow-right-24: Tutorial](./few-shot-textcat-with-setfit.ipynb)
 
 -   :material-clock-fast:{ .lg .middle } __Zero-shot token classification with GliNER__
 

@@ -15,7 +15,7 @@
 from typing import Optional, Union, List, TYPE_CHECKING
 
 from argilla_sdk._api._metadata import MetadataAPI
-from argilla_sdk._exceptions import MetadataError, ArgillaAPIError, SettingsError
+from argilla_sdk._exceptions import MetadataError
 from argilla_sdk._models import (
     MetadataPropertyType,
     TermsMetadataPropertySettings,

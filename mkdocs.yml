@@ -8,6 +8,7 @@ copyright: Copyright &copy; 2017 - 2024 Argilla
 # Repository
 repo_name: argilla-io/argilla-python
 repo_url: https://github.com/argilla-io/argilla-python
+edit_uri: edit/main/docs/
 
 extra:
   version:
@@ -31,10 +32,19 @@ theme:
   favicon: assets/favicon.ico
   features:
     - navigation.instant
+    - navigation.sections
     - navigation.tabs
+    - navigation.footer
+    - navigation.indexes
+    - navigation.top
+    - navigation.tracking
     - toc.follow
     - content.code.copy
     - content.code.annotate
+    - content.action.edit
+    - search.suggest
+    - search.highlight
+    - search.share
   icon:
     repo: fontawesome/brands/github
   palette:
@@ -118,18 +128,22 @@ plugins:
 
 
 nav:
-  - Argilla: index.md
+  - Home: index.md
   - Getting started:
     - Quickstart: getting_started/quickstart.md
     - Installation: getting_started/installation.md
     # - FAQ: getting_started/faq.md
-  - How-to guides:
+  - Guides:
     - how_to_guides/index.md
-    - Manage users and credentials: how_to_guides/user.md
-    - Manage workspaces: how_to_guides/workspace.md
-    - Manage and create datasets: how_to_guides/dataset.md
-    - Add, update, and delete records: how_to_guides/record.md
-    - Query, filter, and export records: how_to_guides/query_export.md
+    - How-to guides:
+      - Manage users and credentials: how_to_guides/user.md
+      - Manage workspaces: how_to_guides/workspace.md
+      - Manage and create datasets: how_to_guides/dataset.md
+      - Add, update, and delete records: how_to_guides/record.md
+      - Query, filter, and export records: how_to_guides/query_export.md
+    - Tutorials:
+      - tutorials/index.md
+      - tutorials/rag_llm.md
     # - Distribute annotation work: how_to_guides/distribute.md
     # - Compute metrics and KPIs:
     #   - how_to_guides/metrics/index.md
@@ -145,5 +159,8 @@ nav:
   #   - integrations/index.md
   - API Reference:
     - Python SDK: reference/argilla_sdk/
+  - Community:
+    - community/index.md
+    - Contributor Guide: community/contributor.md
   - UI Demo ↗:
     - https://demo.argilla.io/sign-in?auth=ZGVtbzoxMjM0NTY3OA==

@@ -28,7 +28,6 @@ class TextFieldSettings(BaseModel):
 
 
 class FieldModel(ResourceModel):
-
     name: str
     title: Optional[str] = None
     required: bool = True

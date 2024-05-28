@@ -1,10 +1,12 @@
-
 # `rg.Dataset.records`
 
 ## Usage Examples
 
-In most cases, you will not need to create a `DatasetRecords` object directly.
-Instead, you can access it via the `Dataset` object:
+In most cases, you will not need to create a `DatasetRecords` object directly. Instead, you can access it via the `Dataset` object:
+
+```python
+dataset.records
+```
 
 ### Adding records to a dataset
 
@@ -37,7 +39,7 @@ dataset.records.add(
         "answer": "Paris" # 'answer' matches the `rg.TextQuestion` name
     },
     {
-        "question": "What is the capital of Germany?", 
+        "question": "What is the capital of Germany?",
         "answer": "Berlin"
     },
 ])
@@ -73,7 +75,7 @@ for record in dataset.records(query="capital", with_vectors=True):
     print(record.vectors)
 ```
 
-Check out the [`rg.Record`](../records/record.md) class reference for more information on the properties and methods available on a record and the [`rg.Query`](../query/query.md) class reference for more information on the query syntax.
+Check out the [`rg.Record`](../records/records.md) class reference for more information on the properties and methods available on a record and the [`rg.Query`](../search.md) class reference for more information on the query syntax.
 
 
 ### Updating records in a dataset
@@ -128,5 +130,5 @@ dataset.records.to_list()
 ### `rg.Dataset.records`
 
 ::: argilla_sdk.records.DatasetRecords
-    options: 
+    options:
         heading_level: 3

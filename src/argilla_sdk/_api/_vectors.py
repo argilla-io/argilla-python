@@ -34,25 +34,30 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
     ################
 
     @api_error_handler
-    def create(self, model: VectorFieldModel) -> VectorFieldModel:
-        url = f"/api/v1/datasets/{model.dataset_id}/vectors-settings"
-        response = self.http_client.post(url=url, json=model.model_dump()).raise_for_status()
-        model_created = self._model_from_json(response_json=response.json())
+    def create(self, vector_model: VectorFieldModel) -> VectorFieldModel:
+        url = f"/api/v1/datasets/{vector_model.dataset_id}/vectors-settings"
+        response = self.http_client.post(url=url, json=vector_model.model_dump())
+        response.raise_for_status()
+        response_json = response.json()
+        model_created = self._model_from_json(response_json=response_json)
         self.log(message=f"Created vector {model_created.name} in dataset {model_created.dataset_id}")
         return model_created
 
     @api_error_handler
-    def update(self, model: VectorFieldModel) -> VectorFieldModel:
-        url = f"/api/v1/vectors-settings/{model.id}"
-        response = self.http_client.patch(url, json=model.model_dump()).raise_for_status()
-        model_updated = self._model_from_json(response.json())
+    def update(self, vector_model: VectorFieldModel) -> VectorFieldModel:
+        url = f"/api/v1/vectors-settings/{vector_model.id}"
+        response = self.http_client.patch(url, json=vector_model.model_dump())
+        response.raise_for_status()
+        response_json = response.json()
+        model_updated = self._model_from_json(response_json)
         self.log(message=f"Updated vector {model_updated.name} with id {model_updated.id}")
         return model_updated
 
     @api_error_handler
     def delete(self, vector_id: UUID) -> None:
         url = f"/api/v1/vectors-settings/{vector_id}"
-        self.http_client.delete(url).raise_for_status()
+        response = self.http_client.delete(url)
+        response.raise_for_status()
         self.log(message=f"Deleted vector with id {vector_id}")
 
     ####################

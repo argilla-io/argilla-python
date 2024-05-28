@@ -13,7 +13,7 @@ We are an open-source community-driven project not only focused on building a gr
 
     We love to discuss our plans with the community. Feel encouraged to participate in our roadmap discussions.
 
-    [:octicons-arrow-right-24: Contributor Guide](/docs/community/contributor)
+    [:octicons-arrow-right-24: Contributor Guide](./contributor)
 
 -   __Developer Guide__
 
@@ -21,7 +21,7 @@ We are an open-source community-driven project not only focused on building a gr
 
     We love to discuss our plans with the community. Feel encouraged to participate in our roadmap discussions.
 
-    [:octicons-arrow-right-24: Roadmap](/docs/community/developer)
+    [:octicons-arrow-right-24: Roadmap](./developer)
 
 -   __FAQs__
 
@@ -29,7 +29,7 @@ We are an open-source community-driven project not only focused on building a gr
 
     In case you want basic answers to frequently asked questions.
 
-    [:octicons-arrow-right-24: FAQs](/docs/community/faq)
+    [:octicons-arrow-right-24: FAQs](./faq)
 
 -   __About__
 
@@ -37,7 +37,7 @@ We are an open-source community-driven project not only focused on building a gr
 
     Want to know more about the company and what drives our team? Check our about page.
 
-    [:octicons-arrow-right-24: About](/docs/community/about)
+    [:octicons-arrow-right-24: About](./about)
 
 -   __Slack__
 

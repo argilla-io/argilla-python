@@ -166,8 +166,11 @@ nav:
     - community/index.md
     - Contributor Guide: community/contributor.md
     - Developer Guide: community/developer.md
-    - Changelog: https://github.com/argilla-io/argilla/blob/develop/argilla/CHANGELOG.md
     - Frequently Asked Questions (FAQs): community/faq.md
     - About us: community/about.md
+    - Changelog ↗: https://github.com/argilla-io/argilla/blob/develop/argilla/CHANGELOG.md
+    - Slack ↗: https://join.slack.com/t/rubrixworkspace/shared_invite/zt-whigkyjn-a3IUJLD7gDbTZ0rKlvcJ5g
+    - Community Meetup ↗: https://lu.ma/argilla-event-calendar
+    - Roadmap ↗: https://github.com/orgs/argilla-io/projects/10/views/1
   - UI Demo ↗:
     - https://demo.argilla.io/sign-in?auth=ZGVtbzoxMjM0NTY3OA==

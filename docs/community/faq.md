@@ -17,9 +17,6 @@ hide: toc
 
     Text data, mostly. Argilla natively supports textual data, however, we do support rich text, which means you can represent different types of data in Argilla as long as you can convert it to text. For example, you can store images, audio, video, and any other type of data as long as you can convert it to their base64 representation or render them as HTML in for example an IFrame.
 
-??? Question "What data types does Argilla support?"
-
-
 ??? Question "Does Argilla train models?"
 
     No. Argilla is a collaboration platform to achieve and keep high-quality data standards. You can use Argilla to store your training data, store the results of your models, evaluate their performance and improve the data. For training models, you can use any machine learning framework or library that you prefer even though we recommend starting with [Hugging Face Transformers](https://github.com/huggingface/transformers).

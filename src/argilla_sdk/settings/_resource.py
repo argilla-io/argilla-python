@@ -22,7 +22,7 @@ from uuid import UUID
 from argilla_sdk._exceptions import SettingsError, ArgillaAPIError, ArgillaSerializeError
 from argilla_sdk._models._dataset import DatasetModel
 from argilla_sdk._resource import Resource
-from argilla_sdk.settings._field import FieldType, field_from_dict, TextField
+from argilla_sdk.settings._field import field_from_dict, TextField
 from argilla_sdk.settings._metadata import MetadataType, MetadataField
 from argilla_sdk.settings._question import QuestionType, question_from_model, question_from_dict, QuestionPropertyBase
 from argilla_sdk.settings._vector import VectorField
@@ -43,7 +43,7 @@ class Settings(Resource):
 
     def __init__(
         self,
-        fields: Optional[List[FieldType]] = None,
+        fields: Optional[List[TextField]] = None,
         questions: Optional[List[QuestionType]] = None,
         vectors: Optional[List[VectorField]] = None,
         metadata: Optional[List[MetadataType]] = None,
@@ -77,11 +77,11 @@ class Settings(Resource):
     #####################
 
     @property
-    def fields(self) -> List[FieldType]:
+    def fields(self) -> List[TextField]:
         return self.__fields
 
     @fields.setter
-    def fields(self, fields: List[FieldType]):
+    def fields(self, fields: List[TextField]):
         self.__fields = fields
 
     @property
@@ -152,7 +152,7 @@ class Settings(Resource):
         return schema_dict
 
     @cached_property
-    def schema_by_id(self) -> Dict[UUID, Union[FieldType, QuestionType]]:
+    def schema_by_id(self) -> Dict[UUID, Union[TextField, QuestionType, MetadataType, VectorField]]:
         return {v.id: v for v in self.schema.values()}
 
     def validate(self) -> None:
@@ -164,7 +164,7 @@ class Settings(Resource):
     #####################
 
     def get(self) -> "Settings":
-        self.__fetch_fields()
+        self._fetch_fields()
         self.__fetch_questions()
         self._fetch_vectors()
         self.__fetch_metadata()
@@ -174,7 +174,7 @@ class Settings(Resource):
         return self
 
     def create(self) -> "Settings":
-        self.__upsert_fields()
+        self._upsert_fields()
         self.__upsert_questions()
         self._upsert_vectors()
         self.__upsert_metadata()
@@ -258,7 +258,7 @@ class Settings(Resource):
     #  Private methods  #
     #####################
 
-    def __fetch_fields(self) -> List[TextField]:
+    def _fetch_fields(self) -> List[TextField]:
         models = self._client.api.fields.list(dataset_id=self._dataset.id)
         self.__fields = [TextField.from_model(model) for model in models]
 
@@ -273,6 +273,7 @@ class Settings(Resource):
     def _fetch_vectors(self) -> List[VectorField]:
         models = self.dataset._client.api.vectors.list(self.dataset.id)
         self.__vectors = [VectorField.from_model(model) for model in models]
+
         return self.__vectors
 
     def __fetch_metadata(self) -> List[MetadataType]:
@@ -322,11 +323,11 @@ class Settings(Resource):
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create question {question.name}") from e
 
-    def __upsert_fields(self) -> None:
+    def _upsert_fields(self) -> None:
         for field in self.__fields:
             try:
-                field_model = self._client.api.fields.create(dataset_id=self._dataset.id, field=field._model)
-                field._model = field_model
+                field.dataset = self.dataset
+                field.create()
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create field {field.name}") from e
 
@@ -374,7 +375,7 @@ class Settings(Resource):
 
         return guidelines
 
-    def __serialize_fields(self, fields: List[FieldType]):
+    def __serialize_fields(self, fields: List[TextField]):
         return [field.serialize() for field in fields]
 
     def __serialize_questions(self, questions: List[QuestionType]):

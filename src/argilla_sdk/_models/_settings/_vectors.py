@@ -15,18 +15,17 @@
 from typing import Optional
 from uuid import UUID
 
-from pydantic import BaseModel, field_validator, field_serializer
+from pydantic import field_validator, field_serializer
 from pydantic_core.core_schema import ValidationInfo
 
 from argilla_sdk._helpers._log import log
+from argilla_sdk._models import ResourceModel
 
 
-class VectorFieldModel(BaseModel):
+class VectorFieldModel(ResourceModel):
     name: str
     title: Optional[str] = None
     dimensions: int
-
-    id: Optional[UUID] = None
     dataset_id: Optional[UUID] = None
 
     @field_serializer("id", "dataset_id", when_used="unless-none")

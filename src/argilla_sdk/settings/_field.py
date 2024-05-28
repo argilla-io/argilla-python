@@ -24,7 +24,7 @@ from argilla_sdk.settings._vector import VectorField
 if TYPE_CHECKING:
     from argilla_sdk.datasets import Dataset
 
-__all__ = ["TextField", "FieldType"]
+__all__ = ["TextField"]
 
 
 class TextField(SettingsPropertyBase):
@@ -98,10 +98,7 @@ class TextField(SettingsPropertyBase):
         self._model = model
 
 
-FieldType = Union[TextField, VectorField, MetadataType]
-
-
-def field_from_dict(data: dict) -> FieldType:
+def field_from_dict(data: dict) -> Union[TextField, VectorField, MetadataType]:
     """Create a field instance from a field dictionary"""
     if data["type"] == "text":
         return TextField.from_dict(data)

@@ -1,3 +1,6 @@
+---
+hide: footer
+---
 # `rg.Dataset.records`
 
 ## Usage Examples

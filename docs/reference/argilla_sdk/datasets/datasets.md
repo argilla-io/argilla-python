@@ -1,3 +1,6 @@
+---
+hide: footer
+---
 # `rg.Dataset`
 
 `Dataset` is a class that represents a collection of records. It is used to store and manage records in Argilla.

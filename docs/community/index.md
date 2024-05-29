@@ -1,6 +1,8 @@
 ---
 description: Argilla-python is the reference argilla python server SDK.
-hide: toc
+hide:
+    - toc
+    - footer
 ---
 
 We are an open-source community-driven project not only focused on building a great product but also on building a great community, where you can get support, share your experiences, and contribute to the project! We would love to hear from you and help you get started with Argilla.

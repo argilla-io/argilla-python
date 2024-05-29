@@ -15,15 +15,15 @@ Argilla is a **collaboration platform for AI engineers and domain experts** that
 
     Install `argilla` with `pip` and deploy a `Docker` locally or for free on Hugging Face to get up and running in minutes.
 
-    [:octicons-arrow-right-24: Getting started](getting_started/quickstart.md)
+    [:octicons-arrow-right-24: Quickstart](getting_started/quickstart.md)
 
--  __Guides__
+-  __Educational guides__
 
     ---
 
     Get familiar with basic and complex workflows for Argilla. From managing `Users`, `Workspaces`. `Datasets` and `Records` to fine-tuning a model.
 
-    [:octicons-arrow-right-24: Guides](how_to_guides/index.md)
+    [:octicons-arrow-right-24: Learn more](how_to_guides/index.md)
 
 </div>
 

@@ -33,7 +33,7 @@ A **record** in Argilla is a data item that requires annotation, consisting of o
         ],
     )
     ```
-    > Check the [Record - Python Reference](../reference/argilla_sdk/records/records.md) to see the attributes, arguments, and methods of the `Record` class in detail.
+    > Check the [Record - Python Reference](../../reference/argilla_sdk/records/records.md) to see the attributes, arguments, and methods of the `Record` class in detail.
 
 ## Add records
 
@@ -49,7 +49,7 @@ You can add records to a dataset in two different ways: either by using a dictio
 
     You can add the data directly as a dictionary, where the keys correspond to the names of fields, questions, metadata or vectors in the dataset and the values are the data to be added. However, you can also use a `mapping` to indicate which keys in the source data correspond to the dataset fields.
 
-    ```python	
+    ```python
     import argilla_sdk as rg
 
     client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
@@ -110,13 +110,13 @@ You can add records to a dataset in two different ways: either by using a dictio
 
 
         dataset.records.add(records=records)
-        ```	
+        ```
 
 === "As a `Record` object"
 
     You can also add records to a dataset by initializing a `Record` object directly.
 
-    ```python	
+    ```python
     import argilla_sdk as rg
 
     client = rg.Argilla(api_url="<api_url>", api_key="<api_key>")
@@ -172,7 +172,7 @@ You can add records to a dataset in two different ways: either by using a dictio
         ]
 
         dataset.records.add(records)
-        ```	
+        ```
 
 ### Metadata
 
@@ -255,7 +255,7 @@ You can associate vectors, like text embeddings, to your records. They can be us
 === "As part of a `Record` object"
     You can also add vectors to a record in an initialized `Record` object.
 
-    > Check the [Vector - Python Reference](../reference/argilla_sdk/records/vectors.md) to see the attributes, arguments, and methods of the `Vector` class in detail.
+    > Check the [Vector - Python Reference](../../reference/argilla_sdk/records/vectors.md) to see the attributes, arguments, and methods of the `Vector` class in detail.
 
     ```python
     # Add records to the dataset with the vector 'my_vector' and dimension=3
@@ -313,7 +313,7 @@ Suggestions refer to suggested responses (e.g. model predictions) that you can a
 === "As part of a `Record` object"
     You can also add suggestions to a record in an initialized `Record` object.
 
-    > Check the [Suggestions - Python Reference](../reference/argilla_sdk/records/suggestions.md) to see the attributes, arguments, and methods of the `Suggestion` class in detail.
+    > Check the [Suggestions - Python Reference](../../reference/argilla_sdk/records/suggestions.md) to see the attributes, arguments, and methods of the `Suggestion` class in detail.
 
     ```python
     # Add records to the dataset with the label 'my_label'
@@ -380,7 +380,7 @@ If your dataset includes some annotations, you can add those to the records as y
 === "As part of a `Record` object"
     You can also add suggestions to a record in an initialized `Record` object.
 
-    > Check the [Responses - Python Reference](../reference/argilla_sdk/records/responses.md) to see the attributes, arguments, and methods of the `Suggestion` class in detail.
+    > Check the [Responses - Python Reference](../../reference/argilla_sdk/records/responses.md) to see the attributes, arguments, and methods of the `Suggestion` class in detail.
 
     ```python
     # Add records to the dataset with the label 'my_label'
@@ -413,8 +413,8 @@ To list records in a dataset, you can use the `records` method on the `Dataset` 
 
 ```python
 for record in dataset.records(
-    with_suggestions=True, 
-    with_responses=True, 
+    with_suggestions=True,
+    with_responses=True,
     with_vectors=True
     ):
 
@@ -459,7 +459,7 @@ dataset.records.update(records=updated_data)
 
         # With metadata.update
         record.metadata.update({"my_metadata": "new_value", "my_new_metadata": "new_value"})
-        
+
         updated_records.append(record)
 
     dataset.records.update(records=updated_records)

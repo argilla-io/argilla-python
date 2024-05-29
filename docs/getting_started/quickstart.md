@@ -116,5 +116,5 @@ dataset.records.add(records=data, mapping={"text": "review"})
 ## More references
 
 * [Installation guide](installation.md)
-* [How-to guides](../how_to_guides/index.md)
+* [How-to guides](../guides/how_to_guides/index.md)
 * [API reference](../reference//argilla_sdk/client.md)

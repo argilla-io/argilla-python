@@ -131,11 +131,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://argilla-io.github.io/argilla-python/docs_review-david/reference/argilla_sdk/INDEX/</loc>
-         <lastmod>2024-05-29</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://argilla-io.github.io/argilla-python/docs_review-david/reference/argilla_sdk/SUMMARY/</loc>
          <lastmod>2024-05-29</lastmod>
          <changefreq>daily</changefreq>

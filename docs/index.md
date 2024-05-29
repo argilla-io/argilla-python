@@ -25,22 +25,6 @@ Argilla is a **collaboration platform for AI engineers and domain experts** that
 
     [:octicons-arrow-right-24: Guides](how_to_guides/index.md)
 
--  __API Reference__
-
-    ---
-
-    Understand the API for our Python SDK and how to use it to interact with the Argilla platform.
-
-    [:octicons-arrow-right-24: API Reference](reference/argilla_sdk/client)
-
--  __Community__
-
-    ---
-
-    Learn about what drives us and how to get the most from the community by participating. Join our community meetups and contribute to open-source.
-
-    [:octicons-arrow-right-24: Community](community/index.md)
-
 </div>
 
 <!-- ## Changelog -->

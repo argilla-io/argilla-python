@@ -37,7 +37,7 @@ Argilla is a **collaboration platform for AI engineers and domain experts** that
 
     ---
 
-    Learn about what drives us and how to get the most from the community by sharing your experiences with Argilla. Join our community meetups and contribute to open-source.
+    Learn about what drives us and how to get the most from the community by participating. Join our community meetups and contribute to open-source.
 
     [:octicons-arrow-right-24: Community](community/index.md)
 

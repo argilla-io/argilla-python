@@ -1661,7 +1661,7 @@
 </span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a><span class="p">)</span>
 </span></code></pre></div>
 <blockquote>
-<p>Check the <a href="../reference/argilla_sdk/records/records.md">Record - Python Reference</a> to see the attributes, arguments, and methods of the <code>Record</code> class in detail.</p>
+<p>Check the <a href="../../../reference/argilla_sdk/records/records/">Record - Python Reference</a> to see the attributes, arguments, and methods of the <code>Record</code> class in detail.</p>
 </blockquote>
 </div>
 <h2 id="add-records">Add records<a class="headerlink" href="#add-records" title="Permanent link">&para;</a></h2>
@@ -1878,7 +1878,7 @@
 <div class="tabbed-block">
 <p>You can also add vectors to a record in an initialized <code>Record</code> object.</p>
 <blockquote>
-<p>Check the <a href="../reference/argilla_sdk/records/vectors.md">Vector - Python Reference</a> to see the attributes, arguments, and methods of the <code>Vector</code> class in detail.</p>
+<p>Check the <a href="../../../reference/argilla_sdk/records/vectors/">Vector - Python Reference</a> to see the attributes, arguments, and methods of the <code>Vector</code> class in detail.</p>
 </blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Add records to the dataset with the vector &#39;my_vector&#39; and dimension=3</span>
 </span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">records</span> <span class="o">=</span> <span class="p">[</span>
@@ -1935,7 +1935,7 @@
 <div class="tabbed-block">
 <p>You can also add suggestions to a record in an initialized <code>Record</code> object.</p>
 <blockquote>
-<p>Check the <a href="../reference/argilla_sdk/records/suggestions.md">Suggestions - Python Reference</a> to see the attributes, arguments, and methods of the <code>Suggestion</code> class in detail.</p>
+<p>Check the <a href="../../../reference/argilla_sdk/records/suggestions/">Suggestions - Python Reference</a> to see the attributes, arguments, and methods of the <code>Suggestion</code> class in detail.</p>
 </blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-10-1"><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a><span class="c1"># Add records to the dataset with the label &#39;my_label&#39;</span>
 </span><span id="__span-10-2"><a id="__codelineno-10-2" name="__codelineno-10-2" href="#__codelineno-10-2"></a><span class="n">records</span> <span class="o">=</span> <span class="p">[</span>
@@ -2002,7 +2002,7 @@
 <div class="tabbed-block">
 <p>You can also add suggestions to a record in an initialized <code>Record</code> object.</p>
 <blockquote>
-<p>Check the <a href="../reference/argilla_sdk/records/responses.md">Responses - Python Reference</a> to see the attributes, arguments, and methods of the <code>Suggestion</code> class in detail.</p>
+<p>Check the <a href="../../../reference/argilla_sdk/records/responses/">Responses - Python Reference</a> to see the attributes, arguments, and methods of the <code>Suggestion</code> class in detail.</p>
 </blockquote>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-12-1"><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="c1"># Add records to the dataset with the label &#39;my_label&#39;</span>
 </span><span id="__span-12-2"><a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a><span class="n">records</span> <span class="o">=</span> <span class="p">[</span>
@@ -2033,8 +2033,8 @@
 <h2 id="list-records">List records<a class="headerlink" href="#list-records" title="Permanent link">&para;</a></h2>
 <p>To list records in a dataset, you can use the <code>records</code> method on the <code>Dataset</code> object. This method returns a list of <code>Record</code> objects that can be iterated over to access the record properties.</p>
 <div class="language-python highlight"><pre><span></span><code><span id="__span-13-1"><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a><span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">dataset</span><span class="o">.</span><span class="n">records</span><span class="p">(</span>
-</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">with_suggestions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
-</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">with_responses</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> 
+</span><span id="__span-13-2"><a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>    <span class="n">with_suggestions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-13-3"><a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>    <span class="n">with_responses</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
 </span><span id="__span-13-4"><a id="__codelineno-13-4" name="__codelineno-13-4" href="#__codelineno-13-4"></a>    <span class="n">with_vectors</span><span class="o">=</span><span class="kc">True</span>
 </span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="p">):</span>
 </span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a>

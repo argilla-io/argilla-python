@@ -146,6 +146,5 @@ nav:
   - Community:
     - community/index.md
     - How to contribute?: community/contributor.md
-    - Developer Guide: community/developer.md
   - UI Demo ↗:
     - https://demo.argilla.io/sign-in?auth=ZGVtbzoxMjM0NTY3OA==

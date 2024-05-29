@@ -28,9 +28,9 @@ We are an open-source community-driven project not only focused on building a gr
 
     ---
 
-    We love to discuss our plans with the community. Feel encouraged to participate in our roadmap discussions.
+    The changelog is where you can find the latest updates and changes to the Argilla project.
 
-    [:octicons-arrow-right-24: Roadmap ↗](https://github.com/orgs/argilla-io/projects/10/views/1)
+    [:octicons-arrow-right-24: Changelog ↗](https://github.com/argilla-io/argilla/blob/develop/argilla/CHANGELOG.md)
 
 -   __Roadmap__
 

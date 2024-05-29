@@ -4,7 +4,7 @@ description: Argilla-python is the reference argilla python server SDK.
 
 Thank you for investing your time in contributing to the project! Any contribution you make will be reflected in the most recent version of Argilla 🤩.
 
-??? Question "New to conributing in general?"
+??? Question "New to contributing in general?"
     If you're a new contributor, read the [README](https://github.com/argilla-io/argilla/blob/develop/README.md) to get an overview of the project. In addition, here are some resources to help you get started with open-source contributions:
 
     * **Slack**: You are welcome to join the [Argilla Slack community](https://join.slack.com/t/rubrixworkspace/shared_invite/zt-whigkyjn-a3IUJLD7gDbTZ0rKlvcJ5g), where you can keep in touch with other users, contributors and the Argilla team. In the following [section](#first-contact-in-slack), you can find more information on how to get started in Slack.
@@ -30,7 +30,7 @@ Once you have joined the community, you'll be added to some channels by default,
 * **04-contributors**: 🏗️ A channel for contributions and contributors.
 * **05-beta-testing**: 🚧 For access to the latest features and help us with testing the newest features.
 * **06-general**: 🐒 This channel is for... well, everything else.
-* **07-events-and-job-offers**: 👔 Would you like to share info about events, job offers or meetups?
+* **07-distilabel**: ⚗️ For all of you questions about our Distilabel project.
 
 So now there is only one thing left to do, introduce yourself and talk to the community. You'll be always welcome! 🤗👋
 

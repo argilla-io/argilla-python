@@ -106,16 +106,6 @@
          <changefreq>daily</changefreq>
     </url>
     <url>
-         <loc>https://argilla-io.github.io/argilla-python/docs_review-david/guides/tutorials/rag_llm/</loc>
-         <lastmod>2024-05-29</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://argilla-io.github.io/argilla-python/docs_review-david/guides/tutorials/rag_rankers_and_retrievers/</loc>
-         <lastmod>2024-05-29</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
          <loc>https://argilla-io.github.io/argilla-python/docs_review-david/overview/changelog/</loc>
          <lastmod>2024-05-29</lastmod>
          <changefreq>daily</changefreq>

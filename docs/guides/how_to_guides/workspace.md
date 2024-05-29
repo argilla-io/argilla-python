@@ -8,7 +8,7 @@ This guide provides an overview of workspaces, explaining how to set up and mana
 
 A **workspace** is a *space* inside your Argilla instance where authorized users can collaborate on datasets. It is accessible through the Python SDK and the UI.
 
-!!! Question "Question: Who can manage workspaces?"
+??? Question "Question: Who can manage workspaces?"
 
     Only users with the `owner` role can manage (create, read and delete) workspaces.
 

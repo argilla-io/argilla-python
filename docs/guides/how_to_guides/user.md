@@ -44,7 +44,7 @@ A **user** in Argilla is an authorized person, who depending on their role, can 
     - **Annotation**: It can annotate the assigned datasets in the Argilla UI.
     - **Feedback**: It can provide feedback with the Argilla UI.
 
-!!! Question "Question: Who can manage users?"
+??? Question "Question: Who can manage users?"
 
     Only users with the `owner` role can manage (create, retrieve, delete) other users.
 

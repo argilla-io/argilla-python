@@ -44,7 +44,6 @@ theme:
     - content.code.copy
     - content.code.annotate
     - content.action.edit
-    - content.action.view
     - search.suggest
     - search.highlight
     - search.share
@@ -127,18 +126,14 @@ plugins:
             private: true
   - social
   - mknotebooks
-  - tags:
-      tags_file: guides/tutorials/index.md
-
 
 nav:
   - Home: index.md
   - Getting started:
     - Quickstart: getting_started/quickstart.md
     - Installation: getting_started/installation.md
-    # - FAQ: getting_started/faq.md
+    - FAQ: getting_started/faq.md
   - Guides:
-    - guides/index.md
     - How-to guides:
       - guides/how_to_guides/index.md
       - Manage users and credentials: guides/how_to_guides/user.md
@@ -146,37 +141,11 @@ nav:
       - Manage and create datasets: guides/how_to_guides/dataset.md
       - Add, update, and delete records: guides/how_to_guides/record.md
       - Query, filter, and export records: guides/how_to_guides/query_export.md
-    - Tutorials:
-      - guides/tutorials/index.md
-      - Bulk labelling through vector search and fine-tuning a few-shot text classifier: guides/tutorials/few-shot-textcat-with-setfit.ipynb
-    - Integrations:
-      - guides/integrations/index.md
-      - distilabel ↗: https://github.com/argilla-io/distilabel
-      - argilla-llama-index ↗: https://github.com/argilla-io/argilla-llama-index
-    # - Distribute annotation work: how_to_guides/distribute.md
-    # - Compute metrics and KPIs:
-    #   - how_to_guides/metrics/index.md
-    #   - Dataset progress: how_to_guides/metrics/dataset.md
-    #   - Model performance: how_to_guides/metrics/model.md
-    #   - Annotator performance: how_to_guides/metrics/annotator.md
-    # - Fine-tune a model: fine_tune.md
-  # - Tutorials:
-  #   - tutorials/index.md
-  #   - tutorials/rag_llm.md
-  #   - tutorials/rag_rankers_and_retrievers.md
-  # - Integrations:
-  #   - integrations/index.md
   - API Reference:
     - Python SDK: reference/argilla_sdk/
   - Community:
     - community/index.md
-    - Contributor Guide: community/contributor.md
+    - How to contribute?: community/contributor.md
     - Developer Guide: community/developer.md
-    - Frequently Asked Questions (FAQs): community/faq.md
-    - About us: community/about.md
-    - Changelog ↗: https://github.com/argilla-io/argilla/blob/develop/argilla/CHANGELOG.md
-    - Slack ↗: https://join.slack.com/t/rubrixworkspace/shared_invite/zt-whigkyjn-a3IUJLD7gDbTZ0rKlvcJ5g
-    - Community Meetup ↗: https://lu.ma/argilla-event-calendar
-    - Roadmap ↗: https://github.com/orgs/argilla-io/projects/10/views/1
   - UI Demo ↗:
     - https://demo.argilla.io/sign-in?auth=ZGVtbzoxMjM0NTY3OA==

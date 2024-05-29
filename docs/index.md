@@ -9,7 +9,7 @@ Argilla is a **collaboration platform for AI engineers and domain experts** that
 
 <div class="grid cards" markdown>
 
--  __Getting started__
+-  __Get started in 5 minutes!__
 
     ---
 
@@ -21,7 +21,7 @@ Argilla is a **collaboration platform for AI engineers and domain experts** that
 
     ---
 
-    Get familiar with basic and complex workflows for Argilla and its' integrations. From managing `Users`, `Workspaces`. `Datasets` and `Records` to fine-tuning a model.
+    Get familiar with basic and complex workflows for Argilla. From managing `Users`, `Workspaces`. `Datasets` and `Records` to fine-tuning a model.
 
     [:octicons-arrow-right-24: Guides](how_to_guides/index.md)
 

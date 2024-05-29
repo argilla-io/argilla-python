@@ -7,38 +7,6 @@ We are an open-source community-driven project not only focused on building a gr
 
 <div class="grid cards" markdown>
 
--   __Contributor Guide__
-
-    ---
-
-    We love to discuss our plans with the community. Feel encouraged to participate in our roadmap discussions.
-
-    [:octicons-arrow-right-24: Contributor Guide](./contributor)
-
--   __Developer Guide__
-
-    ---
-
-    We love to discuss our plans with the community. Feel encouraged to participate in our roadmap discussions.
-
-    [:octicons-arrow-right-24: Roadmap](./developer)
-
--   __FAQs__
-
-    ---
-
-    In case you want basic answers to frequently asked questions.
-
-    [:octicons-arrow-right-24: FAQs](./faq)
-
--   __About__
-
-    ---
-
-    If you want to know more about the company and what drives our team.
-
-    [:octicons-arrow-right-24: About](./about)
-
 -   __Slack__
 
     ---
@@ -55,6 +23,14 @@ We are an open-source community-driven project not only focused on building a gr
     We host bi-weekly community meetups where you can listen in or present your work.
 
     [:octicons-arrow-right-24: Community Meetup ↗](https://lu.ma/argilla-event-calendar)
+
+-   __Changelog__
+
+    ---
+
+    We love to discuss our plans with the community. Feel encouraged to participate in our roadmap discussions.
+
+    [:octicons-arrow-right-24: Roadmap ↗](https://github.com/orgs/argilla-io/projects/10/views/1)
 
 -   __Roadmap__
 

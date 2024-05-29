@@ -3,7 +3,7 @@ description: Argilla-python is the reference argilla python server SDK.
 hide: toc
 ---
 
-# Frequently Asked Questions (FAQs)
+# FAQs
 
 ??? Question "What is Argilla?"
 
@@ -32,3 +32,7 @@ hide: toc
     Furthermore, Argilla places particular emphasis on smooth integration with other tools in the community, particularly within the realms of MLOps and NLP. So, its compatibility with popular frameworks like spaCy and Hugging Face makes it exceptionally user-friendly and accessible.
 
     Finally, platforms like Snorkel, Prodigy or Scale, while more comprehensive, often require a significant commitment. Argilla, on the other hand, works more as a component within the MLOps ecosystem, allowing users to begin with specific use cases and then scale up as needed. This flexibility is particularly beneficial for users and customers who prefer to start small and expand their applications over time, as opposed to committing to an all-encompassing platform from the outset.
+
+??? Question "What is the difference between Argilla 2.0 and the legacy datasets in 1.0?"
+
+    Argilla 1.0 relied on 3 main task datasets: `DatasetForTextClassification`, `DatasetForTokenClassification`, and `DatasetForText2Text`. These tasks were designed to be simple, easy to use and high in functionality but they were limited in adaptability. With the introduction of Large Language Models (LLMs) and the increasing complexity of NLP tasks, we realized that we needed to expand the capabilities of Argilla to support more advanced feedback mechanisms which led to the introduction of the `FeedbackDataset`. Compared to its predecessor it was high in adaptability but still limited in functionality. After having ported all of the functionality of the legacy tasks to the new `FeedbackDataset`, we decided to deprecate the legacy tasks in favor of a brand new SDK with the `FeedbackDataset` at its core.

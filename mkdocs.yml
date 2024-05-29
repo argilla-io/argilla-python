@@ -128,19 +128,19 @@ plugins:
   - mknotebooks
 
 nav:
-  - Home: index.md
+  - Argilla: index.md
   - Getting started:
     - Quickstart: getting_started/quickstart.md
     - Installation: getting_started/installation.md
     - FAQ: getting_started/faq.md
   - Guides:
-    - How-to guides:
-      - guides/how_to_guides/index.md
-      - Manage users and credentials: guides/how_to_guides/user.md
-      - Manage workspaces: guides/how_to_guides/workspace.md
-      - Manage and create datasets: guides/how_to_guides/dataset.md
-      - Add, update, and delete records: guides/how_to_guides/record.md
-      - Query, filter, and export records: guides/how_to_guides/query_export.md
+    # - How-to guides:
+    - guides/how_to_guides/index.md
+    - Manage users and credentials: guides/how_to_guides/user.md
+    - Manage workspaces: guides/how_to_guides/workspace.md
+    - Manage and create datasets: guides/how_to_guides/dataset.md
+    - Add, update, and delete records: guides/how_to_guides/record.md
+    - Query, filter, and export records: guides/how_to_guides/query_export.md
   - API Reference:
     - Python SDK: reference/argilla_sdk/
   - Community:

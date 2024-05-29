@@ -4,7 +4,7 @@ description: Argilla-python is the reference argilla python server SDK.
 
 # Tutorials
 
-These are the tutorials for the Argilla-python SDK. They provide step-by-step instructions for common scenarios, including detailed explanations and code samples.
+These are the tutorials for the Argilla-python SDK. They provide more in-depth instructions and cover more complex applied workflows that combine multiple techniques
 
 <div class="grid cards" markdown>
 

@@ -35,7 +35,7 @@ We are an open-source community-driven project not only focused on building a gr
 
     ---
 
-    Want to know more about the company and what drives our team? Check our about page.
+    If you want to know more about the company and what drives our team.
 
     [:octicons-arrow-right-24: About](./about)
 

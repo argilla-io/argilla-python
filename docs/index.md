@@ -9,21 +9,37 @@ Argilla is a **collaboration platform for AI engineers and domain experts** that
 
 <div class="grid cards" markdown>
 
--  __Get started in 5 minutes__
+-  __Getting started__
 
     ---
 
     Install `argilla` with `pip` and deploy a `Docker` locally or for free on Hugging Face to get up and running in minutes.
 
-    [:octicons-arrow-right-24: Quickstart](getting_started/quickstart.md)
+    [:octicons-arrow-right-24: Getting started](getting_started/quickstart.md)
 
--  __How-to guides__
+-  __Guides__
 
     ---
 
-    Get familiar with common workflows for Argilla. From managing [`Users`](how_to_guides/user.md), [`Workspaces`](how_to_guides/workspace.md). [`Datasets`](how_to_guides/dataset.md) and [`Records`](how_to_guides/record.md) to fine-tuning a model.
+    Get familiar with basic and complex workflows for Argilla and its' integrations. From managing `Users`, `Workspaces`. `Datasets` and `Records` to fine-tuning a model.
 
-    [:octicons-arrow-right-24: How-to guides](how_to_guides/index.md)
+    [:octicons-arrow-right-24: Guides](how_to_guides/index.md)
+
+-  __API Reference__
+
+    ---
+
+    Understand the API for our Python SDK and how to use it to interact with the Argilla platform.
+
+    [:octicons-arrow-right-24: API Reference](reference/index.md)
+
+-  __Community__
+
+    ---
+
+    Learn about what drives us and how to get the most from the community by sharing your experiences with Argilla. Join our community meetups and contribute to open-source.
+
+    [:octicons-arrow-right-24: Community](community/index.md)
 
 </div>
 

@@ -4,7 +4,7 @@ hide: toc
 ---
 # Guides
 
-In Argilla We've got 3 kinds of guides.
+In Argilla, we've got 3 kinds of guides that will help you get started with the platform that are all tailored to different levels of expertise.
 
 
 <div class="grid cards" markdown>
@@ -13,7 +13,7 @@ In Argilla We've got 3 kinds of guides.
 
     ---
 
-    Learn what they are and how to manage (create, read and delete) `Users` in Argilla.
+    Learn about step-by-step instructions for common scenarios including detailed explanations and code samples.
 
     [:octicons-arrow-right-24: How-to guide](user.md)
 
@@ -21,7 +21,7 @@ In Argilla We've got 3 kinds of guides.
 
     ---
 
-    Learn what they are and how to manage (create, read and delete) `Workspaces` in Argilla.
+    Learn about more in-depth instructions and cover more complex applied workflows that combine multiple techniques.
 
     [:octicons-arrow-right-24: How-to guide](workspace.md)
 
@@ -29,7 +29,7 @@ In Argilla We've got 3 kinds of guides.
 
     ---
 
-    Learn what they are and how to manage (create, read and delete) `Datasets` and customize them using the `Settings` for `Fields`, `Questions`,  `Metadata` and `Vectors`.
+    Learn about Argilla's integrations with other packages, tools and services.
 
     [:octicons-arrow-right-24: How-to guide](dataset.md)
 

@@ -116,7 +116,7 @@ def test_update_records_by_server_id(client: rg.Argilla, dataset: rg.Dataset):
         RecordModel(fields={"text": "Hello World, how are you?"}, metadata={"key": "value"}),
         dataset=dataset,
     )
-    created_record = dataset.records.add(record)[0]
+    created_record = dataset.records.add([record])[0]
 
     created_record.metadata["new-key"] = "new-value"
     dataset.records.add([created_record])

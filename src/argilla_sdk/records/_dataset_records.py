@@ -298,8 +298,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
         """
         records = JsonIO._records_from_json(path=path)
-        return self.update(records=records)
-        return self
+        return self.add(records=records)
 
     def to_datasets(self) -> HFDataset:
         """

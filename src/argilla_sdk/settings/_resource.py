@@ -174,11 +174,24 @@ class Settings(Resource):
         return self
 
     def create(self) -> "Settings":
+        self.validate()
+
+        self._create_fields()
+        self._create_vectors()
+        self._create_metadata()
+        self._create_questions()
+        self._update_dataset_related_attributes()
+
+        self._update_last_api_call()
+        return self
+
+    def update(self) -> "Resource":
+        self.validate()
+
         self._upsert_fields()
-        self.__upsert_questions()
         self._upsert_vectors()
         self._upsert_metadata()
-        self.__update_dataset_related_attributes()
+        self._update_dataset_related_attributes()
 
         self._update_last_api_call()
         return self
@@ -296,7 +309,7 @@ class Settings(Resource):
         self.guidelines = dataset_model.guidelines
         self.allow_extra_metadata = dataset_model.allow_extra_metadata
 
-    def __update_dataset_related_attributes(self):
+    def _update_dataset_related_attributes(self):
         # This flow may be a bit weird, but it's the only way to update the dataset related attributes
         # Everything is point that we should have several settings-related endpoints in the API to handle this.
         # POST /api/v1/datasets/{dataset_id}/settings
@@ -313,7 +326,7 @@ class Settings(Resource):
         )
         self._client.api.datasets.update(dataset_model)
 
-    def __upsert_questions(self) -> None:
+    def _create_questions(self) -> None:
         for question in self.__questions:
             try:
                 question_model = self._client.api.questions.create(
@@ -323,7 +336,7 @@ class Settings(Resource):
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create question {question.name}") from e
 
-    def _upsert_fields(self) -> None:
+    def _create_fields(self) -> None:
         for field in self.__fields:
             try:
                 field.dataset = self.dataset
@@ -331,7 +344,7 @@ class Settings(Resource):
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create field {field.name}") from e
 
-    def _upsert_vectors(self) -> None:
+    def _create_vectors(self) -> None:
         for vector in self.__vectors:
             try:
                 vector.dataset = self.dataset
@@ -339,13 +352,37 @@ class Settings(Resource):
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create vector {vector.name}") from e
 
-    def _upsert_metadata(self) -> None:
+    def _create_metadata(self) -> None:
         for metadata in self.__metadata:
             try:
                 metadata.dataset = self.dataset
                 metadata.create()
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create metadata {metadata.name}") from e
+
+    def _upsert_fields(self) -> None:
+        for field in self.__fields:
+            try:
+                field.dataset = self.dataset
+                field.update() if field.id else field.create()
+            except ArgillaAPIError as e:
+                raise SettingsError(f"Failed to create/update field {field.name}") from e
+
+    def _upsert_vectors(self) -> None:
+        for vector in self.__vectors:
+            try:
+                vector.dataset = self.dataset
+                vector.update() if vector.id else vector.create()
+            except ArgillaAPIError as e:
+                raise SettingsError(f"Failed to create/update vector {vector.name}") from e
+
+    def _upsert_metadata(self) -> None:
+        for metadata in self.__metadata:
+            try:
+                metadata.dataset = self.dataset
+                metadata.update() if metadata.id else metadata.create()
+            except ArgillaAPIError as e:
+                raise SettingsError(f"Failed to create/update metadata {metadata.name}") from e
 
     def _validate_empty_settings(self):
         if not all([self.fields, self.questions]):

@@ -193,54 +193,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
     def add(
         self,
-        records: Union[dict, List[dict], Record, List[Record], HFDataset],
-        mapping: Optional[Dict[str, str]] = None,
-        user_id: Optional[UUID] = None,
-        batch_size: int = DEFAULT_BATCH_SIZE,
-    ) -> List[Record]:
-        """
-        Add new records to a dataset on the server.
-
-        Parameters:
-            records: A dictionary or a list of dictionaries representing the records
-                     to be added to the dataset. Records are defined as dictionaries
-                     with keys corresponding to the fields in the dataset schema.
-            mapping: A dictionary that maps the keys in the records to the fields in the dataset schema.
-            user_id: The user id to be associated with the records. If not provided, the current user id is used.
-            batch_size: The number of records to send in each batch. The default is 256.
-
-        Returns:
-            A list of Record objects representing the added records.
-
-        Examples:
-
-        Add generic records to a dataset as dictionaries:
-
-        """
-        record_models = self._ingest_records(records=records, mapping=mapping, user_id=user_id or self.__client.me.id)
-        batch_size = self._normalize_batch_size(
-            batch_size=batch_size,
-            records_length=len(record_models),
-            max_value=self._api.MAX_RECORDS_PER_CREATE_BULK,
-        )
-
-        created_records = []
-        for batch in range(0, len(record_models), batch_size):
-            self.log(message=f"Sending records from {batch} to {batch + batch_size}.")
-            batch_records = record_models[batch : batch + batch_size]
-            models = self._api.bulk_create(dataset_id=self.__dataset.id, records=batch_records)
-            created_records.extend([Record.from_model(model=model, dataset=self.__dataset) for model in models])
-
-        self.log(
-            message=f"Added {len(created_records)} records to dataset {self.__dataset.name}",
-            level="info",
-        )
-
-        return created_records
-
-    def update(
-        self,
-        records: Union[dict, List[dict], Record, List[Record], HFDataset],
+        records: Union[List[dict], List[Record], HFDataset],
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
         batch_size: int = DEFAULT_BATCH_SIZE,
@@ -373,8 +326,6 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
     ) -> List[RecordModel]:
-        if isinstance(records, (Record, dict)):
-            records = [records]
         if HFDatasetsIO._is_hf_dataset(dataset=records):
             records = HFDatasetsIO._record_dicts_from_datasets(dataset=records)
         if all(map(lambda r: isinstance(r, dict), records)):

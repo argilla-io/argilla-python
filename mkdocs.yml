@@ -39,12 +39,12 @@ theme:
     # - navigation.indexes
     - navigation.top
     - navigation.tracking
-    # - navigation.expand
     - navigation.path
     - toc.follow
     - content.code.copy
     - content.code.annotate
     - content.action.edit
+    - content.action.view
     - search.suggest
     - search.highlight
     - search.share

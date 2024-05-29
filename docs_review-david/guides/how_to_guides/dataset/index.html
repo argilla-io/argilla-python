@@ -2141,11 +2141,11 @@
 <h1 id="dataset-management">Dataset management<a class="headerlink" href="#dataset-management" title="Permanent link">&para;</a></h1>
 <p>This guide provides an overview of datasets, explaining the basics of how to set them up and manage them in Argilla.</p>
 <p>A <strong>dataset</strong> is a collection of records that you can configure for labelers to provide feedback using the UI. Depending on the specific requirements of your task, you may need various types of feedback. You can customize the dataset to include different kinds of questions, so the first step will be to define the aim of your project and the kind of data and feedback you will need. With this information, you can start configuring a dataset by defining fields, questions, metadata, vectors, and guidelines through settings.</p>
-<div class="admonition question">
-<p class="admonition-title">Question: Who can manage datasets?</p>
+<details class="question">
+<summary>Question: Who can manage datasets?</summary>
 <p>Only users with the <code>owner</code> role can manage (create, retrieve, update and delete) all the datasets.</p>
 <p>The users with the <code>admin</code> role can manage (create, retrieve, update and delete) the datasets in the workspaces they have access to.</p>
-</div>
+</details>
 <div class="admonition info">
 <p class="admonition-title">Main Classes</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1"><code>rg.Dataset</code></label><label for="__tabbed_1_2"><code>rg.Settings</code></label></div>
@@ -2273,7 +2273,7 @@ to the new dataset.</p>
 </span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a>    <span class="n">use_markdown</span><span class="o">=</span><span class="kc">False</span>
 </span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="p">)</span>
 </span></code></pre></div>
-<img alt="TextField" src="../assets/images/how_to_guides/dataset/fields.png" /></p>
+<img alt="TextField" src="../../../assets/images/how_to_guides/dataset/fields.png" /></p>
 <h3 id="questions">Questions<a class="headerlink" href="#questions" title="Permanent link">&para;</a></h3>
 <p>To collect feedback for your dataset, you need to formulate questions that annotators will be asked to answer. Currently, Argilla supports the following types of questions: <code>LabelQuestion</code>, <code>MultiLabelQuestion</code>, <code>RankingQuestion</code>, <code>RatingQuestion</code>, <code>SpanQuestion</code>, and <code>TextQuestion</code>.</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:6"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><input id="__tabbed_2_4" name="__tabbed_2" type="radio" /><input id="__tabbed_2_5" name="__tabbed_2" type="radio" /><input id="__tabbed_2_6" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Label</label><label for="__tabbed_2_2">Multi-label</label><label for="__tabbed_2_3">Ranking</label><label for="__tabbed_2_4">Rating</label><label for="__tabbed_2_5">Span</label><label for="__tabbed_2_6">Text</label></div>
@@ -2295,7 +2295,7 @@ to the new dataset.</p>
 </span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;YES&quot;</span><span class="p">:</span> <span class="s2">&quot;Yes&quot;</span><span class="p">,</span> <span class="s2">&quot;NO&quot;</span><span class="p">:</span> <span class="s2">&quot;No&quot;</span><span class="p">},</span> <span class="c1"># or [&quot;YES&quot;, &quot;NO&quot;]</span>
 </span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="p">)</span>
 </span></code></pre></div>
-<img alt="LabelQuestion" src="../assets/images/how_to_guides/dataset/label_question.png" /></p>
+<img alt="LabelQuestion" src="../../../assets/images/how_to_guides/dataset/label_question.png" /></p>
 </div>
 <div class="tabbed-block">
 <p>A <code>MultiLabelQuestion</code> asks annotators to choose all applicable labels from a list of options. This type is useful for multi-label text classification tasks. In the UI, they will have a squared shape. It has the following configuration:</p>
@@ -2324,7 +2324,7 @@ to the new dataset.</p>
 </span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>    <span class="n">visible_labels</span><span class="o">=</span><span class="mi">4</span>
 </span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a><span class="p">)</span>
 </span></code></pre></div>
-<img alt="MultiLabelQuestion" src="../assets/images/how_to_guides/dataset/multilabel_question.png" /></p>
+<img alt="MultiLabelQuestion" src="../../../assets/images/how_to_guides/dataset/multilabel_question.png" /></p>
 </div>
 <div class="tabbed-block">
 <p>A <code>RankingQuestion</code> asks annotators to order a list of options. It is useful to gather information on the preference or relevance of a set of options. Ties are allowed and all options will need to be ranked. It has the following configuration:</p>
@@ -2347,7 +2347,7 @@ to the new dataset.</p>
 </span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="p">}</span> <span class="c1"># or [&quot;reply-1&quot;, &quot;reply-2&quot;, &quot;reply-3&quot;]</span>
 </span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><img alt="RankingQuestion" src="../assets/images/how_to_guides/dataset/ranking_question.png" /></p>
+<p><img alt="RankingQuestion" src="../../../assets/images/how_to_guides/dataset/ranking_question.png" /></p>
 </div>
 <div class="tabbed-block">
 <p>A <code>RatingQuestion</code> asks annotators to select one option from a list of integer values. This type is useful for collecting numerical scores. It has the following configuration:</p>
@@ -2366,7 +2366,7 @@ to the new dataset.</p>
 </span><span id="__span-9-6"><a id="__codelineno-9-6" name="__codelineno-9-6" href="#__codelineno-9-6"></a>    <span class="n">values</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
 </span><span id="__span-9-7"><a id="__codelineno-9-7" name="__codelineno-9-7" href="#__codelineno-9-7"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><img alt="RatingQuestion" src="../assets/images/how_to_guides/dataset/rating_question.png" /></p>
+<p><img alt="RatingQuestion" src="../../../assets/images/how_to_guides/dataset/rating_question.png" /></p>
 </div>
 <div class="tabbed-block">
 <p>A <code>SpanQuestion</code> asks annotators to select a portion of the text of a specific field and apply a label to it. This type of question is useful for named entity recognition or information extraction tasks. It has the following configuration:</p>
@@ -2396,7 +2396,7 @@ to the new dataset.</p>
 </span><span id="__span-10-14"><a id="__codelineno-10-14" name="__codelineno-10-14" href="#__codelineno-10-14"></a>    <span class="n">visible_labels</span><span class="o">=</span><span class="kc">None</span>
 </span><span id="__span-10-15"><a id="__codelineno-10-15" name="__codelineno-10-15" href="#__codelineno-10-15"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><img alt="SpanQuestion" src="../assets/images/how_to_guides/dataset/span_question.png" /></p>
+<p><img alt="SpanQuestion" src="../../../assets/images/how_to_guides/dataset/span_question.png" /></p>
 </div>
 <div class="tabbed-block">
 <p>A <code>TextQuestion</code> offers to annotators a free-text area where they can enter any text. This type is useful for collecting natural language data, such as corrections or explanations. It has the following configuration:</p>
@@ -2415,7 +2415,7 @@ to the new dataset.</p>
 </span><span id="__span-11-6"><a id="__codelineno-11-6" name="__codelineno-11-6" href="#__codelineno-11-6"></a>    <span class="n">use_markdown</span><span class="o">=</span><span class="kc">True</span>
 </span><span id="__span-11-7"><a id="__codelineno-11-7" name="__codelineno-11-7" href="#__codelineno-11-7"></a><span class="p">)</span>
 </span></code></pre></div>
-<p><img alt="TextQuestion" src="../assets/images/how_to_guides/dataset/text_question.png" /></p>
+<p><img alt="TextQuestion" src="../../../assets/images/how_to_guides/dataset/text_question.png" /></p>
 </div>
 </div>
 </div>
@@ -2436,7 +2436,7 @@ to the new dataset.</p>
 </span><span id="__span-12-4"><a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>    <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;group-a&quot;</span><span class="p">,</span> <span class="s2">&quot;group-b&quot;</span><span class="p">,</span> <span class="s2">&quot;group-c&quot;</span><span class="p">]</span>
 </span><span id="__span-12-5"><a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a><span class="p">)</span>
 </span></code></pre></div>
-<img alt="TermsMetadataProperty" src="../assets/images/how_to_guides/dataset/term_metadata.png" /></p>
+<img alt="TermsMetadataProperty" src="../../../assets/images/how_to_guides/dataset/term_metadata.png" /></p>
 </div>
 <div class="tabbed-block">
 <p>An <code>IntegerMetadataProperty</code> allows to add integer values as metadata. It has the following configuration:</p>
@@ -2453,7 +2453,7 @@ to the new dataset.</p>
 </span><span id="__span-13-5"><a id="__codelineno-13-5" name="__codelineno-13-5" href="#__codelineno-13-5"></a>    <span class="nb">max</span><span class="o">=</span><span class="mi">1984</span><span class="p">,</span>
 </span><span id="__span-13-6"><a id="__codelineno-13-6" name="__codelineno-13-6" href="#__codelineno-13-6"></a><span class="p">)</span>
 </span></code></pre></div>
-<img alt="IntegerMetadataProperty" src="../assets/images/how_to_guides/dataset/integer_metadata.png" /></p>
+<img alt="IntegerMetadataProperty" src="../../../assets/images/how_to_guides/dataset/integer_metadata.png" /></p>
 </div>
 <div class="tabbed-block">
 <p>A <code>FloatMetadataProperty</code> allows to add float values as metadata. It has the following configuration:</p>
@@ -2470,7 +2470,7 @@ to the new dataset.</p>
 </span><span id="__span-14-5"><a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a>    <span class="nb">max</span><span class="o">=</span><span class="mf">119.6975</span><span class="p">,</span>
 </span><span id="__span-14-6"><a id="__codelineno-14-6" name="__codelineno-14-6" href="#__codelineno-14-6"></a><span class="p">)</span>
 </span></code></pre></div>
-<img alt="FloatMetadataProperty" src="../assets/images/how_to_guides/dataset/float_metadata.png" /></p>
+<img alt="FloatMetadataProperty" src="../../../assets/images/how_to_guides/dataset/float_metadata.png" /></p>
 </div>
 </div>
 </div>
@@ -2487,7 +2487,7 @@ to the new dataset.</p>
 </span><span id="__span-15-4"><a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>    <span class="n">dimensions</span><span class="o">=</span><span class="mi">768</span>
 </span><span id="__span-15-5"><a id="__codelineno-15-5" name="__codelineno-15-5" href="#__codelineno-15-5"></a><span class="p">),</span>
 </span></code></pre></div>
-<img alt="VectorField" src="../assets/images/how_to_guides/dataset/vectors.png" /></p>
+<img alt="VectorField" src="../../../assets/images/how_to_guides/dataset/vectors.png" /></p>
 <h3 id="guidelines">Guidelines<a class="headerlink" href="#guidelines" title="Permanent link">&para;</a></h3>
 <p>Once you have decided on the data to show and the questions to ask, it's important to provide clear guidelines to the annotators. These guidelines help them understand the task and answer the questions consistently. You can provide guidelines in two ways:</p>
 <ul>
@@ -2495,11 +2495,11 @@ to the new dataset.</p>
 <p>In the dataset guidelines: this is added as an argument when you create your dataset in the Python SDK. It will appear in the dataset settings in the UI.
 <div class="language-python highlight"><pre><span></span><code><span id="__span-16-1"><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a><span class="n">guidelines</span> <span class="o">=</span> <span class="s2">&quot;In this dataset, you will find a collection of records that show a category, an instruction, a context and a response to that instruction. [...]&quot;</span>
 </span></code></pre></div>
-<img alt="Guidelines" src="../assets/images/how_to_guides/dataset/guidelines.png" /></p>
+<img alt="Guidelines" src="../../../assets/images/how_to_guides/dataset/guidelines.png" /></p>
 </li>
 <li>
 <p>As question descriptions: these are added as an argument when you create questions in the Python SDK. This text will appear in a tooltip next to the question in the UI.
-<img alt="Guidelines as descriptions" src="../assets/images/how_to_guides/dataset/guidelines_description.png" /></p>
+<img alt="Guidelines as descriptions" src="../../../assets/images/how_to_guides/dataset/guidelines_description.png" /></p>
 </li>
 </ul>
 <p>It is good practice to use at least the dataset guidelines if not both methods. Question descriptions should be short and provide context to a specific question. They can be a summary of the guidelines to that question, but often that is not sufficient to align the whole annotation team. In the guidelines, you can include a description of the project, details on how to answer each question with examples, instructions on when to discard a record, etc.</p>

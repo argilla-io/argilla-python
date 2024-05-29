@@ -10,50 +10,133 @@ Instead, you can access it via the `Dataset` object:
 
 To add records to a dataset, use the `add` method. Records can be added as dictionaries or as `Record` objects. Single records can also be added as a dictionary or `Record`.
 
-<!-- import argilla_sdk as rg
+=== "As a `Record` object"
 
-# Create a dataset
-dataset = rg.Dataset(
-    name="my_dataset",
-    settings=rg.Settings(
-        fields=[
-            rg.TextField(name="question"),
-        ],
-        questions=[
-            rg.TextQuestion(name="answer"),
-        ],
-    ),
-)
+    You can also add records to a dataset by initializing a `Record` object directly.
 
-# Create the dataset on the server
-dataset.create() -->
+    ```python	
 
-```python
-# Add records to a dataset
-dataset.records.add(
-    records=[
-    {
-        "question": "What is the capital of France?",  # 'question' matches the `rg.TextField` name
-        "answer": "Paris" # 'answer' matches the `rg.TextQuestion` name
-    },
-    {
-        "question": "What is the capital of Germany?", 
-        "answer": "Berlin"
-    },
-])
-```
+    records = [
+        rg.Record(
+            fields={
+                "question": "Do you need oxygen to breathe?",
+                "answer": "Yes"
+            },
+        ),
+        rg.Record(
+            fields={
+                "question": "What is the boiling point of water?",
+                "answer": "100 degrees Celsius"
+            },
+        ),
+    ] # (1)
 
-When adding records from a native datasource, a mapping can be provided to map the keys in the native data structure to the fields and questions in Argilla. The dot notation is used to access suggestions and responses in the records.
+    dataset.records.add(records)
+    ```
 
-```python
-dataset.records.add(
-    records=[
-        {"input": "What is the capital of France?", "output": "Paris"},
-        {"input": "What is the capital of Germany?", "output": "Berlin"},
-    ],
-    mapping={"input": "question", "output": "answer"}, # Maps 'input' to 'question' and 'output' to 'answer'
-)
-```
+    1. In a real world scenario, you might iterate over a data structure and create `Record` objects for each record. This is a more efficient way to add records to a dataset. 
+
+=== "From a data structure"
+
+    ```python	
+
+    data = [
+        {
+            "question": "Do you need oxygen to breathe?",
+            "answer": "Yes",
+        },
+        {
+            "question": "What is the boiling point of water?",
+            "answer": "100 degrees Celsius",
+        },
+    ] # (1)
+
+    dataset.records.add(data)
+    ```
+
+    1. If the data structure is a list of dictionaries, the keys in the dictionary must match the fields in the dataset. In this case, the fields are `question` and `answer`. We would not advise you to to define dictionaries. Instead use the `Record` object.
+
+
+=== "From a data structure with a mapping"
+
+    ```python
+    data = [
+        {
+            "query": "Do you need oxygen to breathe?",
+            "response": "Yes",
+        },
+        {
+            "query": "What is the boiling point of water?",
+            "response": "100 degrees Celsius",
+        },
+    ] # (1)
+    dataset.records.add(
+        records=data, 
+        mapping={"query": "question", "response": "answer"} # (2)
+    )
+
+    ```
+
+    1. If the data structure is a list of dictionaries, the keys in the dictionary must match the fields in the dataset. In this case, the fields are `question` and `answer`. We would not advise you to to define dictionaries. Instead use the `Record` object.
+    2. Let's say that your data structure has keys `query` and `response` instead of `question` and `answer`. You can use the `mapping` parameter to map the keys in the data structure to the fields in the dataset.
+
+### Updating records in a dataset
+
+Records can also be updated using the `add` method with records that contain an `id` to identify the records to be updated. As above, records can be added as dictionaries or as `Record` objects.
+
+=== "As a `Record` object"
+
+    You can also add records to a dataset by initializing a `Record` object directly.
+
+    ```python	
+
+    records = [
+        rg.Record(
+            metadata={"department": "toys"},
+            id="2" # (1)
+        ),
+    ] # (1)
+
+    dataset.records.add(records)
+    ```
+
+    1. The `id` field is required to identify the record to be updated. The `id` field must be unique for each record in the dataset. If the `id` field is not provided, the record will be added as a new record.
+
+=== "From a data structure"
+
+    ```python	
+
+    data = [
+        {
+            "metadata": {"department": "toys"},
+            "id": "2" # (1)
+        },
+    ] # (1)
+
+    dataset.records.add(data)
+    ```
+
+    1. The `id` field is required to identify the record to be updated. The `id` field must be unique for each record in the dataset. If the `id` field is not provided, the record will be added as a new record.
+
+
+=== "From a data structure with a mapping"
+
+    ```python
+    data = [
+        {
+            "metadata": {"department": "toys"},
+            "my_id": "2" # (1)
+        },
+    ]
+
+    dataset.records.add(
+        records=data, 
+        mapping={"my_id": "id"} # (2)
+    )
+
+    ```
+    1. The `id` field is required to identify the record to be updated. The `id` field must be unique for each record in the dataset. If the `id` field is not provided, the record will be added as a new record.
+    2. Let's say that your data structure has keys `my_id` instead of `id`. You can use the `mapping` parameter to map the keys in the data structure to the fields in the dataset.
 
 ### Iterating over records in a dataset
 
@@ -74,52 +157,6 @@ for record in dataset.records(query="capital", with_vectors=True):
 ```
 
 Check out the [`rg.Record`](../records/record.md) class reference for more information on the properties and methods available on a record and the [`rg.Query`](../query/query.md) class reference for more information on the query syntax.
-
-
-### Updating records in a dataset
-
-Records can also be updated using the `id` to identify the records to be updated:
-
-```python
-# Add records to a dataset
-dataset.records.add(
-    records=[
-        {
-            "id": "1",
-            "question": "What is the capital of France?",
-            "answer": "F",
-        },
-        {
-            "id": "2",
-            "question": "What is the capital of Germany?",
-            "answer": "Berlin"
-        },
-    ]
-)
-
-# Update records in a dataset
-dataset.records.update(
-    records=[
-        {
-            "id": "1",  # matches id used in `Dataset.records.add`
-            "question": "What is the capital of France?",
-            "answer": "Paris",
-        }
-    ]
-)
-```
-
-### Exporting records from a dataset
-
-Records can also be exported from `Dataset.records`. Generic python exports include `to_dict` and `to_list` methods.
-
-```python
-dataset.records.to_dict()
-# {"text": ["Hello", "World"], "label": ["greeting", "greeting"]}
-
-dataset.records.to_list()
-# [{"text": "Hello", "label": "greeting"}, {"text": "World", "label": "greeting"}]
-```
 
 ---
 

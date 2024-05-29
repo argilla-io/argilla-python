@@ -6,28 +6,14 @@ The `Record` object is used to represent a single record in Argilla. It contains
 
 ### Creating a Record
 
-To add records, you can pass dictionaries to the `Dataset.records.add` method. Argilla will instantiate the `Record` class based on the input data and `mapping` property. The input data keys must match the names in `rg.Settings` object, or be mapped via the dictionary passed to the `mapping` parameter. 
-
-```python
-dataset.records.add(
-    records=[
-    {
-        "question": "What is the capital of France?", 
-        "answer": "Paris"
-    },
-])
-```
-
-You can also create `Record` objects directly and pass them to the same method.
+To create records, you can use the `Record` class. The `Record` class requires a `fields` parameter, which is a dictionary of field names and values. The field names must match the field names in the dataset's `Settings` object to be accepted.
 
 ```python
 records = [
         rg.Record(
             fields={"text": "Hello World, how are you?"},
-            responses=[rg.Response("label", "positive", user_id=user_id)],
         ),
     ]
-dataset.records.add(records=records)
 ```
 
 ### Accessing Record Attributes

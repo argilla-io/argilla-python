@@ -12,7 +12,7 @@ Thank you for investing your time in contributing to the project! Any contributi
     * **Slack**: You are welcome to join the [Argilla Slack community](https://join.slack.com/t/rubrixworkspace/shared_invite/zt-whigkyjn-a3IUJLD7gDbTZ0rKlvcJ5g), where you can keep in touch with other users, contributors and the Argilla team. In the following [section](#first-contact-in-slack), you can find more information on how to get started in Slack.
     * **Git**: This is a very useful tool to keep track of the changes in your files. Using the command-line interface (CLI), you can make your contributions easily. For that, you need to have it [installed and updated](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) on your computer.
     * **GitHub**: It is a platform and cloud-based service that uses git and allows developers to collaborate on projects. To contribute to Argilla, you'll need to create an account. Check the [Contributor Workflow with Git and Github](#contributor-workflow-with-git-and-github) for more info.
-    * **Developer Documentation**: To collaborate, you'll need to set up an efficient environment. Check the [developer documentation](/community/developer_docs.md) to know how to do it.
+    * **Developer Documentation**: To collaborate, you'll need to set up an efficient environment. Check the [developer documentation](../getting_started/installation.md) to know how to do it.
     * **Schedule a meeting with our developer advocate**: If you have more questions, do not hesitate to contact to our developer advocate and [schedule a meeting](https://calendly.com/argilla-office-hours/30min).
 
 ## First Contact in Slack
@@ -80,7 +80,7 @@ git clone https://github.com/[your-github-username]/argilla.git
 cd argilla
 ```
 
-To keep your fork’s main/develop branch up to date with our repo, add it as an upstream remote branch. For more info, check the [documentation](/community/developer_docs.md).
+To keep your fork’s main/develop branch up to date with our repo, add it as an upstream remote branch. For more info, check the [documentation](../getting_started/installation.md).
 
 ```sh
 git remote add upstream https://github.com/argilla-io/argilla.git
@@ -130,7 +130,7 @@ You can have a look at the [CHANGELOG.md](https://raw.githubusercontent.com/argi
 
 ### Make changes and push them
 
-Make the changes you want in your local repository, and test that everything works and you are following the guidelines. Check the [documentation](/community/developer_docs.md) for more information about the development.
+Make the changes you want in your local repository, and test that everything works and you are following the guidelines. Check the [documentation](../getting_started/installation.md) for more information about the development.
 
 Once you have finished, you can check the status of your repository and synchronize with the upstreaming repo with the following command:
 

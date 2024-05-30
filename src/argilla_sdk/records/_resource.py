@@ -76,7 +76,6 @@ class Record(Resource):
             _server_id: An id for the record. (Read-only and set by the server)
             _dataset: The dataset object to which the record belongs.
         """
-
         if fields is None and metadata is None and vectors is None and responses is None and suggestions is None:
             raise ValueError("At least one of fields, metadata, vectors, responses, or suggestions must be provided.")
         if fields is None and id is None:

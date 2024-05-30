@@ -287,7 +287,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         records = list(self(with_suggestions=True, with_responses=True))
         return JsonIO.to_json(records=records, path=path)
 
-    def from_json(self, path: Union[Path, str]) -> "DatasetRecords":
+    def from_json(self, path: Union[Path, str]) -> List[Record]:
         """Creates a DatasetRecords object from a disk path to a JSON file.
             The JSON file should be defined by `DatasetRecords.to_json`.
 
@@ -299,7 +299,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
         """
         records = JsonIO._records_from_json(path=path)
-        return self.add(records=records)
+        return self.log(records=records)
 
     def to_datasets(self) -> HFDataset:
         """

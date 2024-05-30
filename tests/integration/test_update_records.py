@@ -73,8 +73,8 @@ def test_update_records_separately(client: rg.Argilla, dataset: rg.Dataset):
         for r in mock_data
     ]
 
-    dataset.records.add(records=mock_data)
-    dataset.records.add(records=updated_mock_data)
+    dataset.records.log(records=mock_data)
+    dataset.records.log(records=updated_mock_data)
     dataset_records = list(dataset.records)
 
     assert dataset_records[0].id == str(mock_data[0]["id"])
@@ -104,8 +104,8 @@ def test_update_records_partially(client: rg.Argilla, dataset: rg.Dataset):
     ]
     updated_mock_data = mock_data.copy()
     updated_mock_data[0]["label"] = "positive"
-    dataset.records.add(records=mock_data)
-    dataset.records.add(records=updated_mock_data)
+    dataset.records.log(records=mock_data)
+    dataset.records.log(records=updated_mock_data)
 
     for i, record in enumerate(dataset.records(with_suggestions=True)):
         assert record.suggestions[0].value == updated_mock_data[i]["label"]
@@ -116,10 +116,10 @@ def test_update_records_by_server_id(client: rg.Argilla, dataset: rg.Dataset):
         RecordModel(fields={"text": "Hello World, how are you?"}, metadata={"key": "value"}),
         dataset=dataset,
     )
-    created_record = dataset.records.add([record])[0]
+    created_record = dataset.records.log([record])[0]
 
     created_record.metadata["new-key"] = "new-value"
-    dataset.records.add([created_record])
+    dataset.records.log([created_record])
 
     assert len(list(dataset.records)) == 1
 

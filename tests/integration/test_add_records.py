@@ -76,7 +76,7 @@ def test_add_records(client):
         client=client,
     )
     dataset.create()
-    dataset.records.add(records=mock_data)
+    dataset.records.log(records=mock_data)
 
     dataset_records = list(dataset.records)
 
@@ -120,7 +120,7 @@ def test_add_dict_records(client: Argilla):
     ]
 
     # Now the dataset is published and is ready for annotate
-    ds.records.add(mock_data)
+    ds.records.log(mock_data)
 
     for record, data in zip(ds.records, mock_data):
         assert record.id == data["id"]
@@ -175,7 +175,7 @@ def test_add_records_with_suggestions(client) -> None:
         client=client,
     )
     dataset.create()
-    dataset.records.add(
+    dataset.records.log(
         mock_data,
         mapping={
             "comment": "comment.suggestion",
@@ -245,7 +245,7 @@ def test_add_records_with_responses(client) -> None:
     )
     user.create()
     dataset.create()
-    dataset.records.add(
+    dataset.records.log(
         records=mock_data,
         user_id=user.id,
         mapping={
@@ -306,7 +306,7 @@ def test_add_records_with_responses_and_suggestions(client) -> None:
     )
     user.create()
     dataset.create()
-    dataset.records.add(
+    dataset.records.log(
         records=mock_data,
         user_id=user.id,
         mapping={
@@ -371,7 +371,7 @@ def test_add_records_with_fields_mapped(client) -> None:
     )
     user.create()
     dataset.create()
-    dataset.records.add(
+    dataset.records.log(
         records=mock_data,
         user_id=user.id,
         mapping={
@@ -437,7 +437,7 @@ def test_add_records_with_id_mapped(client) -> None:
     )
     user.create()
     dataset.create()
-    dataset.records.add(
+    dataset.records.log(
         records=mock_data,
         user_id=user.id,
         mapping={"my_label": "label.response", "my_guess": "label.suggestion", "x": "text", "uuid": "id"},
@@ -500,7 +500,7 @@ def test_add_record_resources(client):
         client=client,
     )
     dataset.create()
-    dataset.records.add(records=mock_resources)
+    dataset.records.log(records=mock_resources)
 
     dataset_records = list(dataset.records(with_suggestions=True))
 
@@ -562,7 +562,7 @@ def test_add_records_with_responses_and_same_schema_name(client: Argilla):
     )
     user.create()
     dataset.create()
-    dataset.records.add(
+    dataset.records.log(
         records=mock_data,
         user_id=user.id,
         mapping={"label": "label.response", "text": "text"},
@@ -620,7 +620,7 @@ def test_add_records_objects_with_responses(client: Argilla):
         ),
     ]
 
-    dataset.records.add(records)
+    dataset.records.log(records)
 
     dataset_records = list(dataset.records())
 

@@ -47,7 +47,7 @@ You can add records to a dataset in two different ways: either by using a dictio
 
 === "As `Record` objects"
 
-    You can also add records to a dataset by initializing a `Record` object directly.
+    You can add records to a dataset by initializing a `Record` object directly. This is ideal if you need to apply logic to the data before defining the record. If the data is already structured, you should consider adding it directly as a dictionary or Hugging Face dataset.
 
     ```python	
     import argilla_sdk as rg
@@ -68,15 +68,20 @@ You can add records to a dataset in two different ways: either by using a dictio
                 "question": "What is the boiling point of water?",
                 "answer": "100 degrees Celsius"
             },
-        ),
+        ), # (1)
     ]
 
     dataset.records.log(records)
     ```
+    1. This is an illustration of a definition. In a real world scenario, you would iterate over a data structure and create `Record` objects for each iteration. 
 
 === "From a generic data structure"
 
-    You can add the data directly as a dictionary, where the keys correspond to the names of fields, questions, metadata or vectors in the dataset and the values are the data to be added. However, you can also use a `mapping` to indicate which keys in the source data correspond to the dataset fields.
+    You can add the data directly as a dictionary like structure, where the keys correspond to the names of fields, questions, metadata or vectors in the dataset and the values are the data to be added. 
+    
+    If your data structure does not correspond to your Argilla dataset names, you can use a `mapping` to indicate which keys in the source data correspond to the dataset fields.
+
+    We illustrate this python dictionaries that represent your data, but we would not advise you to to define dictionaries. Instead use the `Record` object for instatiating records.
 
     ```python	
     import argilla_sdk as rg
@@ -94,7 +99,7 @@ You can add records to a dataset in two different ways: either by using a dictio
         {
             "question": "What is the boiling point of water?",
             "answer": "100 degrees Celsius",
-        },
+        }, # (2)
     ]
     dataset.records.log(data)
 
@@ -109,13 +114,21 @@ You can add records to a dataset in two different ways: either by using a dictio
             "response": "100 degrees Celsius",
         },
     ]
-    dataset.records.log(data, mapping={"query": "question", "response": "answer"})
+    dataset.records.log(data, mapping={"query": "question", "response": "answer"}) # (3)
     ```
+
+    1. The data structure's keys must match the fields or questions in the Argilla dataset. In this case, there are fields named `question` and `answer`. 
+    2. The data structure has keys `query` and `response` and the Argilla dataset has `question` and `answer`. You can use the `mapping` parameter to map the keys in the data structure to the fields in the Argilla dataset.
+
 
 === "From a Hugging Face dataset"
 
     You can also add records to a dataset using a Hugging Face dataset. This is useful when you want to use a dataset from the Hugging Face Hub and add it to your Argilla dataset.
+
+    You can add the dataset where the column names correspond to the names of fields, questions, metadata or vectors in the Argilla dataset. 
     
+    If the dataset's schema does not correspond to your Argilla dataset names, you can use a `mapping` to indicate which columns in the dataset correspond to the Argilla dataset fields.
+
     ```python
     from uuid import uuid4
 
@@ -132,9 +145,10 @@ You can add records to a dataset in two different ways: either by using a dictio
 
     1. In this case, we are using the `my_dataset` dataset from the Argilla workspace. The dataset has a `text` field and a `label` question.
 
-    2. In this example, we are using the Hugging Face `imdb` dataset and mapping the label values to `positive` and `negative` because that is what our Argilla dataset expects.
+    2. In this example, the Hugging Face dataset matches the Argilla dataset schema. If that is not the case, you could use the `.map` of the `datasets` library to prepare the data before adding it to the Argilla dataset.
 
-    We could also use the `mapping` parameter to specify the data structure in the Hugging Face dataset and the Argilla dataset.
+    Here we use the `mapping` parameter to specify the relationship between the Hugging Face dataset and the Argilla dataset.
+    
     ```python
     dataset.records.log(records=hf_dataset, mapping={"txt": "text", "y": "label"}) # (1)
     ```
@@ -150,6 +164,7 @@ Record metadata can include any information about the record that is not part of
     Remember that to use metadata within a dataset, you must define a metadata property in the [dataset settings](dataset.md).
 
 === "As `Record` objects"
+
     You can add metadata to a record in an initialized `Record` object. 
 
     ```python
@@ -234,7 +249,8 @@ You can associate vectors, like text embeddings, to your records. They can be us
     ```
 
 === "From a generic data structure"
-    You can add vectors as a dictionary, where the keys correspond to the `name`s of the vector settings that were configured for your dataset and the value is a list of floats. Remember that you can also use the `mapping` parameter to specify the data structure.
+
+    You can add vectors from a dictionary like structure, where the keys correspond to the `name`s of the vector settings that were configured for your dataset and the value is a list of floats. Remember that you can also use the `mapping` parameter to specify the data structure.
 
     ```python
     # Add records to the dataset with the vector 'my_vector' and dimension=3
@@ -419,20 +435,18 @@ updated_data = [
     for sample in data
 ]
 dataset.records.log(records=updated_data)
+
 ```
 !!! note "Update the metadata"
-    To update the metadata of a record, you can iterate over the records and update the metadata dictionary by key or using `metadata.update`. After that, you should update the records in the dataset.
+    The `metadata` of `Record` object is a python dictionary. So to update the metadata of a record, you can iterate over the records and update the metadata by key or using `metadata.update`. After that, you should update the records in the dataset.
 
     ```python
     updated_records = []
+    
     for record in dataset.records():
 
-        # By key
         record.metadata["my_metadata"] = "new_value"
         record.metadata["my_new_metadata"] = "new_value"
-
-        # With metadata.update
-        record.metadata.update({"my_metadata": "new_value", "my_new_metadata": "new_value"})
         
         updated_records.append(record)
 

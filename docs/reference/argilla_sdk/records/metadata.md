@@ -25,7 +25,7 @@ dataset.create()
 Then, you can add records to the dataset with metadata that corresponds to the metadata property defined in the dataset settings:
 
 ```python
-dataset_with_metadata.records.add(
+dataset_with_metadata.records.log(
     [
         {"text": "text", "label": "positive", "category": "A"},
         {"text": "text", "label": "negative", "category": "B"},

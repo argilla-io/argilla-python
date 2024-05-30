@@ -37,7 +37,7 @@ A **record** in Argilla is a data item that requires annotation, consisting of o
 
 ## Add records
 
-You can add records to a dataset in two different ways: either by using a dictionary or by directly initializing a `Record` object. You should ensure that fields, metadata and vectors match those configured in the dataset settings. In both cases, are added via the `Dataset.records.add` method. As soon as you add the records, these will be available in the Argilla UI. If they do not appear in the UI, you may need to click the refresh button to update the view.
+You can add records to a dataset in two different ways: either by using a dictionary or by directly initializing a `Record` object. You should ensure that fields, metadata and vectors match those configured in the dataset settings. In both cases, are added via the `Dataset.records.log` method. As soon as you add the records, these will be available in the Argilla UI. If they do not appear in the UI, you may need to click the refresh button to update the view.
 
 !!! tip
     Take some time to inspect the data before adding it to the dataset in case this triggers changes in the `questions` or `fields`.
@@ -71,7 +71,7 @@ You can add records to a dataset in two different ways: either by using a dictio
         ),
     ]
 
-    dataset.records.add(records)
+    dataset.records.log(records)
     ```
 
 === "From a generic data structure"
@@ -96,7 +96,7 @@ You can add records to a dataset in two different ways: either by using a dictio
             "answer": "100 degrees Celsius",
         },
     ]
-    dataset.records.add(data)
+    dataset.records.log(data)
 
     # Add records to the dataset with the a mapping of the fields 'question' and 'answer'
     data = [
@@ -109,7 +109,7 @@ You can add records to a dataset in two different ways: either by using a dictio
             "response": "100 degrees Celsius",
         },
     ]
-    dataset.records.add(data, mapping={"query": "question", "response": "answer"})
+    dataset.records.log(data, mapping={"query": "question", "response": "answer"})
     ```
 
 === "From a Hugging Face dataset"
@@ -127,7 +127,7 @@ You can add records to a dataset in two different ways: either by using a dictio
 
     hf_dataset = load_dataset("imdb", split="train[:100]") # (2)
 
-    dataset.records.add(records=hf_dataset)
+    dataset.records.log(records=hf_dataset)
     ```	
 
     1. In this case, we are using the `my_dataset` dataset from the Argilla workspace. The dataset has a `text` field and a `label` question.
@@ -136,7 +136,7 @@ You can add records to a dataset in two different ways: either by using a dictio
 
     We could also use the `mapping` parameter to specify the data structure in the Hugging Face dataset and the Argilla dataset.
     ```python
-    dataset.records.add(records=hf_dataset, mapping={"txt": "text", "y": "label"}) # (1)
+    dataset.records.log(records=hf_dataset, mapping={"txt": "text", "y": "label"}) # (1)
     ```
 
     1. In this case, the `txt` key in the Hugging Face dataset corresponds to the `text` field in the Argilla dataset, and the `y` key in the Hugging Face dataset corresponds to the `label` field in the Argilla dataset.
@@ -170,7 +170,7 @@ Record metadata can include any information about the record that is not part of
             metadata={"category": "B"},
         ),
     ]
-    dataset.records.add(records)
+    dataset.records.log(records)
     ```
 
 === "From a generic data structure"
@@ -190,7 +190,7 @@ Record metadata can include any information about the record that is not part of
             "category": "B",
         },
     ]
-    dataset.records.add(data)
+    dataset.records.log(data)
     ```
 
 
@@ -230,7 +230,7 @@ You can associate vectors, like text embeddings, to your records. They can be us
             ],
         ),
     ]
-    dataset.records.add(records)
+    dataset.records.log(records)
     ```
 
 === "From a generic data structure"
@@ -250,7 +250,7 @@ You can associate vectors, like text embeddings, to your records. They can be us
             "my_vector": [0.2, 0.5, 0.3],
         },
     ]
-    dataset.records.add(data)
+    dataset.records.log(data)
     ```
 
 ### Suggestions
@@ -294,7 +294,7 @@ Suggestions refer to suggested responses (e.g. model predictions) that you can a
             ],
         ),
     ]
-    dataset.records.add(records)
+    dataset.records.log(records)
     ```
 
 === "From a generic data structure"
@@ -318,7 +318,7 @@ Suggestions refer to suggested responses (e.g. model predictions) that you can a
             "my_label.suggestion.agent": "model_name"
         },
     ]
-    dataset.records.add(data)
+    dataset.records.log(data)
     ```
 
 ### Responses
@@ -355,7 +355,7 @@ If your dataset includes some annotations, you can add those to the records as y
             ]
         ),
     ]
-    dataset.records.add(records)
+    dataset.records.log(records)
     ```
 
 === "From a generic data structure"
@@ -376,7 +376,7 @@ If your dataset includes some annotations, you can add those to the records as y
             "my_label.response": "negative",
         },
     ]
-    dataset.records.add(data, user_id=user.id)
+    dataset.records.log(data, user_id=user.id)
     ```
 
 
@@ -418,7 +418,7 @@ updated_data = [
     }
     for sample in data
 ]
-dataset.records.add(records=updated_data)
+dataset.records.log(records=updated_data)
 ```
 !!! note "Update the metadata"
     To update the metadata of a record, you can iterate over the records and update the metadata dictionary by key or using `metadata.update`. After that, you should update the records in the dataset.
@@ -436,5 +436,5 @@ dataset.records.add(records=updated_data)
         
         updated_records.append(record)
 
-    dataset.records.add(records=updated_records)
+    dataset.records.log(records=updated_records)
     ```

@@ -113,8 +113,8 @@ data = load_dataset("imdb", split="train[:100]").to_list()
 Now you can add the data to your dataset. Use `mapping` to indicate which keys in the source data correspond to the dataset fields.
 
 ```python
-# Add records to the dataset
-dataset.records.add(records=data, mapping={"text": "review"})
+# Add records to the dataset using the log method
+dataset.records.log(records=data, mapping={"text": "review"})
 ```	
 
 🎉 You have successfully created your first dataset with Argilla. You can now access it in the Argilla UI and start annotating the records.

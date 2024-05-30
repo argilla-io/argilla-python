@@ -9,7 +9,7 @@ Responses can be added to an instantiated `Record` directly or as a dictionary a
 Instantiate the `Record` and related `Response` objects:
 
 ```python
-dataset.records.add(
+dataset.records.log(
     [
         rg.Record(
             fields={"text": "Hello World, how are you?"},
@@ -24,7 +24,7 @@ Or, add a response from a dictionary where key is the question name and value is
 
 ```python
 
-dataset.records.add(
+dataset.records.log(
     [
         {
             "text": "Hello World, how are you?",

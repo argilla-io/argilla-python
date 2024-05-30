@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Sequence,
 from uuid import UUID
 
 from argilla_sdk._api import RecordsAPI
-from argilla_sdk._helpers._uuid import LoggingMixin
+from argilla_sdk._helpers import LoggingMixin
 from argilla_sdk._models import RecordModel, MetadataValue
 from argilla_sdk.client import Argilla
 from argilla_sdk.records._io import HFDatasetsIO, GenericIO, JsonIO, HFDataset
@@ -191,7 +191,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
     # Public methods
     ############################
 
-    def add(
+    def log(
         self,
         records: Union[List[dict], List[Record], HFDataset],
         mapping: Optional[Dict[str, str]] = None,

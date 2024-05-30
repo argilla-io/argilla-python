@@ -17,7 +17,7 @@ from uuid import UUID
 
 from argilla_sdk._api._workspaces import WorkspacesAPI
 from argilla_sdk._helpers import GenericIterator
-from argilla_sdk._helpers._uuid import LoggingMixin
+from argilla_sdk._helpers import LoggingMixin
 from argilla_sdk._models import WorkspaceModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla

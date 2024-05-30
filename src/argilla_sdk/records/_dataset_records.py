@@ -198,16 +198,17 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         user_id: Optional[UUID] = None,
         batch_size: int = DEFAULT_BATCH_SIZE,
     ) -> List[Record]:
-        """Update records in a dataset on the server using the provided records
-            and matching based on the external_id or id.
+        """Add or update records in a dataset on the server using the provided records.
+        If the record includes a known `id` field, the record will be updated.
+        If the record does not include a known `id` field, the record will be added as a new record.
+        See `rg.Record` for more information on the record definition.
 
         Parameters:
-            records: A dictionary or a list of dictionaries representing the records
-                     to be updated in the dataset. Records are defined as dictionaries
-                     with keys corresponding to the fields in the dataset schema. Ids or
-                     external_ids should be provided to identify the records to be updated.
-            mapping: A dictionary that maps the keys in the records to the fields in the dataset schema.
-            user_id: The user id to be associated with the records. If not provided, the current user id is used.
+            records: A list of `Record` objects, a Hugging Face Dataset, or a list of dictionaries representing the records.
+                     If records are defined as a dictionaries or a dataset, the keys/ column names should correspond to the
+                     fields in the Argilla dataset's fields and questions. `id` should be provided to identify the records when updating.
+            mapping: A dictionary that maps the keys/ column names in the records to the fields or questions in the Argilla dataset.
+            user_id: The user id to be associated with the records' response. If not provided, the current user id is used.
             batch_size: The number of records to send in each batch. The default is 256.
 
         Returns:

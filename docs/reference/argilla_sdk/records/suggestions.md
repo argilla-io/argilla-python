@@ -1,3 +1,6 @@
+---
+hide: footer
+---
 # `rg.Suggestion`
 
 Class for interacting with Argilla Suggestions of records. Suggestions are typically created by a model prediction, unlike a `Response` which is typically created by a user in the UI or consumed from a data source as a label.
@@ -71,5 +74,5 @@ for record in dataset.records(with_suggestions=True):
 ### `rg.Suggestion`
 
 ::: argilla_sdk.suggestions.Suggestion
-    options: 
+    options:
         heading_level: 3

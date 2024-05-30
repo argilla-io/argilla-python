@@ -93,10 +93,6 @@ class TextField(SettingsPropertyBase):
         self._dataset = value
         self._model.dataset_id = self._dataset.id
 
-    def _sync(self, model: "FieldModel") -> None:
-        # TODO: Simplify parent method to use properties instead
-        self._model = model
-
 
 def field_from_dict(data: dict) -> Union[TextField, VectorField, MetadataType]:
     """Create a field instance from a field dictionary"""

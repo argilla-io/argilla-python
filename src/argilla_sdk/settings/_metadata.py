@@ -85,9 +85,6 @@ class MetadataPropertyBase(Resource):
             f"{self.__class__.__name__}(name={self.name}, title={self.title}, dimensions={self.visible_for_annotators})"
         )
 
-    def _sync(self, model: "MetadataFieldModel") -> None:
-        self._model = model
-
 
 class TermsMetadataProperty(MetadataPropertyBase):
     def __init__(

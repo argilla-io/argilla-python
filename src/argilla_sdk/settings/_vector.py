@@ -98,6 +98,3 @@ class VectorField(Resource):
     def from_dict(cls, data: dict) -> "VectorField":
         model = VectorFieldModel(**data)
         return cls.from_model(model=model)
-
-    def _sync(self, model: "VectorFieldModel") -> None:
-        self._model = model

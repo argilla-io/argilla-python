@@ -6,9 +6,14 @@
 In most cases, you will not need to create a `DatasetRecords` object directly.
 Instead, you can access it via the `Dataset` object:
 
+!!! note "For user familiar with legacy approaches"
+    1. `Dataset.records` object is used to interact with the records in a dataset. It interactively fetches records from the server in batches without using a local copy of the records. 
+    2. The `log` method of `Dataset.records` is used to both add and update records in a dataset. If the record includes a known `id` field, the record will be updated. If the record does not include a known `id` field, the record will be added.
+```python
+
 ### Adding records to a dataset
 
-To add records to a dataset, use the `add` method. Records can be added as dictionaries or as `Record` objects. Single records can also be added as a dictionary or `Record`.
+To add records to a dataset, use the `log` method. Records can be added as dictionaries or as `Record` objects. Single records can also be added as a dictionary or `Record`.
 
 === "As a `Record` object"
 
@@ -31,7 +36,7 @@ To add records to a dataset, use the `add` method. Records can be added as dicti
         ),
     ] # (1)
 
-    dataset.records.add(records)
+    dataset.records.log(records)
     ```
 
     1. In a real world scenario, you might iterate over a data structure and create `Record` objects for each record. This is a more efficient way to add records to a dataset. 
@@ -51,7 +56,7 @@ To add records to a dataset, use the `add` method. Records can be added as dicti
         },
     ] # (1)
 
-    dataset.records.add(data)
+    dataset.records.log(data)
     ```
 
     1. If the data structure is a list of dictionaries, the keys in the dictionary must match the fields in the dataset. In this case, the fields are `question` and `answer`. We would not advise you to to define dictionaries. Instead use the `Record` object.
@@ -70,7 +75,7 @@ To add records to a dataset, use the `add` method. Records can be added as dicti
             "response": "100 degrees Celsius",
         },
     ] # (1)
-    dataset.records.add(
+    dataset.records.log(
         records=data, 
         mapping={"query": "question", "response": "answer"} # (2)
     )
@@ -82,7 +87,7 @@ To add records to a dataset, use the `add` method. Records can be added as dicti
 
 ### Updating records in a dataset
 
-Records can also be updated using the `add` method with records that contain an `id` to identify the records to be updated. As above, records can be added as dictionaries or as `Record` objects.
+Records can also be updated using the `log` method with records that contain an `id` to identify the records to be updated. As above, records can be added as dictionaries or as `Record` objects.
 
 === "As a `Record` object"
 
@@ -97,7 +102,7 @@ Records can also be updated using the `add` method with records that contain an 
         ),
     ] # (1)
 
-    dataset.records.add(records)
+    dataset.records.log(records)
     ```
 
     1. The `id` field is required to identify the record to be updated. The `id` field must be unique for each record in the dataset. If the `id` field is not provided, the record will be added as a new record.
@@ -113,7 +118,7 @@ Records can also be updated using the `add` method with records that contain an 
         },
     ] # (1)
 
-    dataset.records.add(data)
+    dataset.records.log(data)
     ```
 
     1. The `id` field is required to identify the record to be updated. The `id` field must be unique for each record in the dataset. If the `id` field is not provided, the record will be added as a new record.
@@ -129,7 +134,7 @@ Records can also be updated using the `add` method with records that contain an 
         },
     ]
 
-    dataset.records.add(
+    dataset.records.log(
         records=data, 
         mapping={"my_id": "id"} # (2)
     )

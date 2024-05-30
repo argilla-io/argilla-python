@@ -75,7 +75,7 @@ class User(Resource):
                 role=role or Role.annotator,
                 id=id,
             )
-            self.log(f"Initialized user with username {username}")
+            self._log_message(f"Initialized user with username {username}")
         self._model = _model
 
     def create(self) -> "User":

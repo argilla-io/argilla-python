@@ -18,6 +18,7 @@ from uuid import UUID, uuid4
 
 from argilla_sdk._api import DatasetsAPI
 from argilla_sdk._exceptions import NotFoundError, SettingsError
+from argilla_sdk._helpers import UUIDUtilities
 from argilla_sdk._models import DatasetModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
@@ -69,7 +70,7 @@ class Dataset(Resource, DiskImportExportMixin):
         super().__init__(client=client, api=client.api.datasets)
         if name is None:
             name = f"dataset_{uuid4()}"
-            self.log(f"Settings dataset name to unique UUID: {name}")
+            self._log_message(f"Settings dataset name to unique UUID: {name}")
 
         self.workspace_id = (
             _model.workspace_id
@@ -78,7 +79,7 @@ class Dataset(Resource, DiskImportExportMixin):
         )
         self._model = _model or DatasetModel(
             name=name,
-            workspace_id=self._convert_optional_uuid(uuid=self.workspace_id),
+            workspace_id=UUIDUtilities.convert_optional_uuid(uuid=self.workspace_id),
         )
         self._settings = self.__configure_settings_for_dataset(settings=settings)
         self.__records = DatasetRecords(client=self._client, dataset=self)
@@ -159,7 +160,7 @@ class Dataset(Resource, DiskImportExportMixin):
         try:
             return self._publish()
         except Exception as e:
-            self.log(message=f"Error creating dataset: {e}", level="error")
+            self._log_message(message=f"Error creating dataset: {e}", level="error")
             self.__rollback_dataset_creation()
             raise SettingsError from e
 
@@ -202,7 +203,7 @@ class Dataset(Resource, DiskImportExportMixin):
             available_workspace_names = [ws.name for ws in self._client.workspaces]
             ws = self._client.workspaces(workspace)
             if not ws.exists():
-                self.log(
+                self._log_message(
                     message=f"Workspace with name {workspace} not found. \
                         Available workspaces: {available_workspace_names}",
                     level="error",

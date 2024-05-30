@@ -21,7 +21,7 @@ from argilla_sdk._api import RecordsAPI
 from argilla_sdk._helpers import LoggingMixin
 from argilla_sdk._models import RecordModel, MetadataValue
 from argilla_sdk.client import Argilla
-from argilla_sdk.records._io import HFDatasetsIO, GenericIO, JsonIO, HFDataset
+from argilla_sdk.records._io import GenericIO, HFDataset, HFDatasetsIO, JsonIO
 from argilla_sdk.records._resource import Record
 from argilla_sdk.records._search import Query
 from argilla_sdk.responses import Response
@@ -150,7 +150,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         with_suggestions: bool = True,
         with_responses: bool = True,
         with_vectors: Optional[Union[List, bool, str]] = None,
-    ):
+    ) -> DatasetRecordsIterator:
         """Returns an iterator over the records in the dataset on the server.
 
         Parameters:
@@ -278,7 +278,6 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
         Parameters:
             path (str): The path to the file to save the records.
-            orient (str): The structure of the exported dictionary.
 
         Returns:
             The path to the file where the records were saved.
@@ -303,14 +302,10 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
 
     def to_datasets(self) -> HFDataset:
         """
-        Export the records to a file on disk.
-
-        Parameters:
-            path (str): The path to the file to save the records.
-            orient (str): The structure of the exported dictionary.
+        Export the records to a HFDataset.
 
         Returns:
-            The path to the file where the records were saved.
+            The dataset containing the records.
 
         """
         records = list(self(with_suggestions=True, with_responses=True))
@@ -402,7 +397,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
                     sub_attribute = attribute_mapping[2]
             elif schema_item is mapping is None and attribute != "id":
                 warnings.warn(
-                    message=f"""Record attribute {attribute} is not in the schema so skipping. 
+                    message=f"""Record attribute {attribute} is not in the schema so skipping.
                         Define a mapping to map source data fields to Argilla Fields, Questions, and ids
                         """
                 )

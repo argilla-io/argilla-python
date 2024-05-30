@@ -1,3 +1,6 @@
+---
+hide: footer
+---
 # `rg.Vector`
 
 A vector is a numerical representation of a `Record` field or attribute, usually the record's text. Vectors can be used to search for similar records via the UI or SDK. Vectors can be added to a record directly or as a dictionary with a key that the matches `rg.VectorField` name.
@@ -70,5 +73,5 @@ dataset.records.log(
 ### `rg.Vector`
 
 ::: argilla_sdk.vectors.Vector
-    options: 
+    options:
         heading_level: 3

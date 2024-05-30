@@ -1,10 +1,15 @@
-
+---
+hide: footer
+---
 # `rg.Dataset.records`
 
 ## Usage Examples
 
-In most cases, you will not need to create a `DatasetRecords` object directly.
-Instead, you can access it via the `Dataset` object:
+In most cases, you will not need to create a `DatasetRecords` object directly. Instead, you can access it via the `Dataset` object:
+
+```python
+dataset.records
+```
 
 !!! note "For user familiar with legacy approaches"
     1. `Dataset.records` object is used to interact with the records in a dataset. It interactively fetches records from the server in batches without using a local copy of the records. 
@@ -206,7 +211,7 @@ for record in dataset.records(query="capital", with_vectors=True):
     print(record.vectors)
 ```
 
-Check out the [`rg.Record`](../records/record.md) class reference for more information on the properties and methods available on a record and the [`rg.Query`](../query/query.md) class reference for more information on the query syntax.
+Check out the [`rg.Record`](../records/records.md) class reference for more information on the properties and methods available on a record and the [`rg.Query`](../search.md) class reference for more information on the query syntax.
 
 ---
 
@@ -215,5 +220,5 @@ Check out the [`rg.Record`](../records/record.md) class reference for more infor
 ### `rg.Dataset.records`
 
 ::: argilla_sdk.records.DatasetRecords
-    options: 
+    options:
         heading_level: 3

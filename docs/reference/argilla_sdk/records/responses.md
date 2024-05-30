@@ -1,3 +1,6 @@
+---
+hide: footer
+---
 # `rg.Response`
 
 Class for interacting with Argilla Responses of records. Responses are answers to questions by a user. Therefore, a recod question can have multiple responses, one for each user that has answered the question. A `Response` is typically created by a user in the UI or consumed from a data source as a label, unlike a `Suggestion` which is typically created by a model prediction.
@@ -62,5 +65,5 @@ for record in dataset.records:
 ### `rg.Response`
 
 ::: argilla_sdk.responses.Response
-    options: 
+    options:
         heading_level: 3

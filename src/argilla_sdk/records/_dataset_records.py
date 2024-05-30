@@ -336,8 +336,8 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
                 record.dataset = self.__dataset
         else:
             raise ValueError(
-                "Records should be a dictionary, a list of dictionaries, a Record instance, "
-                "a list of Record instances, or `datasets.Dataset`."
+                "Records should be a a list Record instances, "
+                "a Hugging Face Dataset, or a list of dictionaries representing the records."
             )
         return [record.api_model() for record in records]
 

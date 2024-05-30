@@ -17,7 +17,7 @@ from uuid import UUID
 
 from argilla_sdk._api._workspaces import WorkspacesAPI
 from argilla_sdk._helpers import GenericIterator
-from argilla_sdk._helpers._mixins import LoggingMixin
+from argilla_sdk._helpers._uuid import LoggingMixin
 from argilla_sdk._models import WorkspaceModel
 from argilla_sdk._resource import Resource
 from argilla_sdk.client import Argilla
@@ -100,7 +100,7 @@ class Workspace(Resource):
         from argilla_sdk.datasets import Dataset
 
         datasets = self._client.api.datasets.list(self.id)
-        self.log(f"Got {len(datasets)} datasets for workspace {self.id}")
+        self._log_message(f"Got {len(datasets)} datasets for workspace {self.id}")
         return [Dataset.from_model(model=dataset, client=self._client) for dataset in datasets]
 
     ############################
@@ -147,12 +147,10 @@ class WorkspaceUsers(Sequence["User"], LoggingMixin):
         self._workspace = workspace
 
     @overload
-    def add(self, user: "User") -> "User":
-        ...
+    def add(self, user: "User") -> "User": ...
 
     @overload
-    def add(self, user: str) -> "User":
-        ...
+    def add(self, user: str) -> "User": ...
 
     def add(self, user: Union["User", str]) -> "User":
         if isinstance(user, str):
@@ -160,12 +158,10 @@ class WorkspaceUsers(Sequence["User"], LoggingMixin):
         return user.add_to_workspace(workspace=self._workspace)
 
     @overload
-    def delete(self, user: "User") -> "User":
-        ...
+    def delete(self, user: "User") -> "User": ...
 
     @overload
-    def delete(self, user: str) -> "User":
-        ...
+    def delete(self, user: str) -> "User": ...
 
     def delete(self, user: Union["User", str]) -> "User":
         if isinstance(user, str):
@@ -187,7 +183,7 @@ class WorkspaceUsers(Sequence["User"], LoggingMixin):
 
     def _list_users(self) -> List["User"]:
         users = self._workspace._client.users.list(workspace=self._workspace)
-        self.log(f"Got {len(users)} users for workspace {self._workspace.id}")
+        self._log_message(f"Got {len(users)} users for workspace {self._workspace.id}")
         return users
 
     def _delete_user_by_username(self, username: str) -> "User":

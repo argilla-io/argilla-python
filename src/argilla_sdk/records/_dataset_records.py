@@ -18,7 +18,7 @@ from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Sequence,
 from uuid import UUID
 
 from argilla_sdk._api import RecordsAPI
-from argilla_sdk._helpers._mixins import LoggingMixin
+from argilla_sdk._helpers._uuid import LoggingMixin
 from argilla_sdk._models import RecordModel, MetadataValue
 from argilla_sdk.client import Argilla
 from argilla_sdk.records._io import HFDatasetsIO, GenericIO, JsonIO, HFDataset
@@ -224,14 +224,14 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         created_or_updated = []
         records_updated = 0
         for batch in range(0, len(records), batch_size):
-            self.log(message=f"Sending records from {batch} to {batch + batch_size}.")
+            self._log_message(message=f"Sending records from {batch} to {batch + batch_size}.")
             batch_records = record_models[batch : batch + batch_size]
             models, updated = self._api.bulk_upsert(dataset_id=self.__dataset.id, records=batch_records)
             created_or_updated.extend([Record.from_model(model=model, dataset=self.__dataset) for model in models])
             records_updated += updated
 
         records_created = len(created_or_updated) - records_updated
-        self.log(
+        self._log_message(
             message=f"Updated {records_updated} records and added {records_created} records to dataset {self.__dataset.name}",
             level="info",
         )
@@ -344,7 +344,7 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         norm_batch_size = min(batch_size, records_length, max_value)
 
         if batch_size != norm_batch_size:
-            self.log(
+            self._log_message(
                 message=f"The provided batch size {batch_size} was normalized. Using value {norm_batch_size}.",
                 level="warning",
             )

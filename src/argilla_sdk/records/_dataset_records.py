@@ -321,6 +321,8 @@ class DatasetRecords(Iterable[Record], LoggingMixin):
         mapping: Optional[Dict[str, str]] = None,
         user_id: Optional[UUID] = None,
     ) -> List[RecordModel]:
+        if len(records) == 0:
+            raise ValueError("No records provided to ingest.")
         if HFDatasetsIO._is_hf_dataset(dataset=records):
             records = HFDatasetsIO._record_dicts_from_datasets(dataset=records)
         if all(map(lambda r: isinstance(r, dict), records)):

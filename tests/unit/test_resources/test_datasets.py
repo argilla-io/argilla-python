@@ -74,7 +74,6 @@ def dataset(httpx_mock: HTTPXMock) -> rg.Dataset:
 
 
 class TestDatasets:
-
     def url(self, path: str) -> str:
         return f"http://test_url{path}"
 

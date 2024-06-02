@@ -215,8 +215,8 @@ class Settings(Resource):
                 "guidelines": self.guidelines,
                 "questions": self.__serialize_questions(self.questions),
                 "fields": self.__fields.serialize(),
-                # "vectors": self.vectors.serialize(),
-                # "metadata": self.metadata.serialize(),
+                "vectors": self.vectors.serialize(),
+                "metadata": self.metadata.serialize(),
                 "allow_extra_metadata": self.allow_extra_metadata,
             }
         except Exception as e:
@@ -242,23 +242,22 @@ class Settings(Resource):
         with open(path, "r") as file:
             settings_dict = json.load(file)
 
-        questions = settings_dict.get("questions", [])
         fields = settings_dict.get("fields", [])
-        # vectors = settings_dict.get("vectors", [])
-        # metadata = settings_dict.get("metadata", [])
+        vectors = settings_dict.get("vectors", [])
+        metadata = settings_dict.get("metadata", [])
         guidelines = settings_dict.get("guidelines")
         allow_extra_metadata = settings_dict.get("allow_extra_metadata")
 
-        questions = [question_from_dict(question) for question in questions]
+        questions = [question_from_dict(question) for question in settings_dict.get("questions", [])]
         fields = [TextField.from_dict(field) for field in fields]
-        # vectors = [VectorField.from_dict(vector) for vector in vectors]
-        # metadata = [MetadataField.from_dict(metadata) for metadata in metadata]
+        vectors = [VectorField.from_dict(vector) for vector in vectors]
+        metadata = [MetadataField.from_dict(metadata) for metadata in metadata]
 
         return cls(
             questions=questions,
             fields=fields,
-            # vectors=vectors,
-            # metadata=metadata,
+            vectors=vectors,
+            metadata=metadata,
             guidelines=guidelines,
             allow_extra_metadata=allow_extra_metadata,
         )

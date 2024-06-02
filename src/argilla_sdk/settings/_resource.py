@@ -176,11 +176,11 @@ class Settings(Resource):
     def create(self) -> "Settings":
         self.validate()
 
+        self._update_dataset_related_attributes()
         self._create_fields()
         self._create_vectors()
         self._create_metadata()
         self._create_questions()
-        self._update_dataset_related_attributes()
 
         self._update_last_api_call()
         return self
@@ -188,10 +188,10 @@ class Settings(Resource):
     def update(self) -> "Resource":
         self.validate()
 
+        self._update_dataset_related_attributes()
         self._upsert_fields()
         self._upsert_vectors()
         self._upsert_metadata()
-        self._update_dataset_related_attributes()
 
         self._update_last_api_call()
         return self

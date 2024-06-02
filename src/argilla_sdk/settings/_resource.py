@@ -16,13 +16,13 @@ import json
 import os
 from functools import cached_property
 from pathlib import Path
-from typing import List, Optional, TYPE_CHECKING, Dict, Union
+from typing import List, Optional, TYPE_CHECKING, Dict, Union, Iterator, Sequence
 from uuid import UUID
 
 from argilla_sdk._exceptions import SettingsError, ArgillaAPIError, ArgillaSerializeError
 from argilla_sdk._models._dataset import DatasetModel
 from argilla_sdk._resource import Resource
-from argilla_sdk.settings._field import field_from_dict, TextField
+from argilla_sdk.settings._field import TextField
 from argilla_sdk.settings._metadata import MetadataType, MetadataField
 from argilla_sdk.settings._question import QuestionType, question_from_model, question_from_dict, QuestionPropertyBase
 from argilla_sdk.settings._vector import VectorField
@@ -63,9 +63,9 @@ class Settings(Resource):
         super().__init__(client=_dataset._client if _dataset else None)
 
         self.__questions = questions or []
-        self.__fields = fields or []
-        self.__vectors = vectors or []
-        self.__metadata = metadata or []
+        self.__fields = SettingsProperties(self, fields)
+        self.__vectors = SettingsProperties(self, vectors)
+        self.__metadata = SettingsProperties(self, metadata)
 
         self.__guidelines = self.__process_guidelines(guidelines)
         self.__allow_extra_metadata = allow_extra_metadata
@@ -77,12 +77,12 @@ class Settings(Resource):
     #####################
 
     @property
-    def fields(self) -> List[TextField]:
+    def fields(self) -> "SettingsProperties":
         return self.__fields
 
     @fields.setter
     def fields(self, fields: List[TextField]):
-        self.__fields = fields
+        self.__fields = SettingsProperties(self, fields)
 
     @property
     def questions(self) -> List[QuestionType]:
@@ -93,28 +93,28 @@ class Settings(Resource):
         self.__questions = questions
 
     @property
+    def vectors(self) -> "SettingsProperties":
+        return self.__vectors
+
+    @vectors.setter
+    def vectors(self, vectors: List[VectorField]):
+        self.__vectors = SettingsProperties(self, vectors)
+
+    @property
+    def metadata(self) -> "SettingsProperties":
+        return self.__metadata
+
+    @metadata.setter
+    def metadata(self, metadata: List[MetadataType]):
+        self.__metadata = SettingsProperties(self, metadata)
+
+    @property
     def guidelines(self) -> str:
         return self.__guidelines
 
     @guidelines.setter
     def guidelines(self, guidelines: str):
         self.__guidelines = self.__process_guidelines(guidelines)
-
-    @property
-    def vectors(self) -> List[VectorField]:
-        return self.__vectors
-
-    @vectors.setter
-    def vectors(self, vectors: List[VectorField]):
-        self.__vectors = vectors
-
-    @property
-    def metadata(self) -> List[MetadataType]:
-        return self.__metadata
-
-    @metadata.setter
-    def metadata(self, metadata: List[MetadataType]):
-        self.__metadata = metadata
 
     @property
     def allow_extra_metadata(self) -> bool:
@@ -164,10 +164,10 @@ class Settings(Resource):
     #####################
 
     def get(self) -> "Settings":
-        self._fetch_fields()
-        self.__fetch_questions()
-        self._fetch_vectors()
-        self.__fetch_metadata()
+        self.fields = self._fetch_fields()
+        self.questions = self._fetch_questions()
+        self.vectors = self._fetch_vectors()
+        self.metadata = self._fetch_metadata()
         self.__get_dataset_related_attributes()
 
         self._update_last_api_call()
@@ -177,10 +177,10 @@ class Settings(Resource):
         self.validate()
 
         self._update_dataset_related_attributes()
-        self._create_fields()
-        self._create_vectors()
-        self._create_metadata()
+        self.__fields.create()
         self._create_questions()
+        self.__vectors.create()
+        self.__metadata.create()
 
         self._update_last_api_call()
         return self
@@ -189,9 +189,10 @@ class Settings(Resource):
         self.validate()
 
         self._update_dataset_related_attributes()
-        self._upsert_fields()
-        self._upsert_vectors()
-        self._upsert_metadata()
+        self.__fields.update()
+        self.__vectors.update()
+        self.__metadata.update()
+        # self.questions.update()
 
         self._update_last_api_call()
         return self
@@ -212,8 +213,10 @@ class Settings(Resource):
         try:
             return {
                 "guidelines": self.guidelines,
-                "fields": self.__serialize_fields(fields=self.fields),
-                "questions": self.__serialize_questions(questions=self.questions),
+                "questions": self.__serialize_questions(self.questions),
+                "fields": self.__fields.serialize(),
+                # "vectors": self.vectors.serialize(),
+                # "metadata": self.metadata.serialize(),
                 "allow_extra_metadata": self.allow_extra_metadata,
             }
         except Exception as e:
@@ -239,18 +242,24 @@ class Settings(Resource):
         with open(path, "r") as file:
             settings_dict = json.load(file)
 
+        questions = settings_dict.get("questions", [])
+        fields = settings_dict.get("fields", [])
+        # vectors = settings_dict.get("vectors", [])
+        # metadata = settings_dict.get("metadata", [])
         guidelines = settings_dict.get("guidelines")
-        fields = settings_dict.get("fields")
-        questions = settings_dict.get("questions")
         allow_extra_metadata = settings_dict.get("allow_extra_metadata")
 
-        fields = [field_from_dict(field) for field in fields]
         questions = [question_from_dict(question) for question in questions]
+        fields = [TextField.from_dict(field) for field in fields]
+        # vectors = [VectorField.from_dict(vector) for vector in vectors]
+        # metadata = [MetadataField.from_dict(metadata) for metadata in metadata]
 
         return cls(
-            guidelines=guidelines,
-            fields=fields,
             questions=questions,
+            fields=fields,
+            # vectors=vectors,
+            # metadata=metadata,
+            guidelines=guidelines,
             allow_extra_metadata=allow_extra_metadata,
         )
 
@@ -273,27 +282,19 @@ class Settings(Resource):
 
     def _fetch_fields(self) -> List[TextField]:
         models = self._client.api.fields.list(dataset_id=self._dataset.id)
-        self.__fields = [TextField.from_model(model) for model in models]
+        return [TextField.from_model(model) for model in models]
 
-        return self.__fields
-
-    def __fetch_questions(self) -> List[QuestionType]:
+    def _fetch_questions(self) -> List[QuestionType]:
         models = self._client.api.questions.list(dataset_id=self._dataset.id)
-        self.__questions = [question_from_model(model) for model in models]
-
-        return self.__questions
+        return [question_from_model(model) for model in models]
 
     def _fetch_vectors(self) -> List[VectorField]:
         models = self.dataset._client.api.vectors.list(self.dataset.id)
-        self.__vectors = [VectorField.from_model(model) for model in models]
+        return [VectorField.from_model(model) for model in models]
 
-        return self.__vectors
-
-    def __fetch_metadata(self) -> List[MetadataType]:
+    def _fetch_metadata(self) -> List[MetadataType]:
         models = self._client.api.metadata.list(dataset_id=self._dataset.id)
-        self.__metadata = [MetadataField.from_model(model) for model in models]
-
-        return self.__metadata
+        return [MetadataField.from_model(model) for model in models]
 
     def __get_dataset_related_attributes(self):
         # This flow may be a bit weird, but it's the only way to update the dataset related attributes
@@ -336,54 +337,6 @@ class Settings(Resource):
             except ArgillaAPIError as e:
                 raise SettingsError(f"Failed to create question {question.name}") from e
 
-    def _create_fields(self) -> None:
-        for field in self.__fields:
-            try:
-                field.dataset = self.dataset
-                field.create()
-            except ArgillaAPIError as e:
-                raise SettingsError(f"Failed to create field {field.name}") from e
-
-    def _create_vectors(self) -> None:
-        for vector in self.__vectors:
-            try:
-                vector.dataset = self.dataset
-                vector.create()
-            except ArgillaAPIError as e:
-                raise SettingsError(f"Failed to create vector {vector.name}") from e
-
-    def _create_metadata(self) -> None:
-        for metadata in self.__metadata:
-            try:
-                metadata.dataset = self.dataset
-                metadata.create()
-            except ArgillaAPIError as e:
-                raise SettingsError(f"Failed to create metadata {metadata.name}") from e
-
-    def _upsert_fields(self) -> None:
-        for field in self.__fields:
-            try:
-                field.dataset = self.dataset
-                field.update() if field.id else field.create()
-            except ArgillaAPIError as e:
-                raise SettingsError(f"Failed to create/update field {field.name}") from e
-
-    def _upsert_vectors(self) -> None:
-        for vector in self.__vectors:
-            try:
-                vector.dataset = self.dataset
-                vector.update() if vector.id else vector.create()
-            except ArgillaAPIError as e:
-                raise SettingsError(f"Failed to create/update vector {vector.name}") from e
-
-    def _upsert_metadata(self) -> None:
-        for metadata in self.__metadata:
-            try:
-                metadata.dataset = self.dataset
-                metadata.update() if metadata.id else metadata.create()
-            except ArgillaAPIError as e:
-                raise SettingsError(f"Failed to create/update metadata {metadata.name}") from e
-
     def _validate_empty_settings(self):
         if not all([self.fields, self.questions]):
             message = "Fields and questions are required"
@@ -392,13 +345,14 @@ class Settings(Resource):
     def _validate_duplicate_names(self) -> None:
         dataset_properties_by_name = {}
 
-        for prop in self.fields + self.questions + self.vectors + self.metadata:
-            if prop.name in dataset_properties_by_name:
-                raise SettingsError(
-                    f"names of dataset settings must be unique, "
-                    f"but the name {prop.name!r} is used by {type(prop).__name__!r} and {type(dataset_properties_by_name[prop.name]).__name__!r} "
-                )
-            dataset_properties_by_name[prop.name] = prop
+        for properties in [self.fields, self.questions, self.vectors, self.metadata]:
+            for property in properties:
+                if property.name in dataset_properties_by_name:
+                    raise SettingsError(
+                        f"names of dataset settings must be unique, "
+                        f"but the name {property.name!r} is used by {type(property).__name__!r} and {type(dataset_properties_by_name[property.name]).__name__!r} "
+                    )
+                dataset_properties_by_name[property.name] = property
 
     def __process_guidelines(self, guidelines):
         if guidelines is None:
@@ -413,8 +367,71 @@ class Settings(Resource):
 
         return guidelines
 
-    def __serialize_fields(self, fields: List[TextField]):
-        return [field.serialize() for field in fields]
-
     def __serialize_questions(self, questions: List[QuestionType]):
         return [question.serialize() for question in questions]
+
+
+Property = Union[TextField, VectorField, MetadataType, QuestionType]
+
+
+class SettingsProperties(Sequence[Property]):
+    """A collection of properties (fields, questions, vectors and metadata) for a dataset settings object.
+
+    This class is used to store the properties of a dataset settings object
+    """
+
+    def __init__(self, settings: "Settings", properties: List[Property]):
+        self._properties_by_name = {}
+        self._settings = settings
+
+        for property in properties or []:
+            self.add(property)
+
+    def __getitem__(self, key: Union[str, int]) -> Optional[Property]:
+        if isinstance(key, int):
+            return list(self._properties_by_name.values())[key]
+        return self._properties_by_name.get(key)
+
+    def __iter__(self) -> Iterator[Property]:
+        return iter(self._properties_by_name.values())
+
+    def __len__(self):
+        return len(self._properties_by_name)
+
+    def __eq__(self, other):
+        """Check if two instances are equal. Overloads the == operator."""
+        if not isinstance(other, SettingsProperties):
+            return False
+        return self._properties_by_name == other._properties_by_name
+
+    def add(self, property: Property) -> Property:
+        self._validate_new_property(property)
+        self._properties_by_name[property.name] = property
+        setattr(self, property.name, property)
+        return property
+
+    def create(self):
+        for property in self:
+            try:
+                property.dataset = self._settings.dataset
+                property.create()
+            except ArgillaAPIError as e:
+                raise SettingsError(f"Failed to create property {property.name!r}: {e.message}") from e
+
+    def update(self):
+        for item in self:
+            try:
+                item.dataset = self._settings.dataset
+                item.update() if item.id else item.create()
+            except ArgillaAPIError as e:
+                raise SettingsError(f"Failed to update {item.name!r}: {e.message}") from e
+
+    def serialize(self) -> List[dict]:
+        return [property.serialize() for property in self]
+
+    def _validate_new_property(self, property: Property) -> None:
+        if property.name in self._properties_by_name:
+            raise ValueError(f"Property with name {property.name!r} already exists in the collection")
+
+        if property.name in dir(self):
+            raise ValueError(f"Property with name {property.name!r} conflicts with an existing attribute")

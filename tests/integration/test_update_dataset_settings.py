@@ -35,18 +35,18 @@ class TestUpdateDatasetFields:
         settings = dataset.settings
 
         settings.schema["text"].use_markdown = True
-        dataset.settings.vectors.append(VectorField(name="vector", dimensions=10))
-        dataset.settings.metadata.append(FloatMetadataProperty(name="metadata"))
+        dataset.settings.vectors.add(VectorField(name="vector", dimensions=10))
+        dataset.settings.metadata.add(FloatMetadataProperty(name="metadata"))
         dataset.settings.update()
 
         dataset = client.datasets(dataset.name)
-        assert dataset.schema["text"].use_markdown is True
-        assert dataset.schema["vector"].dimensions == 10
-        assert isinstance(dataset.schema["metadata"], FloatMetadataProperty)
-
         settings = dataset.settings
-        settings.schema["vector"].title = "A new title for vector"
+        assert settings.fields.text.use_markdown is True
+        assert settings.vectors.vector.dimensions == 10
+        assert isinstance(settings.metadata.metadata, FloatMetadataProperty)
+
+        settings.vectors.vector.title = "A new title for vector"
 
         settings.update()
         dataset = client.datasets(dataset.name)
-        assert dataset.schema["vector"].title == "A new title for vector"
+        assert dataset.settings.vectors.vector.title == "A new title for vector"

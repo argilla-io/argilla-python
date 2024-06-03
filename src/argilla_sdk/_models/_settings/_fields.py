@@ -18,7 +18,7 @@ from uuid import UUID
 from pydantic import BaseModel, field_serializer, field_validator
 from pydantic_core.core_schema import ValidationInfo
 
-from argilla_sdk._helpers._log import log
+from argilla_sdk._helpers import log_message
 from argilla_sdk._models import ResourceModel
 
 
@@ -46,7 +46,7 @@ class FieldModel(ResourceModel):
     def __title_default(cls, title: str, info: ValidationInfo) -> str:
         data = info.data
         validated_title = title or data["name"]
-        log(f"TextField title is {validated_title}")
+        log_message(f"TextField title is {validated_title}")
         return validated_title
 
     @field_serializer("id", "dataset_id", when_used="unless-none")

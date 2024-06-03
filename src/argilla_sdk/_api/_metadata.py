@@ -40,24 +40,27 @@ class MetadataAPI(ResourceAPI[MetadataFieldModel]):
     @api_error_handler
     def create(self, metadata: MetadataFieldModel) -> MetadataFieldModel:
         url = f"/api/v1/datasets/{metadata.dataset_id}/metadata-properties"
-        response = self.http_client.post(url=url, json=metadata.model_dump()).raise_for_status()
-        created_metadata = self._model_from_json(response_json=response.json())
-        self.log(message=f"Created metadata field {created_metadata.name} in dataset {metadata.dataset_id}")
+        response = self.http_client.post(url=url, json=metadata.model_dump())
+        response.raise_for_status()
+        response_json = response.json()
+        created_metadata = self._model_from_json(response_json=response_json)
+        self._log_message(message=f"Created metadata field {created_metadata.name} in dataset {metadata.dataset_id}")
         return created_metadata
 
     @api_error_handler
     def update(self, metadata: MetadataFieldModel) -> MetadataFieldModel:
         url = f"/api/v1/metadata-properties/{metadata.id}"
-        response = self.http_client.patch(url=url, json=metadata.model_dump()).raise_for_status()
-        updated_metadata = self._model_from_json(response_json=response.json())
-        self.log(message=f"Updated metadata field {updated_metadata.name}")
+        response = self.http_client.patch(url=url, json=metadata.model_dump())
+        response.raise_for_status()
+        response_json = response.json()
+        updated_metadata = self._model_from_json(response_json=response_json)
+        self._log_message(message=f"Updated metadata field {updated_metadata.name}")
         return updated_metadata
 
-    @api_error_handler
     def delete(self, metadata_id: UUID) -> None:
         url = f"/api/v1/metadata-properties/{metadata_id}"
         self.http_client.delete(url=url).raise_for_status()
-        self.log(message=f"Deleted metadata field {metadata_id}")
+        self._log_message(message=f"Deleted metadata field {metadata_id}")
 
     ####################
     # Utility methods #

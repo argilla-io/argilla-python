@@ -29,7 +29,7 @@ dataset.create()
 Then, you can add records to the dataset with vectors that correspond to the vector field defined in the dataset settings:
 
 ```python
-dataset.records.add(
+dataset.records.log(
     [
         {
             "text": "Hello World, how are you?",
@@ -42,7 +42,7 @@ dataset.records.add(
 Vectors can be passed using a mapping, where the key is the key in the data source and the value is the name in the dataset's setting's `rg.VectorField` object. For example, the following code adds a record with a vector using a mapping:
 
 ```python
-dataset.records.add(
+dataset.records.log(
     [
         {
             "text": "Hello World, how are you?",
@@ -56,7 +56,7 @@ dataset.records.add(
 Or, vectors can be instantiated and added to a record directly, like this:
 
 ```python
-dataset.records.add(
+dataset.records.log(
     [
         rg.Record(
             fields={"text": "Hello World, how are you?"},

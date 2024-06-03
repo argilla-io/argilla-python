@@ -40,7 +40,7 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
         response.raise_for_status()
         response_json = response.json()
         created_vector = self._model_from_json(response_json=response_json)
-        self.log(message=f"Created vector {created_vector.name} in dataset {created_vector.dataset_id}")
+        self._log_message(message=f"Created vector {created_vector.name} in dataset {created_vector.dataset_id}")
         return created_vector
 
     @api_error_handler
@@ -50,7 +50,7 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
         response.raise_for_status()
         response_json = response.json()
         updated_vector = self._model_from_json(response_json)
-        self.log(message=f"Updated vector {updated_vector.name} with id {updated_vector.id}")
+        self._log_message(message=f"Updated vector {updated_vector.name} with id {updated_vector.id}")
         return updated_vector
 
     @api_error_handler
@@ -58,7 +58,7 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
         url = f"/api/v1/vectors-settings/{vector_id}"
         response = self.http_client.delete(url)
         response.raise_for_status()
-        self.log(message=f"Deleted vector with id {vector_id}")
+        self._log_message(message=f"Deleted vector with id {vector_id}")
 
     ####################
     # Utility methods #

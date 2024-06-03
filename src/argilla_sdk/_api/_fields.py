@@ -44,7 +44,7 @@ class FieldsAPI(ResourceAPI[FieldModel]):
         response.raise_for_status()
         response_json = response.json()
         created_field = self._model_from_json(response_json=response_json)
-        self.log(message=f"Created field {created_field.name} in dataset {field.dataset_id}")
+        self._log_message(message=f"Created field {created_field.name} in dataset {field.dataset_id}")
         return created_field
 
     @api_error_handler
@@ -54,14 +54,14 @@ class FieldsAPI(ResourceAPI[FieldModel]):
         response.raise_for_status()
         response_json = response.json()
         updated_field = self._model_from_json(response_json)
-        self.log(message=f"Update field {updated_field.name} with id {field.id}")
+        self._log_message(message=f"Update field {updated_field.name} with id {field.id}")
         return updated_field
 
     @api_error_handler
     def delete(self, field_id: UUID) -> None:
         url = f"/api/v1/fields/{field_id}"
         self.http_client.delete(url).raise_for_status()
-        self.log(message=f"Deleted field {field_id}")
+        self._log_message(message=f"Deleted field {field_id}")
 
     ####################
     # Utility methods #

@@ -66,7 +66,7 @@ settings = rg.Settings(
         ),
     ],
     questions=[
-        rg.LabelQuestion
+        rg.LabelQuestion(
             name="label",
             labels=["label_1", "label_2", "label_3"]
         ),

@@ -26,7 +26,7 @@ from argilla_sdk._models._record._vector import VectorModel
 class RecordModel(ResourceModel):
     """Schema for the records of a `Dataset`"""
 
-    fields: Dict[str, Union[str, None]]
+    fields: Optional[Dict[str, Union[str, None]]] = None
     metadata: Optional[Union[List[MetadataModel], Dict[str, MetadataValue]]] = Field(default_factory=dict)
     vectors: Optional[List[VectorModel]] = Field(default_factory=list)
     responses: Optional[List[UserResponseModel]] = Field(default_factory=list)

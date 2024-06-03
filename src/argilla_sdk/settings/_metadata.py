@@ -283,6 +283,7 @@ class MetadataField:
         }
         metadata_type = data["type"]
         try:
-            return switch[metadata_type](**data)
+            metadata_model = MetadataFieldModel(**data)
+            return switch[metadata_type].from_model(metadata_model)
         except KeyError as e:
             raise MetadataError(f"Unknown metadata property type: {metadata_type}") from e

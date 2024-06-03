@@ -80,7 +80,8 @@ class Record(Resource):
             raise ValueError("At least one of fields, metadata, vectors, responses, or suggestions must be provided.")
         if fields is None and id is None:
             raise ValueError("If fields are not provided, an id must be provided.")
-
+        if fields == {} and id is None:
+            raise ValueError("If fields are an empty dictionary, an id must be provided.")
         self._dataset = _dataset
 
         self._model = RecordModel(

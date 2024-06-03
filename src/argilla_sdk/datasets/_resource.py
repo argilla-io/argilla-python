@@ -164,6 +164,15 @@ class Dataset(Resource, DiskImportExportMixin):
             self.__rollback_dataset_creation()
             raise SettingsError from e
 
+    def update(self) -> "Dataset":
+        """Updates the dataset on the server with the current settings.
+
+        Returns:
+            Dataset: The updated dataset object.
+        """
+        self.settings.update()
+        return self
+
     @classmethod
     def from_model(cls, model: DatasetModel, client: "Argilla") -> "Dataset":
         return cls(client=client, _model=model)
@@ -173,7 +182,6 @@ class Dataset(Resource, DiskImportExportMixin):
     #####################
 
     def _publish(self) -> "Dataset":
-        self.settings.validate()
         self._settings.create()
         self._api.publish(dataset_id=self._model.id)
 

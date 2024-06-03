@@ -366,7 +366,7 @@ class Settings(Resource):
                 field.dataset = self.dataset
                 field.update() if field.id else field.create()
             except ArgillaAPIError as e:
-                raise SettingsError(f"Failed to create/update field {field.name}") from e
+                raise SettingsError(f"Failed to create/update field {field.name} with id {field.id}") from e
 
     def _upsert_vectors(self) -> None:
         for vector in self.__vectors:
@@ -374,7 +374,7 @@ class Settings(Resource):
                 vector.dataset = self.dataset
                 vector.update() if vector.id else vector.create()
             except ArgillaAPIError as e:
-                raise SettingsError(f"Failed to create/update vector {vector.name}") from e
+                raise SettingsError(f"Failed to create/update vector {vector.name} with id {vector.id}") from e
 
     def _upsert_metadata(self) -> None:
         for metadata in self.__metadata:
@@ -382,7 +382,7 @@ class Settings(Resource):
                 metadata.dataset = self.dataset
                 metadata.update() if metadata.id else metadata.create()
             except ArgillaAPIError as e:
-                raise SettingsError(f"Failed to create/update metadata {metadata.name}") from e
+                raise SettingsError(f"Failed to create/update metadata {metadata.name} with id {metadata.id}") from e
 
     def _validate_empty_settings(self):
         if not all([self.fields, self.questions]):

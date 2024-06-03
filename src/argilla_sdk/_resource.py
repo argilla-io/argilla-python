@@ -17,7 +17,7 @@ from typing import Any, TYPE_CHECKING, Optional
 from uuid import UUID
 
 from argilla_sdk._exceptions import ArgillaSerializeError
-from argilla_sdk._helpers._mixins import LoggingMixin, UUIDMixin
+from argilla_sdk._helpers import LoggingMixin
 
 if TYPE_CHECKING:
     from argilla_sdk.client import Argilla
@@ -25,7 +25,7 @@ if TYPE_CHECKING:
     from argilla_sdk._api._base import ResourceAPI
 
 
-class Resource(LoggingMixin, UUIDMixin):
+class Resource(LoggingMixin):
     """Base class for all resources (Dataset, Workspace, User, etc.)"""
 
     _model: "ResourceModel"
@@ -81,27 +81,27 @@ class Resource(LoggingMixin, UUIDMixin):
         response_model = self._api.create(self._model)
         self._model = response_model
         self._update_last_api_call()
-        self.log(f"Resource created: {self}")
+        self._log_message(f"Resource created: {self}")
         return self
 
     def get(self) -> "Resource":
         response_model = self._api.get(self._model.id)
         self._model = response_model
         self._update_last_api_call()
-        self.log(f"Resource fetched: {self}")
+        self._log_message(f"Resource fetched: {self}")
         return self
 
     def update(self) -> "Resource":
         response_model = self._api.update(self._model)
         self._model = response_model
         self._update_last_api_call()
-        self.log(f"Resource updated: {self}")
+        self._log_message(f"Resource updated: {self}")
         return self
 
     def delete(self) -> None:
         self._api.delete(self._model.id)
         self._update_last_api_call()
-        self.log(f"Resource deleted: {self}")
+        self._log_message(f"Resource deleted: {self}")
 
     ############################
     # Serialization

@@ -39,7 +39,7 @@ class MetadataAPI(ResourceAPI[MetadataFieldModel]):
         response.raise_for_status()
         response_json = response.json()
         metadata_field_model = self._model_from_json(response_json=response_json)
-        self.log(message=f"Created metadata field {metadata_field_model.name} in dataset {dataset_id}")
+        self._log_message(message=f"Created metadata field {metadata_field_model.name} in dataset {dataset_id}")
         return metadata_field_model
 
     @api_error_handler
@@ -49,14 +49,14 @@ class MetadataAPI(ResourceAPI[MetadataFieldModel]):
         response.raise_for_status()
         response_json = response.json()
         metadata_field_model = self._model_from_json(response_json=response_json)
-        self.log(message=f"Updated field {metadata_field_model.name}")
+        self._log_message(message=f"Updated field {metadata_field_model.name}")
         return metadata_field_model
 
     @api_error_handler
     def delete(self, id: UUID) -> None:
         url = f"/api/v1/metadata-properties/{id}"
         self.http_client.delete(url=url).raise_for_status()
-        self.log(message=f"Deleted field {id}")
+        self._log_message(message=f"Deleted field {id}")
 
     @api_error_handler
     def get(self, id: UUID) -> MetadataFieldModel:

@@ -39,7 +39,7 @@ class FieldsAPI(ResourceAPI[FieldBaseModel]):
         response.raise_for_status()
         response_json = response.json()
         field_model = self._model_from_json(response_json=response_json)
-        self.log(message=f"Created field {field_model.name} in dataset {dataset_id}")
+        self._log_message(message=f"Created field {field_model.name} in dataset {dataset_id}")
         return field_model
 
     @api_error_handler

@@ -39,7 +39,7 @@ class VectorsAPI(ResourceAPI[VectorFieldModel]):
         response.raise_for_status()
         response_json = response.json()
         vector_model = self._model_from_json(response_json=response_json)
-        self.log(message=f"Created vector {vector_model.name} in dataset {dataset_id}")
+        self._log_message(message=f"Created vector {vector_model.name} in dataset {dataset_id}")
         return vector_model
 
     @api_error_handler

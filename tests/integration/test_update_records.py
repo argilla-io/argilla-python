@@ -131,14 +131,17 @@ def test_update_records_by_server_id(client: rg.Argilla, dataset: rg.Dataset):
 def test_update_records_without_fields(client: rg.Argilla, dataset: rg.Dataset):
     mock_data = [
         {
+            "text": "Hello World, how are you?",
             "label": "negative",
             "id": uuid.uuid4(),
         },
         {
+            "text": "Hello World, how are you?",
             "label": "negative",
             "id": uuid.uuid4(),
         },
         {
+            "text": "Hello World, how are you?",
             "label": "negative",
             "id": uuid.uuid4(),
         },

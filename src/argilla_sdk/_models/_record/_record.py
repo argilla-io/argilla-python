@@ -48,6 +48,13 @@ class RecordModel(ResourceModel):
         """Serialize metadata to a dictionary of key-value pairs based on the metadata name and value."""
         return {metadata.name: metadata.value for metadata in value}
 
+    @field_serializer("fields", when_used="always")
+    def serialize_empty_fields(self, value: Dict[str, Union[str, None]]) -> Dict[str, Union[str, None]]:
+        """Serialize empty fields to None."""
+        if isinstance(value, dict) and len(value) == 0:
+            return None
+        return value
+
     @field_validator("metadata", mode="before")
     @classmethod
     def validate_metadata(cls, metadata: Union[List[MetadataModel], dict]) -> List[MetadataModel]:

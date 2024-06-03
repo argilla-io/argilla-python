@@ -143,7 +143,7 @@ def test_update_records_without_fields(client: rg.Argilla, dataset: rg.Dataset):
             "id": uuid.uuid4(),
         },
     ]
-    
+
     updated_mock_data = mock_data.copy()
     updated_mock_data[0]["label"] = "positive"
     dataset.records.log(records=mock_data)

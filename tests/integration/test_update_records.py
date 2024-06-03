@@ -126,3 +126,28 @@ def test_update_records_by_server_id(client: rg.Argilla, dataset: rg.Dataset):
     updated_record = list(dataset.records)[0]
     assert updated_record.metadata["new-key"] == "new-value"
     assert updated_record._server_id == created_record._server_id
+
+
+def test_update_records_without_fields(client: rg.Argilla, dataset: rg.Dataset):
+    mock_data = [
+        {
+            "label": "negative",
+            "id": uuid.uuid4(),
+        },
+        {
+            "label": "negative",
+            "id": uuid.uuid4(),
+        },
+        {
+            "label": "negative",
+            "id": uuid.uuid4(),
+        },
+    ]
+    
+    updated_mock_data = mock_data.copy()
+    updated_mock_data[0]["label"] = "positive"
+    dataset.records.log(records=mock_data)
+    dataset.records.log(records=updated_mock_data)
+
+    for i, record in enumerate(dataset.records(with_suggestions=True)):
+        assert record.suggestions[0].value == updated_mock_data[i]["label"]
